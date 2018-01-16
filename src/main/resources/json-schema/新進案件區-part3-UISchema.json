@@ -1,0 +1,10 @@
+{
+  "piAccountFlg": {
+    "ui:widget": "radio"
+  },
+  "telephone": {
+    "ui:options": {
+      "inputType": "tel"
+    }
+  }
+}

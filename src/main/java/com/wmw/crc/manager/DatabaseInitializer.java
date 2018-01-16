@@ -17,13 +17,18 @@
  */
 package com.wmw.crc.manager;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.collect.Sets.newHashSet;
+
+import java.io.IOException;
+import java.net.URL;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.common.io.Resources;
 import com.wmw.crc.manager.account.model.Role;
 import com.wmw.crc.manager.account.model.User;
 import com.wmw.crc.manager.account.repository.RoleRepository;
@@ -46,7 +51,7 @@ public class DatabaseInitializer {
   CaseRepository caseRepo;
 
   @PostConstruct
-  void init() {
+  void init() throws IOException {
     if (roleRepo.count() == 0) {
       roleRepo.save(
           Ruby.Array.of("ROLE_SUPER", "ROLE_ADMIN", "ROLE_USER").map(name -> {
@@ -83,6 +88,12 @@ public class DatabaseInitializer {
       c.setExpectedNumberOfSubjectsGlobal(10000);
       c.setExpectedStartDate(Ruby.Date.today());
       c.setExpectedEndDate(Ruby.Date.today().add(300).days());
+      URL url = Resources.getResource("json-schema/新進案件區-part1-formData.json");
+      c.setFormJsonData(Resources.toString(url, UTF_8));
+      url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-formData.json");
+      c.setFormSupplement1JsonData(Resources.toString(url, UTF_8));
+      url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-formData.json");
+      c.setFormSupplement2JsonData(Resources.toString(url, UTF_8));
       caseRepo.save(c);
     }
   }

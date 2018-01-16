@@ -87,7 +87,7 @@ public class UserController {
     if (!errors.isEmpty()) {
       model.addAttribute("errors", errors);
       model.addAttribute("userForm", userForm);
-      return "user/new";
+      return "users/new";
     }
 
     try {
@@ -111,7 +111,7 @@ public class UserController {
 
       model.addAttribute("userForm", userForm);
 
-      return "user/new";
+      return "users/new";
     }
 
     return "redirect:login";

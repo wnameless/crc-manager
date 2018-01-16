@@ -29,7 +29,7 @@ public class TriServiceFormJsonSchemaProvider
 
   @Override
   public String getFormSchema() {
-    URL url = Resources.getResource("json-schema/form-schema.json");
+    URL url = Resources.getResource("json-schema/新進案件區-part1-JSONSchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);
@@ -40,7 +40,7 @@ public class TriServiceFormJsonSchemaProvider
 
   @Override
   public String getFormUiSchema() {
-    URL url = Resources.getResource("json-schema/form-ui-schema.json");
+    URL url = Resources.getResource("json-schema/新進案件區-part1-UISchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);
@@ -51,7 +51,7 @@ public class TriServiceFormJsonSchemaProvider
 
   @Override
   public String getFormSupplement1Schema() {
-    URL url = Resources.getResource("json-schema/form-supplement1-schema.json");
+    URL url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-JSONSchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);
@@ -62,7 +62,7 @@ public class TriServiceFormJsonSchemaProvider
 
   @Override
   public String getFormSupplement1UiSchema() {
-    URL url = Resources.getResource("json-schema/form-supplement1-schema.json");
+    URL url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-UISchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);
@@ -73,7 +73,8 @@ public class TriServiceFormJsonSchemaProvider
 
   @Override
   public String getFormSupplement2Schema() {
-    URL url = Resources.getResource("json-schema/form-supplement2-schema.json");
+    URL url =
+        Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-JSONSchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);
@@ -85,7 +86,7 @@ public class TriServiceFormJsonSchemaProvider
   @Override
   public String getFormSupplement2UiSchema() {
     URL url =
-        Resources.getResource("json-schema/form-supplement2-ui-schema.json");
+        Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-UISchema.json");
     String schema = null;
     try {
       schema = Resources.toString(url, UTF_8);

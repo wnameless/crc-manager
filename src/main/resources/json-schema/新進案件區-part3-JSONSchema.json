@@ -1,0 +1,32 @@
+{
+  "title": "3. 預覽並送出至執行案件區",
+  "type": "object",
+  "properties": {
+    "piAccountFlg": {
+      "type": "boolean",
+      "title": "是否一併開啟試驗主持人帳號 (如下列，請注意Email必須為院內) ?"
+    },
+    "lastNamePI": {
+      "type": "string",
+      "title": "姓名"
+    },
+    "titlePI": {
+      "type": "string",
+      "title": "職稱"
+    },
+    "branchPI": {
+      "type": "string",
+      "title": "單位"
+    },
+    "telephonePI": {
+      "type": "string",
+      "title": "聯絡電話",
+      "minLength": 8
+    },
+    "emailPI": {
+      "type": "string",
+      "format": "email",
+      "title": "院內E-mail"
+    }
+  }
+}

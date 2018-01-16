@@ -1,0 +1,66 @@
+{
+  "title": "2.上傳/修改新案審查文件",
+  "type": "object",
+  "properties": {
+    "applicationForm": {
+      "type": "string",
+      "format": "data-url",
+      "title": "1. 三軍總醫院臨床研究申請表"
+    },
+    "approvedLetter": {
+      "type": "string",
+      "format": "data-url",
+      "title": "2. 三軍總醫院IRB審議會同意函"
+    },
+    "icf": {
+      "type": "string",
+      "format": "data-url",
+      "title": "3. 受試者同意書 (經IRB核准蓋章之影本)"
+    },
+    "protocolFile": {
+      "type": "string",
+      "format": "data-url",
+      "title": "4. 三軍總醫院人體試驗主持人試驗計畫申請書"
+    },
+    "dohLetter": {
+      "type": "string",
+      "format": "data-url",
+      "title": "5. 衛福部人體試驗同意函（如須衛福部審查通過案）"
+    },
+    "protocolInfoFile": {
+      "type": "string",
+      "format": "data-url",
+      "title": "6. 試驗計畫書"
+    },
+    "caseReport": {
+      "type": "string",
+      "format": "data-url",
+      "title": "7. 個案報告書"
+    },
+    "insuranceFile": {
+      "type": "string",
+      "format": "data-url",
+      "title": "8. 保險資料"
+    },
+    "contractFile": {
+      "type": "string",
+      "format": "data-url",
+      "title": "9. 臨床試驗合約書"
+    },
+    "funding": {
+      "type": "string",
+      "format": "data-url",
+      "title": "10. 臨床試驗經費明細表"
+    },
+    "fee": {
+      "type": "string",
+      "format": "data-url",
+      "title": "11. 臨床試驗中心服務費收費表 (健康受試者/病人受試者)"
+    },
+    "otherFile": {
+      "type": "string",
+      "format": "data-url",
+      "title": "12. 其他重要補充資料"
+    }
+  }
+}
