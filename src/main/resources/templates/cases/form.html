@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header :: header-common" />
+<body>
+	<nav th:fragment="navbar-login" class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/index">CRC Manager</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li
+					sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a
+					href="/cases">執行案件區</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
+					href="/cases?new">新進案件區</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
+					href="/cases?supp1">新案補充區-CRC</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
+					href="/cases?supp2">新案補充區-PI/SC</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
+					href="/cases?end">結束案件區</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
+					href="/cases?none">非CRC管理案件區</a></li>
+				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
+					href="/cases/search">案件搜尋與匯出</a></li>
+			</ul>
+
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/logout" class="fa fa-sign-out fa-2x"></a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div id="form" class="container col-md-6 col-md-offset-3"></div>
+
+	<script type="text/babel" th:inline="javascript">
+const Form = JSONSchemaForm.default;
+
+const schema = JSON.parse([[${formSchema}]]);
+const uiSchema = JSON.parse([[${formUiSchema}]]);
+const formData = JSON.parse([[${formData}]]);
+
+const log = (type) => console.log.bind(console, type);
+
+const submit = () => axios.post('/cases/' + [[${formId}]] + '/form' , {});
+
+
+ReactDOM.render((
+  <Form schema={schema}
+        uiSchema={uiSchema}
+        formData={formData}
+        onChange={log("changed")}
+        onSubmit={submit}
+        onError={log("errors")} />
+), document.getElementById("form"));
+	</script>
+</body>
+</html>
