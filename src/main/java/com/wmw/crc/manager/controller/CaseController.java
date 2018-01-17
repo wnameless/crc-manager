@@ -17,21 +17,26 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.gson.Gson;
 import com.wmw.crc.manager.account.model.User;
 import com.wmw.crc.manager.account.repository.UserRepository;
 import com.wmw.crc.manager.form.json.schema.FormJsonSchemaProvider;
@@ -59,9 +64,10 @@ public class CaseController {
     if (requestParams.keySet().contains("new")) {
       cases.removeIf(c -> c.isFormDone());
     } else if (requestParams.keySet().contains("supp1")) {
-      cases.removeIf(c -> c.isFormSupplement1Done());
+      cases.removeIf(c -> c.isFormSupplement1Done() || !c.isFormDone());
     } else if (requestParams.keySet().contains("supp2")) {
-      cases.removeIf(c -> c.isFormSupplement2Done());
+      cases.removeIf(c -> c.isFormSupplement2Done() || !c.isFormDone()
+          || !c.isFormSupplement2Done());
     } else if (requestParams.keySet().contains("end")) {
       cases.removeIf(c -> !c.isFormDone() || !c.isFormSupplement1Done()
           || !c.isFormSupplement2Done());
@@ -75,17 +81,7 @@ public class CaseController {
   String showForm(@PathVariable("id") Long id, Model model) {
     Case c = caseRepo.findOne(id);
 
-    model.addAttribute("formSchema", schemaProvider.getFormSchema());
-    model.addAttribute("formUiSchema", schemaProvider.getFormUiSchema());
-    model.addAttribute("formSupplement1Schema",
-        schemaProvider.getFormSupplement1Schema());
-    model.addAttribute("formSupplement1UiSchema",
-        schemaProvider.getFormSupplement1UiSchema());
-    model.addAttribute("formSupplement2Schema",
-        schemaProvider.getFormSupplement2Schema());
-    model.addAttribute("formSupplement2UiSchema",
-        schemaProvider.getFormSupplement2UiSchema());
-
+    schemaProvider.setSchemas(model.asMap());
     model.addAttribute("formData", c.getFormJsonData());
 
     model.addAttribute("formId", id);
@@ -94,15 +90,15 @@ public class CaseController {
   }
 
   @RequestMapping(path = "/cases/{id}/form", method = POST)
-  String updateForm(@PathVariable("id") Long id, @RequestBody String jsonData,
-      Model model) {
-    System.err.println("jsonData: " + jsonData);
+  String updateForm(@PathVariable("id") Long id,
+      @RequestBody MultiValueMap<String, String> formData, Model model,
+      ServletRequest request) {
+
+    System.err.println("formData: " + newHashMap(request.getParameterMap()));
 
     Case c = caseRepo.findOne(id);
-
-    c.setFormJsonData(jsonData);
+    c.setFormJsonData(new Gson().toJson(formData));
     c.setFormDone(true);
-
     caseRepo.save(c);
 
     return "redirect:/cases";

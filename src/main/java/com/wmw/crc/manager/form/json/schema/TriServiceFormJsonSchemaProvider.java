@@ -21,6 +21,7 @@ import static com.google.common.base.Charsets.UTF_8;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 import com.google.common.io.Resources;
 
@@ -93,6 +94,17 @@ public class TriServiceFormJsonSchemaProvider
     } catch (IOException e) {}
 
     return schema;
+  }
+
+  @Override
+  public Map<String, Object> setSchemas(Map<String, Object> model) {
+    model.put("formSchema", getFormSchema());
+    model.put("formUiSchema", getFormUiSchema());
+    model.put("formSupplement1Schema", getFormSupplement1Schema());
+    model.put("formSupplement1UiSchema", getFormSupplement1UiSchema());
+    model.put("formSupplement2Schema", getFormSupplement2Schema());
+    model.put("formSupplement2UiSchema", getFormSupplement2UiSchema());
+    return model;
   }
 
 }

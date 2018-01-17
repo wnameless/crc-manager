@@ -26,14 +26,13 @@
 					href="/cases/search">案件搜尋與匯出</a></li>
 			</ul>
 
-
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="/logout" class="fa fa-sign-out fa-2x"></a></li>
 			</ul>
 		</div>
 	</nav>
 
-	<div id="form" class="container col-md-6 col-md-offset-3"></div>
+	<div id="caseFormDiv" class="container col-md-6 col-md-offset-3"></div>
 
 	<script type="text/babel" th:inline="javascript">
 const Form = JSONSchemaForm.default;
@@ -42,19 +41,27 @@ const schema = JSON.parse([[${formSchema}]]);
 const uiSchema = JSON.parse([[${formUiSchema}]]);
 const formData = JSON.parse([[${formData}]]);
 
-const log = (type) => console.log.bind(console, type);
+const onSubmit = ({formData}) => {
+	console.log("Data submitted: ",  formData);
 
-const submit = () => axios.post('/cases/' + [[${formId}]] + '/form' , {});
-
+    $("#caseForm input").each(function(input){ this.setAttribute("name", this.getAttribute("id").substring(5)) });
+	document.getElementById("caseForm").submit();
+}
 
 ReactDOM.render((
-  <Form schema={schema}
+  <Form id="caseForm"
+		name="caseForm"
+		method="post"
+  		action="/cases/[[${formId}]]/form"
+		schema={schema}
         uiSchema={uiSchema}
         formData={formData}
-        onChange={log("changed")}
-        onSubmit={submit}
-        onError={log("errors")} />
-), document.getElementById("form"));
+		onSubmit={onSubmit} >
+     <div>
+      <button type="submit" class="btn btn-info">Submit</button>
+    </div>
+</Form>
+), document.getElementById("caseFormDiv"));
 	</script>
 </body>
 </html>

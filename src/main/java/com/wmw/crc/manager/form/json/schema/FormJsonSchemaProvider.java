@@ -17,6 +17,8 @@
  */
 package com.wmw.crc.manager.form.json.schema;
 
+import java.util.Map;
+
 public interface FormJsonSchemaProvider {
 
   String getFormSchema();
@@ -30,5 +32,7 @@ public interface FormJsonSchemaProvider {
   String getFormSupplement2Schema();
 
   String getFormSupplement2UiSchema();
+
+  Map<String, Object> setSchemas(Map<String, Object> model);
 
 }
