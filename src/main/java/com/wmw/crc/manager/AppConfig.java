@@ -20,11 +20,17 @@ package com.wmw.crc.manager;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import com.fasterxml.jackson.core.JsonParser.Feature;
+
+@ComponentScan("com.github.wnameless")
 @Configuration
-public class ServiceConfig {
+public class AppConfig {
 
   @Bean
   EmbeddedServletContainerCustomizer containerCustomizer() {
@@ -36,6 +42,14 @@ public class ServiceConfig {
           new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500.html");
       container.addErrorPages(error401Page, error404Page, error500Page);
     };
+  }
+
+  @Primary
+  @Bean
+  public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+    builder.featuresToEnable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
+    return builder;
   }
 
 }

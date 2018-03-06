@@ -15,24 +15,16 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.form.json.schema;
+package com.wmw.crc.manager.controller.api;
 
-import java.util.Map;
+import java.util.List;
 
-public interface FormJsonSchemaProvider {
+import lombok.Data;
 
-  String getFormSchema();
+@Data
+public class Patient {
 
-  String getFormUiSchema();
-
-  String getFormSupplement1Schema();
-
-  String getFormSupplement1UiSchema();
-
-  String getFormSupplement2Schema();
-
-  String getFormSupplement2UiSchema();
-
-  Map<String, Object> setSchemas(Map<String, Object> model);
+  String patientId;
+  List<CRC> crc;
 
 }

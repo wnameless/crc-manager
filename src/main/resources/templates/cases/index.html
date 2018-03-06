@@ -1,78 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/header :: header-common" />
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<th:block th:include="fragments/header :: header-common"></th:block>
+</head>
 <body>
-	<nav th:fragment="navbar-login" class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="/index">CRC Manager</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li
-					sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a
-					href="/cases">執行案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
-					href="/cases?new">新進案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
-					href="/cases?supp1">新案補充區-CRC</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_USER')"><a
-					href="/cases?supp2">新案補充區-PI/SC</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
-					href="/cases?end">結束案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
-					href="/cases?none">非CRC管理案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a
-					href="/cases/search">案件搜尋與匯出</a></li>
-			</ul>
-
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="/logout" class="fa fa-sign-out fa-2x"></a></li>
-			</ul>
-		</div>
-	</nav>
+	<nav th:replace="fragments/navbar :: navbar-login"></nav>
 
 	<div class="container">
-		<table id="cases" class="display">
-			<thead>
-				<tr>
-					<th>年度</th>
-					<th>IRB/REC案件編號</th>
-					<th>試驗中文名稱</th>
-					<th>試驗英文名稱</th>
-					<th>計畫主持人姓名</th>
-					<th>新案狀態</th>
-					<th>CRC狀態</th>
-					<th>PI/SC狀態</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="case : ${cases}">
-					<td th:text="${case.year}"></td>
-					<td><a th:href="@{'/cases/' + ${case.id} + '/form'}"
-						th:text="${case.caseNumber}"></a></td>
-					<td th:text="${case.trialName}"></td>
-					<td th:text="${case.trialNameEng}"></td>
-					<td th:text="${case.piName}"></td>
-					<td th:if="${case.formDone}"><i class="fa fa-check"></i></td>
-					<td th:if="${!case.formDone}"></td>
-					<td th:if="${case.formSupplement1Done}"><i class="fa fa-check"></i></td>
-					<td th:if="${!case.formSupplement1Done}"></td>
-					<td th:if="${case.formSupplement2Done}"><i class="fa fa-check"></i></td>
-					<td th:if="${!case.formSupplement2Done}"></td>
-				</tr>
-			</tbody>
-		</table>
+		<div id="jsf">
+			<div th:replace="cases/list :: list"></div>
+		</div>
 	</div>
-
-	<script>
-		$(document).ready(function() {
-			$('#cases').DataTable({
-				"language" : {
-					"url" : "/i18n/datatables-zh-TW.json"
-				}
-			});
-		});
-	</script>
 </body>
 </html>

@@ -17,30 +17,9 @@
  */
 package com.wmw.crc.manager.repository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import com.wmw.crc.manager.account.model.User;
-import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.CaseSupplement1;
 
-@Repository
-public interface CaseRepository extends JpaRepository<Case, Long> {
-
-  List<Case> findByStatus(Case.Status status);
-
-  default List<Case> findByUser(User user) {
-    return findAll();
-  }
-
-  Case findByCaseNumber(String caseNumber);
-
-  default List<Case> findAllUndoneCrc() {
-    return findAll().stream()
-        .filter(c -> c.isFormDone() && !c.getCrc().isFormDone())
-        .collect(Collectors.toList());
-  }
-
-}
+public interface CaseSupplement1Repository
+    extends JpaRepository<CaseSupplement1, Long> {}

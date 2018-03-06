@@ -48,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
         .logoutSuccessUrl("/login").permitAll();
 
+    http.authorizeRequests().antMatchers("/api/**").authenticated().and()
+        .httpBasic();
     http.csrf().disable();
   }
 

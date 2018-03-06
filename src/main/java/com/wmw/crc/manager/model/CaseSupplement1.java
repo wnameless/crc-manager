@@ -27,7 +27,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.github.wnameless.json.JsonDataInitailizable;
-import com.github.wnameless.json.JsonInitKey;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 
@@ -37,26 +36,20 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject extends JpaJsonSchemaForm
+public class CaseSupplement1 extends JpaJsonSchemaForm
     implements JsonDataInitailizable {
 
   @Id
   @GeneratedValue
   Long id;
 
-  @JsonInitKey("lastname")
-  String name;
+  boolean formDone;
 
-  @JsonInitKey("taiwanId")
-  String nationalId;
-
-  public Subject() {
+  public CaseSupplement1() {
     try {
       URL url =
-          Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-JSONSchema.json");
+          Resources.getResource("json-schema/新進案件區-part2-JSONSchema.json");
       setJsonSchema(Resources.toString(url, UTF_8));
-      url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-UISchema.json");
-      setJsonUiSchema(Resources.toString(url, UTF_8));
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -1,40 +1,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="header-common">
-<meta charset="UTF-8" />
-<title>CRC Manager</title>
-<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
-<link rel="stylesheet"
-	th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" />
-<script th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+<th:block th:fragment="header-common">
+	<meta charset="UTF-8" />
+	<title>CRC Manager</title>
+	<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" />
+	<script th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
 
-<script
-	th:src="@{/webjars/datatables/1.10.16/js/jquery.dataTables.min.js}"></script>
-<script
-	th:src="@{/webjars/datatables/1.10.16/js/dataTables.bootstrap.min.js}"></script>
-<link rel="stylesheet"
-	th:href="@{/webjars/datatables/1.10.16/css/dataTables.bootstrap.min.css}">
-<script
-	th:src="@{/webjars/datatables/1.10.16/js/dataTables.jqueryui.min.js}"></script>
-<link rel="stylesheet"
-	th:href="@{/webjars/datatables/1.10.16/css/dataTables.jqueryui.min.css}">
+	<script th:src="@{/webjars/datatables/1.10.16/js/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/webjars/datatables/1.10.16/js/dataTables.bootstrap.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/webjars/datatables/1.10.16/css/dataTables.bootstrap.min.css}">
+	<script th:src="@{/webjars/datatables/1.10.16/js/dataTables.jqueryui.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/webjars/datatables/1.10.16/css/dataTables.jqueryui.min.css}">
 
-<link rel="stylesheet"
-	th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
 
-<script th:src="@{/webjars/babel-standalone/6.26.0/babel.min.js}"></script>
+	<script th:src="@{/webjars/babel-standalone/6.26.0/babel.min.js}"></script>
 
-<script th:src="@{/webjars/react/16.2.0/umd/react.production.min.js}"></script>
-<script
-	th:src="@{/webjars/react-dom/16.2.0/umd/react-dom.production.min.js}"></script>
-<script
-	th:src="@{/webjars/react-jsonschema-form/0.45.0/dist/react-jsonschema-form.js}"></script>
-<script
-	th:src="@{/webjars/react-data-grid/2.0.73/dist/react-data-grid.min.js}"></script>
+	<script th:src="@{/webjars/react/16.2.0/umd/react.production.min.js}"></script>
+	<script th:src="@{/webjars/react-dom/16.2.0/umd/react-dom.production.min.js}"></script>
+	<script th:src="@{/webjars/react-jsonschema-form/0.45.0/dist/react-jsonschema-form.js}"></script>
+	<script th:src="@{/webjars/react-data-grid/2.0.73/dist/react-data-grid.min.js}"></script>
 
-<link rel="stylesheet" href="/css/addon/effect-light.min.css">
-<link rel="stylesheet" href="/css/titip.min.css">
-<link rel="icon" type="image/x-icon" href="/myfavicon.ico">
+	<link rel="stylesheet" href="/css/addon/effect-light.min.css">
+	<link rel="stylesheet" href="/css/titip.min.css">
+	<link rel="icon" type="image/x-icon" href="/myfavicon.ico">
 
-<script th:src="@{/webjars/axios/0.17.1/dist/axios.min.js}"></script>
-</head>
+	<script th:src="@{/webjars/axios/0.17.1/dist/axios.min.js}"></script>
+	
+	<script type="text/babel" src="/js/react-jsf.js"></script>
+</th:block>
 </html>

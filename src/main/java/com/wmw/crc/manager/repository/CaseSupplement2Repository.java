@@ -15,20 +15,11 @@
  * the License.
  *
  */
-package com.wmw.crc.manager;
+package com.wmw.crc.manager.repository;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.wmw.crc.manager.form.json.schema.FormJsonSchemaProvider;
-import com.wmw.crc.manager.form.json.schema.TriServiceFormJsonSchemaProvider;
+import com.wmw.crc.manager.model.CaseSupplement2;
 
-@Configuration
-public class JsonSchemaConfig {
-
-  @Bean
-  FormJsonSchemaProvider formJsonSchemaProvider() {
-    return new TriServiceFormJsonSchemaProvider();
-  }
-
-}
+public interface CaseSupplement2Repository
+    extends JpaRepository<CaseSupplement2, Long> {}

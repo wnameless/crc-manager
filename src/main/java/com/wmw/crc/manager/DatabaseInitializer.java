@@ -33,9 +33,17 @@ import com.wmw.crc.manager.account.model.Role;
 import com.wmw.crc.manager.account.model.User;
 import com.wmw.crc.manager.account.repository.RoleRepository;
 import com.wmw.crc.manager.account.repository.UserRepository;
+import com.wmw.crc.manager.model.CRC;
 import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.CaseSupplement1;
+import com.wmw.crc.manager.model.CaseSupplement2;
+import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.CaseSupplement1Repository;
+import com.wmw.crc.manager.repository.CaseSupplement2Repository;
 
+import main.java.com.maximeroussy.invitrode.RandomWord;
+import main.java.com.maximeroussy.invitrode.WordLengthException;
 import net.sf.rubycollect4j.Ruby;
 
 @Component
@@ -50,8 +58,14 @@ public class DatabaseInitializer {
   @Autowired
   CaseRepository caseRepo;
 
+  @Autowired
+  CaseSupplement1Repository caseSupp1Repo;
+
+  @Autowired
+  CaseSupplement2Repository caseSupp2Repo;
+
   @PostConstruct
-  void init() throws IOException {
+  void init() throws IOException, WordLengthException {
     if (roleRepo.count() == 0) {
       roleRepo.save(
           Ruby.Array.of("ROLE_SUPER", "ROLE_ADMIN", "ROLE_USER").map(name -> {
@@ -71,30 +85,76 @@ public class DatabaseInitializer {
       userRepo.save(user);
     }
 
+    user = userRepo.findByUsername("api_key");
+    if (user == null) {
+      user = new User();
+      user.setUsername("api_key");
+      user.setEmail("api_key");
+      user.setPassword("22711e4e");
+      user.setRoles(newHashSet(roleRepo.findByName("ROLE_USER")));
+      userRepo.save(user);
+    }
+
+    int i = 0;
     while (caseRepo.count() < 10) {
       Case c = new Case();
+
+      switch (i % 4) {
+        case 0:
+          c.setStatus(Case.Status.NEW);
+          break;
+        case 1:
+          c.setStatus(Case.Status.EXEC);
+          break;
+        case 2:
+          c.setStatus(Case.Status.END);
+          break;
+        case 3:
+          c.setStatus(Case.Status.NONE);
+          break;
+      }
+
       c.setYear(2019);
-      c.setPiName("Jhon Doe");
-      c.setCaseNumber("878787");
-      c.setTrialName("萬靈藥");
-      c.setTrialNameEng("Elixir");
-      c.setPiName("冤大頭");
-      c.setCoPiName("替死鬼");
-      c.setAssociatePiName("鬼遮眼");
-      c.setProjectNumber("HAHAHAH");
-      c.setProjectType("Free");
+      c.setPiName(RandomWord.getNewWord(4) + " " + RandomWord.getNewWord(6));
+      c.setCaseNumber(Integer.toString(12425 + i));
+      c.setTrialName(RandomWord.getNewWord(5));
+      c.setTrialNameEng(RandomWord.getNewWord(5));
+      c.setCoPiName(RandomWord.getNewWord(5) + " " + RandomWord.getNewWord(5));
+      c.setAssociatePiName(
+          RandomWord.getNewWord(6) + " " + RandomWord.getNewWord(4));
+      c.setProjectNumber(RandomWord.getNewWord(6));
+      c.setProjectType(RandomWord.getNewWord(4));
       c.setExpectedNumberOfSubjectsLocal(100);
       c.setExpectedNumberOfSubjectsNational(1000);
       c.setExpectedNumberOfSubjectsGlobal(10000);
       c.setExpectedStartDate(Ruby.Date.today());
       c.setExpectedEndDate(Ruby.Date.today().add(300).days());
       URL url = Resources.getResource("json-schema/新進案件區-part1-formData.json");
-      c.setFormJsonData(Resources.toString(url, UTF_8));
+      c.setJsonData(Resources.toString(url, UTF_8));
+
+      CaseSupplement1 cs1 = new CaseSupplement1();
+      url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
+      cs1.setJsonData(Resources.toString(url, UTF_8));
+      c.setSupplement1(cs1);
+
+      CaseSupplement2 cs2 = new CaseSupplement2();
+      url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
+      cs2.setJsonData(Resources.toString(url, UTF_8));
+      c.setSupplement2(cs2);
+
+      CRC crc = new CRC();
       url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-formData.json");
-      c.setFormSupplement1JsonData(Resources.toString(url, UTF_8));
+      crc.setJsonData(Resources.toString(url, UTF_8));
+      c.setCrc(crc);
+
+      Subject subject = new Subject();
       url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-formData.json");
-      c.setFormSupplement2JsonData(Resources.toString(url, UTF_8));
+      subject.setJsonData(Resources.toString(url, UTF_8));
+      c.getSubjects().add(subject);
+
       caseRepo.save(c);
+
+      i++;
     }
   }
 

@@ -17,49 +17,84 @@
  */
 package com.wmw.crc.manager.model;
 
-import static com.google.common.collect.Sets.newLinkedHashSet;
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.collect.Lists.newArrayList;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-import com.wmw.crc.manager.account.model.User;
+import com.github.wnameless.json.JsonDataInitailizable;
+import com.github.wnameless.json.JsonInitKey;
+import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
+import com.google.common.io.Resources;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Case {
+public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
+
+  public enum Status {
+    NEW, EXEC, END, NONE;
+
+    public static Status fromString(String status) {
+      switch (status.toUpperCase()) {
+        case "NEW":
+          return NEW;
+        case "EXEC":
+          return EXEC;
+        case "END":
+          return END;
+        case "NONE":
+          return NONE;
+        default:
+          return NEW;
+      }
+    }
+
+  }
 
   @Id
   @GeneratedValue
-  long id;
+  Long id;
 
   int year;
 
+  @JsonInitKey("protocolNum")
   String caseNumber;
 
+  @JsonInitKey("title")
   String trialName;
 
+  @JsonInitKey("engTitle")
   String trialNameEng;
 
+  @JsonInitKey("piName")
   String piName;
 
   String coPiName;
 
   String associatePiName;
 
+  @JsonInitKey("crcNum")
   String projectNumber;
 
+  @JsonInitKey("nihReason")
   String projectType;
 
   int expectedNumberOfSubjectsLocal;
@@ -72,45 +107,44 @@ public class Case {
 
   Date expectedEndDate;
 
-  @Column(columnDefinition = "TEXT")
-  String formJsonData;
-
   boolean formDone;
 
-  @Column(columnDefinition = "TEXT")
-  String formSupplement1JsonData;
+  @Enumerated(EnumType.STRING)
+  Status status = Status.NEW;
 
-  boolean formSupplement1Done;
+  @OneToOne
+  CaseSupplement1 supplement1;
 
-  @Column(columnDefinition = "TEXT")
-  String formSupplement2JsonData;
+  @OneToOne
+  CaseSupplement2 supplement2;
 
-  boolean formSupplement2Done;
+  @OneToOne
+  CRC crc;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
-  Set<Subject> subjects = newLinkedHashSet();
+  List<Subject> subjects = newArrayList();
 
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "case_reader", joinColumns = @JoinColumn(name = "case_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
-  Set<User> readers = newLinkedHashSet();
+  @OneToOne
+  PermissionGroup permissionGroup;
 
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "case_writer", joinColumns = @JoinColumn(name = "case_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
-  Set<User> writers = newLinkedHashSet();
+  public Case() {
+    try {
+      URL url =
+          Resources.getResource("json-schema/新進案件區-part1-JSONSchema.json");
+      setJsonSchema(Resources.toString(url, UTF_8));
+      url = Resources.getResource("json-schema/新進案件區-part1-UISchema.json");
+      setJsonUiSchema(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "case_submitter",
-      joinColumns = @JoinColumn(name = "case_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
-  Set<User> submitters = newLinkedHashSet();
-
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "case_manager", joinColumns = @JoinColumn(name = "case_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
-  Set<User> managers = newLinkedHashSet();
+  @Override
+  public void setJsonData(String jsonData) {
+    super.setJsonData(jsonData);
+    setJsonInitData(jsonData);
+  }
 
 }

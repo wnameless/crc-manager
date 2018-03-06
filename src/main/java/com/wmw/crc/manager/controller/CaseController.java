@@ -24,22 +24,18 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.gson.Gson;
-import com.wmw.crc.manager.account.model.User;
 import com.wmw.crc.manager.account.repository.UserRepository;
-import com.wmw.crc.manager.form.json.schema.FormJsonSchemaProvider;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.repository.CaseRepository;
 
@@ -47,77 +43,115 @@ import com.wmw.crc.manager.repository.CaseRepository;
 public class CaseController {
 
   @Autowired
-  FormJsonSchemaProvider schemaProvider;
-
-  @Autowired
   UserRepository userRepo;
 
   @Autowired
   CaseRepository caseRepo;
 
-  @RequestMapping(path = "/cases", method = GET)
-  String getCases(Authentication auth, Model model,
-      @RequestParam Map<String, String> requestParams) {
-    User user = userRepo.findByEmail(auth.getName());
-    List<Case> cases = caseRepo.findByUser(user);
+  private List<Case> getCasesBySession(HttpSession session,
+      Map<String, String> allRequestParams) {
+    List<Case> cases;
 
-    if (requestParams.keySet().contains("new")) {
-      cases.removeIf(c -> c.isFormDone());
-    } else if (requestParams.keySet().contains("supp1")) {
-      cases.removeIf(c -> c.isFormSupplement1Done() || !c.isFormDone());
-    } else if (requestParams.keySet().contains("supp2")) {
-      cases.removeIf(c -> c.isFormSupplement2Done() || !c.isFormDone()
-          || !c.isFormSupplement2Done());
-    } else if (requestParams.keySet().contains("end")) {
-      cases.removeIf(c -> !c.isFormDone() || !c.isFormSupplement1Done()
-          || !c.isFormSupplement2Done());
+    if (allRequestParams.containsKey("new")) {
+      session.setAttribute("CASES_STATUS", "new");
+      cases = caseRepo.findByStatus(Case.Status.NEW);
+    } else if (allRequestParams.containsKey("exec")) {
+      cases = caseRepo.findByStatus(Case.Status.EXEC);
+      session.setAttribute("CASES_STATUS", "exec");
+    } else if (allRequestParams.containsKey("end")) {
+      cases = caseRepo.findByStatus(Case.Status.END);
+      session.setAttribute("CASES_STATUS", "end");
+    } else if (allRequestParams.containsKey("none")) {
+      cases = caseRepo.findByStatus(Case.Status.NONE);
+      session.setAttribute("CASES_STATUS", "none");
+    } else {
+      if (session.getAttribute("CASES_STATUS") == null) {
+        session.setAttribute("CASES_STATUS", "exec");
+      }
+      switch ((String) session.getAttribute("CASES_STATUS")) {
+        case "new":
+          cases = caseRepo.findByStatus(Case.Status.NEW);
+          break;
+        case "exec":
+          cases = caseRepo.findByStatus(Case.Status.EXEC);
+          break;
+        case "end":
+          cases = caseRepo.findByStatus(Case.Status.END);
+          break;
+        case "none":
+          cases = caseRepo.findByStatus(Case.Status.NONE);
+          break;
+        default:
+          cases = caseRepo.findByStatus(Case.Status.EXEC);
+      }
     }
-    model.addAttribute("cases", cases);
 
-    return "/cases/index";
+    return cases;
   }
 
-  @RequestMapping(path = "/cases/{id}/form", method = GET)
-  String showForm(@PathVariable("id") Long id, Model model) {
-    Case c = caseRepo.findOne(id);
+  @RequestMapping(path = "/cases/index", method = GET)
+  String index(HttpSession session, Authentication auth,
+      @RequestParam Map<String, String> allRequestParams, Model model) {
+    // User user = userRepo.findByEmail(auth.getName());
+    // List<Case> cases = caseRepo.findByUser(user);
 
-    schemaProvider.setSchemas(model.asMap());
-    model.addAttribute("formData", c.getFormJsonData());
+    List<Case> cases = getCasesBySession(session, allRequestParams);
 
-    model.addAttribute("formId", id);
-
-    return "/cases/form";
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItems", cases);
+    return "cases/index";
   }
 
-  @RequestMapping(path = "/cases/{id}/form", method = POST)
-  String updateForm(@PathVariable("id") Long id,
-      @RequestBody MultiValueMap<String, String> formData, Model model,
-      ServletRequest request) {
+  @RequestMapping(path = "/cases", method = GET)
+  String list(HttpSession session, Authentication auth,
+      @RequestParam Map<String, String> allRequestParams, Model model) {
+    List<Case> cases = getCasesBySession(session, allRequestParams);
 
-    System.err.println("formData: " + newHashMap(request.getParameterMap()));
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItems", cases);
+    return "cases/list :: list";
+  }
 
+  @RequestMapping(path = "/cases/{id}", method = GET)
+  String show(@PathVariable("id") Long id, Model model) {
     Case c = caseRepo.findOne(id);
-    c.setFormJsonData(new Gson().toJson(formData));
-    c.setFormDone(true);
+
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItem", c);
+    return "cases/show :: show";
+  }
+
+  @RequestMapping(path = "/cases/{id}/edit", method = GET)
+  String edit(Model model, @PathVariable("id") Long id) {
+    Case c = caseRepo.findOne(id);
+
+    model.addAttribute("jsfPath", "/cases/" + id);
+    model.addAttribute("jsfItem", c);
+    return "cases/edit :: edit";
+  }
+
+  @RequestMapping(path = "/cases/{id}", method = POST)
+  String save(HttpSession session, Model model, @PathVariable("id") Long id,
+      @RequestBody String formData) {
+    Case c = caseRepo.findOne(id);
+    c.setJsonData(formData);
     caseRepo.save(c);
 
-    return "redirect:/cases";
+    List<Case> cases = getCasesBySession(session, newHashMap());
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItems", cases);
+    return "cases/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{id}/supplement1", method = POST)
-  String updateSupplement1(@RequestParam("id") Long id,
-      @RequestBody String jsonData) {
+  @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
+  String alterStatus(@PathVariable("id") Long id,
+      @PathVariable("status") String status) {
     Case c = caseRepo.findOne(id);
+    String currentStatus = c.getStatus().toString().toLowerCase();
+    c.setStatus(Case.Status.fromString(status));
+    caseRepo.save(c);
 
-    return "OK";
-  }
-
-  @RequestMapping(path = "/cases/{id}/supplement2", method = POST)
-  String updateSupplement2(@RequestParam("id") Long id,
-      @RequestBody String jsonData) {
-    Case c = caseRepo.findOne(id);
-
-    return "OK";
+    return "redirect:/cases?" + currentStatus;
   }
 
 }

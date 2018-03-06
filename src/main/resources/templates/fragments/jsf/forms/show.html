@@ -1,0 +1,27 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="show">
+<div id="jsfForm"></div>
+<script type="text/javascript" th:inline="javascript">
+var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
+var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
+var formData = JSON.parse([[${jsfItem.jsonData}]]);
+
+var onSubmit = ({formData}) => {
+  axios.get([[${jsfPath}]]).then(function (response) {
+		console.log(response);
+		$('#jsf').html(response.data);
+	})
+	.catch(function (error) {
+		console.log(error);
+	});
+};
+
+ReactDOM.render(
+	React.createElement(ReadOnlyFormComponent), 
+	document.getElementById('jsfForm')
+);
+
+$("#jsfForm :input").not("[type='submit']").attr("disabled", true);
+</script>
+</div>
+</html>

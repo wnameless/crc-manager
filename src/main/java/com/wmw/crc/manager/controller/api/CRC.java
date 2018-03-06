@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2017 Wei-Ming Wu
+ * Copyright 2018 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,21 +15,13 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller;
+package com.wmw.crc.manager.controller.api;
 
-import java.io.IOException;
+import java.util.List;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+public class CRC {
 
-@Controller
-public class IndexController {
-
-  @RequestMapping(path = { "/", "index" })
-  String index(Model model) throws IOException {
-
-    return "redirect:/cases/index";
-  }
+  Protocol protocol;
+  List<Drug> drugs;
 
 }

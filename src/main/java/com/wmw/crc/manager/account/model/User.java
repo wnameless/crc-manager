@@ -27,9 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.Data;
@@ -46,12 +44,13 @@ public class User {
   @Column(nullable = false)
   String username;
 
-  @Email
+  // @Email
   @Column(nullable = false, unique = true)
   String email;
 
-  @Pattern(
-      regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+  // @Pattern(
+  // regexp =
+  // "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
   @Column(nullable = false)
   String password;
 

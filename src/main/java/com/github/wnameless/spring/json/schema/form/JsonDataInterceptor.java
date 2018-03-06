@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2017 Wei-Ming Wu
+ * Copyright 2018 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,21 +15,9 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller;
+package com.github.wnameless.spring.json.schema.form;
 
-import java.io.IOException;
+import java.util.function.BiConsumer;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@Controller
-public class IndexController {
-
-  @RequestMapping(path = { "/", "index" })
-  String index(Model model) throws IOException {
-
-    return "redirect:/cases/index";
-  }
-
-}
+public interface JsonDataInterceptor
+    extends BiConsumer<String, JsonSchemaForm> {}
