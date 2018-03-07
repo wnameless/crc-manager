@@ -50,7 +50,14 @@ import lombok.EqualsAndHashCode;
 public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   public enum Status {
-    NEW, EXEC, END, NONE;
+
+    NEW("新案"), EXEC("執行中"), END("結案"), NONE("無主計編號");
+
+    private String literal;
+
+    private Status(String literal) {
+      this.literal = literal;
+    }
 
     public static Status fromString(String status) {
       switch (status.toUpperCase()) {
@@ -65,6 +72,11 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
         default:
           return NEW;
       }
+    }
+
+    @Override
+    public String toString() {
+      return literal;
     }
 
   }

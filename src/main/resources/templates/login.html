@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header-common" />
+<head>
+<th:block th:include="fragments/header :: header-common" />
+</head>
 <body>
 	<nav th:replace="fragments/navbar :: navbar-logout"></nav>
 

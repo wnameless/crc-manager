@@ -41,6 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests().antMatchers("/webjars/**").permitAll() //
         .antMatchers("/css/**").permitAll() //
+        .antMatchers("/js/**").permitAll() //
+        .antMatchers("/default/**").permitAll() //
+        .antMatchers("/myfavicon.ico").permitAll() //
         .antMatchers("/users/new").anonymous() //
         .antMatchers(HttpMethod.POST, "/users").anonymous() //
         .anyRequest().authenticated().and().formLogin().loginPage("/login")

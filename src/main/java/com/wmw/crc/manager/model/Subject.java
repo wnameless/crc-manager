@@ -40,9 +40,50 @@ import lombok.EqualsAndHashCode;
 public class Subject extends JpaJsonSchemaForm
     implements JsonDataInitailizable {
 
+  public enum Status {
+
+    PRESCREENING("預篩"), SCREENING("篩查"), UNQUALIFIED("失格"), ONGOING("執行"),
+    DROPPED("排除"), FOLLOWUP("追蹤"), CLOSED("結案");
+
+    private String literal;
+
+    private Status(String literal) {
+      this.literal = literal;
+    }
+
+    public static Status fromString(String status) {
+      switch (status.toUpperCase()) {
+        case "PRESCREENING":
+          return PRESCREENING;
+        case "SCREENING":
+          return SCREENING;
+        case "UNQUALIFIED":
+          return UNQUALIFIED;
+        case "ONGOING":
+          return ONGOING;
+        case "DROPPED":
+          return DROPPED;
+        case "FOLLOWUP":
+          return FOLLOWUP;
+        case "CLOSED":
+          return CLOSED;
+        default:
+          return PRESCREENING;
+      }
+    }
+
+    @Override
+    public String toString() {
+      return literal;
+    }
+
+  }
+
   @Id
   @GeneratedValue
   Long id;
+
+  Status status = Status.PRESCREENING;
 
   @JsonInitKey("lastname")
   String name;
@@ -54,9 +95,12 @@ public class Subject extends JpaJsonSchemaForm
     try {
       URL url =
           Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-JSONSchema.json");
-      setJsonSchema(Resources.toString(url, UTF_8));
+      String json = Resources.toString(url, UTF_8);
+      setJsonSchema(json);
+
       url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-UISchema.json");
-      setJsonUiSchema(Resources.toString(url, UTF_8));
+      json = Resources.toString(url, UTF_8);
+      setJsonUiSchema(json);
     } catch (IOException e) {
       e.printStackTrace();
     }

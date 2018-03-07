@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<nav th:fragment="navbar-login" class="navbar navbar-default">
+<nav th:fragment="navbar-login" class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
@@ -16,7 +16,7 @@
 				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/cases/search">案件搜尋與匯出</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="/logout" class="fa fa-sign-out fa-2x"></a></li>
+				<li><a href="/logout" class="fa fa-sign-out fa-1x">登出</a></li>
 			</ul>
 		</div>
 	</div>

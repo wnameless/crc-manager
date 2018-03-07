@@ -38,9 +38,11 @@ import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.CaseSupplement1;
 import com.wmw.crc.manager.model.CaseSupplement2;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.CaseSupplement1Repository;
 import com.wmw.crc.manager.repository.CaseSupplement2Repository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
 import main.java.com.maximeroussy.invitrode.WordLengthException;
@@ -63,6 +65,12 @@ public class DatabaseInitializer {
 
   @Autowired
   CaseSupplement2Repository caseSupp2Repo;
+
+  @Autowired
+  CRCRepository crcRepo;
+
+  @Autowired
+  SubjectRepository subjectRepo;
 
   @PostConstruct
   void init() throws IOException, WordLengthException {
@@ -98,6 +106,7 @@ public class DatabaseInitializer {
     int i = 0;
     while (caseRepo.count() < 10) {
       Case c = new Case();
+      caseRepo.save(c);
 
       switch (i % 4) {
         case 0:
@@ -135,21 +144,25 @@ public class DatabaseInitializer {
       CaseSupplement1 cs1 = new CaseSupplement1();
       url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
       cs1.setJsonData(Resources.toString(url, UTF_8));
+      caseSupp1Repo.save(cs1);
       c.setSupplement1(cs1);
 
       CaseSupplement2 cs2 = new CaseSupplement2();
       url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
       cs2.setJsonData(Resources.toString(url, UTF_8));
+      caseSupp2Repo.save(cs2);
       c.setSupplement2(cs2);
 
       CRC crc = new CRC();
       url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-formData.json");
       crc.setJsonData(Resources.toString(url, UTF_8));
+      crcRepo.save(crc);
       c.setCrc(crc);
 
       Subject subject = new Subject();
       url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-formData.json");
       subject.setJsonData(Resources.toString(url, UTF_8));
+      subjectRepo.save(subject);
       c.getSubjects().add(subject);
 
       caseRepo.save(c);

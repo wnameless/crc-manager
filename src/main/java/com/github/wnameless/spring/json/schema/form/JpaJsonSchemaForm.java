@@ -26,15 +26,24 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Column
   @Lob
-  protected String jsonData;
+  protected String jsonData = "{}";
 
   @Column
   @Lob
-  protected String jsonSchema;
+  protected String jsonSchema = "{}";
 
   @Column
   @Lob
-  protected String jsonUiSchema;
+  protected String jsonUiSchema = "{}";
+
+  public static final String UTF8_BOM = "\uFEFF";
+
+  private static String removeUTF8BOM(String s) {
+    if (s.startsWith(UTF8_BOM)) {
+      s = s.substring(1);
+    }
+    return s;
+  }
 
   @Override
   public String getJsonData() {
@@ -43,7 +52,8 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setJsonData(String jsonData) {
-    this.jsonData = jsonData;
+
+    this.jsonData = removeUTF8BOM(jsonData);
   }
 
   @Override
@@ -53,7 +63,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setJsonSchema(String jsonSchema) {
-    this.jsonSchema = jsonSchema;
+    this.jsonSchema = removeUTF8BOM(jsonSchema);
   }
 
   @Override
@@ -63,7 +73,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setJsonUiSchema(String jsonUiSchema) {
-    this.jsonUiSchema = jsonUiSchema;
+    this.jsonUiSchema = removeUTF8BOM(jsonUiSchema);
   }
 
 }

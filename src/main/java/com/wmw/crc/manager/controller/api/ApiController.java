@@ -17,11 +17,9 @@
  */
 package com.wmw.crc.manager.controller.api;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -32,13 +30,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.CaseSupplement1;
 import com.wmw.crc.manager.model.CaseSupplement2;
+import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.CaseSupplement1Repository;
+import com.wmw.crc.manager.repository.CaseSupplement2Repository;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -48,6 +48,15 @@ public class ApiController {
 
   @Autowired
   CaseRepository caseRepo;
+
+  @Autowired
+  CaseSupplement1Repository caseSupp1Repo;
+
+  @Autowired
+  CaseSupplement2Repository caseSupp2Repo;
+
+  @Autowired
+  CRCRepository crcRepo;
 
   Gson gson = new Gson();
 
@@ -73,23 +82,19 @@ public class ApiController {
   String newCase(@RequestBody Protocol protocol) throws IOException {
     Case c = new Case();
     c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
-    URL url = Resources.getResource("json-schema/新進案件區-part1-JSONSchema.json");
-    c.setJsonSchema(Resources.toString(url, UTF_8));
-    url = Resources.getResource("json-schema/新進案件區-part1-UISchema.json");
-    c.setJsonUiSchema(Resources.toString(url, UTF_8));
 
     com.wmw.crc.manager.model.CRC crc = new com.wmw.crc.manager.model.CRC();
+    crcRepo.save(crc);
     c.setCrc(crc);
 
     CaseSupplement1 cs1 = new CaseSupplement1();
+    caseSupp1Repo.save(cs1);
     c.setSupplement1(cs1);
 
     CaseSupplement2 cs2 = new CaseSupplement2();
-    url = Resources.getResource("json-schema/新進案件區-part3-JSONSchema.json");
-    cs2.setJsonSchema(Resources.toString(url, UTF_8));
-    url = Resources.getResource("json-schema/新進案件區-part3-UISchema.json");
-    cs2.setJsonUiSchema(Resources.toString(url, UTF_8));
+    caseSupp2Repo.save(cs2);
     c.setSupplement2(cs2);
+
     c.getSupplement2().setJsonData(gson.toJson(protocol.getJsonData().get(2)));
     caseRepo.save(c);
 

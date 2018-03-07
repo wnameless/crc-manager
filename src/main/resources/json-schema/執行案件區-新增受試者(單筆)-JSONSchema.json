@@ -1,87 +1,87 @@
-﻿{
-  "title": "受試者專區 - 新增受試者(單筆)",
-  "type": "object",
-  "properties": {
-    "search": {
-      "type": "string",
-      "title": "請輸入受試者的身分證字號"
-    },
-    "taiwanId": {
-      "type": "string",
-      "title": "身分證字號"
-    },
-    "mrn": {
-      "type": "string",
-      "title": "病歷號1(醫院病歷號)"
-    },
-    "subjectId": {
-      "type": "string",
-      "title": "病歷號2(試驗病歷號)"
-    },
-    "lastname": {
-      "type": "string",
-      "title": "姓名"
-    },
-    "gender": {
-      "type": "string",
-      "title": "性別",
-      "enum": [
-        "男",
-        "女"
-      ]
-    },
-    "birthDate": {
-      "type": "string",
-      "format": "date",
-      "title": "生日"
-    },
-    "telephone1": {
-      "type": "string",
-      "title": "電話1",
-      "minLength": 8
-    },
-    "telephone2": {
-      "type": "string",
-      "title": "電話2",
-      "minLength": 8
-    },
-    "address": {
-      "type": "string",
-      "title": "地址"
-    },
-    "note": {
-      "type": "string",
-      "title": "備註"
-    },
-    "accrualDate": {
-      "type": "string",
-      "format": "date",
-      "title": "受試者納入日期"
-    },
-    "examDate": {
-      "type": "string",
-      "format": "date",
-      "title": "受試者體檢日期"
-    },
-    "icfDate": {
-      "type": "string",
-      "format": "date",
-      "title": "受試者填寫同意書日期"
-    },
-    "completeDate": {
-      "type": "string",
-      "title": "受試者完成日期",
-      "default": "N/A"
-    },
-    "dropoutDate": {
-      "type": "string",
-      "title": "受試者退出日期",
-      "default": "N/A"
-    },
-    "dropoutReason": {
-      "type": "string",
-      "title": "受試者退出原因",
-      "default": "N/A"
-    }
-  }
+{
+	"title": "受試者專區 - 新增受試者(單筆)",
+	"type": "object",
+	"properties": {
+		"search": {
+			"type": "string",
+			"title": "請輸入受試者的身分證字號"
+		},
+		"taiwanId": {
+			"type": "string",
+			"title": "身分證字號"
+		},
+		"mrn": {
+			"type": "string",
+			"title": "病歷號1(醫院病歷號)"
+		},
+		"subjectId": {
+			"type": "string",
+			"title": "病歷號2(試驗病歷號)"
+		},
+		"lastname": {
+			"type": "string",
+			"title": "姓名"
+		},
+		"gender": {
+			"type": "string",
+			"title": "性別",
+			"enum": [
+				"男",
+				"女"
+			]
+		},
+		"birthDate": {
+			"type": "string",
+			"format": "date",
+			"title": "生日"
+		},
+		"telephone1": {
+			"type": "string",
+			"title": "電話1",
+			"minLength": 8
+		},
+		"telephone2": {
+			"type": "string",
+			"title": "電話2",
+			"minLength": 8
+		},
+		"address": {
+			"type": "string",
+			"title": "地址"
+		},
+		"note": {
+			"type": "string",
+			"title": "備註"
+		},
+		"accrualDate": {
+			"type": "string",
+			"format": "date",
+			"title": "受試者納入日期"
+		},
+		"examDate": {
+			"type": "string",
+			"format": "date",
+			"title": "受試者體檢日期"
+		},
+		"icfDate": {
+			"type": "string",
+			"format": "date",
+			"title": "受試者填寫同意書日期"
+		},
+		"completeDate": {
+			"type": "string",
+			"title": "受試者完成日期",
+			"default": "N/A"
+		},
+		"dropoutDate": {
+			"type": "string",
+			"title": "受試者退出日期",
+			"default": "N/A"
+		},
+		"dropoutReason": {
+			"type": "string",
+			"title": "受試者退出原因",
+			"default": "N/A"
+		}
+	}
 }

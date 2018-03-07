@@ -5,6 +5,7 @@
 			<tr>
 				<th>案件狀態</th>
 				<th>年度</th>
+				<th></th>
 				<th>IRB/REC案件編號</th>
 				<th class="text-center">CRC</th>
 				<th class="text-center">受試者</th>
@@ -23,24 +24,37 @@
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li><a th:href="@{'/cases/' + ${case.id} + '/status/new'}" data-value="new">新案</a></li>
 							<li><a th:href="@{'/cases/' + ${case.id} + '/status/exec'}" data-value="exec">執行中</a></li>
-							<li><a th:href="@{'/cases/' + ${case.id} + '/status/end'}" data-value="send">結案</a></li>
+							<li><a th:href="@{'/cases/' + ${case.id} + '/status/end'}" data-value="end">結案</a></li>
 							<li class="divider"></li>
 							<li><a th:href="@{'/cases/' + ${case.id} + '/status/none'}" data-value="none">無主計編號</a></li>
 						</ul>
 					</div>
 				</td>
 				<td th:text="${case.year}"></td>
-				<td th:inline="text"><a th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
-						<span><i class="fa fa-eye"></i></span>
-					</a> <a th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
+				<td>
+					<a th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
+						<span><i class="fa fa-search"></i></span>
+					</a>
+					|
+					<a th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
 						<span><i class="fa fa-pencil"></i></span>
-					</a>[[${case.caseNumber}]]</td>
-				<td class="text-center"><a th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
-						<span><i class="fa fa-eye"></i></span>
-					</a> <a th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
+					</a>
+				</td>
+				<td th:inline="text">[[${case.caseNumber}]]</td>
+				<td class="text-center">
+					<a th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
+						<span><i class="fa fa-search"></i></span>
+					</a>
+					|
+					<a th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
 						<span><i class="fa fa-pencil"></i></span>
-					</a></td>
-					<td class="text-center"><span><i class="fa fa-user-plus"></i></span></td>
+					</a>
+				</td>
+				<td class="text-center">
+					<a th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
+						<span><i class="fa fa-user-plus" style="color:purple"></i></span>
+					</a>
+				</td>
 				<td th:text="${case.trialName}"></td>
 				<td th:text="${case.piName}"></td>
 			</tr>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<th:block th:include="fragments/header :: header-common"></th:block>
+</head>
+<body>
+	<nav th:replace="fragments/navbar :: navbar-login"></nav>
+
+	<div class="container">
+		<h3 th:inline="text">
+			<span class="glyphicon glyphicon-list-alt"></span> [[${case.trialName}]]
+		</h3>
+		<hr>
+		<div id="jsf">
+			<div th:replace="subjects/list :: list"></div>
+		</div>
+	</div>
+</body>
+</html>
