@@ -151,7 +151,7 @@ public class CaseController {
     c.setStatus(Case.Status.fromString(status));
     caseRepo.save(c);
 
-    return "redirect:/cases?" + currentStatus;
+    return "redirect:/cases/index?" + currentStatus;
   }
 
 }

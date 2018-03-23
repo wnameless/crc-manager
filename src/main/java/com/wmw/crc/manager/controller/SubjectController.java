@@ -88,6 +88,21 @@ public class SubjectController {
     return "subjects/list :: list";
   }
 
+  @RequestMapping(path = "/cases/{caseId}/subjects/{id}", method = POST)
+  String update(Model model, @PathVariable("caseId") Long caseId,
+      @PathVariable("id") Long id, @RequestBody String formData) {
+    Subject subject = subjectRepo.findOne(id);
+    subject.setJsonData(formData);
+    subjectRepo.save(subject);
+
+    Case c = caseRepo.findOne(caseId);
+    List<Subject> subjects = c.getSubjects();
+
+    model.addAttribute("jsfPath", "/cases/{caseId}/subjects");
+    model.addAttribute("jsfItems", subjects);
+    return "subjects/list :: list";
+  }
+
   @RequestMapping(path = "/cases/{caseId}/subjects/{id}", method = GET)
   String show(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
@@ -108,19 +123,15 @@ public class SubjectController {
     return "subjects/edit :: edit";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/{id}", method = POST)
-  String update(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id, @RequestBody String formData) {
+  @RequestMapping(path = "/cases/{caseId}/subjects/{id}/status/{status}",
+      method = GET)
+  String alterStatus(@PathVariable("caseId") Long caseId,
+      @PathVariable("id") Long id, @PathVariable("status") String status) {
     Subject subject = subjectRepo.findOne(id);
-    subject.setJsonData(formData);
+    subject.setStatus(Subject.Status.fromString(status));
     subjectRepo.save(subject);
 
-    Case c = caseRepo.findOne(caseId);
-    List<Subject> subjects = c.getSubjects();
-
-    model.addAttribute("jsfPath", "/cases/{caseId}/subjects");
-    model.addAttribute("jsfItems", subjects);
-    return "subjects/list :: list";
+    return "redirect:/cases/" + caseId + "/subjects/index";
   }
 
 }

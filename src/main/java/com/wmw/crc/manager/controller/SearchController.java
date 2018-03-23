@@ -21,11 +21,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.wmw.crc.manager.model.Case;
+
 @Controller
 public class SearchController {
 
   @GetMapping("/search/index")
   String index(Model model) {
+
+    model.addAttribute("propertyTitles", new Case().propertyTitles());
     return "search";
   }
 

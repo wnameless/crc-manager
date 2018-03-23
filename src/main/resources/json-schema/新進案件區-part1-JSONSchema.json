@@ -104,22 +104,22 @@
     },
     "sponsorName": {
       "type": "string",
-      "title": "10. 試驗委託藥廠/贊助研究單位(名稱及地址)",
+      "title": "10. 試驗委託藥廠/贊助研究單位名稱",
       "description": "名稱"
     },
     "sponsorAddress": {
       "type": "string",
-      "title": " ",
+      "title": "11. 試驗委託藥廠/贊助研究單位地址",
       "description": "地址"
     },
     "croName": {
       "type": "string",
-      "title": "11. 試驗委託CRO公司(名稱及地址)",
+      "title": "11. 試驗委託CRO公司名稱",
       "description": "名稱"
     },
     "croAddress": {
       "type": "string",
-      "title": " ",
+      "title": "12. 試驗委託CRO公司地址",
       "description": "地址"
     },
     "insuranceFlg": {
@@ -132,12 +132,10 @@
     },
     "insuranceInst": {
       "type": "string",
-      "title": " ",
       "description": "承保公司"
     },
     "insuranceAmount": {
       "type": "string",
-      "title": " ",
       "description": "保險金額"
     },
     "nihFlg": {
@@ -150,7 +148,6 @@
     },
     "nihReason": {
       "type": "string",
-      "title": " ",
       "description": "原因"
     },
     "contractFlg": {

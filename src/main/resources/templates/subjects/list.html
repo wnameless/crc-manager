@@ -13,19 +13,19 @@
 			<tr th:each="subject : ${jsfItems}">
 				<td>
 					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-						th:text="${'預篩'}">
+						th:text="${subject.status}">
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/prescreening'}" data-value="prescreening">預篩</a></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/screening'}" data-value="screening">篩查</a></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/unqualified'}" data-value="unqualified">失格</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/prescreening'}" data-value="prescreening">預篩</a></li>
+						<li><a th:href="@{${jsfPath}+ '/' + ${subject.id} + '/status/screening'}" data-value="screening">篩查</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/unqualified'}" data-value="unqualified">失格</a></li>
 						<li class="divider"></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/ongoing'}" data-value="ongoing">執行</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/ongoing'}" data-value="ongoing">執行</a></li>
 						<li class="divider"></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/dropped'}" data-value="dropped">排除</a></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/followup'}" data-value="followup">追蹤</a></li>
-						<li><a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/status/closed'}" data-value="closed">結案</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/dropped'}" data-value="dropped">排除</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/followup'}" data-value="followup">追蹤</a></li>
+						<li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/closed'}" data-value="closed">結案</a></li>
 					</ul>
 				</td>
 				<td th:text="${subject.name}"></td>
