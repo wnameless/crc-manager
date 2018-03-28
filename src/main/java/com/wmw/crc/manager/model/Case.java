@@ -139,9 +139,6 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
 
-  @OneToOne
-  PermissionGroup permissionGroup;
-
   public Case() {
     try {
       URL url =

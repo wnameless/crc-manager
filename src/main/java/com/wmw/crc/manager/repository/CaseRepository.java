@@ -23,17 +23,12 @@ import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.wmw.crc.manager.account.model.User;
 import com.wmw.crc.manager.model.Case;
 
 @Repository
 public interface CaseRepository extends JpaRepository<Case, Long> {
 
   List<Case> findByStatus(Case.Status status);
-
-  default List<Case> findByUser(User user) {
-    return findAll();
-  }
 
   Case findByCaseNumber(String caseNumber);
 

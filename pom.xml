@@ -47,6 +47,18 @@
 			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
 		</dependency>
 
+		<!-- Keycloak -->
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-spring-boot-starter</artifactId>
+			<version>3.4.3.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>3.4.3.Final</version>
+		</dependency>
+
 		<!-- Dev -->
 		<dependency>
 			<groupId>com.github.maximeroussy</groupId>

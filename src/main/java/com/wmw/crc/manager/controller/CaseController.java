@@ -35,15 +35,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wmw.crc.manager.account.repository.UserRepository;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.repository.CaseRepository;
 
 @Controller
 public class CaseController {
-
-  @Autowired
-  UserRepository userRepo;
 
   @Autowired
   CaseRepository caseRepo;

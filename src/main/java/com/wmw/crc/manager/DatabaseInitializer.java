@@ -18,7 +18,6 @@
 package com.wmw.crc.manager;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.collect.Sets.newHashSet;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,10 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.io.Resources;
-import com.wmw.crc.manager.account.model.Role;
-import com.wmw.crc.manager.account.model.User;
-import com.wmw.crc.manager.account.repository.RoleRepository;
-import com.wmw.crc.manager.account.repository.UserRepository;
 import com.wmw.crc.manager.model.CRC;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.CaseSupplement1;
@@ -52,12 +47,6 @@ import net.sf.rubycollect4j.Ruby;
 public class DatabaseInitializer {
 
   @Autowired
-  UserRepository userRepo;
-
-  @Autowired
-  RoleRepository roleRepo;
-
-  @Autowired
   CaseRepository caseRepo;
 
   @Autowired
@@ -74,35 +63,6 @@ public class DatabaseInitializer {
 
   @PostConstruct
   void init() throws IOException, WordLengthException {
-    if (roleRepo.count() == 0) {
-      roleRepo.save(
-          Ruby.Array.of("ROLE_SUPER", "ROLE_ADMIN", "ROLE_USER").map(name -> {
-            Role role = new Role();
-            role.setName(name);
-            return role;
-          }));
-    }
-
-    User user = userRepo.findByUsername("super");
-    if (user == null) {
-      user = new User();
-      user.setUsername("super");
-      user.setEmail("super@crcmanager.com");
-      user.setPassword("1qaz@WSX");
-      user.setRoles(newHashSet(roleRepo.findByName("ROLE_SUPER")));
-      userRepo.save(user);
-    }
-
-    user = userRepo.findByUsername("api_key");
-    if (user == null) {
-      user = new User();
-      user.setUsername("api_key");
-      user.setEmail("api_key");
-      user.setPassword("22711e4e");
-      user.setRoles(newHashSet(roleRepo.findByName("ROLE_USER")));
-      userRepo.save(user);
-    }
-
     int i = 0;
     while (caseRepo.count() < 10) {
       Case c = new Case();
