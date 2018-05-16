@@ -33,12 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.CaseSupplement1;
-import com.wmw.crc.manager.model.CaseSupplement2;
 import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
-import com.wmw.crc.manager.repository.CaseSupplement1Repository;
-import com.wmw.crc.manager.repository.CaseSupplement2Repository;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -48,12 +44,6 @@ public class ApiController {
 
   @Autowired
   CaseRepository caseRepo;
-
-  @Autowired
-  CaseSupplement1Repository caseSupp1Repo;
-
-  @Autowired
-  CaseSupplement2Repository caseSupp2Repo;
 
   @Autowired
   CRCRepository crcRepo;
@@ -68,12 +58,8 @@ public class ApiController {
 
       Map<String, Object> m1 = gson.fromJson(c.getJsonData(),
           new TypeToken<Map<String, Object>>() {}.getType());
-      Map<String, Object> m2 = gson.fromJson(c.getSupplement1().getJsonData(),
-          new TypeToken<Map<String, Object>>() {}.getType());
-      Map<String, Object> m3 = gson.fromJson(c.getSupplement2().getJsonData(),
-          new TypeToken<Map<String, Object>>() {}.getType());
 
-      proc.setJsonData(newArrayList(m1, m2, m3));
+      proc.setJsonData(newArrayList(m1));
       return proc;
     }));
   }
@@ -87,15 +73,6 @@ public class ApiController {
     crcRepo.save(crc);
     c.setCrc(crc);
 
-    CaseSupplement1 cs1 = new CaseSupplement1();
-    caseSupp1Repo.save(cs1);
-    c.setSupplement1(cs1);
-
-    CaseSupplement2 cs2 = new CaseSupplement2();
-    caseSupp2Repo.save(cs2);
-    c.setSupplement2(cs2);
-
-    c.getSupplement2().setJsonData(gson.toJson(protocol.getJsonData().get(2)));
     caseRepo.save(c);
 
     return "New ok";
@@ -108,8 +85,6 @@ public class ApiController {
 
     Case c = caseRepo.findByCaseNumber(protocolNumber);
     c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
-    c.getSupplement1().setJsonData(gson.toJson(protocol.getJsonData().get(1)));
-    c.getSupplement2().setJsonData(gson.toJson(protocol.getJsonData().get(2)));
     caseRepo.save(c);
 
     return "Update ok";

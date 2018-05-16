@@ -40,6 +40,7 @@ import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.json.JsonInitKey;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
+import com.wmw.crc.manager.JsonSchemaPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -126,12 +127,6 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   Status status = Status.NEW;
 
   @OneToOne
-  CaseSupplement1 supplement1;
-
-  @OneToOne
-  CaseSupplement2 supplement2;
-
-  @OneToOne
   CRC crc;
 
   @OneToMany(cascade = CascadeType.ALL)
@@ -141,10 +136,9 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   public Case() {
     try {
-      URL url =
-          Resources.getResource("json-schema/新進案件區-part1-JSONSchema.json");
+      URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
       setJsonSchema(Resources.toString(url, UTF_8));
-      url = Resources.getResource("json-schema/新進案件區-part1-UISchema.json");
+      url = Resources.getResource(JsonSchemaPath.applicationUISchema);
       setJsonUiSchema(Resources.toString(url, UTF_8));
     } catch (IOException e) {
       e.printStackTrace();

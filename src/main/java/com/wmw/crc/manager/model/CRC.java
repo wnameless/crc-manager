@@ -29,6 +29,7 @@ import javax.persistence.Id;
 import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
+import com.wmw.crc.manager.JsonSchemaPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,10 +48,9 @@ public class CRC extends JpaJsonSchemaForm implements JsonDataInitailizable {
   public CRC() {
 
     try {
-      URL url =
-          Resources.getResource("json-schema/執行案件區-禁忌用藥專區-JSONSchema.json");
+      URL url = Resources.getResource(JsonSchemaPath.crcSchema);
       setJsonSchema(Resources.toString(url, UTF_8));
-      url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-UISchema.json");
+      url = Resources.getResource(JsonSchemaPath.crcUISchema);
       setJsonUiSchema(Resources.toString(url, UTF_8));
     } catch (IOException e) {
       e.printStackTrace();

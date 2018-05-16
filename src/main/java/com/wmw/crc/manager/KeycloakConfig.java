@@ -106,7 +106,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/js/**").permitAll() //
         .antMatchers("/default/**").permitAll() //
         .antMatchers("/myfavicon.ico").permitAll() //
-        .antMatchers("/users/new").anonymous() //
+        // .antMatchers("/users/new").anonymous()
         // .antMatchers(HttpMethod.POST, "/users").anonymous() //
         .anyRequest().authenticated().and()// .formLogin().loginPage("/login")
         // .permitAll().and()

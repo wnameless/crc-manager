@@ -30,13 +30,9 @@ import org.springframework.stereotype.Component;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.model.CRC;
 import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.CaseSupplement1;
-import com.wmw.crc.manager.model.CaseSupplement2;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
-import com.wmw.crc.manager.repository.CaseSupplement1Repository;
-import com.wmw.crc.manager.repository.CaseSupplement2Repository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
@@ -48,12 +44,6 @@ public class DatabaseInitializer {
 
   @Autowired
   CaseRepository caseRepo;
-
-  @Autowired
-  CaseSupplement1Repository caseSupp1Repo;
-
-  @Autowired
-  CaseSupplement2Repository caseSupp2Repo;
 
   @Autowired
   CRCRepository crcRepo;
@@ -98,29 +88,17 @@ public class DatabaseInitializer {
       c.setExpectedNumberOfSubjectsGlobal(10000);
       c.setExpectedStartDate(Ruby.Date.today());
       c.setExpectedEndDate(Ruby.Date.today().add(300).days());
-      URL url = Resources.getResource("json-schema/新進案件區-part1-formData.json");
+      URL url = Resources.getResource(JsonSchemaPath.applicationData);
       c.setJsonData(Resources.toString(url, UTF_8));
 
-      CaseSupplement1 cs1 = new CaseSupplement1();
-      url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
-      cs1.setJsonData(Resources.toString(url, UTF_8));
-      caseSupp1Repo.save(cs1);
-      c.setSupplement1(cs1);
-
-      CaseSupplement2 cs2 = new CaseSupplement2();
-      url = Resources.getResource("json-schema/新進案件區-part3-formData.json");
-      cs2.setJsonData(Resources.toString(url, UTF_8));
-      caseSupp2Repo.save(cs2);
-      c.setSupplement2(cs2);
-
       CRC crc = new CRC();
-      url = Resources.getResource("json-schema/執行案件區-禁忌用藥專區-formData.json");
+      url = Resources.getResource(JsonSchemaPath.crcData);
       crc.setJsonData(Resources.toString(url, UTF_8));
       crcRepo.save(crc);
       c.setCrc(crc);
 
       Subject subject = new Subject();
-      url = Resources.getResource("json-schema/執行案件區-新增受試者(單筆)-formData.json");
+      url = Resources.getResource(JsonSchemaPath.subjectData);
       subject.setJsonData(Resources.toString(url, UTF_8));
       subjectRepo.save(subject);
       c.getSubjects().add(subject);

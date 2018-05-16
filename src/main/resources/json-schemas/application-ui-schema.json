@@ -1,0 +1,18 @@
+{
+  "locations": {
+    "ui:widget": "checkboxes"
+  },
+  "funds": {
+    "ui:widget": "checkboxes"
+  },
+  "preview": {
+    "piAccountFlg": {
+      "ui:widget": "radio"
+    },
+    "telephone": {
+      "ui:options": {
+        "inputType": "tel"
+      }
+    }
+  }
+}
