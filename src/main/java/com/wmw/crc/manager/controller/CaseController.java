@@ -44,54 +44,10 @@ public class CaseController {
   @Autowired
   CaseRepository caseRepo;
 
-  private List<Case> getCasesBySession(HttpSession session,
-      Map<String, String> allRequestParams) {
-    List<Case> cases;
-
-    if (allRequestParams.containsKey("new")) {
-      session.setAttribute("CASES_STATUS", "new");
-      cases = caseRepo.findByStatus(Case.Status.NEW);
-    } else if (allRequestParams.containsKey("exec")) {
-      cases = caseRepo.findByStatus(Case.Status.EXEC);
-      session.setAttribute("CASES_STATUS", "exec");
-    } else if (allRequestParams.containsKey("end")) {
-      cases = caseRepo.findByStatus(Case.Status.END);
-      session.setAttribute("CASES_STATUS", "end");
-    } else if (allRequestParams.containsKey("none")) {
-      cases = caseRepo.findByStatus(Case.Status.NONE);
-      session.setAttribute("CASES_STATUS", "none");
-    } else {
-      if (session.getAttribute("CASES_STATUS") == null) {
-        session.setAttribute("CASES_STATUS", "exec");
-      }
-      switch ((String) session.getAttribute("CASES_STATUS")) {
-        case "new":
-          cases = caseRepo.findByStatus(Case.Status.NEW);
-          break;
-        case "exec":
-          cases = caseRepo.findByStatus(Case.Status.EXEC);
-          break;
-        case "end":
-          cases = caseRepo.findByStatus(Case.Status.END);
-          break;
-        case "none":
-          cases = caseRepo.findByStatus(Case.Status.NONE);
-          break;
-        default:
-          cases = caseRepo.findByStatus(Case.Status.EXEC);
-      }
-    }
-
-    return cases;
-  }
-
   @RequestMapping(path = "/cases/index", method = GET)
   String index(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
-    // User user = userRepo.findByEmail(auth.getName());
-    // List<Case> cases = caseRepo.findByUser(user);
-
-    List<Case> cases = getCasesBySession(session, allRequestParams);
+    List<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -101,7 +57,7 @@ public class CaseController {
   @RequestMapping(path = "/cases", method = GET)
   String list(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
-    List<Case> cases = getCasesBySession(session, allRequestParams);
+    List<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -127,13 +83,13 @@ public class CaseController {
   }
 
   @RequestMapping(path = "/cases/{id}", method = POST)
-  String save(HttpSession session, Model model, @PathVariable("id") Long id,
-      @RequestBody String formData) {
+  String save(HttpSession session, Authentication auth, Model model,
+      @PathVariable("id") Long id, @RequestBody String formData) {
     Case c = caseRepo.findOne(id);
     c.setJsonData(formData);
     caseRepo.save(c);
 
-    List<Case> cases = getCasesBySession(session, newHashMap());
+    List<Case> cases = getCasesBySession(auth, session, newHashMap());
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "cases/list :: list";
@@ -148,6 +104,47 @@ public class CaseController {
     caseRepo.save(c);
 
     return "redirect:/cases/index?" + currentStatus;
+  }
+
+  private List<Case> getCasesBySession(Authentication auth, HttpSession session,
+      Map<String, String> allRequestParams) {
+    List<Case> cases;
+
+    if (allRequestParams.containsKey("new")) {
+      session.setAttribute("CASES_STATUS", "new");
+      cases = caseRepo.findByUserAndStatus(auth, Case.Status.NEW);
+    } else if (allRequestParams.containsKey("exec")) {
+      cases = caseRepo.findByUserAndStatus(auth, Case.Status.EXEC);
+      session.setAttribute("CASES_STATUS", "exec");
+    } else if (allRequestParams.containsKey("end")) {
+      cases = caseRepo.findByUserAndStatus(auth, Case.Status.END);
+      session.setAttribute("CASES_STATUS", "end");
+    } else if (allRequestParams.containsKey("none")) {
+      cases = caseRepo.findByUserAndStatus(auth, Case.Status.NONE);
+      session.setAttribute("CASES_STATUS", "none");
+    } else {
+      if (session.getAttribute("CASES_STATUS") == null) {
+        session.setAttribute("CASES_STATUS", "exec");
+      }
+      switch ((String) session.getAttribute("CASES_STATUS")) {
+        case "new":
+          cases = caseRepo.findByUserAndStatus(auth, Case.Status.NEW);
+          break;
+        case "exec":
+          cases = caseRepo.findByUserAndStatus(auth, Case.Status.EXEC);
+          break;
+        case "end":
+          cases = caseRepo.findByUserAndStatus(auth, Case.Status.END);
+          break;
+        case "none":
+          cases = caseRepo.findByUserAndStatus(auth, Case.Status.NONE);
+          break;
+        default:
+          cases = caseRepo.findByUserAndStatus(auth, Case.Status.EXEC);
+      }
+    }
+
+    return cases;
   }
 
 }

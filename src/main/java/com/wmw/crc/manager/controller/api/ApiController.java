@@ -35,6 +35,7 @@ import com.google.gson.reflect.TypeToken;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.service.KeycloakService;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -47,6 +48,9 @@ public class ApiController {
 
   @Autowired
   CRCRepository crcRepo;
+
+  @Autowired
+  KeycloakService keycloak;
 
   Gson gson = new Gson();
 
@@ -78,16 +82,21 @@ public class ApiController {
     return "New ok";
   }
 
-  @RequestMapping(path = "/protocols/{protocolNumber}",
-      method = RequestMethod.POST)
+  @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
   String updateCase(@RequestBody Protocol protocol,
-      @PathVariable("protocolNumber") String protocolNumber) {
+      @PathVariable("irbNumber") String irbNumber) {
 
-    Case c = caseRepo.findByCaseNumber(protocolNumber);
+    Case c = caseRepo.findByIrbNumber(irbNumber);
     c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
     caseRepo.save(c);
 
     return "Update ok";
+  }
+
+  @RequestMapping(path = "/users", method = RequestMethod.POST)
+  String createUser(@RequestBody KeycloakUser user) {
+
+    return "User created";
   }
 
 }

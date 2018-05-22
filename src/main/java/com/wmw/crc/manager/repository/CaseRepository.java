@@ -17,10 +17,14 @@
  */
 package com.wmw.crc.manager.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.wmw.crc.manager.model.Case;
@@ -28,9 +32,26 @@ import com.wmw.crc.manager.model.Case;
 @Repository
 public interface CaseRepository extends JpaRepository<Case, Long> {
 
+  default List<Case> findByUserAndStatus(Authentication auth,
+      Case.Status status) {
+    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
+      return findByStatus(status);
+    }
+
+    String username = auth.getName();
+    return findByStatusAndOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+        status, username, username, username, username);
+  }
+
+  List<Case> findByStatusAndOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+      Case.Status status, String username1, String username2, String username3,
+      String username4);
+
   List<Case> findByStatus(Case.Status status);
 
-  Case findByCaseNumber(String caseNumber);
+  Case findByIrbNumber(String irbNumber);
 
   default List<Case> findAllUndoneCrc() {
     return findAll().stream()

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<th:block th:include="fragments/header :: header-common"></th:block>
+</head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar-login"></nav>
+
+    <div class="container">
+        <div style="height: 300px;" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#managers">管理者</a></li>
+                <li><a data-toggle="tab" href="#editors">編輯者</a></li>
+                <li><a data-toggle="tab" href="#viewers">閱覽者</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="managers" class="tab-pane fade in active">
+                    <ul th:replace="cases/permission/manager-list :: manager-list" id="managerList" class="list-group"></ul>
+                </div>
+                <div id="editors" class="tab-pane fade">
+                    <ul th:replace="cases/permission/editor-list :: editor-list" id="editorList" class="list-group"></ul>
+                </div>
+                <div id="viewers" class="tab-pane fade">
+                    <ul th:replace="cases/permission/viewer-list :: viewer-list" id="viewerList" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+            <table id="userTable" class="display">
+                <thead>
+                    <tr>
+                        <th>使用者名稱</th>
+                        <th>Email</th>
+                        <th>姓</th>
+                        <th>名</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td>
+                            <a class="usernameSelect" href="#" th:text="${user.username}"></a>
+                        </td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.firstName}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+          $(document).ready(function() {
+            $(".usernameSelect").click(function() {
+              $("#manager").text(this.text);
+              $("#manager").val(this.text);
+              $("#editor").text(this.text);
+              $("#editor").val(this.text);
+              $("#viewer").text(this.text);
+              $("#viewer").val(this.text);
+              return false;
+            });
+
+            $('#userTable').DataTable({
+              "language": {
+                "url": "/i18n/datatables-zh-TW.json"
+              }
+            });
+          });
+        </script>
+</body>
+</html>

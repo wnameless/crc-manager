@@ -19,13 +19,17 @@ package com.wmw.crc.manager.model;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -89,6 +93,9 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @JsonInitKey("startYear")
   int year;
 
+  @JsonInitKey("irbNum")
+  String irbNumber;
+
   @JsonInitKey("protocolNum")
   String caseNumber;
 
@@ -133,6 +140,21 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
+
+  // Permission
+  String owner;
+  @ElementCollection
+  @CollectionTable(name = "case_managers",
+      joinColumns = @JoinColumn(name = "case_id"))
+  Set<String> managers = newLinkedHashSet();
+  @ElementCollection
+  @CollectionTable(name = "case_editors",
+      joinColumns = @JoinColumn(name = "case_id"))
+  Set<String> editors = newLinkedHashSet();
+  @ElementCollection
+  @CollectionTable(name = "case_viewers",
+      joinColumns = @JoinColumn(name = "case_id"))
+  Set<String> viewers = newLinkedHashSet();
 
   public Case() {
     try {
