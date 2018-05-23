@@ -4,10 +4,11 @@
         <thead>
             <tr>
                 <th>動作</th>
-                <th>年度</th>
                 <th>IRB/REC案件編號</th>
                 <th>試驗中文名稱</th>
                 <th>計畫主持人姓名</th>
+                <th>預計開始時間</th>
+                <th>預計結束時間</th>
             </tr>
         </thead>
         <tbody>
@@ -17,10 +18,11 @@
                         匯出<span class="fa fa-download"></span>
                     </a>
                 </td>
-                <td th:text="${case.year}"></td>
                 <td th:inline="text">[[${case.irbNumber}]]</td>
                 <td th:text="${case.trialName}"></td>
                 <td th:text="${case.piName}"></td>
+                <td th:text="${case.expectedStartDate}"></td>
+                <td th:text="${case.expectedEndDate}"></td>
             </tr>
         </tbody>
     </table>

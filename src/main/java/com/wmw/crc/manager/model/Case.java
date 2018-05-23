@@ -23,7 +23,6 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -124,11 +123,11 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   int expectedNumberOfSubjectsGlobal;
 
-  Date expectedStartDate;
+  @JsonInitKey("proposedStartDate")
+  String expectedStartDate;
 
-  Date expectedEndDate;
-
-  boolean formDone;
+  @JsonInitKey("proposedEndDate")
+  String expectedEndDate;
 
   @Enumerated(EnumType.STRING)
   Status status = Status.NEW;

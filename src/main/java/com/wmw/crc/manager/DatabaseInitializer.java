@@ -37,7 +37,6 @@ import com.wmw.crc.manager.repository.SubjectRepository;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
 import main.java.com.maximeroussy.invitrode.WordLengthException;
-import net.sf.rubycollect4j.Ruby;
 
 @Component
 public class DatabaseInitializer {
@@ -86,8 +85,8 @@ public class DatabaseInitializer {
       c.setExpectedNumberOfSubjectsLocal(100);
       c.setExpectedNumberOfSubjectsNational(1000);
       c.setExpectedNumberOfSubjectsGlobal(10000);
-      c.setExpectedStartDate(Ruby.Date.today());
-      c.setExpectedEndDate(Ruby.Date.today().add(300).days());
+      c.setExpectedStartDate("2017/11/12");
+      c.setExpectedEndDate("2018/7/8");
       URL url = Resources.getResource(JsonSchemaPath.applicationData);
       c.setJsonData(Resources.toString(url, UTF_8));
 
