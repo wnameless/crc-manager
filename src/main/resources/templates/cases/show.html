@@ -1,26 +1,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="show">
-	<div id="jsfForm"></div>
-	<script type="text/javascript" th:inline="javascript">
-      var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
-      var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
-      var formData = JSON.parse([[${jsfItem.jsonData}]]);
+    <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <div id="jsfForm"></div>
+    </div>
 
-      var onSubmit = ({formData}) => {
-        axios.get([[${jsfPath}]]).then(function (response) {
-      		$('#jsf').html(response.data);
-      	})
-      	.catch(function (error) {
-      		console.log(error);
-      	});
-      };
+    <script type="text/javascript" th:inline="javascript">
+    var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
+    var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
+    var formData = JSON.parse([[${jsfItem.jsonData}]]);
 
-      ReactDOM.render(
-      	React.createElement(ReadOnlyFormComponent), 
-      	document.getElementById('jsfForm')
-      );
+    var onSubmit = ({formData}) => {
+      axios.get([[${jsfPath}]]).then(function (response) {
+          $('#jsf').html(response.data);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    };
 
-      $('#jsfForm :input').not('[type="submit"]').attr('disabled', true);
-  </script>
+    ReactDOM.render(
+      React.createElement(ReadOnlyFormComponent), 
+      document.getElementById('jsfForm')
+    );
+
+    $('#jsfForm :input').not('[type="submit"]').attr('disabled', true);
+    </script>
 </div>
 </html>

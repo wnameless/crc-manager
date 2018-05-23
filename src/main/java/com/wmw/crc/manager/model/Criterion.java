@@ -15,22 +15,15 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller;
+package com.wmw.crc.manager.model;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import lombok.Data;
 
-@Controller
-public class LoginController {
+@Data
+public class Criterion {
 
-  @RequestMapping(path = "login", method = RequestMethod.GET)
-  String login(Authentication auth) {
-    if (auth != null && auth.isAuthenticated()) {
-      return "redirect:/index";
-    }
-    return "login";
-  }
+  private String key;
+
+  private Object value;
 
 }

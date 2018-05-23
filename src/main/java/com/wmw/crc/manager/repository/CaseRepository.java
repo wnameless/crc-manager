@@ -17,9 +17,9 @@
  */
 package com.wmw.crc.manager.repository;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.Authentication;
@@ -27,10 +27,86 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.Criterion;
+
+import net.sf.rubycollect4j.Ruby;
+import net.sf.rubycollect4j.RubyArray;
 
 @Repository
 public interface CaseRepository extends JpaRepository<Case, Long> {
+
+  default List<Case> findByUserAndCriteria(Authentication auth,
+      List<Criterion> criteria) {
+    List<Case> cases = findByUser(auth);
+
+    ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
+    Ruby.Array.of(cases).keepIf(kase -> {
+      JsonValue data = Json.parse(kase.getJsonData());
+      return isCriteriaMatch(data, groupedCriteria);
+    });
+
+    return cases;
+  }
+
+  default boolean isCriteriaMatch(JsonValue data,
+      ListMultimap<String, Object> criteria) {
+    if (!data.isObject()) return false;
+
+    boolean isMatch = true;
+    for (String key : criteria.keySet()) {
+      if (!data.asObject().names().contains(key)) return false;
+
+      if (criteria.get(key).get(0) instanceof String) {
+        String target = data.asObject().get(key).isString()
+            ? data.asObject().get(key).asString() : "";
+        RubyArray<String> strings =
+            Ruby.Array.of(criteria.get(key)).map(o -> o.toString());
+
+        if (!strings.map(s -> target.contains(s)).contains(true)) {
+          isMatch = false;
+          break;
+        }
+      } else /* Number */ {
+        BigDecimal target = data.asObject().get(key).isNumber()
+            ? new BigDecimal(data.asObject().get(key).toString())
+            : BigDecimal.ZERO;
+        RubyArray<Number> numbers =
+            Ruby.Array.of(criteria.get(key)).map(o -> (Number) o);
+
+        if (!numbers
+            .map(n -> target.compareTo(new BigDecimal(n.toString())) == 0)
+            .contains(true)) {
+          isMatch = false;
+          break;
+        }
+      }
+    }
+
+    return isMatch;
+  }
+
+  default ListMultimap<String, Object> groupedCriteria(
+      List<Criterion> criteria) {
+    ListMultimap<String, Object> c = ArrayListMultimap.create();
+    for (Criterion criterion : criteria) {
+      c.put(criterion.getKey(), criterion.getValue());
+    }
+    return c;
+  }
+
+  default List<Case> findByUser(Authentication auth) {
+    String username = auth.getName();
+
+    if (username.equals("super") || username.equals("admin")) return findAll();
+
+    return findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+        username, username, username, username);
+  }
 
   default List<Case> findByUserAndStatus(Authentication auth,
       Case.Status status) {
@@ -45,6 +121,9 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
         status, username, username, username, username);
   }
 
+  List<Case> findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+      String username1, String username2, String username3, String username4);
+
   List<Case> findByStatusAndOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
       Case.Status status, String username1, String username2, String username3,
       String username4);
@@ -52,11 +131,5 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
   List<Case> findByStatus(Case.Status status);
 
   Case findByIrbNumber(String irbNumber);
-
-  default List<Case> findAllUndoneCrc() {
-    return findAll().stream()
-        .filter(c -> c.isFormDone() && !c.getCrc().isFormDone())
-        .collect(Collectors.toList());
-  }
 
 }

@@ -95,17 +95,6 @@ public class CaseController {
     return "cases/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
-  String alterStatus(@PathVariable("id") Long id,
-      @PathVariable("status") String status) {
-    Case c = caseRepo.findOne(id);
-    String currentStatus = c.getStatus().toString().toLowerCase();
-    c.setStatus(Case.Status.fromString(status));
-    caseRepo.save(c);
-
-    return "redirect:/cases/index?" + currentStatus;
-  }
-
   private List<Case> getCasesBySession(Authentication auth, HttpSession session,
       Map<String, String> allRequestParams) {
     List<Case> cases;

@@ -45,6 +45,17 @@ public class CaseOperationController {
   @Autowired
   KeycloakService keycloak;
 
+  @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
+  String alterStatus(@PathVariable("id") Long id,
+      @PathVariable("status") String status) {
+    Case c = caseRepo.findOne(id);
+    String currentStatus = c.getStatus().toString().toLowerCase();
+    c.setStatus(Case.Status.fromString(status));
+    caseRepo.save(c);
+
+    return "redirect:/cases/index?" + currentStatus;
+  }
+
   @RequestMapping(path = "/cases/{id}/assignment", method = GET)
   String assignment(Model model, @PathVariable("id") Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());

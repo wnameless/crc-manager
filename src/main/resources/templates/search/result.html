@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="result">
+    <table id="jsfTable" class="display">
+        <thead>
+            <tr>
+                <th>動作</th>
+                <th>年度</th>
+                <th>IRB/REC案件編號</th>
+                <th>試驗中文名稱</th>
+                <th>計畫主持人姓名</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="case : ${jsfItems}">
+                <td>
+                    <a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm" th:href="@{'/download/case/' + ${case.id}}">
+                        匯出<span class="fa fa-download"></span>
+                    </a>
+                </td>
+                <td th:text="${case.year}"></td>
+                <td th:inline="text">[[${case.irbNumber}]]</td>
+                <td th:text="${case.trialName}"></td>
+                <td th:text="${case.piName}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script type="text/javascript" th:inline="javascript">
+		$(function() {
+			$('#jsfTable').DataTable({
+				"language" : {
+					"url" : "/i18n/datatables-zh-TW.json"
+				}
+			});
+		});
+	</script>
+</div>
+</html>

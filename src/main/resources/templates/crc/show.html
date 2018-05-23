@@ -1,7 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="show">
-	<div id="jsfForm"></div>
-	<script type="text/javascript" th:inline="javascript">
+    <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <div id="jsfForm"></div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
       var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
       var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
       var formData = JSON.parse([[${jsfItem.jsonData}]]);

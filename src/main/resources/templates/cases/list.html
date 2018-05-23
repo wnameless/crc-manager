@@ -65,7 +65,7 @@
 				</td>
 				<td class="text-center">
 					<a th:if="${@perm.canWrite(case)}" th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
-						<span><i class="fa fa-user-plus" style="color: purple"></i></span>
+						<span><i class="fa fa-user-plus"></i></span>
 					</a>
 					<span th:if="${!@perm.canWrite(case)}"><i class="fa fa-user-plus"></i></span>
 				</td>
