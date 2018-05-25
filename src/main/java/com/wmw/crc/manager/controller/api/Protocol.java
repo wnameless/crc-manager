@@ -19,6 +19,7 @@ package com.wmw.crc.manager.controller.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -26,6 +27,15 @@ import lombok.Data;
 public class Protocol {
 
   String protocolNumber;
+
   List<Map<String, Object>> jsonData;
+
+  String owner;
+
+  Set<String> managers;
+
+  Set<String> editors;
+
+  Set<String> viewers;
 
 }

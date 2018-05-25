@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +74,11 @@ public class ApiController {
     Case c = new Case();
     c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
 
+    c.setOwner(protocol.getOwner());
+    c.setManagers(protocol.getManagers());
+    c.setEditors(protocol.getEditors());
+    c.setViewers(protocol.getViewers());
+
     com.wmw.crc.manager.model.CRC crc = new com.wmw.crc.manager.model.CRC();
     crcRepo.save(crc);
     c.setCrc(crc);
@@ -95,8 +101,18 @@ public class ApiController {
 
   @RequestMapping(path = "/users", method = RequestMethod.POST)
   String createUser(@RequestBody KeycloakUser user) {
+    UserRepresentation ur = new UserRepresentation();
 
-    return "User created";
+    ur.setUsername(user.getUsername());
+    ur.setEmail(user.getEmail());
+    ur.setFirstName(user.getFirstName());
+    ur.setLastName(user.getLastName());
+    ur.setEnabled(true);
+
+    if (keycloak.addOrCreateUser(ur))
+      return "User created";
+    else
+      return "User existed";
   }
 
 }

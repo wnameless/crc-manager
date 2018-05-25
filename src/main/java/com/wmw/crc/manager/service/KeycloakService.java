@@ -17,7 +17,6 @@
  */
 package com.wmw.crc.manager.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -27,9 +26,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
@@ -52,48 +49,29 @@ public class KeycloakService {
         .toList();
   }
 
-  public void addOrCreateUser(UserRepresentation user) {
+  public boolean addOrCreateUser(UserRepresentation user) {
+    if (Ruby.Array.of(getNormalUsers()).map(ur -> ur.getUsername())
+        .contains(user.getUsername()))
+      return false;
+
     RealmResource realmResource = kc.realm("CRCManager");
     UsersResource userRessource = realmResource.users();
 
     // Create user (requires manage-users role)
     Response response = userRessource.create(user);
-    System.out.println("Repsonse: " + response.getStatusInfo());
-    System.out.println(response.getLocation());
     String userId =
         response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-
-    System.out.printf("User created with userId: %s%n", userId);
-
-    // Get realm role "tester" (requires view-realm role)
-    RoleRepresentation testerRealmRole = realmResource.roles()//
-        .get("tester").toRepresentation();
-
-    // Assign realm role tester to user
-    userRessource.get(userId).roles().realmLevel() //
-        .add(Arrays.asList(testerRealmRole));
-
-    // Get client
-    ClientRepresentation app1Client = realmResource.clients() //
-        .findByClientId("crc-manager").get(0);
-
-    // Get client level role (requires view-clients role)
-    RoleRepresentation userClientRole =
-        realmResource.clients().get(app1Client.getId()) //
-            .roles().get("user").toRepresentation();
-
-    // Assign client level role to user
-    userRessource.get(userId).roles() //
-        .clientLevel(app1Client.getId()).add(Arrays.asList(userClientRole));
 
     // Define password credential
     CredentialRepresentation passwordCred = new CredentialRepresentation();
     passwordCred.setTemporary(false);
     passwordCred.setType(CredentialRepresentation.PASSWORD);
-    passwordCred.setValue("test");
+    passwordCred.setValue("test!TEST");
 
     // Set password credential
     userRessource.get(userId).resetPassword(passwordCred);
+
+    return true;
   }
 
 }
