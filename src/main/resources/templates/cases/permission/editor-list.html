@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="editor-list" id="editorList" class="list-group">
+<ul th:fragment="editor-list" id="editorList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
 	<li class="list-group-item"><span id="editor">請選擇管理者</span><i id="addEditor" class="fa fa-plus pull-right"
 		style="color: green; margin-top: 3px;"></i></li>
 	<li class="list-group-item" th:each="editor : ${case.editors}"><span th:text="${editor}"></span><i th:attr="val=${editor}"

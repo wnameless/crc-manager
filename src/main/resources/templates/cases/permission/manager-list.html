@@ -1,11 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="manager-list" id="managerList" class="list-group">
-	<li class="list-group-item"><span id="manager">請選擇管理者</span><i id="addManager" class="fa fa-plus pull-right"
-		style="color: green; margin-top: 3px;"></i></li>
-	<li class="list-group-item" th:each="manager : ${case.managers}"><span th:text="${manager}"></span><i th:attr="val=${manager}"
-		class="removeManager fa fa-remove pull-right" style="color: red; margin-top: 3px;"></i></li>
+<ul th:fragment="manager-list" id="managerList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+    <li class="list-group-item"><span id="manager">請選擇管理者</span><i id="addManager" class="fa fa-plus pull-right"
+        style="color: green; margin-top: 3px;"></i></li>
+    <li class="list-group-item" th:each="manager : ${case.managers}"><span th:text="${manager}"></span><i th:attr="val=${manager}"
+        class="removeManager fa fa-remove pull-right" style="color: red; margin-top: 3px;"></i></li>
 
-<script th:inline="javascript">
+    <script th:inline="javascript">
 $("#addManager").click(function() {
   if(!$("#manager").val()) return false;
   axios.post('/cases/[[${case.id}]]/permission/managers', {

@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="viewer-list" id="viewerList" class="list-group">
+<ul th:fragment="viewer-list" id="viewerList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
     <li class="list-group-item"><span id="viewer">請選擇管理者</span><i id="addViewer" class="fa fa-plus pull-right"
         style="color: green; margin-top: 3px;"></i></li>
     <li class="list-group-item" th:each="viewer : ${case.viewers}"><span th:text="${viewer}"></span><i th:attr="val=${viewer}"
