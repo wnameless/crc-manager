@@ -116,9 +116,9 @@
 
 		<!-- Excel -->
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>3.16</version>
+			<groupId>com.github.wnameless</groupId>
+			<artifactId>workbook-accessor</artifactId>
+			<version>1.3.3</version>
 		</dependency>
 
 		<!-- HTML & JS & CSS -->

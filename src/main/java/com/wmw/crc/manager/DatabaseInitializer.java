@@ -72,7 +72,6 @@ public class DatabaseInitializer {
           break;
       }
 
-      c.setYear(2019);
       c.setPiName(RandomWord.getNewWord(4) + " " + RandomWord.getNewWord(6));
       c.setCaseNumber(Integer.toString(12425 + i));
       c.setTrialName(RandomWord.getNewWord(5));

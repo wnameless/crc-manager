@@ -89,9 +89,6 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @GeneratedValue
   Long id;
 
-  @JsonInitKey("startYear")
-  int year;
-
   @JsonInitKey("irbNum")
   String irbNumber;
 

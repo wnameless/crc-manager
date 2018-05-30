@@ -17,8 +17,11 @@
  */
 package com.wmw.crc.manager.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,16 +35,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.json.flattener.JsonFlattener;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Criterion;
 import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.service.JsonDataExportService;
 
 @Controller
 public class SearchController {
 
   @Autowired
   CaseRepository caseRepo;
+
+  @Autowired
+  JsonDataExportService dataExport;
 
   @GetMapping("/search/index")
   String index(Model model) {
@@ -61,15 +67,23 @@ public class SearchController {
 
   @GetMapping("/download/case/{id}")
   @ResponseBody
-  HttpEntity<byte[]> download(@PathVariable("id") Long id) {
+  HttpEntity<byte[]> download(@PathVariable("id") Long id) throws IOException {
     Case kase = caseRepo.findOne(id);
 
-    byte[] documentBody = JsonFlattener.flatten(kase.getJsonData()).getBytes();
+    Workbook wb = dataExport.toExcel(kase);
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    wb.write(bos);
+    wb.close();
+
+    byte[] documentBody = bos.toByteArray();
+    // JsonFlattener.flatten(kase.getJsonData()).getBytes();
 
     HttpHeaders header = new HttpHeaders();
-    header.setContentType(MediaType.APPLICATION_JSON_UTF8);
+    header.setContentType(MediaType.valueOf(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
     header.set(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=" + kase.getIrbNumber() + ".json");
+        "attachment; filename=" + kase.getIrbNumber() + ".xlsx");
     header.setContentLength(documentBody.length);
 
     return new HttpEntity<byte[]>(documentBody, header);
