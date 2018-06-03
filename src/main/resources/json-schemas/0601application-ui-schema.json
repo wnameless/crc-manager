@@ -1,0 +1,45 @@
+{
+  "dohFlg": {
+    "ui:widget": "radio"
+  },
+  "researchType": {
+    "ui:widget": "radio"
+  },
+  "PI": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
+  "LAIs": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
+  "AIs": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
+  "locations": {
+    "ui:widget": "checkboxes"
+  },
+  "funds": {
+    "ui:widget": "checkboxes"
+  },
+  "preview": {
+    "piAccountFlg": {
+      "ui:widget": "radio"
+    },
+    "telephone": {
+      "ui:options": {
+        "inputType": "tel"
+      }
+    }
+  }
+}

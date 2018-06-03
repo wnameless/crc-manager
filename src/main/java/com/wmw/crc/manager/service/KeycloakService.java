@@ -44,9 +44,12 @@ public class KeycloakService {
           .build();
 
   public List<UserRepresentation> getNormalUsers() {
-    return Ruby.Array.of(kc.realm("CRCManager").users().list()).deleteIf(
-        u -> u.getUsername().equals("super") || u.getUsername().equals("admin"))
-        .toList();
+    return Ruby.Array.of(kc.realm("CRCManager").users().list()).deleteIf(u -> {
+      List<String> roles =
+          Ruby.Array.of(kc.realm("CRCManager").users().get(u.getId()).roles()
+              .realmLevel().listEffective()).map(r -> r.getName());
+      return roles.contains("ADMIN") || roles.contains("SUPER");
+    }).toList();
   }
 
   public boolean addOrCreateUser(UserRepresentation user) {

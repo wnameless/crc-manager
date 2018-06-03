@@ -1,32 +1,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <nav th:fragment="navbar-login" class="navbar navbar-inverse">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="/">CRC Manager</a>
-		</div>
-		<div id="navbarCollapse" class="collapse navbar-collapse">
-			<ul class="nav navbar-nav">
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a href="/cases/index?new">新進案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/cases/index?exec">執行案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/cases/index?end">結束案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a href="/cases/index?none">無主計編號案件區</a></li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/search/index">案件搜尋與匯出</a></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="/logout" class="fa fa-sign-out fa-1x">登出</a></li>
-			</ul>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">CRC Manager</a>
+        </div>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a href="/cases/index?new">新進案件區</a></li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/cases/index?exec">執行案件區</a></li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/cases/index?end">結束案件區</a></li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')"><a href="/cases/index?none">無主計編號案件區</a></li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/search/index">案件搜尋與匯出</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a th:href="${keycloakUrl + '/auth/realms/CRCManager/account'}" class="fa fa-user-cog fa-1x"> 帳號</a></li>
+                <li><a href="/logout" class="fa fa-sign-out-alt  fa-1x">登出</a></li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <nav th:fragment="navbar-logout" class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="/index">CRC Manager</a>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index">CRC Manager</a>
+        </div>
+    </div>
 </nav>
 </html>
