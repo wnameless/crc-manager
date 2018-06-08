@@ -50,7 +50,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
-@Entity
+@Entity(name = "kase")
 public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   public enum Status {

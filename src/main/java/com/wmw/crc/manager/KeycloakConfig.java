@@ -70,6 +70,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
       return authorizationHeaderValue != null
           && !authorizationHeaderValue.startsWith("Basic ");
     }
+
   }
 
   // Submits the KeycloakAuthenticationProvider to the AuthenticationManager
@@ -83,7 +84,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
     auth.authenticationProvider(keycloakAuthenticationProvider);
 
     auth.inMemoryAuthentication().withUser("api_key").password("22711e4e")
-        .roles("USER");
+        .roles("API");
   }
 
   @Bean
@@ -106,6 +107,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/js/**").permitAll() //
         .antMatchers("/default/**").permitAll() //
         .antMatchers("/myfavicon.ico").permitAll() //
+        .antMatchers("/api/**").permitAll() //
         // .antMatchers("/users/new").anonymous()
         // .antMatchers(HttpMethod.POST, "/users").anonymous() //
         .anyRequest().authenticated().and()// .formLogin().loginPage("/login")
@@ -113,8 +115,8 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
         .logoutSuccessUrl("/").permitAll();
 
-    http.authorizeRequests().antMatchers("/api/**").authenticated().and()
-        .httpBasic();
+    // http.authorizeRequests().antMatchers("/api/**").authenticated().and()
+    // .httpBasic();
     http.csrf().disable();
     // http.authorizeRequests().antMatchers("/customers*").hasRole("user")
     // .anyRequest().permitAll();
