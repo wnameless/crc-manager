@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.google.common.io.Resources;
@@ -38,6 +39,7 @@ import com.wmw.crc.manager.repository.SubjectRepository;
 import main.java.com.maximeroussy.invitrode.RandomWord;
 import main.java.com.maximeroussy.invitrode.WordLengthException;
 
+@Profile("dev")
 @Component
 public class DatabaseInitializer {
 
