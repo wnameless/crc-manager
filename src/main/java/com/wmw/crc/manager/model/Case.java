@@ -101,7 +101,7 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @JsonInitKey("engTitle")
   String trialNameEng;
 
-  @JsonInitKey("piName")
+  @JsonInitKey("PI[0].name")
   String piName;
 
   String coPiName;

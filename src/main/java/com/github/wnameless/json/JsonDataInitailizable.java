@@ -24,10 +24,12 @@ import java.util.List;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.github.wnameless.json.flattener.JsonFlattener;
 
 public interface JsonDataInitailizable {
 
   default void setJsonInitData(String jsonData) {
+    jsonData = JsonFlattener.flatten(jsonData);
     JsonValue jv = Json.parse(jsonData);
     JsonObject jo = jv.asObject();
     List<String> keys = jo.names();
