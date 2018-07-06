@@ -117,10 +117,6 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
     }
 
     String username = auth.getName();
-    System.out.println(username);
-    for (Case kase : findAll()) {
-      System.out.println(kase.getViewers());
-    }
     return findByOwnerEqualsOrManagersInOrEditorsInOrViewersInAndStatus(
         username, username, username, username, status);
   }
