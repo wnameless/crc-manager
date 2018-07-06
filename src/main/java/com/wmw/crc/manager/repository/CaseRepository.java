@@ -104,8 +104,8 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
 
     if (username.equals("super") || username.equals("admin")) return findAll();
 
-    return findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
-        username, username, username, username);
+    return findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(username,
+        username, username, username);
   }
 
   default List<Case> findByUserAndStatus(Authentication auth,
@@ -117,16 +117,20 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
     }
 
     String username = auth.getName();
-    return findByStatusAndOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
-        status, username, username, username, username);
+    System.out.println(username);
+    for (Case kase : findAll()) {
+      System.out.println(kase.getViewers());
+    }
+    return findByOwnerEqualsOrManagersInOrEditorsInOrViewersInAndStatus(
+        username, username, username, username, status);
   }
 
-  List<Case> findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+  List<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
       String username1, String username2, String username3, String username4);
 
-  List<Case> findByStatusAndOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
-      Case.Status status, String username1, String username2, String username3,
-      String username4);
+  List<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersInAndStatus(
+      String username1, String username2, String username3, String username4,
+      Case.Status status);
 
   List<Case> findByStatus(Case.Status status);
 

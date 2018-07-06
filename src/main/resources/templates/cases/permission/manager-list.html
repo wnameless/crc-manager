@@ -13,6 +13,13 @@ $("#addManager").click(function() {
   	})
 	.then(function (response) {
 		$('#managerList').html(response.data);
+		
+		$("#manager").text('請選擇管理者');
+        $("#manager").val('');
+        $("#editor").text('請選擇編輯者');
+        $("#editor").val('');
+        $("#viewer").text('請選擇閱覽者');
+        $("#viewer").val('');
 	})
 	.catch(function (error) {
 		console.log(error);
