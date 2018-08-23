@@ -40,22 +40,22 @@
                     </div>
                 </td>
                 <td>
-                    <a th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
+                    <a href="#" th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
                         <span><i class="fa fa-search"></i></span>
                     </a>
                     <span th:if="${!@perm.canRead(case)}"><i class="fa fa-search"></i></span> |
-                    <a th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
+                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
                         <span><i class="fa fa-edit"></i></span>
                     </a>
                     <span th:if="${!@perm.canWrite(case)}"><i class="fa fa-edit"></i></span>
                 </td>
                 <td th:inline="text">[[${case.irbNumber}]]</td>
                 <td class="text-center">
-                    <a th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
+                    <a href="#" th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
                         <span><i class="fa fa-search"></i></span>
                     </a>
                     <span th:if="${!@perm.canRead(case)}"><i class="fa fa-search"></i></span> |
-                    <a th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
+                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
                         <span><i class="fa fa-edit"></i></span>
                     </a>
                     <span th:if="${!@perm.canWrite(case)}"><i class="fa fa-edit"></i></span>

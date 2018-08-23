@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import com.wmw.crc.manager.model.Case;
 
+import net.sf.rubycollect4j.Ruby;
+
 @Service("perm")
 public class CasePermissionService {
 
@@ -31,22 +33,27 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || kase.getManagers().contains(auth.getName());
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase());
   }
 
   public boolean canRead(Case kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || kase.getViewers().contains(auth.getName())
-        || kase.getEditors().contains(auth.getName());
+        || Ruby.Set.copyOf(kase.getViewers()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase())
+        || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase());
   }
 
   public boolean canWrite(Case kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || kase.getEditors().contains(auth.getName());
+        || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase());
+
   }
 
   public boolean canAssign() {
@@ -68,7 +75,7 @@ public class CasePermissionService {
   public boolean isOwner(Case kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
-    return auth.getName().equals(kase.getOwner());
+    return auth.getName().compareToIgnoreCase(kase.getOwner()) == 0;
   }
 
   public boolean isAdmin() {

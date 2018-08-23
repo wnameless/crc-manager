@@ -1,27 +1,20 @@
 {
-	"gender": {
-		"ui:widget": "radio",
-		"ui:options": {
-			"inline": true
-		}
-	},
-	"note": {
-		"ui:widget": "textarea",
-		"ui:options": {
-			"rows": 3
-		}
-	},
-	"completeDate": {
-		"ui:disabled": true
-	},
-	"dropoutDate": {
-		"ui:disabled": true
-	},
-	"dropoutReason": {
-		"ui:disabled": true,
-		"ui:widget": "textarea",
-		"ui:options": {
-			"rows": 3
-		}
-	}
+  "gender": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  },
+  "note": {
+    "ui:widget": "textarea",
+    "ui:options": {
+      "rows": 3
+    }
+  },
+  "dropoutReason": {
+    "ui:widget": "textarea",
+    "ui:options": {
+      "rows": 3
+    }
+  }
 }
