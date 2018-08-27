@@ -137,6 +137,12 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
 
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "case_contraindication",
+      joinColumns = @JoinColumn(name = "case_id"),
+      inverseJoinColumns = @JoinColumn(name = "contraindication_id"))
+  List<Contraindication> contraindications = newArrayList();
+
   // Permission
   String owner;
   @ElementCollection

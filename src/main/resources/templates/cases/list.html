@@ -58,33 +58,50 @@
 								th:href="@{'/cases/' + ${case.id} + '/status/new'}">重回新案</a></li>
 					</ul>
 				</td>
-				<td><a href="#" th:if="${@perm.canRead(case)}"
+				<td>
+					<a href="#" th:if="${@perm.canRead(case)}"
 						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
-						<span><i class="fa fa-search"></i></span>
-					</a> <span th:if="${!@perm.canRead(case)}"><i
-						class="fa fa-search"></i></span> | <a href="#"
-						th:if="${@perm.canWrite(case)}"
+						<span>
+							<i class="fa fa-search"></i>
+						</span>
+					</a>
+					<span th:if="${!@perm.canRead(case)}">
+						<i class="fa fa-search"></i>
+					</span>
+					|
+					<a href="#" th:if="${@perm.canWrite(case)}"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
-						<span><i class="fa fa-edit"></i></span>
-					</a> <span th:if="${!@perm.canWrite(case)}"><i
-						class="fa fa-edit"></i></span></td>
+						<span>
+							<i class="fa fa-edit"></i>
+						</span>
+					</a>
+					<span th:if="${!@perm.canWrite(case)}">
+						<i class="fa fa-edit"></i>
+					</span>
+				</td>
 				<td th:inline="text">[[${case.irbNumber}]]</td>
-				<td class="text-center"><a href="#"
-						th:if="${@perm.canRead(case)}"
-						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
-						<span><i class="fa fa-search"></i></span>
-					</a> <span th:if="${!@perm.canRead(case)}"><i
-						class="fa fa-search"></i></span> | <a href="#"
-						th:if="${@perm.canWrite(case)}"
-						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
-						<span><i class="fa fa-edit"></i></span>
-					</a> <span th:if="${!@perm.canWrite(case)}"><i
-						class="fa fa-edit"></i></span></td>
-				<td class="text-center"><a th:if="${@perm.canWrite(case)}"
+				<td class="text-center">
+					<a th:if="${@perm.canRead(case)}"
+						th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
+						<span>
+							<i class="fa fa-medkit"></i>
+						</span>
+					</a>
+					<span th:if="${!@perm.canRead(case)}">
+						<i class="fa fa-medkit"></i>
+					</span>
+				</td>
+				<td class="text-center">
+					<a th:if="${@perm.canWrite(case)}"
 						th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
-						<span><i class="fa fa-user-plus"></i></span>
-					</a> <span th:if="${!@perm.canWrite(case)}"><i
-						class="fa fa-user-plus"></i></span></td>
+						<span>
+							<i class="fa fa-user-plus"></i>
+						</span>
+					</a>
+					<span th:if="${!@perm.canWrite(case)}">
+						<i class="fa fa-user-plus"></i>
+					</span>
+				</td>
 				<td th:text="${case.trialName}"></td>
 				<td th:text="${case.piName}"></td>
 				<td th:text="${case.expectedStartDate}"></td>

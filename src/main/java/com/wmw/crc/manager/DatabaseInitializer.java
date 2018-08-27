@@ -31,9 +31,11 @@ import org.springframework.stereotype.Component;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.model.CRC;
 import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
@@ -51,6 +53,9 @@ public class DatabaseInitializer {
 
   @Autowired
   SubjectRepository subjectRepo;
+
+  @Autowired
+  MedicineRepository medicineRepo;
 
   @PostConstruct
   void init() throws IOException, WordLengthException {
@@ -107,6 +112,12 @@ public class DatabaseInitializer {
 
       i++;
     }
+
+    Medicine m1 = new Medicine();
+    m1.setName("普拿疼");
+    m1.setEngName("Acetaminophen");
+    m1.setAtcCode1("N02BE01");
+    medicineRepo.save(m1);
   }
 
 }

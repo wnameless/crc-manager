@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<th:block th:include="fragments/header :: header-common"></th:block>
+</head>
+<body>
+	<nav th:replace="fragments/navbar :: navbar-login"></nav>
+
+	<div class="container">
+		<div style="height: 300px;"
+			class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<ul class="nav nav-tabs">
+				<li class="active"><a data-toggle="tab"
+						href="#contraindications">禁忌用藥</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div id="contraindications" class="tab-pane fade in active">
+					<ul id="contraindicationList" class="list-group"
+						style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+						<li class="list-group-item"
+							th:each="cd : ${case.contraindications}"><span
+								th:text="${cd.phrase + ' - ' + cd.atcCode}"></span> <a
+								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
+								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
+									style="color: red; margin-top: 3px;"></i>
+							</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<hr />
+		</div>
+
+		<div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<form th:action="${ '/cases/' + case.id + '/contraindications' }"
+				method="POST" class="form-row">
+				<div class="form-group col-md-1"></div>
+				<div class="form-group col-md-4">
+					<input name="phrase" type="text" class="form-control"
+						placeholder="關鍵字">
+				</div>
+				<div class="form-group col-md-4">
+					<input name="atcCode" type="text" class="form-control"
+						placeholder="ATC字首">
+				</div>
+				<div class="form-group col-md-2">
+					<button type="submit" class="btn btn-primary">新增禁忌用藥</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<hr />
+		</div>
+
+		<div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<table id="medicineTable" class="display">
+				<thead>
+					<tr>
+						<th>名稱</th>
+						<th>英文名稱</th>
+						<th>ATC 1</th>
+						<th>ATC 2</th>
+						<th>ATC 3</th>
+						<th>ATC 4</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="m : ${medicines}">
+						<td th:text="${m.name}"></td>
+						<td th:text="${m.engName}"></td>
+						<td th:text="${m.atcCode1}"></td>
+						<td th:text="${m.atcCode2}"></td>
+						<td th:text="${m.atcCode3}"></td>
+						<td th:text="${m.atcCode4}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(function() {
+
+			$('#medicineTable').DataTable({
+				columnDefs : [ {
+					"width" : "36px",
+					"targets" : 0
+				} ],
+				language : {
+					url : '/i18n/datatables-zh-TW.json'
+				}
+			});
+		});
+	</script>
+</body>
+</html>

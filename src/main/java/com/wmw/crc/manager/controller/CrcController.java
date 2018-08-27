@@ -67,7 +67,6 @@ public class CrcController {
     Case c = caseRepo.findOne(id);
     CRC crc = c.getCrc();
     crc.setJsonData(formData);
-    System.err.println(formData);
     crcRepo.save(crc);
 
     List<Case> cases = caseRepo.findByStatus(Case.Status.EXEC);
