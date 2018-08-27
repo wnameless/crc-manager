@@ -85,9 +85,11 @@ public class CaseOperationController {
   String addManager(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
     Case kase = caseRepo.findOne(id);
-    kase.getManagers().add(body.get("manager").toString());
+    String manager = body.get("manager").toString();
+    kase.getManagers().add(manager);
     caseRepo.save(kase);
 
+    model.addAttribute("message", manager + " 加入管理者");
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -99,6 +101,7 @@ public class CaseOperationController {
     kase.getManagers().remove(manager);
     caseRepo.save(kase);
 
+    model.addAttribute("message", manager + " 從管理者刪除");
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -107,9 +110,11 @@ public class CaseOperationController {
   String addEditor(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
     Case kase = caseRepo.findOne(id);
-    kase.getEditors().add(body.get("editor").toString());
+    String editor = body.get("editor").toString();
+    kase.getEditors().add(editor);
     caseRepo.save(kase);
 
+    model.addAttribute("message", editor + " 加入編輯者");
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -121,6 +126,7 @@ public class CaseOperationController {
     kase.getEditors().remove(editor);
     caseRepo.save(kase);
 
+    model.addAttribute("message", editor + " 從編輯者刪除");
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -129,9 +135,11 @@ public class CaseOperationController {
   String addViewer(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
     Case kase = caseRepo.findOne(id);
-    kase.getViewers().add(body.get("viewer").toString());
+    String viewer = body.get("viewer").toString();
+    kase.getViewers().add(viewer);
     caseRepo.save(kase);
 
+    model.addAttribute("message", viewer + " 加入閱覽者");
     model.addAttribute("case", kase);
     return "cases/permission/viewer-list :: viewer-list";
   }
@@ -143,6 +151,7 @@ public class CaseOperationController {
     kase.getViewers().remove(viewer);
     caseRepo.save(kase);
 
+    model.addAttribute("message", viewer + " 從閱覽者刪除");
     model.addAttribute("case", kase);
     return "cases/permission/viewer-list :: viewer-list";
   }

@@ -170,6 +170,8 @@ public class SubjectController {
       subjectRepo.save(es.getSubjects());
       c.getSubjects().addAll(es.getSubjects());
       caseRepo.save(c);
+    } else {
+      model.addAttribute("message", es.getErrorMessage());
     }
 
     model.addAttribute("case", c);

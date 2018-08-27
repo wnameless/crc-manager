@@ -92,7 +92,7 @@
 					<input type="text" class="form-control"
 						placeholder='Choose a file...' />
 					<span class="input-group-btn">
-						<button class="btn btn-warning" type="submit">上傳名單</button>
+						<button id="uploadBtn" class="btn btn-warning" type="submit" disabled>上傳名單</button>
 					</span>
 				</div>
 			</div>
@@ -100,6 +100,7 @@
 		</form>
 	</div>
 
+	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
 	function bs_input_file() {
 		$(".input-file").before(
@@ -109,6 +110,7 @@
 					element.attr("name", $(this).attr("name"));
 					element.change(function(){
 						element.next(element).find('input').val((element.val()).split('\\').pop());
+					    $('#uploadBtn').removeAttr('disabled');
 					});
 					$(this).find("button.btn-choose").click(function(){
 						element.click();

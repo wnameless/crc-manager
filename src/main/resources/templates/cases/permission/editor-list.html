@@ -1,11 +1,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="editor-list" id="editorList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-	<li class="list-group-item"><span id="editor">請選擇編輯者</span><i id="addEditor" class="fa fa-plus pull-right"
+<ul th:fragment="editor-list" id="editorList" class="list-group"
+	style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+	<li class="list-group-item"><span id="editor">請選擇編輯者</span><i
+		id="addEditor" class="fa fa-plus pull-right"
 		style="color: green; margin-top: 3px;"></i></li>
-	<li class="list-group-item" th:each="editor : ${case.editors}"><span th:text="${editor}"></span><i th:attr="val=${editor}"
-		class="removeEditor fa fa-remove pull-right" style="color: red; margin-top: 3px;"></i></li>
+	<li class="list-group-item" th:each="editor : ${case.editors}"><span
+			th:text="${editor}"></span><i th:attr="val=${editor}"
+		class="removeEditor fa fa-remove pull-right"
+		style="color: red; margin-top: 3px;"></i></li>
 
-<script th:inline="javascript">
+	<script th:replace="fragments/notify :: notify"></script>
+	<script th:inline="javascript"> 
 $("#addEditor").click(function() {
   if(!$("#editor").val()) return false;
   axios.post('/cases/[[${case.id}]]/permission/editors', {
