@@ -35,6 +35,8 @@ import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.service.tsgh.api.Patient;
+import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
 @Controller
@@ -45,6 +47,9 @@ public class SubjectController {
 
   @Autowired
   SubjectRepository subjectRepo;
+
+  @Autowired
+  TsghApi tsghApi;
 
   @GetMapping(path = "/cases/{caseId}/subjects/index")
   String index(Model model, @PathVariable("caseId") Long caseId) {
@@ -68,10 +73,10 @@ public class SubjectController {
   }
 
   @GetMapping(path = "/cases/{caseId}/subjects/new")
-  String New(Model model, @PathVariable("caseId") Long caseId) {
+  String newItem(Model model, @PathVariable("caseId") Long caseId) {
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItem", new Subject());
-    return "subjects/edit :: edit";
+    return "subjects/new :: new";
   }
 
   @PostMapping(path = "/cases/{caseId}/subjects")
@@ -178,6 +183,12 @@ public class SubjectController {
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", c.getSubjects());
     return "subjects/index";
+  }
+
+  @GetMapping("/subjects/query/{nationalId}")
+  Patient searchPatient(Model model,
+      @PathVariable("nationalId") String nationalId) {
+    return tsghApi.serachPatientById(nationalId);
   }
 
 }

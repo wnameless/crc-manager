@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="new">
+	<div
+		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" placeholder="身分證字號">
+			</div>
+			<div class="col-sm-4">
+				<button id="queryBtn" class="btn btn-primary">搜尋</button>
+			</div>
+		</div>
+		<hr />
+		<div id="jsfForm"></div>
+	</div>
+
+	<script type="text/javascript" th:inline="javascript">
+    var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
+    var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
+    var formData = JSON.parse([[${jsfItem.jsonData}]]);
+
+    var onSubmit = ({formData}) => {
+      axios.post([[${jsfPath}]], formData).then(function (response) {
+            console.log(response);
+            $('#jsf').html(response.data);
+        }) 
+        .catch(function (error) {
+            console.log(error);
+        });
+    };
+
+    ReactDOM.render(
+        React.createElement(FormComponent), 
+        document.getElementById('jsfForm')
+    );
+    
+    $(function(){
+    	$('#queryBtn').click(function() {
+    		$.notify('查詢的身分證字號無資料');
+    	});
+    });
+    </script>
+</div>
+</html>
