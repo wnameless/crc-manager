@@ -66,13 +66,13 @@
     },
     "completeDate": {
       "type": "string",
-      "title": "受試者完成日期",
-      "default": "N/A"
+      "format": "date",
+      "title": "受試者完成日期"
     },
     "dropoutDate": {
       "type": "string",
-      "title": "受試者退出日期",
-      "default": "N/A"
+      "format": "date",
+      "title": "受試者退出日期"
     },
     "dropoutReason": {
       "type": "string",

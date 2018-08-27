@@ -1,80 +1,99 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
-    <table id="jsfTable" class="display">
-        <thead>
-            <tr>
-                <th style="width: 30px;">動作</th>
-                <th style="width: 30px;"></th>
-                <th style="width: 90px;">IRB/REC編號</th>
-                <th class="text-center" style="width: 60px;">禁忌用藥</th>
-                <th class="text-center" style="width: 60px;">受試者</th>
-                <th>試驗中文名稱</th>
-                <th style="width: 80px;">計畫主持人</th>
-                <th style="width: 60px;">開始時間</th>
-                <th style="width: 60px;">結束時間</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="case : ${jsfItems}">
-                <td>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                            <span class="fa fa-cogs"></span>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/assignment'}">指派 PI</a>
-                            <a th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/status/exec'}">分發 PI</a>
-                            <a th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/permission'}">權限</a>
-                            <div class="dropdown-divider"></div>
-                            <a th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/status/end'}">結案</a>
-                            <a th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/status/exec'}">再執行</a>
-                            <a th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}" class="dropdown-item"
-                                th:href="@{'/cases/' + ${case.id} + '/status/new'}">重回新案</a>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <a href="#" th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
-                        <span><i class="fa fa-search"></i></span>
-                    </a>
-                    <span th:if="${!@perm.canRead(case)}"><i class="fa fa-search"></i></span> |
-                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
-                        <span><i class="fa fa-edit"></i></span>
-                    </a>
-                    <span th:if="${!@perm.canWrite(case)}"><i class="fa fa-edit"></i></span>
-                </td>
-                <td th:inline="text">[[${case.irbNumber}]]</td>
-                <td class="text-center">
-                    <a href="#" th:if="${@perm.canRead(case)}" th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
-                        <span><i class="fa fa-search"></i></span>
-                    </a>
-                    <span th:if="${!@perm.canRead(case)}"><i class="fa fa-search"></i></span> |
-                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
-                        <span><i class="fa fa-edit"></i></span>
-                    </a>
-                    <span th:if="${!@perm.canWrite(case)}"><i class="fa fa-edit"></i></span>
-                </td>
-                <td class="text-center">
-                    <a th:if="${@perm.canWrite(case)}" th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
-                        <span><i class="fa fa-user-plus"></i></span>
-                    </a>
-                    <span th:if="${!@perm.canWrite(case)}"><i class="fa fa-user-plus"></i></span>
-                </td>
-                <td th:text="${case.trialName}"></td>
-                <td th:text="${case.piName}"></td>
-                <td th:text="${case.expectedStartDate}"></td>
-                <td th:text="${case.expectedEndDate}"></td>
-            </tr>
-        </tbody>
-    </table>
+	<table id="jsfTable" class="display">
+		<thead>
+			<tr>
+				<th style="width: 30px;">動作</th>
+				<th style="width: 30px;"></th>
+				<th style="width: 90px;">IRB/REC編號</th>
+				<th class="text-center" style="width: 60px;">禁忌用藥</th>
+				<th class="text-center" style="width: 60px;">受試者</th>
+				<th>試驗中文名稱</th>
+				<th style="width: 80px;">計畫主持人</th>
+				<th style="width: 60px;">開始時間</th>
+				<th style="width: 60px;">結束時間</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="case : ${jsfItems}">
+				<td>
+					<button type="button" class="btn btn-primary dropdown-toggle"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="fa fa-cogs"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<li
+							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/assignment'}">指派 PI</a></li>
+						<li
+							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"
+							class="divider"></li>
+						<li
+							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/none'}">無主計編號</a></li>
+						<li
+							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/exec'}">分發 PI</a></li>
+						<li
+							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/permission'}">權限</a></li>
+						<li
+							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"
+							class="divider"></li>
+						<li
+							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/end'}">結案</a></li>
+						<li
+							th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/exec'}">再執行</a></li>
+						<li
+							th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/new'}">重回新案</a></li>
+					</ul>
+				</td>
+				<td><a href="#" th:if="${@perm.canRead(case)}"
+						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }">
+						<span><i class="fa fa-search"></i></span>
+					</a> <span th:if="${!@perm.canRead(case)}"><i
+						class="fa fa-search"></i></span> | <a href="#"
+						th:if="${@perm.canWrite(case)}"
+						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
+						<span><i class="fa fa-edit"></i></span>
+					</a> <span th:if="${!@perm.canWrite(case)}"><i
+						class="fa fa-edit"></i></span></td>
+				<td th:inline="text">[[${case.irbNumber}]]</td>
+				<td class="text-center"><a href="#"
+						th:if="${@perm.canRead(case)}"
+						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + '/crc' + ''')' }">
+						<span><i class="fa fa-search"></i></span>
+					</a> <span th:if="${!@perm.canRead(case)}"><i
+						class="fa fa-search"></i></span> | <a href="#"
+						th:if="${@perm.canWrite(case)}"
+						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/crc/edit' + ''')' }">
+						<span><i class="fa fa-edit"></i></span>
+					</a> <span th:if="${!@perm.canWrite(case)}"><i
+						class="fa fa-edit"></i></span></td>
+				<td class="text-center"><a th:if="${@perm.canWrite(case)}"
+						th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
+						<span><i class="fa fa-user-plus"></i></span>
+					</a> <span th:if="${!@perm.canWrite(case)}"><i
+						class="fa fa-user-plus"></i></span></td>
+				<td th:text="${case.trialName}"></td>
+				<td th:text="${case.piName}"></td>
+				<td th:text="${case.expectedStartDate}"></td>
+				<td th:text="${case.expectedEndDate}"></td>
+			</tr>
+		</tbody>
+	</table>
 
-    <script type="text/javascript" th:inline="javascript">
+	<script type="text/javascript" th:inline="javascript">
 		var showFormEvent = function(path) {
 			axios.get(path)
 			.then(function (response) {

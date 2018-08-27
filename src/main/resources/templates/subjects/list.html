@@ -1,55 +1,141 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
-    <table id="jsfTable" class="display">
-        <thead>
-            <tr>
-                <th>狀態</th>
-                <th>名字</th>
-                <th>身分證字號</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="subject : ${jsfItems}">
-                <td>
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="true" th:text="${subject.status}">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/prescreening'}" data-value="prescreening">預篩</a></li>
-                        <li><a th:href="@{${jsfPath}+ '/' + ${subject.id} + '/status/screening'}" data-value="screening">篩查</a></li>
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/unqualified'}" data-value="unqualified">失格</a></li>
-                        <li class="divider"></li>
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/ongoing'}" data-value="ongoing">執行</a></li>
-                        <li class="divider"></li>
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/dropped'}" data-value="dropped">排除</a></li>
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/followup'}" data-value="followup">追蹤</a></li>
-                        <li><a th:href="@{${jsfPath} + '/' + ${subject.id} + '/status/closed'}" data-value="closed">結案</a></li>
-                    </ul>
-                </td>
-                <td th:text="${subject.name}"></td>
-                <td th:text="${subject.nationalId}"></td>
-                <td>
-                    <a th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }">
-                        <span><i class="fa fa-search"></i></span>
-                    </a>
-                    |
-                    <a th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
-                        <span><i class="fa fa-edit"></i></span>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+	<form th:if="${@perm.canWrite(case)}" id="batchDating"
+		th:action="${ jsfPath + '/batchdating' }" method="POST">
+		<div class="form-row">
+			<div class="form-group col-md-1"></div>
+			<div class="form-group col-md-5">
+				<select id="subjectDateType" name="subjectDateType"
+					class="form-control" form="batchDating">
+					<option value="icfDate" selected>受試者填寫同意書日期</option>
+					<option value="examDate">受試者體檢日期</option>
+					<option value="accrualDate">受試者納入日期</option>
+					<option value="completeDate">受試者完成日期</option>
+					<option value="dropoutDate">受試者退出日期</option>
+				</select>
+			</div>
+			<div class="form-group col-md-4">
+				<input type="date" class="form-control" id="subjectDate"
+					name="subjectDate">
+			</div>
+			<div class="form-group col-md-2">
+				<button type="submit" class="btn btn-primary">批次寫入</button>
+			</div>
+		</div>
+	</form>
 
-    <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <button id="addSubject" class="btn btn-block btn-default" th:onclick="${ 'editFormEvent(''' + jsfPath + '/new' + ''')' }">
-            <span><i class="fa fa-plus" style="color: green"></i></span> 新增受試者
-        </button>
-    </div>
+	<div th:if="${@perm.canWrite(case)}" class="col-md-12">
+		<hr />
+	</div>
 
-    <script type="text/javascript" th:inline="javascript">
+	<table id="jsfTable" class="display">
+		<thead>
+			<tr>
+				<th></th>
+				<th>狀態</th>
+				<th>名字</th>
+				<th>身分證字號</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="subject : ${jsfItems}">
+				<td>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input"
+							th:value="${subject.id}" th:onchange="${ 'checkboxEvent()' }">
+					</div>
+				</td>
+				<td th:text="${subject.status}"></td>
+				<td th:text="${subject.name}"></td>
+				<td th:text="${subject.nationalId}"></td>
+				<td><a th:if="${@perm.canRead(case)}" href="#"
+						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }">
+						<span>
+							<i class="fa fa-search"></i>
+						</span>
+					</a> <span th:if="${!@perm.canRead(case)}">
+						<i class="fa fa-search"></i>
+					</span> | <a th:if="${@perm.canWrite(case)}" href="#"
+						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
+						<span>
+							<i class="fa fa-edit"></i>
+						</span>
+					</a> <span th:if="${!@perm.canWrite(case)}">
+						<i class="fa fa-edit"></i>
+					</span></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div th:if="${@perm.canWrite(case)}"
+		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+		<button id="addSubject" class="btn btn-block btn-default"
+			th:onclick="${ 'editFormEvent(''' + jsfPath + '/new' + ''')' }">
+			<span>
+				<i class="fa fa-plus" style="color: green"></i>
+			</span>
+			新增受試者
+		</button>
+	</div>
+
+	<div th:if="${@perm.canWrite(case)}"
+		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+		<form method="POST" th:action="${ jsfPath + '/index' }"
+			enctype="multipart/form-data">
+			<!-- COMPONENT START -->
+			<div class="form-group">
+				<div class="input-group input-file" name="subjectFile">
+					<span class="input-group-btn">
+						<button class="btn btn-default btn-choose" type="button">選擇檔案</button>
+					</span>
+					<input type="text" class="form-control"
+						placeholder='Choose a file...' />
+					<span class="input-group-btn">
+						<button class="btn btn-warning" type="submit">上傳名單</button>
+					</span>
+				</div>
+			</div>
+			<!-- COMPONENT END -->
+		</form>
+	</div>
+
+	<script type="text/javascript" th:inline="javascript">
+	function bs_input_file() {
+		$(".input-file").before(
+			function() {
+				if ( ! $(this).prev().hasClass('input-ghost') ) {
+					var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+					element.attr("name", $(this).attr("name"));
+					element.change(function(){
+						element.next(element).find('input').val((element.val()).split('\\').pop());
+					});
+					$(this).find("button.btn-choose").click(function(){
+						element.click();
+					});
+					$(this).find('input').css("cursor","pointer");
+					$(this).find('input').mousedown(function() {
+						$(this).parents('.input-file').prev().click();
+						return false;
+					});
+					return element;
+				}
+			}
+		);
+	};
+	
+	var checkboxEvent = function() {
+	  $("input[name='subjectIds[]']").remove();
+		
+	  $('input:checked').each(function() {
+	  	$('<input>').attr({
+	  	    type: 'hidden',
+	  	    name: 'subjectIds[]',
+	  	    value: this.value
+	  	}).appendTo('#batchDating');
+	  });
+	};
+	
 	var showFormEvent = function(path) {
       axios.get(path)
         .then(function (response) {
@@ -72,6 +158,8 @@
     };
 
     $(function() {
+      bs_input_file();
+      
       $('#jsfTable').DataTable({
         columnDefs: [ { "width": "36px", "targets": 0 } ],
         language: {

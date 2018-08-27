@@ -17,22 +17,25 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.util.ExcelSubjects;
 
 @Controller
 public class SubjectController {
@@ -43,7 +46,7 @@ public class SubjectController {
   @Autowired
   SubjectRepository subjectRepo;
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/index", method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects/index")
   String index(Model model, @PathVariable("caseId") Long caseId) {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
@@ -54,7 +57,7 @@ public class SubjectController {
     return "subjects/index";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects", method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects")
   String list(Model model, @PathVariable("caseId") Long caseId) {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
@@ -64,14 +67,14 @@ public class SubjectController {
     return "subjects/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/new", method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects/new")
   String New(Model model, @PathVariable("caseId") Long caseId) {
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItem", new Subject());
     return "subjects/edit :: edit";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects", method = POST)
+  @PostMapping(path = "/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
       @RequestBody String formData) {
     Case c = caseRepo.findOne(caseId);
@@ -88,7 +91,7 @@ public class SubjectController {
     return "subjects/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/{id}", method = POST)
+  @PostMapping(path = "/cases/{caseId}/subjects/{id}")
   String update(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @RequestBody String formData) {
     Subject subject = subjectRepo.findOne(id);
@@ -98,12 +101,12 @@ public class SubjectController {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
-    model.addAttribute("jsfPath", "/cases/{caseId}/subjects");
+    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/{id}", method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects/{id}")
   String show(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
     Subject subject = subjectRepo.findOne(id);
@@ -113,7 +116,7 @@ public class SubjectController {
     return "subjects/show :: show";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/{id}/edit", method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects/{id}/edit")
   String edit(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
     Subject subject = subjectRepo.findOne(id);
@@ -123,8 +126,7 @@ public class SubjectController {
     return "subjects/edit :: edit";
   }
 
-  @RequestMapping(path = "/cases/{caseId}/subjects/{id}/status/{status}",
-      method = GET)
+  @GetMapping(path = "/cases/{caseId}/subjects/{id}/status/{status}")
   String alterStatus(@PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @PathVariable("status") String status) {
     Subject subject = subjectRepo.findOne(id);
@@ -132,6 +134,48 @@ public class SubjectController {
     subjectRepo.save(subject);
 
     return "redirect:/cases/" + caseId + "/subjects/index";
+  }
+
+  @PostMapping(path = "/cases/{caseId}/subjects/batchdating")
+  String batchDating(Model model, @PathVariable("caseId") Long caseId,
+      @RequestParam("subjectDateType") String subjectDateType,
+      @RequestParam("subjectDate") String subjectDate,
+      @RequestParam("subjectIds[]") List<Long> subjectIds) {
+    Case c = caseRepo.findOne(caseId);
+    List<Subject> subjects = c.getSubjects();
+
+    subjects.forEach(s -> {
+      if (subjectIds.contains(s.getId())) {
+        String jsonData = s.getJsonData();
+        JsonObject jo = Json.parse(jsonData).asObject();
+        jo.set(subjectDateType, subjectDate);
+        s.setJsonData(jo.toString());
+        subjectRepo.save(s);
+      }
+    });
+
+    model.addAttribute("case", c);
+    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
+    model.addAttribute("jsfItems", subjects);
+    return "subjects/index";
+  }
+
+  @PostMapping(path = "/cases/{caseId}/subjects/index")
+  String batchFile(Model model, @PathVariable("caseId") Long caseId,
+      @RequestParam("subjectFile") MultipartFile file) {
+    Case c = caseRepo.findOne(caseId);
+
+    ExcelSubjects es = new ExcelSubjects(file);
+    if (es.getErrorMessage() == null) {
+      subjectRepo.save(es.getSubjects());
+      c.getSubjects().addAll(es.getSubjects());
+      caseRepo.save(c);
+    }
+
+    model.addAttribute("case", c);
+    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
+    model.addAttribute("jsfItems", c.getSubjects());
+    return "subjects/index";
   }
 
 }

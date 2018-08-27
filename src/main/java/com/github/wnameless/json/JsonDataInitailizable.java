@@ -80,6 +80,18 @@ public interface JsonDataInitailizable {
             } catch (IllegalArgumentException | IllegalAccessException e) {}
           }
         }
+      } else if (f.isAnnotationPresent(JsonInitValue.class)) {
+        JsonInitValue jiv = f.getAnnotation(JsonInitValue.class);
+        JsonInitValueCustomizer jivc;
+        try {
+          jivc = jiv.value().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
+        try {
+          f.setAccessible(true);
+          f.set(this, jivc.toValue(jsonData));
+        } catch (IllegalArgumentException | IllegalAccessException e) {}
       }
     }
   }

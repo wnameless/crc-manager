@@ -28,9 +28,11 @@ import javax.persistence.Id;
 
 import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.json.JsonInitKey;
+import com.github.wnameless.json.JsonInitValue;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -84,6 +86,7 @@ public class Subject extends JpaJsonSchemaForm
   @GeneratedValue
   Long id;
 
+  @JsonInitValue(SubjectStatusCustomizer.class)
   Status status = Status.PRESCREENING;
 
   @JsonInitKey("lastname")

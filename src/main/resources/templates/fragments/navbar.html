@@ -17,7 +17,7 @@
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')"><a href="/search/index">案件搜尋與匯出</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a th:href="${keycloakUrl + '/auth/realms/CRCManager/account'}" class="fa fa-user-cog fa-1x"> 帳號</a></li>
+                <li><a th:href="${keycloakUrl + '/auth/realms/CRCManager/account'}" target="_blank" class="fa fa-user-cog fa-1x"> 帳號</a></li>
                 <li><a href="/logout" class="fa fa-sign-out-alt  fa-1x">登出</a></li>
             </ul>
         </div>
