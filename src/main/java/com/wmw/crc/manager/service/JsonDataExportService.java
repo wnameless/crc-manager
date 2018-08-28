@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import com.github.wnameless.workbookaccessor.WorkbookWriter;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Subject;
@@ -38,27 +39,32 @@ public class JsonDataExportService {
     WorkbookWriter ww = WorkbookWriter.openXLSX();
 
     ww.setSheetName("案件內容");
-
     JsonObject properties = jsonSchema.get("properties").asObject();
     for (String key : properties.names()) {
       if (key.equals("requiredFiles") || key.equals("preview")) continue;
 
-      ww.addRow(properties.get(key).asObject().get("title"),
-          jsonData.names().contains(key) ? jsonData.get(key).toString() : "");
+      ww.addRow(
+          properties.get(key).asObject().get("title") == null ? ""
+              : properties.get(key).asObject().get("title").asString(),
+          jsonData.names().contains(key) ? val2String(jsonData.get(key)) : "");
     }
 
     ww.createAndTurnToSheet("受試者");
     JsonObject schema = Json.parse(new Subject().getJsonSchema()).asObject();
     JsonObject props = schema.get("properties").asObject();
     ww.addRow(Ruby.Array.of(props.names())
-        .map(key -> props.get(key).asObject().get("title")));
+        .map(key -> props.get(key).asObject().get("title").asString()));
     for (Subject subject : kase.getSubjects()) {
       JsonObject data = Json.parse(subject.getJsonData()).asObject();
       ww.addRow(Ruby.Array.of(props.names()).map(
-          key -> data.names().contains(key) ? data.get(key).toString() : ""));
+          key -> data.names().contains(key) ? data.get(key).asString() : ""));
     }
 
     return ww.getWorkbook();
+  }
+
+  private String val2String(JsonValue val) {
+    return val.isString() ? val.asString() : val.toString();
   }
 
 }

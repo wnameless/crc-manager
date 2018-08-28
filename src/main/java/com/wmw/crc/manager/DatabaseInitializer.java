@@ -29,11 +29,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.google.common.io.Resources;
-import com.wmw.crc.manager.model.CRC;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -47,9 +45,6 @@ public class DatabaseInitializer {
 
   @Autowired
   CaseRepository caseRepo;
-
-  @Autowired
-  CRCRepository crcRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
@@ -95,12 +90,6 @@ public class DatabaseInitializer {
       c.setExpectedEndDate("2018/7/8");
       URL url = Resources.getResource(JsonSchemaPath.applicationData);
       c.setJsonData(Resources.toString(url, UTF_8));
-
-      CRC crc = new CRC();
-      url = Resources.getResource(JsonSchemaPath.crcData);
-      crc.setJsonData(Resources.toString(url, UTF_8));
-      crcRepo.save(crc);
-      c.setCrc(crc);
 
       Subject subject = new Subject();
       url = Resources.getResource(JsonSchemaPath.subjectData);

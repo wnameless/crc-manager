@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.repository.CRCRepository;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.service.KeycloakService;
 
@@ -46,9 +45,6 @@ public class ApiController {
 
   @Autowired
   CaseRepository caseRepo;
-
-  @Autowired
-  CRCRepository crcRepo;
 
   @Autowired
   KeycloakService keycloak;
@@ -78,10 +74,6 @@ public class ApiController {
     c.setManagers(protocol.getManagers());
     c.setEditors(protocol.getEditors());
     c.setViewers(protocol.getViewers());
-
-    com.wmw.crc.manager.model.CRC crc = new com.wmw.crc.manager.model.CRC();
-    crcRepo.save(crc);
-    c.setCrc(crc);
 
     caseRepo.save(c);
 

@@ -37,7 +37,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.json.JsonInitKey;
@@ -128,9 +127,6 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   @Enumerated(EnumType.STRING)
   Status status = Status.NEW;
-
-  @OneToOne
-  CRC crc;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),

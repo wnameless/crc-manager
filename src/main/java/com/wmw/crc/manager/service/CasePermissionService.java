@@ -47,6 +47,10 @@ public class CasePermissionService {
             .contains(auth.getName().toUpperCase());
   }
 
+  public boolean canReadClosed(Case kase) {
+    return isSuper() || isAdmin() || isOwner(kase);
+  }
+
   public boolean canWrite(Case kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
