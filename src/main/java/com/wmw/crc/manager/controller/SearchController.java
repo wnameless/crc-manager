@@ -77,7 +77,6 @@ public class SearchController {
     wb.close();
 
     byte[] documentBody = bos.toByteArray();
-    // JsonFlattener.flatten(kase.getJsonData()).getBytes();
 
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.valueOf(
