@@ -41,6 +41,8 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase())
         || Ruby.Set.copyOf(kase.getViewers()).map(String::toUpperCase)
             .contains(auth.getName().toUpperCase())
         || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
@@ -55,6 +57,8 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
+            .contains(auth.getName().toUpperCase())
         || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
             .contains(auth.getName().toUpperCase());
 
@@ -77,6 +81,8 @@ public class CasePermissionService {
   }
 
   public boolean isOwner(Case kase) {
+    if (kase.getOwner() == null) return false;
+
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return auth.getName().compareToIgnoreCase(kase.getOwner()) == 0;

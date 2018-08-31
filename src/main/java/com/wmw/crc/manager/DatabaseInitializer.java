@@ -96,6 +96,7 @@ public class DatabaseInitializer {
       subject.setJsonData(Resources.toString(url, UTF_8));
       subjectRepo.save(subject);
       c.getSubjects().add(subject);
+      c.setOwner("pi07");
 
       caseRepo.save(c);
 

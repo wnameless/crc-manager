@@ -1,36 +1,64 @@
 {
-  "title": "臨床試驗中心管理系統 測試案件 001",
-  "engTitle": "CRC MANAGER SYSTEM 001",
-  "protocolNum": "aaa1545646",
-  "protocolVersion": "Women",
-  "irbNum": "T-TSGH-2018001",
-  "crcNum": "2018001",
-  "2-1.IRB核准日期": "2018-01-15",
-  "irbApprovedNum": "2018001",
-  "accrualHospital": "50",
-  "accrualGlobal": "500",
-  "accrualTaiwan": "90",
-  "genderEnum": "女",
-  "accrualType": "病人",
-  "proposedStartDate": "2016-10-01",
-  "proposedEndDate": "2020-10-01",
-  "locations": [
-    "本院臨床試驗中心 (含汀洲院區臨床試驗中心)",
-    "門診處",
-    "病房"
+  "title": "試驗中文名稱",
+  "engTitle": ".試驗英文名稱",
+  "protocolNum": "試驗編號",
+  "protocolVersion": "本",
+  "irbNum": "IRB編號",
+  "crcNum": "CRC編號",
+  "2-1.IRB核准日期": "2018-06-01",
+  "irbApprovedNum": "IRB核准編號IRB核准編號",
+  "dohFlg": true,
+  "2-4.衛福部核准日期": "2018-06-01",
+  "dohApprovedNum": "asas",
+  "dohReason": "asasas",
+  "PI": [
+    {
+      "name": "sdf",
+      "title": "123",
+      "branch": "444",
+      "phone": "555",
+      "email1": "666",
+      "email2": "777"
+    }
   ],
-  "funds": [
-    "學術研究單位"
+  "LAIs": [
+    {
+      "name": "lai1",
+      "title": "bbb",
+      "branch": "ccc",
+      "phone": "ddd",
+      "email1": "eee",
+      "email2": "fff"
+    },
+    {
+      "name": "lai2"
+    }
   ],
-  "sponsorName": "輝瑞大藥廠股份有限公司",
-  "sponsorAddress": "251新北市淡水區中正東路二段177號",
-  "croName": "丘以思生技顧問有限公司",
-  "croAddress": " 110信義區松仁路101號",
-  "insuranceFlg": "有",
-  "insuranceInst": "台灣人壽",
-  "insuranceAmount": "200萬",
-  "nihFlg": "否",
-  "nihReason": "測試案件",
-  "contractFlg": "否",
-  "7.試驗預計執行起迄時間": "2018-01-15"
+  "AIs": [
+    {
+      "name": "ai1",
+      "title": "bbb",
+      "branch": "ccc",
+      "phone": "ddd",
+      "email1": "eee",
+      "email2": "fff"
+    },
+    {
+      "name": "ai2"
+    }
+  ],
+  "researchType": false,
+  "trialCategory": "tech",
+  "drugOptions": "useway",
+  "efficiencyOptions": "sideEffects",
+  "phase": "PhaseI/II",
+  "studyType": "Taiwan",
+  "locationType": "multiCountry",
+  "accrualHospital": "1234",
+  "accrualGlobal": "4567",
+  "accrualTaiwan": "5555",
+  "genderEnum": "男",
+  "accrualType": "健康受試者",
+  "requiredFiles": {},
+  "preview": {}
 }

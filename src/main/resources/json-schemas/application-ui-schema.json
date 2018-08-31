@@ -1,4 +1,70 @@
 {
+  "title": {
+    "ui:readonly": true
+  },
+  "engTitle": {
+    "ui:readonly": true
+  },
+  "protocolVersion": {
+    "ui:readonly": true
+  },
+  "irbNum": {
+    "ui:readonly": true
+  },
+  "2-1.IRB核准日期": {
+    "ui:readonly": true
+  },
+  "irbApprovedNum": {
+    "ui:readonly": true
+  },
+  "accrualHospital": {
+    "ui:readonly": true
+  },
+  "accrualGlobal": {
+    "ui:readonly": true
+  },
+  "accrualTaiwan": {
+    "ui:readonly": true
+  },
+  "genderEnum": {
+    "ui:readonly": true
+  },
+  "accrualType": {
+    "ui:readonly": true
+  },
+  "proposedStartDate": {
+    "ui:readonly": true
+  },
+  "proposedEndDate": {
+    "ui:readonly": true
+  },
+  "dohFlg": {
+    "ui:widget": "radio"
+  },
+  "researchType": {
+    "ui:widget": "radio"
+  },
+  "PI": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
+  "LAIs": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
+  "AIs": {
+    "ui:options": {
+      "addable": false,
+      "orderable": false,
+      "removable": false
+    }
+  },
   "locations": {
     "ui:widget": "checkboxes"
   },

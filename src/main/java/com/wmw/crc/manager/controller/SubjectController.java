@@ -67,6 +67,7 @@ public class SubjectController {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";
@@ -91,6 +92,7 @@ public class SubjectController {
     c.getSubjects().add(s);
     caseRepo.save(c);
 
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", c.getSubjects());
     return "subjects/list :: list";
@@ -106,6 +108,7 @@ public class SubjectController {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";

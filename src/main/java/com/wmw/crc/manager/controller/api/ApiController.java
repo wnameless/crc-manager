@@ -22,6 +22,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,11 +71,19 @@ public class ApiController {
     Case c = new Case();
     c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
 
-    c.setOwner(protocol.getOwner());
-    c.setManagers(protocol.getManagers());
-    c.setEditors(protocol.getEditors());
-    c.setViewers(protocol.getViewers());
-
+    c.setOwner(protocol.getOwner().toLowerCase());
+    if (protocol.getManagers() != null) {
+      c.getManagers().addAll(protocol.getManagers().stream()
+          .map(String::toLowerCase).collect(Collectors.toSet()));
+    }
+    if (protocol.getEditors() != null) {
+      c.getEditors().addAll(protocol.getEditors().stream()
+          .map(String::toLowerCase).collect(Collectors.toSet()));
+    }
+    if (protocol.getViewers() != null) {
+      c.getViewers().addAll(protocol.getViewers().stream()
+          .map(String::toLowerCase).collect(Collectors.toSet()));
+    }
     caseRepo.save(c);
 
     return "New ok";
@@ -95,7 +104,7 @@ public class ApiController {
   String createUser(@RequestBody KeycloakUser user) {
     UserRepresentation ur = new UserRepresentation();
 
-    ur.setUsername(user.getUsername());
+    ur.setUsername(user.getUsername().toLowerCase());
     ur.setEmail(user.getEmail());
     ur.setFirstName(user.getFirstName());
     ur.setLastName(user.getLastName());

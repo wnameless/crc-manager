@@ -17,6 +17,8 @@
  */
 package com.wmw.crc.manager.repository;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +35,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Criterion;
+import com.wmw.crc.manager.util.MinimalJsonUtils;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
@@ -63,7 +66,9 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
 
       if (criteria.get(key).get(0) instanceof String) {
         String target = data.asObject().get(key).isString()
-            ? data.asObject().get(key).asString() : "";
+            ? data.asObject().get(key).asString() : MinimalJsonUtils
+                .findFirstAsString(data.asObject().get(key), "name");
+
         RubyArray<String> strings =
             Ruby.Array.of(criteria.get(key)).map(o -> o.toString());
 
@@ -117,8 +122,18 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
     }
 
     String username = auth.getName();
-    return findByOwnerEqualsOrManagersInOrEditorsInOrViewersInAndStatus(
-        username, username, username, username, status);
+    List<Case> targets = newArrayList();
+    for (Case c : findAll()) {
+      if (c.getStatus().equals(status)) {
+        if (username.equals(c.getOwner()) //
+            || c.getManagers().contains(username)
+            || c.getEditors().contains(username)
+            || c.getViewers().contains(username)) {
+          targets.add(c);
+        }
+      }
+    }
+    return targets;
   }
 
   List<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(

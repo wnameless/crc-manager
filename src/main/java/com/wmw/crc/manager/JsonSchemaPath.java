@@ -20,15 +20,11 @@ package com.wmw.crc.manager;
 public final class JsonSchemaPath {
 
   public static final String applicationSchema =
-      "json-schemas/0601application-schema.json";
+      "json-schemas/application-schema.json";
   public static final String applicationUISchema =
-      "json-schemas/0601application-ui-schema.json";
+      "json-schemas/application-ui-schema.json";
   public static final String applicationData =
-      "json-schemas/0601application-data.json";
-
-  public static final String crcSchema = "json-schemas/crc-schema.json";
-  public static final String crcUISchema = "json-schemas/crc-ui-schema.json";
-  public static final String crcData = "json-schemas/crc-data.json";
+      "json-schemas/application-data.json";
 
   public static final String subjectSchema = "json-schemas/subject-schema.json";
   public static final String subjectUISchema =

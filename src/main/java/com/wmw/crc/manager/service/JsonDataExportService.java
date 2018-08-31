@@ -57,7 +57,7 @@ public class JsonDataExportService {
     for (Subject subject : kase.getSubjects()) {
       JsonObject data = Json.parse(subject.getJsonData()).asObject();
       ww.addRow(Ruby.Array.of(props.names()).map(
-          key -> data.names().contains(key) ? data.get(key).asString() : ""));
+          key -> data.names().contains(key) ? val2String(data.get(key)) : ""));
     }
 
     return ww.getWorkbook();

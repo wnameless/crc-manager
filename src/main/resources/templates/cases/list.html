@@ -30,13 +30,13 @@
 							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"
 							class="divider"></li>
 						<li
-							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
-								class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/none'}">無主計編號</a></li>
-						<li
 							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/exec'}">分發 PI</a></li>
+						<li
+							th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
+								class="dropdown-item"
+								th:href="@{'/cases/' + ${case.id} + '/status/none'}">無主計編號</a></li>
 						<li
 							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}"><a
 								class="dropdown-item"

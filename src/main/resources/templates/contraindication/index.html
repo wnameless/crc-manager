@@ -21,7 +21,8 @@
 						style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
 						<li class="list-group-item"
 							th:each="cd : ${case.contraindications}"><span
-								th:text="${cd.phrase + ' - ' + cd.atcCode}"></span> <a
+								th:text="'關鍵字: ' + (${#strings.isEmpty(cd.phrase)} ?  '無' : '[ ' + ${cd.phrase} + ' ]') + ' / ' + 'ATC字首: ' + (${#strings.isEmpty(cd.atcCode)} ? '無' : '[ ' + ${cd.atcCode} + ' ]')"></span>
+							<a
 								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
 								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
 									style="color: red; margin-top: 3px;"></i>

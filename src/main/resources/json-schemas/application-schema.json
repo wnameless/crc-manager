@@ -34,6 +34,233 @@
       "type": "string",
       "title": "2-2.IRB核准編號"
     },
+    "dohFlg": {
+      "type": "boolean",
+      "title": "2-3.",
+      "enumNames": [
+        "本試驗已通過衛福部審核",
+        "本試驗不需送衛福部審核"
+      ]
+    },
+    "2-4.衛福部核准日期": {
+      "type": "string",
+      "format": "date"
+    },
+    "dohApprovedNum": {
+      "type": "string",
+      "title": "2-5.衛福部核准編號"
+    },
+    "dohReason": {
+      "type": "string",
+      "title": "原因"
+    },
+    "PI": {
+      "type": "array",
+      "title": "3-1. 試驗主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "LAIs": {
+      "type": "array",
+      "title": "3-2. 共同主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "AIs": {
+      "type": "array",
+      "title": "3-3. 協同主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "researchType": {
+      "type": "boolean",
+      "title": "4.研究類型",
+      "enumNames": [
+        "一般學術研究/發表",
+        "人體試驗"
+      ]
+    },
+    "trialCategory": {
+      "title": " ",
+      "type": "string",
+      "enum": [
+        "tech",
+        "drug",
+        "device",
+        "BA/BE"
+      ],
+      "enumNames": [
+        "1. 新醫療技術",
+        "2. 新藥品",
+        "3. 新醫療器材",
+        "4. 學名藥BA/BE"
+      ]
+    },
+    "drugOptions": {
+      "title": " ",
+      "type": "string",
+      "enum": [
+        "component",
+        "efficiency",
+        "useway"
+      ],
+      "enumNames": [
+        "2.1 新成份",
+        "2.2 新療效複方",
+        "2.3 新使用途徑"
+      ]
+    },
+    "efficiencyOptions": {
+      "title": " ",
+      "type": "string",
+      "enum": [
+        "newIndications",
+        "sideEffects",
+        "strength",
+        "time",
+        "dose",
+        "compound"
+      ],
+      "enumNames": [
+        "2.2.1 新適應症",
+        "2.2.2 降低副作用",
+        "2.2.3 改善療效強度",
+        "2.2.4 改善療效時間",
+        "2.2.5 改變使用劑量",
+        "2.2.6 複方"
+      ]
+    },
+    "phase": {
+      "title": " ",
+      "type": "string",
+      "enum": [
+        "Phase0",
+        "PhaseI",
+        "PhaseI/II",
+        "PhaseII",
+        "PhaseII/III",
+        "PhaseIII",
+        "PhaseIV"
+      ],
+      "enumNames": [
+        "A. Phase 0",
+        "B. Phase I",
+        "C. Phase I / II",
+        "D. Phase II",
+        "E. Phase II / III",
+        "F. Phase III",
+        "G. Phase IV (PMS)"
+      ]
+    },
+    "studyType": {
+      "title": "5-1. 計畫型態",
+      "type": "string",
+      "enum": [
+        "world",
+        "Taiwan",
+        "N/A"
+      ],
+      "enumNames": [
+        "First in World",
+        "First in Taiwan",
+        "不適用"
+      ]
+    },
+    "locationType": {
+      "title": "5-2.",
+      "type": "string",
+      "enum": [
+        "multiCountry",
+        "multi",
+        "one"
+      ],
+      "enumNames": [
+        "多國多中心",
+        "單國多中心",
+        "單一中心"
+      ]
+    },
     "accrualHospital": {
       "type": "string",
       "title": "6.試驗預計收納受試者",
