@@ -40,7 +40,7 @@ import com.wmw.crc.manager.util.MinimalJsonUtils;
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
-@Repository
+@Repository("caseRepo")
 public interface CaseRepository extends JpaRepository<Case, Long> {
 
   default List<Case> findByUserAndCriteria(Authentication auth,

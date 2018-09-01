@@ -24,6 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +46,7 @@ public class CaseOperationController {
   @Autowired
   KeycloakService keycloak;
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
   String alterStatus(@PathVariable("id") Long id,
       @PathVariable("status") String status) {
@@ -56,6 +58,7 @@ public class CaseOperationController {
     return "redirect:/cases/index?" + currentStatus;
   }
 
+  @PreAuthorize("@perm.canAssign()")
   @RequestMapping(path = "/cases/{id}/assignment", method = GET)
   String assignment(Model model, @PathVariable("id") Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
@@ -63,6 +66,7 @@ public class CaseOperationController {
     return "cases/assignment/index";
   }
 
+  @PreAuthorize("@perm.canAssign()")
   @RequestMapping(path = "/cases/{id}/assignment", method = POST)
   String assign(@PathVariable("id") Long id,
       @RequestParam("username") String username) {
@@ -74,6 +78,7 @@ public class CaseOperationController {
     return "redirect:/cases/index?new";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission", method = GET)
   String permission(Model model, @PathVariable("id") Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
@@ -81,6 +86,7 @@ public class CaseOperationController {
     return "cases/permission/index";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/managers", method = POST)
   String addManager(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
@@ -94,6 +100,7 @@ public class CaseOperationController {
     return "cases/permission/manager-list :: manager-list";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/managers", method = DELETE)
   String removeManager(Model model, @PathVariable("id") Long id,
       @RequestParam("manager") String manager) {
@@ -106,6 +113,7 @@ public class CaseOperationController {
     return "cases/permission/manager-list :: manager-list";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/editors", method = POST)
   String addEditor(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
@@ -119,6 +127,7 @@ public class CaseOperationController {
     return "cases/permission/editor-list :: editor-list";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/editors", method = DELETE)
   String removeEditor(Model model, @PathVariable("id") Long id,
       @RequestParam("editor") String editor) {
@@ -131,6 +140,7 @@ public class CaseOperationController {
     return "cases/permission/editor-list :: editor-list";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = POST)
   String addViewer(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body) {
@@ -144,8 +154,9 @@ public class CaseOperationController {
     return "cases/permission/viewer-list :: viewer-list";
   }
 
+  @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = DELETE)
-  String removeViewerr(Model model, @PathVariable("id") Long id,
+  String removeViewer(Model model, @PathVariable("id") Long id,
       @RequestParam("viewer") String viewer) {
     Case kase = caseRepo.findOne(id);
     kase.getViewers().remove(viewer);

@@ -35,7 +35,7 @@
 				<th>狀態</th>
 				<th>名字</th>
 				<th>身分證字號</th>
-				<th></th>
+				<th>動作</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -48,22 +48,27 @@
 				</td>
 				<td th:text="${subject.status}"></td>
 				<td th:text="${subject.name}"></td>
-				<td th:text="${subject.nationalId}"></td>
-				<td><a th:if="${@perm.canRead(case)}" href="#"
-						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }">
-						<span>
-							<i class="fa fa-search"></i>
-						</span>
-					</a> <span th:if="${!@perm.canRead(case)}">
-						<i class="fa fa-search"></i>
-					</span> | <a th:if="${@perm.canWrite(case)}" href="#"
+				<td>
+					<a th:if="${@perm.canRead(case)}" href="#"
+						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }"
+						th:text="${subject.nationalId}"> </a>
+					<a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}">
+					</a>
+				</td>
+				<td>
+					<a th:if="${@perm.canWrite(case)}" href="#"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
-					</a> <span th:if="${!@perm.canWrite(case)}">
+					</a>
+					<span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
-					</span></td>
+					</span>
+					<span th:if="${@perm.canDeleteSubject(case)}">
+						<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
+					</span>
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -92,7 +97,8 @@
 					<input type="text" class="form-control"
 						placeholder='Choose a file...' />
 					<span class="input-group-btn">
-						<button id="uploadBtn" class="btn btn-warning" type="submit" disabled>上傳名單</button>
+						<button id="uploadBtn" class="btn btn-warning" type="submit"
+							disabled>上傳名單</button>
 					</span>
 				</div>
 			</div>

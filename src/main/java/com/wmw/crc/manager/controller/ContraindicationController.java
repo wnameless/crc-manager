@@ -3,6 +3,7 @@ package com.wmw.crc.manager.controller;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class ContraindicationController {
   @Autowired
   ContraindicationRepository contraindicationRepo;
 
+  @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}/contraindications")
   String index(Model model, @PathVariable("id") Long id) {
     Case c = caseRepo.findOne(id);
@@ -39,6 +41,7 @@ public class ContraindicationController {
     return "contraindication/index";
   }
 
+  @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("cases/{id}/contraindications")
   String add(Model model, @PathVariable("id") Long id,
       @RequestParam("phrase") String phrase,
@@ -60,6 +63,7 @@ public class ContraindicationController {
     return "contraindication/index";
   }
 
+  @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("cases/{id}/contraindications/{cdId}")
   String remove(Model model, @PathVariable("id") Long id,
       @PathVariable("cdId") Long cdId) {

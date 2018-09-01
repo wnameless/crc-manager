@@ -18,8 +18,6 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.List;
 import java.util.Map;
@@ -27,12 +25,14 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wmw.crc.manager.model.Case;
@@ -44,7 +44,8 @@ public class CaseController {
   @Autowired
   CaseRepository caseRepo;
 
-  @RequestMapping(path = "/cases/index", method = GET)
+  @PreAuthorize("@perm.isUser()")
+  @GetMapping("/cases/index")
   String index(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
     List<Case> cases = getCasesBySession(auth, session, allRequestParams);
@@ -54,7 +55,8 @@ public class CaseController {
     return "cases/index";
   }
 
-  @RequestMapping(path = "/cases", method = GET)
+  @PreAuthorize("@perm.isUser()")
+  @GetMapping("/cases")
   String list(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
     List<Case> cases = getCasesBySession(auth, session, allRequestParams);
@@ -64,7 +66,8 @@ public class CaseController {
     return "cases/list :: list";
   }
 
-  @RequestMapping(path = "/cases/{id}", method = GET)
+  @PreAuthorize("@perm.canRead(#id)")
+  @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
     Case c = caseRepo.findOne(id);
 
@@ -73,7 +76,8 @@ public class CaseController {
     return "cases/show :: show";
   }
 
-  @RequestMapping(path = "/cases/{id}/edit", method = GET)
+  @PreAuthorize("@perm.canWrite(#id)")
+  @GetMapping("/cases/{id}/edit")
   String edit(Model model, @PathVariable("id") Long id) {
     Case c = caseRepo.findOne(id);
 
@@ -82,7 +86,8 @@ public class CaseController {
     return "cases/edit :: edit";
   }
 
-  @RequestMapping(path = "/cases/{id}", method = POST)
+  @PreAuthorize("@perm.canWrite(#id)")
+  @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id, @RequestBody String formData) {
     Case c = caseRepo.findOne(id);
@@ -93,6 +98,19 @@ public class CaseController {
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "cases/list :: list";
+  }
+
+  @PreAuthorize("@perm.canDelete()")
+  @GetMapping("/cases/{id}/delete")
+  String delete(HttpSession session, Authentication auth, Model model,
+      @PathVariable("id") Long id) {
+    Case c = caseRepo.findOne(id);
+    caseRepo.delete(c);
+
+    List<Case> cases = getCasesBySession(auth, session, newHashMap());
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItems", cases);
+    return "redirect:/cases/index";
   }
 
   private List<Case> getCasesBySession(Authentication auth, HttpSession session,

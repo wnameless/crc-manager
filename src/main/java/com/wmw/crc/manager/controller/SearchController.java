@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,12 +50,14 @@ public class SearchController {
   @Autowired
   JsonDataExportService dataExport;
 
+  @PreAuthorize("@perm.isUser()")
   @GetMapping("/search/index")
   String index(Model model) {
     model.addAttribute("propertyTitles", new Case().propertyTitles());
     return "search/index";
   }
 
+  @PreAuthorize("@perm.isUser()")
   @PostMapping("/search")
   String search(Model model, Authentication auth,
       @RequestBody List<Criterion> criteria) {
@@ -65,6 +68,7 @@ public class SearchController {
     return "search/result :: result";
   }
 
+  @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/download/case/{id}")
   @ResponseBody
   HttpEntity<byte[]> download(@PathVariable("id") Long id) throws IOException {
