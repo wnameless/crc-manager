@@ -45,8 +45,8 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase());
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase());
   }
 
   public boolean canManage(Long caseId) {
@@ -58,12 +58,12 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase())
-        || Ruby.Set.copyOf(kase.getViewers()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase())
-        || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase());
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase())
+        || Ruby.Set.copyOf(kase.getViewers()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase())
+        || Ruby.Set.copyOf(kase.getEditors()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase());
   }
 
   public boolean canRead(Long caseId) {
@@ -79,10 +79,10 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase())
-        || Ruby.Set.copyOf(kase.getEditors()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase());
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase())
+        || Ruby.Set.copyOf(kase.getEditors()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase());
   }
 
   public boolean canWrite(Long caseId) {
@@ -114,8 +114,13 @@ public class CasePermissionService {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
-        || Ruby.Set.copyOf(kase.getManagers()).map(String::toUpperCase)
-            .contains(auth.getName().toUpperCase());
+        || Ruby.Set.copyOf(kase.getManagers()).map(String::toLowerCase)
+            .contains(auth.getName().toLowerCase());
+  }
+
+  public boolean canDeleteSubject(Long caseId) {
+    Case kase = caseRepo.findOne(caseId);
+    return canDeleteSubject(kase);
   }
 
   public boolean isOwner(Case kase) {

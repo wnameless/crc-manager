@@ -65,9 +65,13 @@
 					<span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
 					</span>
-					<span th:if="${@perm.canDeleteSubject(case)}">
-						<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
-					</span>
+					<a th:if="${@perm.canDeleteSubject(case)}"
+						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
+						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
+						<span>
+							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
+						</span>
+					</a>
 				</td>
 			</tr>
 		</tbody>
