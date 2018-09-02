@@ -17,15 +17,19 @@
  */
 package com.wmw.crc.manager.service;
 
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 import com.github.wnameless.workbookaccessor.WorkbookWriter;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.util.MinimalJsonUtils;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -43,10 +47,15 @@ public class JsonDataExportService {
     for (String key : properties.names()) {
       if (key.equals("requiredFiles") || key.equals("preview")) continue;
 
-      ww.addRow(
-          properties.get(key).asObject().get("title") == null ? ""
-              : properties.get(key).asObject().get("title").asString(),
-          jsonData.names().contains(key) ? val2String(jsonData.get(key)) : "");
+      List<Object> row = newArrayList();
+      row.add(properties.get(key).asObject().get("title") == null ? key
+          : properties.get(key).asObject().get("title").asString());
+      if (jsonData.names().contains(key)) {
+        row.addAll(MinimalJsonUtils.splitValToList(jsonData.get(key)));
+      } else {
+        row.add("");
+      }
+      ww.addRow(row);
     }
 
     ww.createAndTurnToSheet("受試者");
@@ -56,15 +65,12 @@ public class JsonDataExportService {
         .map(key -> props.get(key).asObject().get("title").asString()));
     for (Subject subject : kase.getSubjects()) {
       JsonObject data = Json.parse(subject.getJsonData()).asObject();
-      ww.addRow(Ruby.Array.of(props.names()).map(
-          key -> data.names().contains(key) ? val2String(data.get(key)) : ""));
+      ww.addRow(
+          Ruby.Array.of(props.names()).map(key -> data.names().contains(key)
+              ? MinimalJsonUtils.val2String(data.get(key)) : ""));
     }
 
     return ww.getWorkbook();
-  }
-
-  private String val2String(JsonValue val) {
-    return val.isString() ? val.asString() : val.toString();
   }
 
 }

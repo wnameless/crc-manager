@@ -1,5 +1,9 @@
 package com.wmw.crc.manager.util;
 
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.List;
+
 import com.eclipsesource.json.JsonValue;
 
 public class MinimalJsonUtils {
@@ -29,6 +33,30 @@ public class MinimalJsonUtils {
       }
     }
     return "";
+  }
+
+  public static List<String> splitValToList(JsonValue jv) {
+    List<String> vals = newArrayList();
+
+    if (jv.isArray()) {
+      for (JsonValue val : jv.asArray()) {
+        if (val.isObject() && val.asObject().names().contains("name")) {
+          vals.add(val2String(val.asObject().get("name")));
+        } else {
+          vals.add(val2String(val));
+        }
+      }
+    } else if (jv.isObject() && jv.asObject().names().contains("name")) {
+      vals.add(val2String(jv.asObject().get("name")));
+    } else {
+      vals.add(val2String(jv));
+    }
+
+    return vals;
+  }
+
+  public static String val2String(JsonValue val) {
+    return val.isString() ? val.asString() : val.toString();
   }
 
 }
