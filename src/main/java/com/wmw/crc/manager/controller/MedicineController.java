@@ -15,39 +15,26 @@
  * the License.
  *
  */
-package com.wmw.crc.manager;
-
-import javax.annotation.PostConstruct;
+package com.wmw.crc.manager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.repository.MedicineRepository;
 
-@Profile("prod")
-@Component
-public class DBInitializer {
+@RestController
+public class MedicineController {
 
   @Autowired
-  MedicineRepository medicineRepo;
+  private MedicineRepository medcineRepo;
 
-  @PostConstruct
-  void init() {
-    if (medicineRepo.count() == 0) {
-      Medicine m1 = new Medicine();
-      m1.setName("普拿疼");
-      m1.setEngName("Acetaminophen");
-      m1.setAtcCode1("N02BE01");
-      medicineRepo.save(m1);
-
-      Medicine m2 = new Medicine();
-      m2.setName("百憂解");
-      m2.setEngName("Fluoxetine");
-      m2.setAtcCode1("N06AB03");
-      medicineRepo.save(m2);
-    }
+  @GetMapping("/data/medicines")
+  public DataTablesOutput<Medicine> getUsers(DataTablesInput input) {
+    return medcineRepo.findAll(input);
   }
 
 }

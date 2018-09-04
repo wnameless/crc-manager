@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wmw</groupId>
@@ -46,6 +47,11 @@
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.darrachequesne</groupId>
+			<artifactId>spring-data-jpa-datatables</artifactId>
+			<version>4.3</version>
 		</dependency>
 
 		<!-- Keycloak -->
@@ -253,7 +259,8 @@
 					<appName>${heroku.appName}</appName>
 					<jdkVersion>1.8</jdkVersion>
 					<processTypes>
-						<web>java -Dserver.port=$PORT -jar target/crc-manager-${project.version}.jar</web>
+						<web>java -Dserver.port=$PORT -jar
+							target/crc-manager-${project.version}.jar</web>
 					</processTypes>
 				</configuration>
 			</plugin>

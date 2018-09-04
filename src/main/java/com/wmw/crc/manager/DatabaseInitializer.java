@@ -108,6 +108,12 @@ public class DatabaseInitializer {
     m1.setEngName("Acetaminophen");
     m1.setAtcCode1("N02BE01");
     medicineRepo.save(m1);
+
+    Medicine m2 = new Medicine();
+    m2.setName("百憂解");
+    m2.setEngName("Fluoxetine");
+    m2.setAtcCode1("N06AB03");
+    medicineRepo.save(m2);
   }
 
 }

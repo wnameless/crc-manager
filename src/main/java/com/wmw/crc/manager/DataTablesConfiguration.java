@@ -15,21 +15,13 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.repository;
+package com.wmw.crc.manager;
 
-import java.util.List;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-import org.springframework.stereotype.Repository;
-
-import com.wmw.crc.manager.model.Medicine;
-
-@Repository
-public interface MedicineRepository
-    extends DataTablesRepository<Medicine, Long> {
-
-  List<Medicine> findByNameContainsOrEngNameContainsAllIgnoreCase(String name,
-      String engName, Pageable pageRequest);
-
-}
+@Configuration
+@EnableJpaRepositories(
+    repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
+public class DataTablesConfiguration {}

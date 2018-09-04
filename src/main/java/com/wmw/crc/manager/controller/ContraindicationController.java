@@ -37,7 +37,6 @@ public class ContraindicationController {
     Case c = caseRepo.findOne(id);
 
     model.addAttribute("case", c);
-    model.addAttribute("medicines", medicineRepo.findAll());
     return "contraindication/index";
   }
 
@@ -59,7 +58,6 @@ public class ContraindicationController {
     }
 
     model.addAttribute("case", c);
-    model.addAttribute("medicines", medicineRepo.findAll());
     return "contraindication/index";
   }
 
@@ -74,7 +72,6 @@ public class ContraindicationController {
     caseRepo.save(c);
 
     model.addAttribute("case", c);
-    model.addAttribute("medicines", medicineRepo.findAll());
     return "contraindication/index";
   }
 
