@@ -107,6 +107,9 @@ public class DatabaseInitializer {
     m1.setName("普拿疼");
     m1.setEngName("Acetaminophen");
     m1.setAtcCode1("N02BE01");
+    m1.setAtcCode2("N02BE01");
+    m1.setAtcCode3("N02BE01");
+    m1.setAtcCode4("N02BE01");
     medicineRepo.save(m1);
 
     Medicine m2 = new Medicine();

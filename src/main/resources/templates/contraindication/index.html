@@ -37,7 +37,7 @@
 		</div>
 
 		<div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-			<form th:action="${ '/cases/' + case.id + '/contraindications' }"
+			<form th:action="@{ '/cases/' + ${case.id} + '/contraindications' }"
 				method="POST" class="form-row">
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-4">
@@ -64,10 +64,10 @@
 					<tr>
 						<th>名稱</th>
 						<th>英文名稱</th>
-						<th>ATC 1</th>
-						<th>ATC 2</th>
-						<th>ATC 3</th>
-						<th>ATC 4</th>
+						<th>ATC1</th>
+						<th>ATC2</th>
+						<th>ATC3</th>
+						<th>ATC4</th>
 					</tr>
 				</thead>
 			</table>
