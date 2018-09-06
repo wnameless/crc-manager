@@ -1,5 +1,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
+	<h3 th:inline="text">
+		<span class="glyphicon glyphicon-list-alt"></span>
+		[[${case.trialName}]]
+		<a href="/cases/index">
+			<span class="fa fa-undo" style="color: green;"></span>
+		</a>
+	</h3>
+	<hr>
 	<form th:if="${@perm.canWrite(case)}" id="batchDating"
 		th:action="${ jsfPath + '/batchdating' }" method="POST">
 		<div class="form-row">

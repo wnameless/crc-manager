@@ -10,6 +10,14 @@
 	<div class="container">
 		<div style="height: 300px;"
 			class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+			<h3 th:inline="text">
+				<span class="glyphicon glyphicon-list-alt"></span>
+				[[${case.trialName}]]
+				<a href="/cases/index">
+					<span class="fa fa-undo" style="color: green;"></span>
+				</a>
+			</h3>
+			<hr>
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab"
 						href="#contraindications">禁忌用藥</a></li>

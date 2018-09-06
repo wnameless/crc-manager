@@ -9,7 +9,15 @@
 
 	<div class="container">
 		<div style="height: 300px;"
-			class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+			<h3 th:inline="text">
+				<span class="glyphicon glyphicon-list-alt"></span>
+				[[${case.trialName}]]
+				<a href="/cases/index">
+					<span class="fa fa-undo" style="color: green;"></span>
+				</a>
+			</h3>
+			<hr>
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#managers">管理者</a></li>
 				<li><a data-toggle="tab" href="#editors">編輯者</a></li>
@@ -33,7 +41,7 @@
 		</div>
 
 		<div
-			class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 			<table id="userTable" class="display">
 				<thead>
 					<tr>
@@ -45,8 +53,9 @@
 				</thead>
 				<tbody>
 					<tr th:each="user : ${users}">
-						<td><a class="usernameSelect" href="#"
-								th:text="${user.username}"></a></td>
+						<td>
+							<a class="usernameSelect" href="#" th:text="${user.username}"></a>
+						</td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.firstName}"></td>
