@@ -56,31 +56,25 @@
 				</td>
 				<td th:text="${subject.status}"></td>
 				<td th:text="${subject.name}"></td>
-				<td>
-					<a th:if="${@perm.canRead(case)}" href="#"
+				<td><a th:if="${@perm.canRead(case)}" href="#"
 						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }"
-						th:text="${subject.nationalId}"> </a>
-					<a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}">
-					</a>
-				</td>
-				<td>
-					<a th:if="${@perm.canWrite(case)}" href="#"
+						th:text="${subject.nationalId}"> </a> <a
+						th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}">
+					</a></td>
+				<td><a th:if="${@perm.canWrite(case)}" href="#"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
-					</a>
-					<span th:if="${!@perm.canWrite(case)}">
+					</a> <span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
-					</span>
-					<a th:if="${@perm.canDeleteSubject(case)}"
+					</span> <a th:if="${@perm.canDeleteSubject(case)}"
 						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>
-					</a>
-				</td>
+					</a></td>
 			</tr>
 		</tbody>
 	</table>
@@ -118,7 +112,6 @@
 		</form>
 	</div>
 
-	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
 	function bs_input_file() {
 		$(".input-file").before(

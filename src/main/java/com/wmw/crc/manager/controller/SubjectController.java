@@ -17,6 +17,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.util.EntityUtils.findChildById;
 import static com.wmw.crc.manager.util.EntityUtils.findChildByValue;
 
@@ -200,20 +201,29 @@ public class SubjectController {
   @PostMapping("/cases/{caseId}/subjects/batchdating")
   String batchDating(Model model, @PathVariable("caseId") Long caseId,
       @RequestParam("subjectDateType") String subjectDateType,
-      @RequestParam("subjectDate") String subjectDate,
-      @RequestParam("subjectIds[]") List<Long> subjectIds) {
+      @RequestParam(name = "subjectDate", required = false) String subjectDate,
+      @RequestParam(name = "subjectIds[]",
+          required = false) List<Long> subjectIds) {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
-    subjects.forEach(s -> {
-      if (subjectIds.contains(s.getId())) {
-        String jsonData = s.getJsonData();
-        JsonObject jo = Json.parse(jsonData).asObject();
-        jo.set(subjectDateType, subjectDate);
-        s.setJsonData(jo.toString());
-        subjectRepo.save(s);
-      }
-    });
+    if (isNullOrEmpty(subjectDate)) {
+      model.addAttribute("message", "日期未選擇");
+    } else if (subjectIds == null) {
+      model.addAttribute("message", "受試者未選擇");
+    }
+
+    if (!isNullOrEmpty(subjectDate) && subjectIds != null) {
+      subjects.forEach(s -> {
+        if (subjectIds.contains(s.getId())) {
+          String jsonData = s.getJsonData();
+          JsonObject jo = Json.parse(jsonData).asObject();
+          jo.set(subjectDateType, subjectDate);
+          s.setJsonData(jo.toString());
+          subjectRepo.save(s);
+        }
+      });
+    }
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
