@@ -2,6 +2,14 @@
 <div th:fragment="new">
 	<div
 		class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+		<h3 th:inline="text">
+			<span class="glyphicon glyphicon-list-alt"></span>
+			[[${case.trialName}]]
+			<a th:href="@{'/cases/' + ${case.id} + '/subjects/index'}">
+				<span class="fa fa-undo" style="color: green;"></span>
+			</a>
+		</h3>
+		<hr>
 		<div class="row">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-6">

@@ -85,6 +85,9 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/new")
   String newItem(Model model, @PathVariable("caseId") Long caseId) {
+    Case c = caseRepo.findOne(caseId);
+
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItem", new Subject());
     return "subjects/new :: new";
@@ -147,6 +150,7 @@ public class SubjectController {
     Case c = caseRepo.findOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItem", subject);
     return "subjects/show :: show";
@@ -159,6 +163,7 @@ public class SubjectController {
     Case c = caseRepo.findOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
+    model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects/" + id);
     model.addAttribute("jsfItem", subject);
     return "subjects/edit :: edit";

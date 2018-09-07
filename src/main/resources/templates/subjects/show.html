@@ -1,10 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="show">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <div id="jsfForm"></div>
-    </div>
+	<div
+		class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+		<h3 th:inline="text">
+			<span class="glyphicon glyphicon-list-alt"></span>
+			[[${case.trialName}]]
+			<a th:href="@{'/cases/' + ${case.id} + '/subjects/index'}">
+				<span class="fa fa-undo" style="color: green;"></span>
+			</a>
+		</h3>
+		<hr>
+		<div id="jsfForm"></div>
+	</div>
 
-    <script type="text/javascript" th:inline="javascript">
+	<script type="text/javascript" th:inline="javascript">
     var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
     var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
     var formData = JSON.parse([[${jsfItem.jsonData}]]);
