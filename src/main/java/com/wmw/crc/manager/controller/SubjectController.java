@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
@@ -199,7 +200,8 @@ public class SubjectController {
 
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects/batchdating")
-  String batchDating(Model model, @PathVariable("caseId") Long caseId,
+  String batchDating(RedirectAttributes redirAttrs,
+      @PathVariable("caseId") Long caseId,
       @RequestParam("subjectDateType") String subjectDateType,
       @RequestParam(name = "subjectDate", required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
@@ -208,9 +210,9 @@ public class SubjectController {
     List<Subject> subjects = c.getSubjects();
 
     if (isNullOrEmpty(subjectDate)) {
-      model.addAttribute("message", "日期未選擇");
+      redirAttrs.addFlashAttribute("message", "日期未選擇");
     } else if (subjectIds == null) {
-      model.addAttribute("message", "受試者未選擇");
+      redirAttrs.addFlashAttribute("message", "受試者未選擇");
     }
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null) {
@@ -225,15 +227,13 @@ public class SubjectController {
       });
     }
 
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", subjects);
-    return "subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects/index";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping(path = "/cases/{caseId}/subjects/index")
-  String batchFile(Model model, @PathVariable("caseId") Long caseId,
+  String batchFile(RedirectAttributes redirAttrs,
+      @PathVariable("caseId") Long caseId,
       @RequestParam("subjectFile") MultipartFile file) {
     Case c = caseRepo.findOne(caseId);
 
@@ -261,13 +261,10 @@ public class SubjectController {
         caseRepo.save(c);
       }
     } else {
-      model.addAttribute("message", es.getErrorMessage());
+      redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", c.getSubjects());
-    return "subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects/index";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
