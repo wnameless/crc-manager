@@ -1,40 +1,42 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="result">
-    <table id="jsfTable" class="display">
-        <thead>
-            <tr>
-                <th>動作</th>
-                <th>IRB/REC案件編號</th>
-                <th>試驗中文名稱</th>
-                <th>計畫主持人姓名</th>
-                <th>預計開始時間</th>
-                <th>預計結束時間</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="case : ${jsfItems}">
-                <td>
-                    <a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm" th:href="@{'/download/case/' + ${case.id}}">
-                        匯出<span class="fa fa-download"></span>
-                    </a>
-                </td>
-                <td th:inline="text">[[${case.irbNumber}]]</td>
-                <td th:text="${case.trialName}"></td>
-                <td th:text="${case.piName}"></td>
-                <td th:text="${case.expectedStartDate}"></td>
-                <td th:text="${case.expectedEndDate}"></td>
-            </tr>
-        </tbody>
-    </table>
+	<table id="jsfTable" class="display">
+		<thead>
+			<tr>
+				<th th:text="#{ui.table.search.action}"></th>
+				<th th:text="#{ui.table.search.irbnumber}"></th>
+				<th th:text="#{ui.table.search.name.case}"></th>
+				<th th:text="#{ui.table.search.name.pi}"></th>
+				<th th:text="#{ui.table.search.time.start}"></th>
+				<th th:text="#{ui.table.search.time.end}"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="case : ${jsfItems}">
+				<td><a th:if="${@perm.canRead(case)}"
+						class="btn btn-default btn-sm"
+						th:href="@{'/download/case/' + ${case.id}}" th:inline="text">
+						[[#{ui.search.export}]]
+						<span class="fa fa-download"></span>
+					</a></td>
+				<td th:inline="text">[[${case.irbNumber}]]</td>
+				<td th:text="${case.trialName}"></td>
+				<td th:text="${case.piName}"></td>
+				<td th:text="${case.expectedStartDate}"></td>
+				<td th:text="${case.expectedEndDate}"></td>
+			</tr>
+		</tbody>
+	</table>
 
-    <script type="text/javascript" th:inline="javascript">
-		$(function() {
-			$('#jsfTable').DataTable({
-				"language" : {
-					"url" : "/i18n/datatables-zh-TW.json"
-				}
-			});
+	<script type="text/javascript" th:inline="javascript">
+	$(function() {
+		var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		$('#jsfTable').DataTable({
+			language : {
+				url : '/i18n/datatables-' + i18nLocale + '.json'
+			}
 		});
+	});
 	</script>
 </div>
 </html>

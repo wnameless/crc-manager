@@ -20,7 +20,7 @@
 			<hr>
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab"
-						href="#contraindications">禁忌用藥</a></li>
+						href="#contraindications" th:text="#{ui.contraindication}"></a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -29,7 +29,7 @@
 						style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
 						<li class="list-group-item"
 							th:each="cd : ${case.contraindications}"><span
-								th:text="'關鍵字: ' + (${#strings.isEmpty(cd.phrase)} ?  '無' : '[ ' + ${cd.phrase} + ' ]') + ' / ' + 'ATC字首: ' + (${#strings.isEmpty(cd.atcCode)} ? '無' : '[ ' + ${cd.atcCode} + ' ]')"></span>
+								th:text="#{ui.contraindication.keyword}': ' + (${#strings.isEmpty(cd.phrase)} ?  #{ui.contraindication.none} : '[ ' + ${cd.phrase} + ' ]') + ' / ' + #{ui.contraindication.atc.prefix} + ': ' + (${#strings.isEmpty(cd.atcCode)} ? #{ui.contraindication.none} : '[ ' + ${cd.atcCode} + ' ]')"></span>
 							<a
 								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
 								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
@@ -50,14 +50,15 @@
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-4">
 					<input name="phrase" type="text" class="form-control"
-						placeholder="藥品關鍵字">
+						th:placeholder="#{ui.contraindication.medicine.keyword}">
 				</div>
 				<div class="form-group col-md-4">
 					<input name="atcCode" type="text" class="form-control"
-						placeholder="ATC字首">
+						th:placeholder="#{ui.contraindication.atc.prefix}">
 				</div>
 				<div class="form-group col-md-2">
-					<button type="submit" class="btn btn-primary">新增禁忌用藥</button>
+					<button type="submit" class="btn btn-primary"
+						th:text="#{ui.contraindication.add}"></button>
 				</div>
 			</form>
 		</div>
@@ -70,8 +71,8 @@
 			<table id="medicines">
 				<thead>
 					<tr>
-						<th>名稱</th>
-						<th>英文名稱</th>
+						<th th:text="#{ui.table.contraindication.name}"></th>
+						<th th:text="#{ui.table.contraindication.name.english}"></th>
 						<th>ATC1</th>
 						<th>ATC2</th>
 						<th>ATC3</th>
@@ -82,29 +83,25 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
-		$(function() {
-			$('table#medicines').DataTable({
-				'ajax' : '/data/medicines',
-				'serverSide' : true,
-				language : {
-					url : '/i18n/datatables-zh-TW.json'
-				},
-				columns : [ {
-					data : 'name'
-				}, {
-					data : 'engName'
-				}, {
-					data : 'atcCode1'
-				}, {
-					data : 'atcCode2'
-				}, {
-					data : 'atcCode3'
-				}, {
-					data : 'atcCode4'
-				} ]
-			});
+	<script type="text/javascript" th:inline="javascript">
+	$(function() {
+		var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		$('table#medicines').DataTable({
+			ajax: '/data/medicines',
+			serverSide: true,
+			language: {
+				url: '/i18n/datatables-' + i18nLocale + '.json'
+			},
+			columns: [
+				{ data: 'name' },
+				{ data: 'engName' },
+				{ data: 'atcCode1' },
+				{ data: 'atcCode2' },
+				{ data: 'atcCode3' },
+				{ data: 'atcCode4' }
+			]
 		});
+	});
 	</script>
 </body>
 </html>

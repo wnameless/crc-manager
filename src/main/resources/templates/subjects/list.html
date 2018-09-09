@@ -15,11 +15,11 @@
 			<div class="form-group col-md-5">
 				<select id="subjectDateType" name="subjectDateType"
 					class="form-control" form="batchDating">
-					<option value="icfDate" selected>受試者填寫同意書日期</option>
-					<option value="examDate">受試者體檢日期</option>
-					<option value="accrualDate">受試者納入日期</option>
-					<option value="completeDate">受試者完成日期</option>
-					<option value="dropoutDate">受試者退出日期</option>
+					<option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
+					<option value="examDate" th:text="#{ui.subject.date.exam}"></option>
+					<option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
+					<option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
+					<option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
 				</select>
 			</div>
 			<div class="form-group col-md-4">
@@ -27,7 +27,8 @@
 					name="subjectDate">
 			</div>
 			<div class="form-group col-md-2">
-				<button type="submit" class="btn btn-primary">批次寫入</button>
+				<button type="submit" class="btn btn-primary"
+					th:text="#{ui.subject.batch}"></button>
 			</div>
 		</div>
 	</form>
@@ -40,10 +41,10 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th>狀態</th>
-				<th>名字</th>
-				<th>身分證字號</th>
-				<th>動作</th>
+				<th th:text="#{ui.table.subject.status}"></th>
+				<th th:text="#{ui.table.subject.name}"></th>
+				<th th:text=#{ui.table.subject.nationalid}></th>
+				<th th:text=#{ui.table.subject.action}></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -82,11 +83,12 @@
 	<div th:if="${@perm.canWrite(case)}"
 		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
 		<button id="addSubject" class="btn btn-block btn-default"
-			th:onclick="${ 'editFormEvent(''' + jsfPath + '/new' + ''')' }">
+			th:onclick="${ 'editFormEvent(''' + jsfPath + '/new' + ''')' }"
+			th:inline="text">
 			<span>
 				<i class="fa fa-plus" style="color: green"></i>
 			</span>
-			新增受試者
+			[[#{ui.subject.add}]]
 		</button>
 	</div>
 
@@ -98,13 +100,14 @@
 			<div class="form-group">
 				<div class="input-group input-file" name="subjectFile">
 					<span class="input-group-btn">
-						<button class="btn btn-default btn-choose" type="button">選擇檔案</button>
+						<button class="btn btn-default btn-choose" type="button"
+							th:text="#{ui.subject.file.select}"></button>
 					</span>
 					<input type="text" class="form-control"
 						placeholder='Choose a file...' />
 					<span class="input-group-btn">
 						<button id="uploadBtn" class="btn btn-warning" type="submit"
-							disabled>上傳名單</button>
+							th:text="#{ui.subject.file.upload}" disabled></button>
 					</span>
 				</div>
 			</div>
@@ -173,10 +176,11 @@
     $(function() {
       bs_input_file();
       
+      var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
       $('#jsfTable').DataTable({
-        columnDefs: [ { "width": "36px", "targets": 0 } ],
+        columnDefs: [ { width: '36px', targets: 0 } ],
         language: {
-          url: '/i18n/datatables-zh-TW.json'
+          url: '/i18n/datatables-' + i18nLocale + '.json'
         }
       });
     });
