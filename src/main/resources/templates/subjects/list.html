@@ -142,49 +142,49 @@
 	};
 	
 	var checkboxEvent = function() {
-	  $("input[name='subjectIds[]']").remove();
+		$("input[name='subjectIds[]']").remove();
 		
-	  $('input:checked').each(function() {
-	  	$('<input>').attr({
-	  	    type: 'hidden',
-	  	    name: 'subjectIds[]',
-	  	    value: this.value
-	  	}).appendTo('#batchDating');
-	  });
+		$('input:checked').each(function() {
+			$('<input>').attr({
+				type: 'hidden',
+				name: 'subjectIds[]',
+				value: this.value
+			}).appendTo('#batchDating');
+		});
 	};
 	
 	var showFormEvent = function(path) {
-      axios.get(path)
-        .then(function (response) {
-          console.log(response.data);
-          $('#jsf').html(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    };
-
-    var editFormEvent = function(path) {
-      axios.get(path)
-        .then(function (response) {
-          $('#jsf').html(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    };
-
-    $(function() {
-      bs_input_file();
-      
-      let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-      $('#jsfTable').DataTable({
-        columnDefs: [ { width: '36px', targets: 0 } ],
-        language: {
-          url: '/i18n/datatables-' + i18nLocale + '.json'
-        }
-      });
-    });
+		axios.get(path)
+			.then(function (response) {
+				console.log(response.data);
+				$('#jsf').html(response.data);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	};
+	
+	var editFormEvent = function(path) {
+		axios.get(path)
+			.then(function (response) {
+				$('#jsf').html(response.data);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	};
+	
+	$(function() {
+		bs_input_file();
+		
+		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		$('#jsfTable').DataTable({
+			columnDefs: [ { width: '36px', targets: 0 } ],
+			language: {
+				url: '/i18n/datatables-' + i18nLocale + '.json'
+			}
+		});
+	});
 	</script>
 </div>
 </html>
