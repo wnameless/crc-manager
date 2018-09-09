@@ -22,10 +22,12 @@ import static com.wmw.crc.manager.util.EntityUtils.findChildById;
 import static com.wmw.crc.manager.util.EntityUtils.findChildByValue;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,6 +60,9 @@ public class SubjectController {
 
   @Autowired
   SubjectRepository subjectRepo;
+
+  @Autowired
+  MessageSource messageSource;
 
   @Autowired
   TsghApi tsghApi;
@@ -98,7 +103,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
-      @RequestBody String formData) {
+      @RequestBody String formData, Locale locale) {
     Case c = caseRepo.findOne(caseId);
 
     Subject s = new Subject();
@@ -109,7 +114,8 @@ public class SubjectController {
       c.getSubjects().add(s);
       caseRepo.save(c);
     } else {
-      model.addAttribute("message", "身分證字號已存在");
+      model.addAttribute("message", messageSource.getMessage(
+          "ctrl.subject.message.nationalid-existed", new Object[] {}, locale));
     }
 
     model.addAttribute("case", c);
@@ -121,7 +127,8 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects/{id}")
   String update(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id, @RequestBody String formData) {
+      @PathVariable("id") Long id, @RequestBody String formData,
+      Locale locale) {
     Case c = caseRepo.findOne(caseId);
 
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
@@ -135,7 +142,9 @@ public class SubjectController {
         subjectRepo.save(subject);
       } else {
         subject.setJsonData(jsonData);
-        model.addAttribute("message", "身分證字號已存在");
+        model.addAttribute("message",
+            messageSource.getMessage("ctrl.subject.message.nationalid-existed",
+                new Object[] {}, locale));
       }
     }
 
@@ -205,14 +214,17 @@ public class SubjectController {
       @RequestParam("subjectDateType") String subjectDateType,
       @RequestParam(name = "subjectDate", required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
-          required = false) List<Long> subjectIds) {
+          required = false) List<Long> subjectIds,
+      Locale locale) {
     Case c = caseRepo.findOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
     if (isNullOrEmpty(subjectDate)) {
-      redirAttrs.addFlashAttribute("message", "日期未選擇");
+      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
+          "ctrl.subject.message.date-unselect", new Object[] {}, locale));
     } else if (subjectIds == null) {
-      redirAttrs.addFlashAttribute("message", "受試者未選擇");
+      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
+          "ctrl.subject.message.subject-unselect", new Object[] {}, locale));
     }
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null) {

@@ -109,6 +109,7 @@
 		</tbody>
 	</table>
 
+	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
 	var showFormEvent = function(path) {
 		axios.get(path)

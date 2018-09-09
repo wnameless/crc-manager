@@ -21,9 +21,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +47,9 @@ public class CaseOperationController {
 
   @Autowired
   KeycloakService keycloak;
+
+  @Autowired
+  MessageSource messageSource;
 
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
@@ -89,13 +94,15 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/managers", method = POST)
   String addManager(Model model, @PathVariable("id") Long id,
-      @RequestBody Map<String, Object> body) {
+      @RequestBody Map<String, Object> body, Locale locale) {
     Case kase = caseRepo.findOne(id);
     String manager = body.get("manager").toString();
     kase.getManagers().add(manager);
     caseRepo.save(kase);
 
-    model.addAttribute("message", manager + " 加入管理者");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.manager-added",
+            new Object[] { manager }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -103,12 +110,14 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/managers", method = DELETE)
   String removeManager(Model model, @PathVariable("id") Long id,
-      @RequestParam("manager") String manager) {
+      @RequestParam("manager") String manager, Locale locale) {
     Case kase = caseRepo.findOne(id);
     kase.getManagers().remove(manager);
     caseRepo.save(kase);
 
-    model.addAttribute("message", manager + " 從管理者刪除");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.manager-removed",
+            new Object[] { manager }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -116,13 +125,15 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/editors", method = POST)
   String addEditor(Model model, @PathVariable("id") Long id,
-      @RequestBody Map<String, Object> body) {
+      @RequestBody Map<String, Object> body, Locale locale) {
     Case kase = caseRepo.findOne(id);
     String editor = body.get("editor").toString();
     kase.getEditors().add(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message", editor + " 加入編輯者");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.editor-added",
+            new Object[] { editor }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -130,12 +141,14 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/editors", method = DELETE)
   String removeEditor(Model model, @PathVariable("id") Long id,
-      @RequestParam("editor") String editor) {
+      @RequestParam("editor") String editor, Locale locale) {
     Case kase = caseRepo.findOne(id);
     kase.getEditors().remove(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message", editor + " 從編輯者刪除");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.editor-removed",
+            new Object[] { editor }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -143,13 +156,15 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = POST)
   String addViewer(Model model, @PathVariable("id") Long id,
-      @RequestBody Map<String, Object> body) {
+      @RequestBody Map<String, Object> body, Locale locale) {
     Case kase = caseRepo.findOne(id);
     String viewer = body.get("viewer").toString();
     kase.getViewers().add(viewer);
     caseRepo.save(kase);
 
-    model.addAttribute("message", viewer + " 加入閱覽者");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.viewer-added",
+            new Object[] { viewer }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/viewer-list :: viewer-list";
   }
@@ -157,12 +172,14 @@ public class CaseOperationController {
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = DELETE)
   String removeViewer(Model model, @PathVariable("id") Long id,
-      @RequestParam("viewer") String viewer) {
+      @RequestParam("viewer") String viewer, Locale locale) {
     Case kase = caseRepo.findOne(id);
     kase.getViewers().remove(viewer);
     caseRepo.save(kase);
 
-    model.addAttribute("message", viewer + " 從閱覽者刪除");
+    model.addAttribute("message",
+        messageSource.getMessage("ctrl.case.operation.message.viewer-removed",
+            new Object[] { viewer }, locale));
     model.addAttribute("case", kase);
     return "cases/permission/viewer-list :: viewer-list";
   }
