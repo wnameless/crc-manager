@@ -3,17 +3,17 @@
 	<table id="jsfTable" class="display">
 		<thead>
 			<tr>
-				<th style="width: 30px;" th:text="#{ui.table.case.action}"></th>
+				<th style="width: 30px;" th:text="#{ui.case.table.action}"></th>
 				<th style="width: 30px;"></th>
-				<th style="width: 90px;" th:text="#{ui.table.case.irbnumber}"></th>
+				<th style="width: 90px;" th:text="#{ui.case.table.irbnumber}"></th>
 				<th class="text-center" style="width: 60px;"
-					th:text="#{ui.table.case.contraindication}"></th>
+					th:text="#{ui.case.table.contraindication}"></th>
 				<th class="text-center" style="width: 60px;"
-					th:text="#{ui.table.case.subject}"></th>
-				<th th:text="#{ui.table.case.name.chinese}"></th>
-				<th style="width: 80px;" th:text="#{ui.table.case.pi}"></th>
-				<th style="width: 60px;" th:text="#{ui.table.case.time.start}"></th>
-				<th style="width: 60px;" th:text="#{ui.table.case.time.end}"></th>
+					th:text="#{ui.case.table.subject}"></th>
+				<th th:text="#{ui.case.table.name.chinese}"></th>
+				<th style="width: 80px;" th:text="#{ui.case.table.pi}"></th>
+				<th style="width: 60px;" th:text="#{ui.case.table.time.start}"></th>
+				<th style="width: 60px;" th:text="#{ui.case.table.time.end}"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -28,7 +28,7 @@
 							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/assignment'}"
-								th:text="#{ui.table.case.action.assign}"></a></li>
+								th:text="#{ui.case.table.action.assign}"></a></li>
 						<li
 							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"
 							class="divider"></li>
@@ -36,17 +36,17 @@
 							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.table.case.action.dispatch}"></a></li>
+								th:text="#{ui.case.table.action.dispatch}"></a></li>
 						<li
 							th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/none'}"
-								th:text="#{ui.table.case.action.none}"></a></li>
+								th:text="#{ui.case.table.action.none}"></a></li>
 						<li
 							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/permission'}"
-								th:text="#{ui.table.case.action.permission}"></a></li>
+								th:text="#{ui.case.table.action.permission}"></a></li>
 						<li
 							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"
 							class="divider"></li>
@@ -54,17 +54,17 @@
 							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/end'}"
-								th:text="#{ui.table.case.action.close}"></a></li>
+								th:text="#{ui.case.table.action.close}"></a></li>
 						<li
 							th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.table.case.action.reopen}"></a></li>
+								th:text="#{ui.case.table.action.reopen}"></a></li>
 						<li
 							th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}"><a
 								class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/new'}"
-								th:text="#{ui.table.case.action.renew}"></a></li>
+								th:text="#{ui.case.table.action.renew}"></a></li>
 					</ul>
 				</td>
 				<td><a href="#" th:if="${@perm.canWrite(case)}"
@@ -132,7 +132,7 @@
 	};
 
 	$(function() {
-		var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
 		$('#jsfTable').DataTable({
 			language: {
 				url: '/i18n/datatables-' + i18nLocale + '.json'

@@ -71,8 +71,8 @@
 			<table id="medicines">
 				<thead>
 					<tr>
-						<th th:text="#{ui.table.contraindication.name}"></th>
-						<th th:text="#{ui.table.contraindication.name.english}"></th>
+						<th th:text="#{ui.contraindication.table.name}"></th>
+						<th th:text="#{ui.contraindication.table.name.english}"></th>
 						<th>ATC1</th>
 						<th>ATC2</th>
 						<th>ATC3</th>
@@ -85,7 +85,7 @@
 
 	<script type="text/javascript" th:inline="javascript">
 	$(function() {
-		var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
 		$('table#medicines').DataTable({
 			ajax: '/data/medicines',
 			serverSide: true,

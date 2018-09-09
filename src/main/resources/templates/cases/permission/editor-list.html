@@ -36,16 +36,16 @@
 
 	$('.removeEditor').click(function() {
 		axios.delete('/cases/[[${case.id}]]/permission/editors', {
-			params: {
-				editor: $(this).attr('val')
-			}
-		})
-		.then(function (response) {
-			$('#editors').html(response.data);
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
+				params: {
+					editor: $(this).attr('val')
+				}
+			})
+			.then(function (response) {
+				$('#editors').html(response.data);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
 		
 		return false;
 	});

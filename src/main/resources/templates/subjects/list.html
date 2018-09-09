@@ -41,10 +41,10 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th th:text="#{ui.table.subject.status}"></th>
-				<th th:text="#{ui.table.subject.name}"></th>
-				<th th:text=#{ui.table.subject.nationalid}></th>
-				<th th:text=#{ui.table.subject.action}></th>
+				<th th:text="#{ui.subject.table.status}"></th>
+				<th th:text="#{ui.subject.table.name}"></th>
+				<th th:text=#{ui.subject.table.nationalid}></th>
+				<th th:text=#{ui.subject.table.action}></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -177,7 +177,7 @@
     $(function() {
       bs_input_file();
       
-      var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+      let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
       $('#jsfTable').DataTable({
         columnDefs: [ { width: '36px', targets: 0 } ],
         language: {

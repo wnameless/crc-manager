@@ -3,12 +3,12 @@
 	<table id="jsfTable" class="display">
 		<thead>
 			<tr>
-				<th th:text="#{ui.table.search.action}"></th>
-				<th th:text="#{ui.table.search.irbnumber}"></th>
-				<th th:text="#{ui.table.search.name.case}"></th>
-				<th th:text="#{ui.table.search.name.pi}"></th>
-				<th th:text="#{ui.table.search.time.start}"></th>
-				<th th:text="#{ui.table.search.time.end}"></th>
+				<th th:text="#{ui.search.table.action}"></th>
+				<th th:text="#{ui.search.table.irbnumber}"></th>
+				<th th:text="#{ui.search.table.name.case}"></th>
+				<th th:text="#{ui.search.table.name.pi}"></th>
+				<th th:text="#{ui.search.table.time.start}"></th>
+				<th th:text="#{ui.search.table.time.end}"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,7 +31,7 @@
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
 	$(function() {
-		var i18nLocale = [[#{jquery.datatable.i18n.locale}]];
+		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
 		$('#jsfTable').DataTable({
 			language : {
 				url : '/i18n/datatables-' + i18nLocale + '.json'
