@@ -46,13 +46,6 @@ public class KeycloakService {
   public List<UserRepresentation> getNormalUsers() {
     return Ruby.Array.of(kc.realm("CRCManager").users().list())
         .deleteIf(u -> u.getUsername().equals("super")).toList();
-    // return Ruby.Array.of(kc.realm("CRCManager").users().list()).deleteIf(u ->
-    // {
-    // List<String> roles =
-    // Ruby.Array.of(kc.realm("CRCManager").users().get(u.getId()).roles()
-    // .realmLevel().listEffective()).map(r -> r.getName());
-    // return roles.contains("ADMIN") || roles.contains("SUPER");
-    // }).toList();
   }
 
   public boolean addOrCreateUser(UserRepresentation user) {
@@ -79,20 +72,5 @@ public class KeycloakService {
 
     return true;
   }
-
-  // public static void main(String... strings) {
-  //
-  // Keycloak kc =
-  // KeycloakBuilder.builder().serverUrl("http://120.126.47.32:8081/auth")
-  // .realm("CRCManager").username("super").password("1qaz@WSX")
-  // .clientId("crc-manager")
-  // .resteasyClient(
-  // new ResteasyClientBuilder().connectionPoolSize(10).build())
-  // .build();
-  //
-  // System.out.println(Ruby.Array.of(kc.realm("CRCManager").users().list())
-  // .map(u -> u.getUsername()));
-  //
-  // }
 
 }
