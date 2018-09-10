@@ -19,7 +19,6 @@ package com.wmw.crc.manager.controller;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -48,7 +47,7 @@ public class CaseController {
   @GetMapping("/cases/index")
   String index(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
-    List<Case> cases = getCasesBySession(auth, session, allRequestParams);
+    Iterable<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -59,7 +58,7 @@ public class CaseController {
   @GetMapping("/cases")
   String list(HttpSession session, Authentication auth,
       @RequestParam Map<String, String> allRequestParams, Model model) {
-    List<Case> cases = getCasesBySession(auth, session, allRequestParams);
+    Iterable<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -94,7 +93,7 @@ public class CaseController {
     c.setJsonData(formData);
     caseRepo.save(c);
 
-    List<Case> cases = getCasesBySession(auth, session, newHashMap());
+    Iterable<Case> cases = getCasesBySession(auth, session, newHashMap());
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "cases/list :: list";
@@ -107,15 +106,15 @@ public class CaseController {
     Case c = caseRepo.findOne(id);
     caseRepo.delete(c);
 
-    List<Case> cases = getCasesBySession(auth, session, newHashMap());
+    Iterable<Case> cases = getCasesBySession(auth, session, newHashMap());
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "redirect:/cases/index";
   }
 
-  private List<Case> getCasesBySession(Authentication auth, HttpSession session,
-      Map<String, String> allRequestParams) {
-    List<Case> cases;
+  private Iterable<Case> getCasesBySession(Authentication auth,
+      HttpSession session, Map<String, String> allRequestParams) {
+    Iterable<Case> cases;
 
     if (allRequestParams.containsKey("new")) {
       session.setAttribute("CASES_STATUS", "new");

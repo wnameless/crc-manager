@@ -61,7 +61,7 @@ public class SearchController {
   @PostMapping("/search")
   String search(Model model, Authentication auth,
       @RequestBody List<Criterion> criteria) {
-    List<Case> cases = caseRepo.findByUserAndCriteria(auth, criteria);
+    Iterable<Case> cases = caseRepo.findByUserAndCriteria(auth, criteria);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);

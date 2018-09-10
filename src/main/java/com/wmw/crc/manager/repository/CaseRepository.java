@@ -17,13 +17,12 @@
  */
 package com.wmw.crc.manager.repository;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,22 +32,25 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Criterion;
+import com.wmw.crc.manager.model.QCase;
 import com.wmw.crc.manager.util.MinimalJsonUtils;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
 @Repository("caseRepo")
-public interface CaseRepository extends JpaRepository<Case, Long> {
+public interface CaseRepository
+    extends JpaRepository<Case, Long>, QueryDslPredicateExecutor<Case> {
 
-  default List<Case> findByUserAndCriteria(Authentication auth,
+  default Iterable<Case> findByUserAndCriteria(Authentication auth,
       List<Criterion> criteria) {
-    List<Case> cases = findByUser(auth);
+    Iterable<Case> cases = findByUser(auth);
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
-    Ruby.Array.of(cases).keepIf(kase -> {
+    Ruby.Array.copyOf(cases).keepIf(kase -> {
       JsonValue data = Json.parse(kase.getJsonData());
       return isCriteriaMatch(data, groupedCriteria);
     });
@@ -104,7 +106,7 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
     return c;
   }
 
-  default List<Case> findByUser(Authentication auth) {
+  default Iterable<Case> findByUser(Authentication auth) {
     String username = auth.getName();
 
     if (username.equals("super") || username.equals("admin")) return findAll();
@@ -113,7 +115,7 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
         username, username, username);
   }
 
-  default List<Case> findByUserAndStatus(Authentication auth,
+  default Iterable<Case> findByUserAndStatus(Authentication auth,
       Case.Status status) {
     Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
     if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
@@ -122,26 +124,25 @@ public interface CaseRepository extends JpaRepository<Case, Long> {
     }
 
     String username = auth.getName();
-    List<Case> targets = newArrayList();
-    for (Case c : findAll()) {
-      if (c.getStatus().equals(status)) {
-        if (username.equals(c.getOwner()) //
-            || c.getManagers().contains(username)
-            || c.getEditors().contains(username)
-            || c.getViewers().contains(username)) {
-          targets.add(c);
-        }
-      }
-    }
-    return targets;
+    QCase qCase = QCase.case$;
+    BooleanExpression isStatus = qCase.status.eq(status);
+    BooleanExpression isOwner = qCase.owner.eq(username);
+    BooleanExpression hasManager = qCase.managers.contains(username);
+    BooleanExpression hasEditor = qCase.editors.contains(username);
+    BooleanExpression hasViewer = qCase.viewers.contains(username);
+    return findAll(
+        isStatus.and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)));
   }
 
-  List<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
-      String username1, String username2, String username3, String username4);
-
-  List<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersInAndStatus(
-      String username1, String username2, String username3, String username4,
-      Case.Status status);
+  default Iterable<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
+      String username1, String username2, String username3, String username4) {
+    QCase qCase = QCase.case$;
+    BooleanExpression isOwner = qCase.owner.eq(username1);
+    BooleanExpression hasManager = qCase.managers.contains(username2);
+    BooleanExpression hasEditor = qCase.editors.contains(username3);
+    BooleanExpression hasViewer = qCase.viewers.contains(username4);
+    return findAll(isOwner.or(hasManager).or(hasEditor).or(hasViewer));
+  }
 
   List<Case> findByStatus(Case.Status status);
 
