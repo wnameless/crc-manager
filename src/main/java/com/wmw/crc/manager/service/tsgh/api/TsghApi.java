@@ -17,13 +17,52 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 @Service
 public class TsghApi {
 
-  public Patient serachPatientById(String nationalId) {
-    return null;
+  @Value("${api.tsgh.endpoint}")
+  String tsghApiEndpoint;
+
+  TsghService service;
+
+  @PostConstruct
+  void postConstruct() {
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(tsghApiEndpoint)
+        .addConverterFactory(GsonConverterFactory.create()).build();
+    service = retrofit.create(TsghService.class);
+  }
+
+  public Patient findPatientById(String nationalId) throws IOException {
+    Call<Patient> call = service.searchPatient(nationalId);
+    Response<Patient> res = call.execute();
+    return res.body();
+  }
+
+  public List<Drug> getDrugs() throws IOException {
+    Call<List<Drug>> call = service.listDrugs();
+    Response<List<Drug>> res = call.execute();
+    return res.body();
+  }
+
+  public ResponseBody addSubjectContraindication(Contraindication cd)
+      throws IOException {
+    Call<ResponseBody> call = service.addSubjectContraindication(cd);
+    Response<ResponseBody> res = call.execute();
+    return res.body();
   }
 
 }

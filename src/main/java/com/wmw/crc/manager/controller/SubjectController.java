@@ -21,6 +21,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.util.EntityUtils.findChildById;
 import static com.wmw.crc.manager.util.EntityUtils.findChildByValue;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -302,9 +303,15 @@ public class SubjectController {
 
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/subjects/query/{nationalId}")
-  Patient searchPatient(Model model,
-      @PathVariable("nationalId") String nationalId) {
-    return tsghApi.serachPatientById(nationalId);
+  Patient searchPatient(@PathVariable("nationalId") String nationalId) {
+    Patient patient;
+    try {
+      patient = tsghApi.findPatientById(nationalId);
+    } catch (IOException e) {
+      patient = new Patient();
+    }
+
+    return patient;
   }
 
 }
