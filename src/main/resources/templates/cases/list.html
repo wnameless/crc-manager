@@ -75,8 +75,7 @@
 					</a> <span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
 					</span> <a th:if="${@perm.canDelete()}"
-						th:href="@{'/cases/' + ${case.id} + '/delete'}"
-						th:if="${@perm.canDelete()}">
+						th:href="@{'/cases/' + ${case.id} + '/delete'}">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>

@@ -50,7 +50,7 @@ public class CasePermissionService {
   }
 
   public boolean canManage(Long caseId) {
-    Case kase = caseRepo.findOne(caseId);
+    Case kase = caseRepo.getOne(caseId);
     return canManage(kase);
   }
 
@@ -67,7 +67,7 @@ public class CasePermissionService {
   }
 
   public boolean canRead(Long caseId) {
-    Case kase = caseRepo.findOne(caseId);
+    Case kase = caseRepo.getOne(caseId);
     return canRead(kase);
   }
 
@@ -86,7 +86,7 @@ public class CasePermissionService {
   }
 
   public boolean canWrite(Long caseId) {
-    Case kase = caseRepo.findOne(caseId);
+    Case kase = caseRepo.getOne(caseId);
     return canWrite(kase);
   }
 
@@ -119,7 +119,7 @@ public class CasePermissionService {
   }
 
   public boolean canDeleteSubject(Long caseId) {
-    Case kase = caseRepo.findOne(caseId);
+    Case kase = caseRepo.getOne(caseId);
     return canDeleteSubject(kase);
   }
 

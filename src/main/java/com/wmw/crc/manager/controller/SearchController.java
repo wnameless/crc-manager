@@ -72,7 +72,7 @@ public class SearchController {
   @GetMapping("/download/case/{id}")
   @ResponseBody
   HttpEntity<byte[]> download(@PathVariable("id") Long id) throws IOException {
-    Case kase = caseRepo.findOne(id);
+    Case kase = caseRepo.getOne(id);
 
     Workbook wb = dataExport.toExcel(kase);
 

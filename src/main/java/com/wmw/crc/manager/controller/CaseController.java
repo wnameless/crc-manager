@@ -68,7 +68,7 @@ public class CaseController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
-    Case c = caseRepo.findOne(id);
+    Case c = caseRepo.getOne(id);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
@@ -78,7 +78,7 @@ public class CaseController {
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/cases/{id}/edit")
   String edit(Model model, @PathVariable("id") Long id) {
-    Case c = caseRepo.findOne(id);
+    Case c = caseRepo.getOne(id);
 
     model.addAttribute("jsfPath", "/cases/" + id);
     model.addAttribute("jsfItem", c);
@@ -89,7 +89,7 @@ public class CaseController {
   @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id, @RequestBody String formData) {
-    Case c = caseRepo.findOne(id);
+    Case c = caseRepo.getOne(id);
     c.setJsonData(formData);
     caseRepo.save(c);
 
@@ -103,7 +103,7 @@ public class CaseController {
   @GetMapping("/cases/{id}/delete")
   String delete(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.findOne(id);
+    Case c = caseRepo.getOne(id);
     caseRepo.delete(c);
 
     Iterable<Case> cases = getCasesBySession(auth, session, newHashMap());

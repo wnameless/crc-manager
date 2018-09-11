@@ -70,7 +70,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
   String index(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -81,7 +81,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects")
   String list(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -92,7 +92,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/new")
   String newItem(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -104,7 +104,7 @@ public class SubjectController {
   @PostMapping("/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
       @RequestBody String formData, Locale locale) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     Subject s = new Subject();
     s.setJsonData(formData);
@@ -129,7 +129,7 @@ public class SubjectController {
   String update(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @RequestBody String formData,
       Locale locale) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     if (subject != null) {
@@ -158,7 +158,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}")
   String show(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     model.addAttribute("case", c);
@@ -171,7 +171,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/edit")
   String edit(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     model.addAttribute("case", c);
@@ -184,7 +184,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/delete")
   String delete(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     if (c.getSubjects().remove(subject)) {
@@ -199,7 +199,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/status/{status}")
   String alterStatus(@PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @PathVariable("status") String status) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     subject.setStatus(Subject.Status.fromString(status));
     subjectRepo.save(subject);
@@ -216,7 +216,7 @@ public class SubjectController {
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
       Locale locale) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
     if (isNullOrEmpty(subjectDate)) {
@@ -247,7 +247,7 @@ public class SubjectController {
   String batchFile(RedirectAttributes redirAttrs,
       @PathVariable("caseId") Long caseId,
       @RequestParam("subjectFile") MultipartFile file) {
-    Case c = caseRepo.findOne(caseId);
+    Case c = caseRepo.getOne(caseId);
 
     ExcelSubjects es = new ExcelSubjects(file);
     if (es.getErrorMessage() == null) {
@@ -268,7 +268,7 @@ public class SubjectController {
       if (groups.containsKey(false)) {
         List<Subject> targets =
             groups.get(false).uniq(s -> s.getNationalId()).toList();
-        subjectRepo.save(targets);
+        subjectRepo.saveAll(targets);
         c.getSubjects().addAll(targets);
         caseRepo.save(c);
       }
