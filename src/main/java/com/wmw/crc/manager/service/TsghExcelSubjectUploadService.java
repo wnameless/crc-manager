@@ -15,16 +15,21 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.util;
+package com.wmw.crc.manager.service;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.util.ExcelSubjects;
+import com.wmw.crc.manager.util.TsghExcelSubjects;
 
-public interface ExcelSubjects {
+@Service
+public class TsghExcelSubjectUploadService
+    implements ExcelSubjectUploadService {
 
-  String getErrorMessage();
-
-  List<Subject> getSubjects();
+  @Override
+  public ExcelSubjects fromMultipartFile(MultipartFile file) {
+    return new TsghExcelSubjects(file);
+  }
 
 }

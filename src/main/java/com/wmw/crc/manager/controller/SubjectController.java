@@ -45,6 +45,7 @@ import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.service.ExcelSubjectUploadService;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.util.ExcelSubjects;
@@ -63,6 +64,9 @@ public class SubjectController {
 
   @Autowired
   MessageSource messageSource;
+
+  @Autowired
+  ExcelSubjectUploadService uploadService;
 
   @Autowired
   TsghApi tsghApi;
@@ -266,7 +270,7 @@ public class SubjectController {
       @RequestParam("subjectFile") MultipartFile file) {
     Case c = caseRepo.getOne(caseId);
 
-    ExcelSubjects es = new ExcelSubjects(file);
+    ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {
       List<String> nationalIds =
           Ruby.Array.of(c.getSubjects()).map(Subject::getNationalId).toList();

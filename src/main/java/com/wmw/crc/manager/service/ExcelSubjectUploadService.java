@@ -15,16 +15,14 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.util;
+package com.wmw.crc.manager.service;
 
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.util.ExcelSubjects;
 
-public interface ExcelSubjects {
+public interface ExcelSubjectUploadService {
 
-  String getErrorMessage();
-
-  List<Subject> getSubjects();
+  ExcelSubjects fromMultipartFile(MultipartFile file);
 
 }
