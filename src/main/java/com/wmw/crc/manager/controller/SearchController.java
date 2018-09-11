@@ -20,6 +20,7 @@ package com.wmw.crc.manager.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +72,11 @@ public class SearchController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/download/case/{id}")
   @ResponseBody
-  HttpEntity<byte[]> download(@PathVariable("id") Long id) throws IOException {
+  HttpEntity<byte[]> download(@PathVariable("id") Long id, Locale locale)
+      throws IOException {
     Case kase = caseRepo.getOne(id);
 
-    Workbook wb = dataExport.toExcel(kase);
+    Workbook wb = dataExport.toExcel(kase, locale);
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     wb.write(bos);
