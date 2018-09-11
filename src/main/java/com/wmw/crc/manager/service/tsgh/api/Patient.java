@@ -22,9 +22,11 @@ import lombok.Data;
 @Data
 public class Patient {
 
+  String patientId;
+
   String name;
 
-  String patientId;
+  String nationalId;
 
   String birthday;
 

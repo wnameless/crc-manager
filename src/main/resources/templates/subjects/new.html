@@ -13,7 +13,7 @@
 		<div class="row">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-6">
-				<input type="text" class="form-control"
+				<input id="nationalId" type="text" class="form-control"
 					th:placeholder="#{ui.subject.nationalid}">
 			</div>
 			<div class="col-sm-4">
@@ -32,7 +32,6 @@
 	
 	var onSubmit = ({formData}) => {
 		axios.post([[${jsfPath}]], formData).then(function (response) {
-				console.log(response);
 				$('#jsf').html(response.data);
 			})
 			.catch(function (error) {
@@ -47,7 +46,48 @@
 	
 	$(function(){
 		$('#queryBtn').click(function() {
-			$.notify([[#{ui.subject.message.id-no-data}]]);
+			if(!$('#nationalId').val()) {
+				$.notify([[#{ui.subject.message.id-no-data}]]);
+				return;
+			}
+			
+			axios.get('/subjects/query/' + $('#nationalId').val())
+				.then(function (response) {
+					let patient = response.data;
+					
+					if(!patient.nationalId) {
+						$.notify([[#{ui.subject.message.id-no-data}]]);
+						return;
+					}
+					
+					if(patient.patientId) {
+						$('#root_mrn').val(patient.patientId);
+					}
+					if(patient.name) {
+						$('#root_lastname').val(patient.name);
+					}
+					if(patient.nationalId) {
+						$('#root_taiwanId').val(patient.nationalId);
+						if(patient.nationalId[1] == '1') {
+							$($('input[type=radio]')[0]).prop('checked', true);
+						}
+						if(patient.nationalId[1] == '2') {
+							$($('input[type=radio]')[1]).prop('checked', true);
+						}
+					}
+					if(patient.birthday) {
+						$('#root_birthDate').val(patient.birthday.replace(new RegExp('/', 'g'), '-'));
+					}
+					if(patient.phone) {
+						$('#root_telephone1').val(patient.phone);
+					}
+					if(patient.address) {
+						$('#root_address').val(patient.address);
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
 		});
 	});
     </script>

@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -303,10 +304,12 @@ public class SubjectController {
 
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/subjects/query/{nationalId}")
+  @ResponseBody
   Patient searchPatient(@PathVariable("nationalId") String nationalId) {
     Patient patient;
     try {
       patient = tsghApi.findPatientById(nationalId);
+      patient.setNationalId(nationalId);
     } catch (IOException e) {
       patient = new Patient();
     }
