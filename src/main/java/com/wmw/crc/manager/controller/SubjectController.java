@@ -208,6 +208,23 @@ public class SubjectController {
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
+  @GetMapping("cases/{caseId}/subjects/{id}/bundle/{bundleNumber}")
+  String alterBundle(Model model, @PathVariable("caseId") Long caseId,
+      @PathVariable("id") Long id,
+      @PathVariable("bundleNumber") Integer bundleNumber) {
+    Case c = caseRepo.getOne(caseId);
+
+    Subject subject =
+        Ruby.Array.of(c.getSubjects()).find(s -> s.getId().equals(id));
+    if (subject != null) {
+      subject.setContraindicationBundle(bundleNumber);
+      subjectRepo.save(subject);
+    }
+
+    return "redirect:/cases/" + caseId + "/subjects/index";
+  }
+
+  @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects/batchdating")
   String batchDating(RedirectAttributes redirAttrs,
       @PathVariable("caseId") Long caseId,

@@ -16,6 +16,7 @@ import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -24,6 +25,9 @@ public class ContraindicationController {
 
   @Autowired
   CaseRepository caseRepo;
+
+  @Autowired
+  SubjectRepository subjectRepo;
 
   @Autowired
   MedicineRepository medicineRepo;
@@ -36,6 +40,7 @@ public class ContraindicationController {
   String index(Model model, @PathVariable("id") Long id) {
     Case c = caseRepo.getOne(id);
 
+    Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
     model.addAttribute("case", c);
     return "contraindication/index";
   }
@@ -43,12 +48,14 @@ public class ContraindicationController {
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("cases/{id}/contraindications")
   String add(Model model, @PathVariable("id") Long id,
+      @RequestParam("bundle") Integer bundle,
       @RequestParam("phrase") String phrase,
       @RequestParam("atcCode") String atcCode) {
     Case c = caseRepo.getOne(id);
 
     if (!isNullOrEmpty(phrase) || !isNullOrEmpty(atcCode)) {
       Contraindication cd = new Contraindication();
+      cd.setBundle(bundle);
       cd.setPhrase(phrase);
       cd.setAtcCode(atcCode);
       contraindicationRepo.save(cd);
@@ -57,6 +64,7 @@ public class ContraindicationController {
       caseRepo.save(c);
     }
 
+    Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
     model.addAttribute("case", c);
     return "contraindication/index";
   }
@@ -71,6 +79,7 @@ public class ContraindicationController {
         .removeIf(cd -> cd.getId().equals(cdId));
     caseRepo.save(c);
 
+    Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
     model.addAttribute("case", c);
     return "contraindication/index";
   }

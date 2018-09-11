@@ -33,6 +33,8 @@ public class Contraindication {
   @GeneratedValue
   Long id;
 
+  Integer bundle;
+
   String phrase;
 
   String atcCode;

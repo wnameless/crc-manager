@@ -42,6 +42,7 @@
 			<tr>
 				<th></th>
 				<th th:text="#{ui.subject.table.status}"></th>
+				<th th:text="#{ui.subject.table.bundle}"></th>
 				<th th:text="#{ui.subject.table.name}"></th>
 				<th th:text=#{ui.subject.table.nationalid}></th>
 				<th th:text=#{ui.subject.table.action}></th>
@@ -56,26 +57,49 @@
 					</div>
 				</td>
 				<td th:text="${subject.status}"></td>
+				<td>
+					<label th:if="${!@perm.canWrite(case)}"
+						th:text="${subject.contraindicationBundle}"></label>
+
+					<button th:if="${@perm.canWrite(case)}" type="button"
+						class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="true">
+						<span th:text="${subject.contraindicationBundle}"></span>
+					</button>
+					<ul th:if="${@perm.canWrite(case)}" class="dropdown-menu"
+						aria-labelledby="dropdownMenuButton">
+						<th:block th:each="i: ${#numbers.sequence(1, 9)}">
+							<li><a class="dropdown-item"
+									th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/bundle/' + ${i}}"
+									th:text="${i}"></a></li>
+						</th:block>
+					</ul>
+				</td>
 				<td th:text="${subject.name}"></td>
-				<td><a th:if="${@perm.canRead(case)}" href="#"
+				<td>
+					<a th:if="${@perm.canRead(case)}" href="#"
 						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }"
-						th:text="${subject.nationalId}"> </a> <a
-						th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}">
-					</a></td>
-				<td><a th:if="${@perm.canWrite(case)}" href="#"
+						th:text="${subject.nationalId}"> </a>
+					<a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
+				</td>
+				<td>
+					<a th:if="${@perm.canWrite(case)}" href="#"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
-					</a> <span th:if="${!@perm.canWrite(case)}">
+					</a>
+					<span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
-					</span> <a th:if="${@perm.canDeleteSubject(case)}"
+					</span>
+					<a th:if="${@perm.canDeleteSubject(case)}"
 						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>
-					</a></td>
+					</a>
+				</td>
 			</tr>
 		</tbody>
 	</table>

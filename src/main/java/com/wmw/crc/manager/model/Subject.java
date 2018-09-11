@@ -95,6 +95,8 @@ public class Subject extends JpaJsonSchemaForm
   @JsonInitKey("taiwanId")
   String nationalId;
 
+  Integer contraindicationBundle = 1;
+
   public Subject() {
     try {
       URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
