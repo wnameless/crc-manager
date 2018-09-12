@@ -92,12 +92,12 @@
 					</a> <span th:if="${!@perm.canRead(case)}">
 						<i class="fa fa-medkit"></i>
 					</span></td>
-				<td class="text-center"><a th:if="${@perm.canWrite(case)}"
+				<td class="text-center"><a th:if="${@perm.canRead(case)}"
 						th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
 						<span>
 							<i class="fa fa-user-plus"></i>
 						</span>
-					</a> <span th:if="${!@perm.canWrite(case)}">
+					</a> <span th:if="${!@perm.canRead(case)}">
 						<i class="fa fa-user-plus"></i>
 					</span></td>
 				<td th:text="${case.trialName}"></td>
