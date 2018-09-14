@@ -47,8 +47,6 @@ public class Subject extends JpaJsonSchemaForm
 
     PRESCREENING, SCREENING, UNQUALIFIED, ONGOING, DROPPED, FOLLOWUP, CLOSED;
 
-    private Status() {}
-
     public static Status fromString(String status) {
       switch (status.toUpperCase()) {
         case "PRESCREENING":
