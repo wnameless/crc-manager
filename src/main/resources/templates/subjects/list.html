@@ -56,7 +56,7 @@
 							th:value="${subject.id}" th:onchange="${ 'checkboxEvent()' }">
 					</div>
 				</td>
-				<td th:text="${subject.status}"></td>
+				<td th:text="${@i18n.str(subject.status)}"></td>
 				<td>
 					<label th:if="${!@perm.canWrite(case)}"
 						th:text="${subject.contraindicationBundle}"></label>

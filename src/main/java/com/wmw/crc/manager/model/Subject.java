@@ -45,14 +45,9 @@ public class Subject extends JpaJsonSchemaForm
 
   public enum Status {
 
-    PRESCREENING("預篩"), SCREENING("篩查"), UNQUALIFIED("失格"), ONGOING("執行"),
-    DROPPED("排除"), FOLLOWUP("追蹤"), CLOSED("結案");
+    PRESCREENING, SCREENING, UNQUALIFIED, ONGOING, DROPPED, FOLLOWUP, CLOSED;
 
-    private String literal;
-
-    private Status(String literal) {
-      this.literal = literal;
-    }
+    private Status() {}
 
     public static Status fromString(String status) {
       switch (status.toUpperCase()) {
@@ -73,11 +68,6 @@ public class Subject extends JpaJsonSchemaForm
         default:
           return PRESCREENING;
       }
-    }
-
-    @Override
-    public String toString() {
-      return literal;
     }
 
   }
