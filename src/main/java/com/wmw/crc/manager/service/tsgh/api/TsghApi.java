@@ -34,14 +34,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Service
 public class TsghApi {
 
-  @Value("${api.tsgh.endpoint}")
-  String tsghApiEndpoint;
+  @Value("${api.tsgh.baseurl}")
+  String baseUrl;
 
   TsghService service;
 
   @PostConstruct
   void postConstruct() {
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(tsghApiEndpoint)
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create()).build();
     service = retrofit.create(TsghService.class);
   }
