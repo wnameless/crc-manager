@@ -35,6 +35,7 @@ public interface TsghService {
   Call<List<Drug>> listDrugs();
 
   @POST("/contraindications")
-  Call<ResponseBody> addSubjectContraindication(@Body Contraindication cd);
+  Call<ResponseBody> addPatientContraindication(
+      @Body PatientContraindication pc);
 
 }

@@ -58,9 +58,9 @@ public class TsghApi {
     return res.body();
   }
 
-  public ResponseBody addSubjectContraindication(Contraindication cd)
+  public ResponseBody addPatientContraindication(PatientContraindication pc)
       throws IOException {
-    Call<ResponseBody> call = service.addSubjectContraindication(cd);
+    Call<ResponseBody> call = service.addPatientContraindication(pc);
     Response<ResponseBody> res = call.execute();
     return res.body();
   }
