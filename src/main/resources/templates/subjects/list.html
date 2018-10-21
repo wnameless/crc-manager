@@ -9,7 +9,7 @@
 	</h3>
 	<hr>
 	<form th:if="${@perm.canWrite(case)}" id="batchDating"
-		th:action="${ jsfPath + '/batchdating' }" method="POST">
+		th:action="@{${jsfPath} + '/batchdating'}" method="POST">
 		<div class="form-row">
 			<div class="form-group col-md-1"></div>
 			<div class="form-group col-md-5">
@@ -20,11 +20,18 @@
 					<option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
 					<option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
 					<option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
+					<option value="bundleNumber" th:text="#{ui.subject.bundle.number}"></option>
 				</select>
 			</div>
-			<div class="form-group col-md-4">
+			<div id="batchDateDiv" class="form-group col-md-4">
 				<input type="date" class="form-control" id="subjectDate"
 					name="subjectDate">
+			</div>
+			<div id="bundleNumberDiv" class="form-group col-md-4 hidden">
+				<select name="bundleNumber" class="form-control" form="batchDating">
+					<option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}"
+						th:text="${i}" th:selected="${i} == 1"></option>
+				</select>
 			</div>
 			<div class="form-group col-md-2">
 				<button type="submit" class="btn btn-primary"
@@ -57,9 +64,8 @@
 					</div>
 				</td>
 				<td th:text="${@i18n.str(subject.status)}"></td>
-				<td>
-					<label th:if="${!@perm.canWrite(case)}"
-						th:text="${subject.contraindicationBundle}"></label>
+				<td><label th:if="${!@perm.canWrite(case)}"
+					th:text="${subject.contraindicationBundle}"></label>
 
 					<button th:if="${@perm.canWrite(case)}" type="button"
 						class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
@@ -69,37 +75,33 @@
 					<ul th:if="${@perm.canWrite(case)}" class="dropdown-menu"
 						aria-labelledby="dropdownMenuButton">
 						<th:block th:each="i: ${#numbers.sequence(1, 9)}">
-							<li><a class="dropdown-item"
+							<li>
+								<a class="dropdown-item"
 									th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/bundle/' + ${i}}"
-									th:text="${i}"></a></li>
+									th:text="${i}"></a>
+							</li>
 						</th:block>
-					</ul>
-				</td>
+					</ul></td>
 				<td th:text="${subject.name}"></td>
-				<td>
-					<a th:if="${@perm.canRead(case)}" href="#"
+				<td><a th:if="${@perm.canRead(case)}" href="#"
 						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }"
-						th:text="${subject.nationalId}"> </a>
-					<a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
+						th:text="${subject.nationalId}"> </a> <a
+						th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
 				</td>
-				<td>
-					<a th:if="${@perm.canWrite(case)}" href="#"
+				<td><a th:if="${@perm.canWrite(case)}" href="#"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
-					</a>
-					<span th:if="${!@perm.canWrite(case)}">
+					</a> <span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
-					</span>
-					<a th:if="${@perm.canDeleteSubject(case)}"
+					</span> <a th:if="${@perm.canDeleteSubject(case)}"
 						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
 						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>
-					</a>
-				</td>
+					</a></td>
 			</tr>
 		</tbody>
 	</table>
@@ -208,6 +210,19 @@
 				url: '/i18n/datatables-' + i18nLocale + '.json'
 			}
 		});
+	});
+	
+	$('#subjectDateType').change(function() {
+		console.log(this.value);
+		if(this.value == 'bundleNumber') {
+			console.log('aa');
+			$('#batchDateDiv').addClass('hidden');
+			$('#bundleNumberDiv').removeClass('hidden');
+		}else{
+			console.log('bb');
+			$('#batchDateDiv').removeClass('hidden');
+			$('#bundleNumberDiv').addClass('hidden');
+		}
 	});
 	</script>
 </div>

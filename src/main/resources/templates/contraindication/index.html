@@ -19,8 +19,10 @@
 			</h3>
 			<hr>
 			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab"
-						href="#contraindications" th:text="#{ui.contraindication}"></a></li>
+				<li class="active">
+					<a data-toggle="tab" href="#contraindications"
+						th:text="#{ui.contraindication}"></a>
+				</li>
 			</ul>
 
 			<div class="tab-content">
@@ -28,13 +30,15 @@
 					<ul id="contraindicationList" class="list-group"
 						style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
 						<li class="list-group-item"
-							th:each="cd : ${case.contraindications}"><span
+							th:each="cd : ${case.contraindications}">
+							<span
 								th:text="#{ui.contraindication.bundle} + ': [' + ${cd.bundle} + '] / ' + #{ui.contraindication.keyword} + ': ' + (${#strings.isEmpty(cd.phrase)} ?  #{ui.contraindication.none} : '[ ' + ${cd.phrase} + ' ]') + ' / ' + #{ui.contraindication.atc.prefix} + ': ' + (${#strings.isEmpty(cd.atcCode)} ? #{ui.contraindication.none} : '[ ' + ${cd.atcCode} + ' ]')"></span>
 							<a th:if="${@perm.canWrite(case)}"
 								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
 								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
 									style="color: red; margin-top: 3px;"></i>
-							</a></li>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -62,13 +66,13 @@
 					</select>
 				</div>
 				<div class="form-group col-md-4">
-					<label th:text="#{ui.contraindication.medicine}"></label> <input
-						name="phrase" type="text" class="form-control"
+					<label th:text="#{ui.contraindication.medicine}"></label>
+					<input name="phrase" type="text" class="form-control"
 						th:placeholder="#{ui.contraindication.medicine.keyword}">
 				</div>
 				<div class="form-group col-md-4">
-					<label>ATC</label> <input name="atcCode" type="text"
-						class="form-control"
+					<label>ATC</label>
+					<input name="atcCode" type="text" class="form-control"
 						th:placeholder="#{ui.contraindication.atc.prefix}">
 				</div>
 				<div class="form-group col-md-2">

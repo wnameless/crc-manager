@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "受試者專區 - 新增受試者(單筆)",
   "type": "object",
   "required": ["taiwanId"],

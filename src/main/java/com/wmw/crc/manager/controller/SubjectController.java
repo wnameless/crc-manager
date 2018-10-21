@@ -238,11 +238,12 @@ public class SubjectController {
       @RequestParam(name = "subjectDate", required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
+      @RequestParam(name = "bundleNumber") Integer bundleNumber,
       Locale locale) {
     Case c = caseRepo.getOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
-    if (isNullOrEmpty(subjectDate)) {
+    if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", messageSource.getMessage(
           "ctrl.subject.message.date-unselect", new Object[] {}, locale));
     } else if (subjectIds == null) {
@@ -250,13 +251,23 @@ public class SubjectController {
           "ctrl.subject.message.subject-unselect", new Object[] {}, locale));
     }
 
-    if (!isNullOrEmpty(subjectDate) && subjectIds != null) {
+    if (!isNullOrEmpty(subjectDate) && subjectIds != null
+        && !subjectDateType.equals("bundleNumber")) {
       subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
           String jsonData = s.getJsonData();
           JsonObject jo = Json.parse(jsonData).asObject();
           jo.set(subjectDateType, subjectDate);
           s.setJsonData(jo.toString());
+          subjectRepo.save(s);
+        }
+      });
+    }
+
+    if (subjectDateType.equals("bundleNumber") && subjectIds != null) {
+      subjects.forEach(s -> {
+        if (subjectIds.contains(s.getId())) {
+          s.setContraindicationBundle(bundleNumber);
           subjectRepo.save(s);
         }
       });
