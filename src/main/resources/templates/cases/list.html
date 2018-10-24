@@ -25,50 +25,58 @@
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						<li
-							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
-								class="dropdown-item"
+							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/assignment'}"
-								th:text="#{ui.case.table.action.assign}"></a></li>
+								th:text="#{ui.case.table.action.assign}"></a>
+						</li>
 						<li
 							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"
 							class="divider"></li>
 						<li
-							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
-								class="dropdown-item"
+							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.case.table.action.dispatch}"></a></li>
+								th:text="#{ui.case.table.action.dispatch}"></a>
+						</li>
 						<li
-							th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"><a
-								class="dropdown-item"
+							th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/none'}"
-								th:text="#{ui.case.table.action.none}"></a></li>
+								th:text="#{ui.case.table.action.none}"></a>
+						</li>
 						<li
-							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}"><a
-								class="dropdown-item"
+							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/permission'}"
-								th:text="#{ui.case.table.action.permission}"></a></li>
+								th:text="#{ui.case.table.action.permission}"></a>
+						</li>
 						<li
 							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"
 							class="divider"></li>
 						<li
-							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"><a
-								class="dropdown-item"
+							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/end'}"
-								th:text="#{ui.case.table.action.close}"></a></li>
+								th:text="#{ui.case.table.action.close}"></a>
+						</li>
 						<li
-							th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}"><a
-								class="dropdown-item"
+							th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.case.table.action.reopen}"></a></li>
+								th:text="#{ui.case.table.action.reopen}"></a>
+						</li>
 						<li
-							th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}"><a
-								class="dropdown-item"
+							th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
+							<a class="dropdown-item"
 								th:href="@{'/cases/' + ${case.id} + '/status/new'}"
-								th:text="#{ui.case.table.action.renew}"></a></li>
+								th:text="#{ui.case.table.action.renew}"></a>
+						</li>
 					</ul>
 				</td>
 				<td><a href="#" th:if="${@perm.canWrite(case)}"
-						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + case.id + '/edit' + ''')' }">
+						th:attr="data-edit-path=${jsfPath + '/' + case.id + '/edit'}"
+						onclick="editFormEvent(this)">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
@@ -82,8 +90,9 @@
 					</a></td>
 				<td><a th:if="${!@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
 					<a th:if="${@perm.canRead(case)}" href="#"
-						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + case.id + ''')' }"
-						th:inline="text"> [[${case.irbNumber}]] </a></td>
+						th:attr="data-show-path=${jsfPath + '/' + case.id}"
+						onclick="showFormEvent(this)" th:inline="text">
+						[[${case.irbNumber}]] </a></td>
 				<td class="text-center"><a th:if="${@perm.canRead(case)}"
 						th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
 						<span>
@@ -110,8 +119,8 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
-	var showFormEvent = function(path) {
-		axios.get(path)
+	var showFormEvent = function(node) {
+		axios.get($(node).attr('data-show-path'))
 			.then(function (response) {
 				$('#jsf').html(response.data);
 			})
@@ -120,8 +129,8 @@
 			});
 	};
 	
-	var editFormEvent = function(path) {
-		axios.get(path)
+	var editFormEvent = function(node) {
+		axios.get($(node).attr('data-edit-path'))
 			.then(function (response) {
 				$('#jsf').html(response.data);
 			})

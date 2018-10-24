@@ -1,0 +1,23 @@
+{
+  "name": "react-jsonschema-form",
+  "description": "A simple React component capable of building HTML forms out of a JSON schema.",
+  "main": "lib/index.js",
+  "keywords": [
+    "react",
+    "form",
+    "json-schema"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/mozilla-services/react-jsonschema-form#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla-services/react-jsonschema-form.git"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "_source": "npm:react-jsonschema-form",
+  "_target": "v1.0.5",
+  "_release": "1.0.5",
+  "version": "1.0.5",
+  "_originalSource": "npm:react-jsonschema-form"
+}

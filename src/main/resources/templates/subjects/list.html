@@ -60,7 +60,7 @@
 				<td>
 					<div class="form-check">
 						<input type="checkbox" class="form-check-input"
-							th:value="${subject.id}" th:onchange="${ 'checkboxEvent()' }">
+							th:value="${subject.id}" onchange="checkboxEvent()">
 					</div>
 				</td>
 				<td th:text="${@i18n.str(subject.status)}"></td>
@@ -84,12 +84,13 @@
 					</ul></td>
 				<td th:text="${subject.name}"></td>
 				<td><a th:if="${@perm.canRead(case)}" href="#"
-						th:onclick="${ 'showFormEvent(''' + jsfPath + '/' + subject.id + ''')' }"
-						th:text="${subject.nationalId}"> </a> <a
-						th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
+						th:attr="data-show-path=${jsfPath + '/' + subject.id}"
+						onclick="showFormEvent(this)" th:text="${subject.nationalId}">
+					</a> <a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
 				</td>
 				<td><a th:if="${@perm.canWrite(case)}" href="#"
-						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
+						th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
+						onclick="editFormEvent(this)">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
@@ -97,7 +98,8 @@
 						<i class="fa fa-edit"></i>
 					</span> <a th:if="${@perm.canDeleteSubject(case)}"
 						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
-						th:onclick="${ 'editFormEvent(''' + jsfPath + '/' + subject.id + '/edit' + ''')' }">
+						th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
+						onclick="editFormEvent(this)">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>
@@ -109,8 +111,8 @@
 	<div th:if="${@perm.canWrite(case)}"
 		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
 		<button id="addSubject" class="btn btn-block btn-default"
-			th:onclick="${ 'editFormEvent(''' + jsfPath + '/new' + ''')' }"
-			th:inline="text">
+			th:attr="data-edit-path=${jsfPath + '/new'}"
+			onclick="editFormEvent(this)" th:inline="text">
 			<span>
 				<i class="fa fa-plus" style="color: green"></i>
 			</span>
@@ -179,8 +181,8 @@
 		});
 	};
 	
-	var showFormEvent = function(path) {
-		axios.get(path)
+	var showFormEvent = function(node) {
+		axios.get($(node).attr('data-show-path'))
 			.then(function (response) {
 				console.log(response.data);
 				$('#jsf').html(response.data);
@@ -190,8 +192,8 @@
 			});
 	};
 	
-	var editFormEvent = function(path) {
-		axios.get(path)
+	var editFormEvent = function(node) {
+		axios.get($(node).attr('data-edit-path'))
 			.then(function (response) {
 				$('#jsf').html(response.data);
 			})

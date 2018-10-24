@@ -1,55 +1,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="header-common">
-    <meta charset="UTF-8" />
-    <title>CRC Manager</title>
-    <script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+	<meta charset="UTF-8" />
+	<title>CRC Manager</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" />
-    <script th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+	<!-- Avatar -->
+	<link rel="icon" type="image/x-icon" href="/myfavicon.ico" />
 
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap-select/1.12.4/css/bootstrap-select.min.css}" />
-    <script th:src="@{/webjars/bootstrap-select/1.12.4/js/bootstrap-select.min.js}"></script>
+	<!-- Babel -->
+	<script src="/bower_components/babel-standalone/babel.min.js"></script>
 
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css}" />
-    <script th:src="@{/webjars/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js}"></script>
+	<!-- Axios -->
+	<script src="/bower_components/axios/dist/axios.min.js"></script>
 
-    <!-- Datatable -->
-    <script th:src="@{/webjars/datatables/1.10.16/js/jquery.dataTables.min.js}"></script>
-    <script th:src="@{/webjars/datatables/1.10.16/js/dataTables.bootstrap.min.js}"></script>
-    <link rel="stylesheet" th:href="@{/webjars/datatables/1.10.16/css/dataTables.bootstrap.min.css}" />
-    <script th:src="@{/webjars/datatables/1.10.16/js/dataTables.jqueryui.min.js}"></script>
-    <link rel="stylesheet" th:href="@{/webjars/datatables/1.10.16/css/dataTables.jqueryui.min.css}" />
+	<!-- jQuery -->
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" th:href="@{/webjars/font-awesome/5.0.13/web-fonts-with-css/css/fontawesome-all.min.css}" />
+	<!-- Bootstrap -->
+	<link rel="stylesheet"
+		href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <!-- Babel -->
-    <script th:src="@{/webjars/babel-standalone/6.26.0/babel.min.js}"></script>
+	<!-- FontAwesome -->
+	<link rel="stylesheet"
+		href="/bower_components/font-awesome-5/web-fonts-with-css/css/fontawesome-all.min.css" />
 
-    <!-- React.js -->
-    <script th:src="@{/webjars/react/16.2.0/umd/react.production.min.js}"></script>
-    <script th:src="@{/webjars/react-dom/16.2.0/umd/react-dom.production.min.js}"></script>
-    <script th:src="@{/webjars/react-jsonschema-form/0.45.0/dist/react-jsonschema-form.js}"></script>
-    <script th:src="@{/webjars/react-data-grid/2.0.73/dist/react-data-grid.min.js}"></script>
+	<!-- Bootstrap Select -->
+	<link rel="stylesheet"
+		href="/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css" />
+	<script
+		src="/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 
-    <script type="text/babel" src="/js/react-jsf.js"></script>
+	<!-- Bootstrap Tagsinput -->
+	<link rel="stylesheet"
+		href="/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
+	<script
+		src="/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
 
-    <!-- Axios -->
-    <script th:src="@{/webjars/axios/0.17.1/dist/axios.min.js}"></script>
+	<!-- jQuery Datatables -->
+	<script
+		src="/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet"
+		href="/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" />
+	<script
+		src="/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+	<link rel="stylesheet"
+		href="/bower_components/datatables.net-jqui/css/dataTables.jqueryui.min.css" />
+	<script
+		src="/bower_components/datatables.net-jqui/js/dataTables.jqueryui.min.js"></script>
 
-    <link rel="stylesheet" href="/css/addon/effect-light.min.css" />
-    <link rel="stylesheet" href="/css/titip.min.css" />
+	<!-- jQuery Datatables with Spring -->
+	<script src="/js/jquery.spring-friendly.js"></script>
 
-    <link rel="icon" type="image/x-icon" href="/myfavicon.ico" />
-    
-    <!-- Bootstrap Notify -->
-    <script src="/js/bower_components/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js"></script>
-    
-    <!-- Datatable with Spring -->
-    <script src="/js/jquery.spring-friendly.js"></script>
-    
-    <!-- Bootstrap Custom -->
-    <link rel="stylesheet" href="/css/bootstrap-custom.css" />
+	<!-- React.js -->
+	<script src="/bower_components/react/react.production.min.js"></script>
+	<script src="/bower_components/react/react-dom.production.min.js"></script>
+
+	<!-- React JSON schema form -->
+	<script
+		src="/bower_components/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
+
+	<script type="text/babel" src="/js/react-jsf.js"></script>
+
+	<!-- Bootstrap Notify -->
+	<script
+		src="/bower_components/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js"></script>
+
+	<!-- Bootstrap Custom -->
+	<link rel="stylesheet" href="/css/bootstrap-custom.css" />
 </th:block>
 </html>
