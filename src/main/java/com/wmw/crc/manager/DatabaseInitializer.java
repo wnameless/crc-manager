@@ -17,34 +17,27 @@
  */
 package com.wmw.crc.manager;
 
-import static com.google.common.base.Charsets.UTF_8;
-
 import java.io.IOException;
 import java.net.URL;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonValue;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.gson.Gson;
 import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.Medicine;
-import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.model.form.BaseJsonSchemaForm;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 
-import main.java.com.maximeroussy.invitrode.RandomWord;
 import main.java.com.maximeroussy.invitrode.WordLengthException;
 
-@Profile("dev")
+@Profile("test")
 @Component
 public class DatabaseInitializer {
 
@@ -59,82 +52,84 @@ public class DatabaseInitializer {
 
   @PostConstruct
   void init() throws IOException, WordLengthException {
-    int i = 0;
-    while (caseRepo.count() < 10) {
+    if (caseRepo.count() < 10) {
       Case c = new Case();
+      URL url = Resources.getResource("json-schemas/test-data/4.json");
+      BaseJsonSchemaForm bjsf = new Gson().fromJson(
+          Resources.toString(url, Charsets.UTF_8), BaseJsonSchemaForm.class);
+      c.setJsonSchema(bjsf.getJsonSchema());
+      c.setJsonData(bjsf.getJsonData());
+      c.setJsonUiSchema(bjsf.getJsonUiSchema());
       caseRepo.save(c);
 
-      switch (i % 4) {
-        case 0:
-          c.setStatus(Case.Status.NEW);
-          break;
-        case 1:
-          c.setStatus(Case.Status.EXEC);
-          break;
-        case 2:
-          c.setStatus(Case.Status.END);
-          break;
-        case 3:
-          c.setStatus(Case.Status.NONE);
-          break;
-      }
-
-      c.setPiName(RandomWord.getNewWord(4) + " " + RandomWord.getNewWord(6));
-      c.setCaseNumber(Integer.toString(12425 + i));
-      c.setTrialName(RandomWord.getNewWord(5));
-      c.setTrialNameEng(RandomWord.getNewWord(5));
-      c.setCoPiName(RandomWord.getNewWord(5) + " " + RandomWord.getNewWord(5));
-      c.setAssociatePiName(
-          RandomWord.getNewWord(6) + " " + RandomWord.getNewWord(4));
-      c.setProjectNumber(RandomWord.getNewWord(6));
-      c.setProjectType(RandomWord.getNewWord(4));
-      c.setExpectedNumberOfSubjectsLocal(100);
-      c.setExpectedNumberOfSubjectsNational(1000);
-      c.setExpectedNumberOfSubjectsGlobal(10000);
-      c.setExpectedStartDate("2017/11/12");
-      c.setExpectedEndDate("2018/7/8");
-      URL url = Resources.getResource(JsonSchemaPath.applicationData);
-      c.setJsonData(Resources.toString(url, UTF_8));
-
-      Subject subject = new Subject();
-      url = Resources.getResource(JsonSchemaPath.subjectData);
-      subject.setJsonData(Resources.toString(url, UTF_8));
-      subjectRepo.save(subject);
-      c.getSubjects().add(subject);
-      if (i != 0) c.setOwner("pi07");
-
+      c = new Case();
+      url = Resources.getResource("json-schemas/test-data/5.json");
+      bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
+          BaseJsonSchemaForm.class);
+      c.setJsonSchema(bjsf.getJsonSchema());
+      c.setJsonData(bjsf.getJsonData());
+      c.setJsonUiSchema(bjsf.getJsonUiSchema());
       caseRepo.save(c);
 
-      i++;
+      c = new Case();
+      url = Resources.getResource("json-schemas/test-data/6.json");
+      bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
+          BaseJsonSchemaForm.class);
+      c.setJsonSchema(bjsf.getJsonSchema());
+      c.setJsonData(bjsf.getJsonData());
+      c.setJsonUiSchema(bjsf.getJsonUiSchema());
+      caseRepo.save(c);
     }
 
-    URL medicines = Resources.getResource("medicines.json");
-    JsonValue medJsonArray =
-        Json.parse(IOUtils.toString(medicines, Charsets.UTF_8));
+    // int i = 0;
+    // while (caseRepo.count() < 10) {
+    // Case c = new Case();
+    // caseRepo.save(c);
+    //
+    // switch (i % 4) {
+    // case 0:
+    // c.setStatus(Case.Status.NEW);
+    // break;
+    // case 1:
+    // c.setStatus(Case.Status.EXEC);
+    // break;
+    // case 2:
+    // c.setStatus(Case.Status.END);
+    // break;
+    // case 3:
+    // c.setStatus(Case.Status.NONE);
+    // break;
+    // }
+    //
+    // c.setPiName(RandomWord.getNewWord(4) + " " + RandomWord.getNewWord(6));
+    // c.setCaseNumber(Integer.toString(12425 + i));
+    // c.setTrialName(RandomWord.getNewWord(5));
+    // c.setTrialNameEng(RandomWord.getNewWord(5));
+    // c.setCoPiName(RandomWord.getNewWord(5) + " " + RandomWord.getNewWord(5));
+    // c.setAssociatePiName(
+    // RandomWord.getNewWord(6) + " " + RandomWord.getNewWord(4));
+    // c.setProjectNumber(RandomWord.getNewWord(6));
+    // c.setProjectType(RandomWord.getNewWord(4));
+    // c.setExpectedNumberOfSubjectsLocal(100);
+    // c.setExpectedNumberOfSubjectsNational(1000);
+    // c.setExpectedNumberOfSubjectsGlobal(10000);
+    // c.setExpectedStartDate("2017/11/12");
+    // c.setExpectedEndDate("2018/7/8");
+    // URL url = Resources.getResource(JsonSchemaPath.applicationData);
+    // c.setJsonData(Resources.toString(url, UTF_8));
+    //
+    // Subject subject = new Subject();
+    // url = Resources.getResource(JsonSchemaPath.subjectData);
+    // subject.setJsonData(Resources.toString(url, UTF_8));
+    // subjectRepo.save(subject);
+    // c.getSubjects().add(subject);
+    // if (i != 0) c.setOwner("pi07");
+    //
+    // caseRepo.save(c);
+    //
+    // i++;
+    // }
 
-    for (JsonValue med : medJsonArray.asArray()) {
-      Medicine m = new Medicine();
-      m.setName(med.asObject().getString("name", null));
-      m.setEngName(med.asObject().getString("engName", null));
-      JsonArray atc = med.asObject().get("atcCode").asArray();
-      for (int idx = 0; idx < atc.size(); idx++) {
-        switch (idx) {
-          case 0:
-            m.setAtcCode1(atc.get(idx).asString());
-            break;
-          case 1:
-            m.setAtcCode2(atc.get(idx).asString());
-            break;
-          case 2:
-            m.setAtcCode3(atc.get(idx).asString());
-            break;
-          case 3:
-            m.setAtcCode4(atc.get(idx).asString());
-            break;
-        }
-        medicineRepo.save(m);
-      }
-    }
   }
 
 }

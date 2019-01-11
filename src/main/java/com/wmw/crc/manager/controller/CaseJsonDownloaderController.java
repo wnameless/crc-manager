@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.wnameless.spring.json.schema.form.JsonSchemaForm;
+import com.wmw.crc.manager.model.form.BaseJsonSchemaForm;
 import com.wmw.crc.manager.repository.CaseRepository;
 
 @Profile("test")
@@ -34,8 +34,8 @@ public class CaseJsonDownloaderController {
   CaseRepository caseRepository;
 
   @GetMapping("/json/cases/{id}")
-  JsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
-    return caseRepository.findById(id).get();
+  BaseJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
+    return new BaseJsonSchemaForm(caseRepository.findById(id).get());
   }
 
 }
