@@ -25,6 +25,8 @@ import lombok.Data;
 @Data
 public class PatientContraindication {
 
+  String nationalId;
+
   String patientId;
 
   String irbNumber;

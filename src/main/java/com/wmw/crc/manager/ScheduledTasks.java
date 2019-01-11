@@ -91,6 +91,7 @@ public class ScheduledTasks {
 
       for (Subject s : c.getSubjects()) {
         PatientContraindication pc = new PatientContraindication();
+        pc.setNationalId(s.getNationalId());
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
         pc.setPatientId(s.getNationalId());
