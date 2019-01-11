@@ -24,10 +24,15 @@ import java.net.URL;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonValue;
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Medicine;
@@ -103,20 +108,33 @@ public class DatabaseInitializer {
       i++;
     }
 
-    Medicine m1 = new Medicine();
-    m1.setName("普拿疼");
-    m1.setEngName("Acetaminophen");
-    m1.setAtcCode1("N02BE01");
-    m1.setAtcCode2("N02BE01");
-    m1.setAtcCode3("N02BE01");
-    m1.setAtcCode4("N02BE01");
-    medicineRepo.save(m1);
+    URL medicines = Resources.getResource("medicines.json");
+    JsonValue medJsonArray =
+        Json.parse(IOUtils.toString(medicines, Charsets.UTF_8));
 
-    Medicine m2 = new Medicine();
-    m2.setName("百憂解");
-    m2.setEngName("Fluoxetine");
-    m2.setAtcCode1("N06AB03");
-    medicineRepo.save(m2);
+    for (JsonValue med : medJsonArray.asArray()) {
+      Medicine m = new Medicine();
+      m.setName(med.asObject().getString("name", null));
+      m.setEngName(med.asObject().getString("engName", null));
+      JsonArray atc = med.asObject().get("atcCode").asArray();
+      for (int idx = 0; idx < atc.size(); idx++) {
+        switch (idx) {
+          case 0:
+            m.setAtcCode1(atc.get(idx).asString());
+            break;
+          case 1:
+            m.setAtcCode2(atc.get(idx).asString());
+            break;
+          case 2:
+            m.setAtcCode3(atc.get(idx).asString());
+            break;
+          case 3:
+            m.setAtcCode4(atc.get(idx).asString());
+            break;
+        }
+        medicineRepo.save(m);
+      }
+    }
   }
 
 }
