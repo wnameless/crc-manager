@@ -35,8 +35,13 @@
 		$('#jsfTable').DataTable({
 			language : {
 				url : '/i18n/datatables-' + i18nLocale + '.json'
+			},
+			drawCallback : function(settings) {
+				$('#jsfTable').reflowTable('update');
 			}
 		});
+		
+		$('#jsfTable').reflowTable();
 	});
 	</script>
 </div>

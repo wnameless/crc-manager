@@ -6,10 +6,8 @@
 				<th style="width: 30px;" th:text="#{ui.case.table.action}"></th>
 				<th style="width: 30px;"></th>
 				<th style="width: 90px;" th:text="#{ui.case.table.irbnumber}"></th>
-				<th class="text-center" style="width: 60px;"
-					th:text="#{ui.case.table.contraindication}"></th>
-				<th class="text-center" style="width: 60px;"
-					th:text="#{ui.case.table.subject}"></th>
+				<th style="width: 60px;" th:text="#{ui.case.table.contraindication}"></th>
+				<th style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
 				<th th:text="#{ui.case.table.name.chinese}"></th>
 				<th style="width: 80px;" th:text="#{ui.case.table.pi}"></th>
 				<th style="width: 60px;" th:text="#{ui.case.table.time.start}"></th>
@@ -93,7 +91,7 @@
 						th:attr="data-show-path=${jsfPath + '/' + case.id}"
 						onclick="showFormEvent(this)" th:inline="text">
 						[[${case.irbNumber}]] </a></td>
-				<td class="text-center"><a th:if="${@perm.canRead(case)}"
+				<td><a th:if="${@perm.canRead(case)}"
 						th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
 						<span>
 							<i class="fa fa-medkit"></i>
@@ -101,7 +99,7 @@
 					</a> <span th:if="${!@perm.canRead(case)}">
 						<i class="fa fa-medkit"></i>
 					</span></td>
-				<td class="text-center"><a th:if="${@perm.canRead(case)}"
+				<td><a th:if="${@perm.canRead(case)}"
 						th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
 						<span>
 							<i class="fa fa-user-plus"></i>
@@ -148,8 +146,13 @@
 			columnDefs: [{
 				targets: [0, 1, 3, 4],
 				orderable: false
-			}]
+			}],
+			drawCallback : function(settings) {
+				$('#jsfTable').reflowTable('update');
+			}
 		});
+		
+		$('#jsfTable').reflowTable();
 	});
 	</script>
 </div>

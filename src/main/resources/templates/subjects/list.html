@@ -210,8 +210,13 @@
 			columnDefs: [ { width: '36px', targets: 0 } ],
 			language: {
 				url: '/i18n/datatables-' + i18nLocale + '.json'
+			},
+			drawCallback : function(settings) {
+				$('#jsfTable').reflowTable('update');
 			}
 		});
+		
+		$('#jsfTable').reflowTable();
 	});
 	
 	$('#subjectDateType').change(function() {

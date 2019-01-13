@@ -69,8 +69,13 @@
 		$('#userTable').DataTable({
 			language: {
 				url: '/i18n/datatables-' + i18nLocale + '.json'
+			},
+			drawCallback : function(settings) {
+				$('#userTable').reflowTable('update');
 			}
 		});
+		
+		$('#userTable').reflowTable();
 	});
 	</script>
 </body>

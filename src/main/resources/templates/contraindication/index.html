@@ -52,8 +52,8 @@
 			<form th:action="@{'/cases/' + ${case.id} + '/contraindications'}"
 				method="POST" class="form-row">
 				<div class="form-group col-md-2">
-					<label th:text="#{ui.contraindication.bundle}"></label> <select
-						name="bundle" class="form-control">
+					<label th:text="#{ui.contraindication.bundle}"></label>
+					<select name="bundle" class="form-control">
 						<option selected>1</option>
 						<option>2</option>
 						<option>3</option>
@@ -151,8 +151,13 @@
 					return data;
 				  }
 				}
-			]
+			],
+			drawCallback : function(settings) {
+				$('table#medicines').reflowTable('update');
+			}
 		});
+		
+		$('table#medicines').reflowTable();
 	});
 	</script>
 </body>
