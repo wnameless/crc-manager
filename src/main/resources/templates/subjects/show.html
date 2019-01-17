@@ -17,12 +17,12 @@
     var schema = JSON.parse(/*[[${jsfItem.jsonSchema}]]*/null);
     var uiSchema = JSON.parse(/*[[${jsfItem.jsonUiSchema}]]*/null);
     var formData = JSON.parse(/*[[${jsfItem.jsonData}]]*/null);
-    
-    var onSubmit = ({formData}) => {
-  		axios.get(/*[[${jsfPath}]]*/null).then(function(response) {
-  				$('#jsf').html(response.data);
-  			});
-  	};
+
+    var onSubmit = function(f) {
+      axios.get(/*[[${jsfPath}]]*/null).then(function(response) {
+        $('#jsf').html(response.data);
+      });
+    };
 
     ReactDOM.render(React.createElement(ReadOnlyFormComponent), document
             .getElementById('jsfForm'));

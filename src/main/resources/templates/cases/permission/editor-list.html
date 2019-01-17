@@ -1,16 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="editor-list" id="editorList" class="list-group"
-	style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-	<li class="list-group-item">
-		<span id="editor" th:text="#{ui.permission.editor.select}"></span>
-		<i id="addEditor" class="fa fa-plus pull-right"
-			style="color: green; margin-top: 3px;"></i>
-	</li>
-	<li class="list-group-item" th:each="editor : ${case.editors}">
-		<span th:text="${editor}"></span>
-		<i th:attr="val=${editor}" class="removeEditor fa fa-times pull-right"
-			style="color: red; margin-top: 3px;"></i>
-	</li>
+<div th:fragment="editor-list" id="editorList">
+	<ul class="list-group"
+		style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+		<li class="list-group-item">
+			<span id="editor" th:text="#{ui.permission.editor.select}"></span>
+			<i id="addEditor" class="fa fa-plus pull-right"
+				style="color: green; margin-top: 3px;"></i>
+		</li>
+		<li class="list-group-item" th:each="editor : ${case.editors}">
+			<span th:text="${editor}"></span>
+			<i th:attr="val=${editor}"
+				class="removeEditor fa fa-times pull-right"
+				style="color: red; margin-top: 3px;"></i>
+		</li>
+	</ul>
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
@@ -45,5 +48,5 @@
       return false;
     });
   </script>
-</ul>
+</div>
 </html>

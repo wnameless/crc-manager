@@ -8,7 +8,7 @@
 	<nav th:replace="fragments/navbar :: navbar-login"></nav>
 
 	<div class="container">
-		<div style="height: 300px;"
+		<div style="height: 400px;"
 			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 			<h3 th:inline="text">
 				<span class="glyphicon glyphicon-list-alt"></span>
@@ -35,16 +35,16 @@
 
 			<div class="tab-content">
 				<div id="managers" class="tab-pane fade in active">
-					<ul th:replace="cases/permission/manager-list :: manager-list"
-						id="managerList" class="list-group"></ul>
+					<div th:replace="cases/permission/manager-list :: manager-list"
+						id="managerList"></div>
 				</div>
 				<div id="editors" class="tab-pane fade">
-					<ul th:replace="cases/permission/editor-list :: editor-list"
-						id="editorList" class="list-group"></ul>
+					<div th:replace="cases/permission/editor-list :: editor-list"
+						id="editorList"></div>
 				</div>
 				<div id="viewers" class="tab-pane fade">
-					<ul th:replace="cases/permission/viewer-list :: viewer-list"
-						id="viewerList" class="list-group"></ul>
+					<div th:replace="cases/permission/viewer-list :: viewer-list"
+						id="viewerList"></div>
 				</div>
 			</div>
 		</div>

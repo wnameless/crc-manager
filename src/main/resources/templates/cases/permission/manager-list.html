@@ -1,17 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<ul th:fragment="manager-list" id="managerList" class="list-group"
-	style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-	<li class="list-group-item">
-		<span id="manager" th:text="#{ui.permission.manager.select}"></span>
-		<i id="addManager" class="fa fa-plus pull-right"
-			style="color: green; margin-top: 3px;"></i>
-	</li>
-	<li class="list-group-item" th:each="manager : ${case.managers}">
-		<span th:text="${manager}"></span>
-		<i th:attr="val=${manager}"
-			class="removeManager fa fa-times pull-right"
-			style="color: red; margin-top: 3px;"></i>
-	</li>
+<div th:fragment="manager-list" id="managerList">
+	<ul class="list-group"
+		style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+		<li class="list-group-item">
+			<span id="manager" th:text="#{ui.permission.manager.select}"></span>
+			<i id="addManager" class="fa fa-plus pull-right"
+				style="color: green; margin-top: 3px;"></i>
+		</li>
+		<li class="list-group-item" th:each="manager : ${case.managers}">
+			<span th:text="${manager}"></span>
+			<i th:attr="val=${manager}"
+				class="removeManager fa fa-times pull-right"
+				style="color: red; margin-top: 3px;"></i>
+		</li>
+	</ul>
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
@@ -46,5 +48,5 @@
       return false;
     });
   </script>
-</ul>
+</div>
 </html>
