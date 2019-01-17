@@ -1,54 +1,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <ul th:fragment="viewer-list" id="viewerList" class="list-group"
 	style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-	<li class="list-group-item"><span id="viewer"
-			th:text="#{ui.permission.viewer.select}"></span><i id="addViewer"
-		class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i></li>
-	<li class="list-group-item" th:each="viewer : ${case.viewers}"><span
-			th:text="${viewer}"></span><i th:attr="val=${viewer}"
-		class="removeViewer fa fa-times pull-right"
-		style="color: red; margin-top: 3px;"></i></li>
+	<li class="list-group-item">
+		<span id="viewer" th:text="#{ui.permission.viewer.select}"></span>
+		<i id="addViewer" class="fa fa-plus pull-right"
+			style="color: green; margin-top: 3px;"></i>
+	</li>
+	<li class="list-group-item" th:each="viewer : ${case.viewers}">
+		<span th:text="${viewer}"></span>
+		<i th:attr="val=${viewer}" class="removeViewer fa fa-times pull-right"
+			style="color: red; margin-top: 3px;"></i>
+	</li>
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
-	$('#addViewer').click(function() {
-		if(!$('#viewer').val()) return false;
-	      
-		axios.post('/cases/[[${case.id}]]/permission/viewers', {
-				viewer: $('#viewer').val()
-			})
-			.then(function (response) {
-				$('#viewerList').html(response.data);
-				
-				$('#manager').text([[#{ui.permission.manager.select}]]);
-				$('#manager').val('');
-				$('#editor').text([[#{ui.permission.editor.select}]]);
-				$('#editor').val('');
-				$('#viewer').text([[#{ui.permission.viewer.select}]]);
-				$('#viewer').val('');
-	        })
-	        .catch(function (error) { 
-	            console.log(error);
-	        });
-		
-		return false;
-	});
-	
-	$('.removeViewer').click(function() {
-		axios.delete('/cases/[[${case.id}]]/permission/viewers', {
-				params: {
-					viewer: $(this).attr('val')
-				}
-			})
-			.then(function (response) {
-				$('#viewers').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-		
-		return false;
-	});
-	</script>
+    $('#addViewer').click(function() {
+      if (!$('#viewer').val()) return false;
+
+      axios.post('/cases/[[${case.id}]]/permission/viewers', {
+        viewer: $('#viewer').val()
+      }).then(function(response) {
+        $('#viewerList').html(response.data);
+
+        $('#manager').text(/*[[#{ui.permission.manager.select}]]*/null);
+        $('#manager').val('');
+        $('#editor').text(/*[[#{ui.permission.editor.select}]]*/null);
+        $('#editor').val('');
+        $('#viewer').text(/*[[#{ui.permission.viewer.select}]]*/null);
+        $('#viewer').val('');
+      });
+
+      return false;
+    });
+
+    $('.removeViewer').click(function() {
+      axios.delete('/cases/[[${case.id}]]/permission/viewers', {
+        params: {
+          viewer: $(this).attr('val')
+        }
+      }).then(function(response) {
+        $('#viewers').html(response.data);
+      });
+
+      return false;
+    });
+  </script>
 </ul>
 </html>

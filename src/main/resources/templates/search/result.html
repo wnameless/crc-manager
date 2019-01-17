@@ -30,19 +30,19 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
-	$(function() {
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('#jsfTable').DataTable({
-			language : {
-				url : '/i18n/datatables-' + i18nLocale + '.json'
-			},
-			drawCallback : function(settings) {
-				$('#jsfTable').reflowTable('update');
-			}
-		});
-		
-		$('#jsfTable').reflowTable();
-	});
-	</script>
+    $(function() {
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('#jsfTable').DataTable({
+        language: {
+          url: '/i18n/datatables-' + i18nLocale + '.json'
+        },
+        drawCallback: function(settings) {
+          $('#jsfTable').reflowTable('update');
+        }
+      });
+
+      $('#jsfTable').reflowTable();
+    });
+  </script>
 </div>
 </html>

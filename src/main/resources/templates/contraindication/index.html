@@ -104,61 +104,73 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-	function atcCodeSelect(atc) {
-		$('#atcCode').val(atc);
-	};
-	
-	$(function() {
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('table#medicines').DataTable({
-			ajax: '/data/medicines',
-			serverSide: true,
-			language: {
-				url: '/i18n/datatables-' + i18nLocale + '.json'
-			},
-			columns: [
-				{ data: 'name' },
-				{ data: 'engName' },
-				{ data: 'atcCode1',
-				  render: function(data, type, row, meta) {
-			        if(type === 'display' && data !== null) {
-			          data = '<a onclick="atcCodeSelect(\'' + data + '\')" href="#">' + data + '</a>';
-			        }
-			        return data;
-			      }	
-				},
-				{ data: 'atcCode2',
-				  render: function(data, type, row, meta) {
-				    if(type === 'display' && data !== null) {
-				      data = '<a onclick="atcCodeSelect(\'' + data + '\')" href="#">' + data + '</a>';
-				    }
-				    return data;
-				  }	
-				},
-				{ data: 'atcCode3',
-				  render: function(data, type, row, meta) {
-			        if(type === 'display' && data !== null) {
-					  data = '<a onclick="atcCodeSelect(\'' + data + '\')" href="#">' + data + '</a>';
-					}
-					return data;
-				  }
-				},
-				{ data: 'atcCode4',
-				  render: function(data, type, row, meta) {
-				    if(type === 'display' && data !== null) {
-					  data = '<a onclick="atcCodeSelect(\'' + data + '\')" href="#">' + data + '</a>';
-					}
-					return data;
-				  }
-				}
-			],
-			drawCallback : function(settings) {
-				$('table#medicines').reflowTable('update');
-			}
-		});
-		
-		$('table#medicines').reflowTable();
-	});
-	</script>
+    function atcCodeSelect(atc) {
+      $('#atcCode').val(atc);
+    };
+
+    $(function() {
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('table#medicines').DataTable(
+              {
+                ajax: '/data/medicines',
+                serverSide: true,
+                language: {
+                  url: '/i18n/datatables-' + i18nLocale + '.json'
+                },
+                columns: [
+                    {
+                      data: 'name'
+                    },
+                    {
+                      data: 'engName'
+                    },
+                    {
+                      data: 'atcCode1',
+                      render: function(data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                          data = '<a onclick="atcCodeSelect(\'' + data
+                                  + '\')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                      }
+                    },
+                    {
+                      data: 'atcCode2',
+                      render: function(data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                          data = '<a onclick="atcCodeSelect(\'' + data
+                                  + '\')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                      }
+                    },
+                    {
+                      data: 'atcCode3',
+                      render: function(data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                          data = '<a onclick="atcCodeSelect(\'' + data
+                                  + '\')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                      }
+                    },
+                    {
+                      data: 'atcCode4',
+                      render: function(data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                          data = '<a onclick="atcCodeSelect(\'' + data
+                                  + '\')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                      }
+                    }],
+                drawCallback: function(settings) {
+                  $('table#medicines').reflowTable('update');
+                }
+              });
+
+      $('table#medicines').reflowTable();
+    });
+  </script>
 </body>
 </html>

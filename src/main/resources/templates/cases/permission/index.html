@@ -19,12 +19,18 @@
 			</h3>
 			<hr>
 			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#managers"
-						th:text="#{ui.permission.manager}"></a></li>
-				<li><a data-toggle="tab" href="#editors"
-						th:text="#{ui.permission.editor}"></a></li>
-				<li><a data-toggle="tab" href="#viewers"
-						th:text="#{ui.permission.viewer}"></a></li>
+				<li class="active">
+					<a data-toggle="tab" href="#managers"
+						th:text="#{ui.permission.manager}"></a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#editors"
+						th:text="#{ui.permission.editor}"></a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#viewers"
+						th:text="#{ui.permission.viewer}"></a>
+				</li>
 			</ul>
 
 			<div class="tab-content">
@@ -68,25 +74,25 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-	$(function() {
-		$('.usernameSelect').click(function() {
-			$('#manager').text(this.text);
-			$('#manager').val(this.text);
-			$('#editor').text(this.text);
-			$('#editor').val(this.text);
-			$('#viewer').text(this.text);
-			$('#viewer').val(this.text);
-			
-			return false;
-		});
+    $(function() {
+      $('.usernameSelect').click(function() {
+        $('#manager').text(this.text);
+        $('#manager').val(this.text);
+        $('#editor').text(this.text);
+        $('#editor').val(this.text);
+        $('#viewer').text(this.text);
+        $('#viewer').val(this.text);
 
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('#userTable').DataTable({
-			language: {
-				url: '/i18n/datatables-' + i18nLocale + '.json'
-			}
-		});
-	});
-	</script>
+        return false;
+      });
+
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('#userTable').DataTable({
+        language: {
+          url: '/i18n/datatables-' + i18nLocale + '.json'
+        }
+      });
+    });
+  </script>
 </body>
 </html>

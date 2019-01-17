@@ -14,25 +14,20 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-	var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
-	var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
-	var formData = JSON.parse([[${jsfItem.jsonData}]]);
-	
-	var onSubmit = ({formData}) => {
-		axios.get([[${jsfPath}]]).then(function (response) {
-				$('#jsf').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	};
-	
-	ReactDOM.render(
-		React.createElement(ReadOnlyFormComponent), 
-		document.getElementById('jsfForm')
-	);
-	
-	$('#jsfForm :input').not('[type="submit"]').attr('disabled', true);
-    </script>
+    var schema = JSON.parse(/*[[${jsfItem.jsonSchema}]]*/null);
+    var uiSchema = JSON.parse(/*[[${jsfItem.jsonUiSchema}]]*/null);
+    var formData = JSON.parse(/*[[${jsfItem.jsonData}]]*/null);
+    
+    var onSubmit = ({formData}) => {
+  		axios.get(/*[[${jsfPath}]]*/null).then(function(response) {
+  				$('#jsf').html(response.data);
+  			});
+  	};
+
+    ReactDOM.render(React.createElement(ReadOnlyFormComponent), document
+            .getElementById('jsfForm'));
+
+    $('#jsfForm :input').not('[type="submit"]').attr('disabled', true);
+  </script>
 </div>
 </html>

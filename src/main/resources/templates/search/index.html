@@ -31,8 +31,7 @@
 							</select>
 						</div>
 						<div class="input-group-btn">
-							<button id="addCriterion" type="button"
-								class="btn btn-success">
+							<button id="addCriterion" type="button" class="btn btn-success">
 								<span class="fa fa-plus"></span>
 							</button>
 						</div>
@@ -54,43 +53,45 @@
 	</div>
 
 	<script type="text/javascript">
-	$(function() {
-		$('#field').selectpicker({width: 'fit'});
-		$('#type').selectpicker({width: 'auto'});
-		
-		$('#search').click(function() {
-			if($('#tags').tagsinput('items').length == 0) return false;
-			
-			axios.post('/search', $('#tags').tagsinput('items'))
-				.then(function (response) {
-					$('#result').html(response.data);
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
-		});
-		
-		$('#addCriterion').click(function() {
-			if (!$('#value').val()) return false;
-			
-			let type = $('#type option:selected').val();
-			let text = $('#field option:selected').text();
-			let key = $('#field option:selected').val();
-			let value = $('#value').val();
-			value = (type == 'string' ? value : Number(value)) || 0;
-			let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
-			$('#tags').tagsinput('add', {
-				text: text + '[' + valueStr +']',
-				value: value,
-				key: key
-			});
-		});
-		
-		$('#tags').tagsinput({
-			itemValue: 'value',
-			itemText: 'text'
-		});
-	});
-	</script>
+    $(function() {
+      $('#field').selectpicker({
+        width: 'fit'
+      });
+      $('#type').selectpicker({
+        width: 'auto'
+      });
+
+      $('#search').click(
+              function() {
+                if ($('#tags').tagsinput('items').length == 0) return false;
+
+                axios.post('/search', $('#tags').tagsinput('items')).then(
+                        function(response) {
+                          $('#result').html(response.data);
+                        });
+              });
+
+      $('#addCriterion').click(function() {
+        if (!$('#value').val()) return false;
+
+        let type = $('#type option:selected').val();
+        let text = $('#field option:selected').text();
+        let key = $('#field option:selected').val();
+        let value = $('#value').val();
+        value = (type == 'string' ? value : Number(value)) || 0;
+        let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
+        $('#tags').tagsinput('add', {
+          text: text + '[' + valueStr + ']',
+          value: value,
+          key: key
+        });
+      });
+
+      $('#tags').tagsinput({
+        itemValue: 'value',
+        itemText: 'text'
+      });
+    });
+  </script>
 </body>
 </html>

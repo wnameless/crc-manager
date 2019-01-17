@@ -145,92 +145,86 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
-	function bs_input_file() {
-		$(".input-file").before(
-			function() {
-				if ( ! $(this).prev().hasClass('input-ghost') ) {
-					var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
-					element.attr("name", $(this).attr("name"));
-					element.change(function(){
-						element.next(element).find('input').val((element.val()).split('\\').pop());
-					    $('#uploadBtn').removeAttr('disabled');
-					});
-					$(this).find("button.btn-choose").click(function(){
-						element.click();
-					});
-					$(this).find('input').css("cursor","pointer");
-					$(this).find('input').mousedown(function() {
-						$(this).parents('.input-file').prev().click();
-						return false;
-					});
-					return element;
-				}
-			}
-		);
-	};
-	
-	var checkboxEvent = function() {
-		$("input[name='subjectIds[]']").remove();
-		
-		$('input:checked').each(function() {
-			$('<input>').attr({
-				type: 'hidden',
-				name: 'subjectIds[]',
-				value: this.value
-			}).appendTo('#batchDating');
-		});
-	};
-	
-	var showFormEvent = function(node) {
-		axios.get($(node).attr('data-show-path'))
-			.then(function (response) {
-				console.log(response.data);
-				$('#jsf').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	};
-	
-	var editFormEvent = function(node) {
-		axios.get($(node).attr('data-edit-path'))
-			.then(function (response) {
-				$('#jsf').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	};
-	
-	$(function() {
-		bs_input_file();
-		
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('#jsfTable').DataTable({
-			columnDefs: [ { width: '36px', targets: 0 } ],
-			language: {
-				url: '/i18n/datatables-' + i18nLocale + '.json'
-			},
-			drawCallback : function(settings) {
-				$('#jsfTable').reflowTable('update');
-			}
-		});
-		
-		$('#jsfTable').reflowTable();
-	});
-	
-	$('#subjectDateType').change(function() {
-		console.log(this.value);
-		if(this.value == 'bundleNumber') {
-			console.log('aa');
-			$('#batchDateDiv').addClass('hidden');
-			$('#bundleNumberDiv').removeClass('hidden');
-		}else{
-			console.log('bb');
-			$('#batchDateDiv').removeClass('hidden');
-			$('#bundleNumberDiv').addClass('hidden');
-		}
-	});
-	</script>
+    function bs_input_file() {
+      $(".input-file")
+              .before(
+                      function() {
+                        if (!$(this).prev().hasClass('input-ghost')) {
+                          var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                          element.attr("name", $(this).attr("name"));
+                          element.change(function() {
+                            element.next(element).find('input').val(
+                                    (element.val()).split('\\').pop());
+                            $('#uploadBtn').removeAttr('disabled');
+                          });
+                          $(this).find("button.btn-choose").click(function() {
+                            element.click();
+                          });
+                          $(this).find('input').css("cursor", "pointer");
+                          $(this).find('input').mousedown(function() {
+                            $(this).parents('.input-file').prev().click();
+                            return false;
+                          });
+                          return element;
+                        }
+                      });
+    };
+
+    var checkboxEvent = function() {
+      $("input[name='subjectIds[]']").remove();
+
+      $('input:checked').each(function() {
+        $('<input>').attr({
+          type: 'hidden',
+          name: 'subjectIds[]',
+          value: this.value
+        }).appendTo('#batchDating');
+      });
+    };
+
+    var showFormEvent = function(node) {
+      axios.get($(node).attr('data-show-path')).then(function(response) {
+        $('#jsf').html(response.data);
+      });
+    };
+
+    var editFormEvent = function(node) {
+      axios.get($(node).attr('data-edit-path')).then(function(response) {
+        $('#jsf').html(response.data);
+      });
+    };
+
+    $(function() {
+      bs_input_file();
+
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('#jsfTable').DataTable({
+        columnDefs: [{
+          width: '36px',
+          targets: 0
+        }],
+        language: {
+          url: '/i18n/datatables-' + i18nLocale + '.json'
+        },
+        drawCallback: function(settings) {
+          $('#jsfTable').reflowTable('update');
+        }
+      });
+
+      $('#jsfTable').reflowTable();
+    });
+
+    $('#subjectDateType').change(function() {
+      if (this.value == 'bundleNumber') {
+        console.log('aa');
+        $('#batchDateDiv').addClass('hidden');
+        $('#bundleNumberDiv').removeClass('hidden');
+      } else {
+        console.log('bb');
+        $('#batchDateDiv').removeClass('hidden');
+        $('#bundleNumberDiv').addClass('hidden');
+      }
+    });
+  </script>
 </div>
 </html>

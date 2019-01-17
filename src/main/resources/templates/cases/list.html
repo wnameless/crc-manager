@@ -115,45 +115,37 @@
 		</tbody>
 	</table>
 
-	<script th:replace="fragments/notify :: notify"></script>
+	<script th:replace="fragments/notify :: notify" type="text/javascript"></script>
 	<script type="text/javascript" th:inline="javascript">
-	var showFormEvent = function(node) {
-		axios.get($(node).attr('data-show-path'))
-			.then(function (response) {
-				$('#jsf').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	};
-	
-	var editFormEvent = function(node) {
-		axios.get($(node).attr('data-edit-path'))
-			.then(function (response) {
-				$('#jsf').html(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	};
+    var showFormEvent = function(node) {
+      axios.get($(node).attr('data-show-path')).then(function(response) {
+        $('#jsf').html(response.data);
+      });
+    };
 
-	$(function() {
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('#jsfTable').DataTable({
-			language: {
-				url: '/i18n/datatables-' + i18nLocale + '.json'
-			},
-			columnDefs: [{
-				targets: [0, 1, 3, 4],
-				orderable: false
-			}],
-			drawCallback : function(settings) {
-				$('#jsfTable').reflowTable('update');
-			}
-		});
-		
-		$('#jsfTable').reflowTable();
-	});
-	</script>
+    var editFormEvent = function(node) {
+      axios.get($(node).attr('data-edit-path')).then(function(response) {
+        $('#jsf').html(response.data);
+      });
+    };
+
+    $(function() {
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('#jsfTable').DataTable({
+        language: {
+          url: '/i18n/datatables-' + i18nLocale + '.json'
+        },
+        columnDefs: [{
+          targets: [0, 1, 3, 4],
+          orderable: false
+        }],
+        drawCallback: function(settings) {
+          $('#jsfTable').reflowTable('update');
+        }
+      });
+
+      $('#jsfTable').reflowTable();
+    });
+  </script>
 </div>
 </html>

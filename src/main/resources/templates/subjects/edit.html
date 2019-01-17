@@ -14,24 +14,18 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-	var schema = JSON.parse([[${jsfItem.jsonSchema}]]);
-	var uiSchema = JSON.parse([[${jsfItem.jsonUiSchema}]]);
-	var formData = JSON.parse([[${jsfItem.jsonData}]]);
-	
-	var onSubmit = ({formData}) => {
-		axios.post([[${jsfPath}]], formData).then(function (response) {
-			console.log(response);
-			$('#jsf').html(response.data);
-		}) 
-		.catch(function (error) {
-			console.log(error);
-		});
-	};
-	
-	ReactDOM.render(
-		React.createElement(FormComponent),
-		document.getElementById('jsfForm')
-	);
-    </script>
+    var schema = JSON.parse(/*[[${jsfItem.jsonSchema}]]*/null);
+    var uiSchema = JSON.parse(/*[[${jsfItem.jsonUiSchema}]]*/null);
+    var formData = JSON.parse(/*[[${jsfItem.jsonData}]]*/null);
+    
+    var onSubmit = ({formData}) => {
+  		axios.post(/*[[${jsfPath}]]*/null, formData).then(function (response) {
+  			$('#jsf').html(response.data);
+  		}) ;
+  	};
+
+    ReactDOM.render(React.createElement(FormComponent), document
+            .getElementById('jsfForm'));
+  </script>
 </div>
 </html>

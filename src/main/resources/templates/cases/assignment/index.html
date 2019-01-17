@@ -58,25 +58,25 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-	$(document).ready(function() {
-		$('.usernameSelect').click(function() {
-			$('#username').val(this.text);
-			$('#assignBtn').attr('disabled', false)
-			return false;
-		});
+    $(function() {
+      $('.usernameSelect').click(function() {
+        $('#username').val(this.text);
+        $('#assignBtn').attr('disabled', false)
+        return false;
+      });
 
-		let i18nLocale = [[#{jquery.datatable.i18n.locale}]];
-		$('#userTable').DataTable({
-			language: {
-				url: '/i18n/datatables-' + i18nLocale + '.json'
-			},
-			drawCallback : function(settings) {
-				$('#userTable').reflowTable('update');
-			}
-		});
-		
-		$('#userTable').reflowTable();
-	});
-	</script>
+      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
+      $('#userTable').DataTable({
+        language: {
+          url: '/i18n/datatables-' + i18nLocale + '.json'
+        },
+        drawCallback: function(settings) {
+          $('#userTable').reflowTable('update');
+        }
+      });
+
+      $('#userTable').reflowTable();
+    });
+  </script>
 </body>
 </html>
