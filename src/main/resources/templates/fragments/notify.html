@@ -1,12 +1,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<script th:fragment="notify" type="text/javascript"
-	th:inline="javascript">
-  $(function() {
-    var message = /*[[${message}]]*/'';
 
-    if (message) {
-      $.notify(message);
-    }
-  });
+<script th:fragment="notify" type="text/javascript" th:inline="javascript">
+    $(function () {
+        let message = /*[[${message}]]*/ '';
+
+        if (message) {
+            $.notify(message);
+        }
+    });
 </script>
+
 </html>
