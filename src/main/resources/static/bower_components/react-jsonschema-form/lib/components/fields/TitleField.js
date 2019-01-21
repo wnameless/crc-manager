@@ -21,11 +21,15 @@ function TitleField(props) {
       title = props.title,
       required = props.required;
 
-  var legend = required ? title + REQUIRED_FIELD_SYMBOL : title;
   return _react2.default.createElement(
     "legend",
     { id: id },
-    legend
+    title,
+    required && _react2.default.createElement(
+      "span",
+      { className: "required" },
+      REQUIRED_FIELD_SYMBOL
+    )
   );
 }
 

@@ -169,7 +169,8 @@ var AltDateWidget = function (_Component) {
           readonly = _props.readonly,
           autofocus = _props.autofocus,
           registry = _props.registry,
-          onBlur = _props.onBlur;
+          onBlur = _props.onBlur,
+          options = _props.options;
 
       return _react2.default.createElement(
         "ul",
@@ -190,7 +191,7 @@ var AltDateWidget = function (_Component) {
             }))
           );
         }),
-        _react2.default.createElement(
+        (options.hideNowButton !== "undefined" ? !options.hideNowButton : true) && _react2.default.createElement(
           "li",
           null,
           _react2.default.createElement(
@@ -199,7 +200,7 @@ var AltDateWidget = function (_Component) {
             "Now"
           )
         ),
-        _react2.default.createElement(
+        (options.hideClearButton !== "undefined" ? !options.hideClearButton : true) && _react2.default.createElement(
           "li",
           null,
           _react2.default.createElement(

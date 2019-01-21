@@ -8,9 +8,17 @@ var _keys = require("babel-runtime/core-js/object/keys");
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _objectWithoutProperties2 = require("babel-runtime/helpers/objectWithoutProperties");
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
 var _defineProperty2 = require("babel-runtime/helpers/defineProperty");
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _extends3 = require("babel-runtime/helpers/extends");
+
+var _extends4 = _interopRequireDefault(_extends3);
 
 var _toConsumableArray2 = require("babel-runtime/helpers/toConsumableArray");
 
@@ -36,31 +44,33 @@ var _inherits2 = require("babel-runtime/helpers/inherits");
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _extends3 = require("babel-runtime/helpers/extends");
+var _AddButton = require("../AddButton");
 
-var _extends4 = _interopRequireDefault(_extends3);
+var _AddButton2 = _interopRequireDefault(_AddButton);
 
-var _objectWithoutProperties2 = require("babel-runtime/helpers/objectWithoutProperties");
+var _IconButton = require("../IconButton");
 
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+var _IconButton2 = _interopRequireDefault(_IconButton);
 
 var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require("prop-types");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _includes = require("core-js/library/fn/array/includes");
 
 var _includes2 = _interopRequireDefault(_includes);
+
+var _types = require("../../types");
+
+var types = _interopRequireWildcard(_types);
 
 var _UnsupportedField = require("./UnsupportedField");
 
 var _UnsupportedField2 = _interopRequireDefault(_UnsupportedField);
 
 var _utils = require("../../utils");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -91,23 +101,6 @@ function ArrayFieldDescription(_ref2) {
   return _react2.default.createElement(DescriptionField, { id: id, description: description });
 }
 
-function IconBtn(props) {
-  var _props$type = props.type,
-      type = _props$type === undefined ? "default" : _props$type,
-      icon = props.icon,
-      className = props.className,
-      otherProps = (0, _objectWithoutProperties3.default)(props, ["type", "icon", "className"]);
-
-  return _react2.default.createElement(
-    "button",
-    (0, _extends4.default)({
-      type: "button",
-      className: "btn btn-" + type + " " + className
-    }, otherProps),
-    _react2.default.createElement("i", { className: "glyphicon glyphicon-" + icon })
-  );
-}
-
 // Used in the two templates
 function DefaultArrayItem(props) {
   var btnStyle = {
@@ -135,7 +128,7 @@ function DefaultArrayItem(props) {
             display: "flex",
             justifyContent: "space-around"
           } },
-        (props.hasMoveUp || props.hasMoveDown) && _react2.default.createElement(IconBtn, {
+        (props.hasMoveUp || props.hasMoveDown) && _react2.default.createElement(_IconButton2.default, {
           icon: "arrow-up",
           className: "array-item-move-up",
           tabIndex: "-1",
@@ -143,7 +136,7 @@ function DefaultArrayItem(props) {
           disabled: props.disabled || props.readonly || !props.hasMoveUp,
           onClick: props.onReorderClick(props.index, props.index - 1)
         }),
-        (props.hasMoveUp || props.hasMoveDown) && _react2.default.createElement(IconBtn, {
+        (props.hasMoveUp || props.hasMoveDown) && _react2.default.createElement(_IconButton2.default, {
           icon: "arrow-down",
           className: "array-item-move-down",
           tabIndex: "-1",
@@ -151,7 +144,7 @@ function DefaultArrayItem(props) {
           disabled: props.disabled || props.readonly || !props.hasMoveDown,
           onClick: props.onReorderClick(props.index, props.index + 1)
         }),
-        props.hasRemove && _react2.default.createElement(IconBtn, {
+        props.hasRemove && _react2.default.createElement(_IconButton2.default, {
           type: "danger",
           icon: "remove",
           className: "array-item-remove",
@@ -168,7 +161,7 @@ function DefaultArrayItem(props) {
 function DefaultFixedArrayFieldTemplate(props) {
   return _react2.default.createElement(
     "fieldset",
-    { className: props.className },
+    { className: props.className, id: props.idSchema.$id },
     _react2.default.createElement(ArrayFieldTitle, {
       key: "array-field-title-" + props.idSchema.$id,
       TitleField: props.TitleField,
@@ -190,7 +183,8 @@ function DefaultFixedArrayFieldTemplate(props) {
         key: "array-item-list-" + props.idSchema.$id },
       props.items && props.items.map(DefaultArrayItem)
     ),
-    props.canAdd && _react2.default.createElement(AddButton, {
+    props.canAdd && _react2.default.createElement(_AddButton2.default, {
+      className: "array-item-add",
       onClick: props.onAddClick,
       disabled: props.disabled || props.readonly
     })
@@ -200,7 +194,7 @@ function DefaultFixedArrayFieldTemplate(props) {
 function DefaultNormalArrayFieldTemplate(props) {
   return _react2.default.createElement(
     "fieldset",
-    { className: props.className },
+    { className: props.className, id: props.idSchema.$id },
     _react2.default.createElement(ArrayFieldTitle, {
       key: "array-field-title-" + props.idSchema.$id,
       TitleField: props.TitleField,
@@ -223,7 +217,8 @@ function DefaultNormalArrayFieldTemplate(props) {
         return DefaultArrayItem(p);
       })
     ),
-    props.canAdd && _react2.default.createElement(AddButton, {
+    props.canAdd && _react2.default.createElement(_AddButton2.default, {
+      className: "array-item-add",
       onClick: props.onAddClick,
       disabled: props.disabled || props.readonly
     })
@@ -309,17 +304,19 @@ var ArrayField = function (_Component) {
             }
           }
         }
-        onChange(formData.map(function (item, i) {
-          // i is string, index and newIndex are numbers,
-          // so using "==" to compare
-          if (i == newIndex) {
-            return formData[index];
-          } else if (i == index) {
-            return formData[newIndex];
-          } else {
-            return item;
-          }
-        }), newErrorSchema);
+
+        function reOrderArray() {
+          // Copy item
+          var newFormData = formData.slice();
+
+          // Moves item from index to newIndex
+          newFormData.splice(index, 1);
+          newFormData.splice(newIndex, 0, formData[index]);
+
+          return newFormData;
+        }
+
+        onChange(reOrderArray(), newErrorSchema);
       };
     }, _this.onChangeForIndex = function (index) {
       return function (value, errorSchema) {
@@ -749,55 +746,8 @@ ArrayField.defaultProps = {
 };
 
 
-function AddButton(_ref4) {
-  var onClick = _ref4.onClick,
-      disabled = _ref4.disabled;
-
-  return _react2.default.createElement(
-    "div",
-    { className: "row" },
-    _react2.default.createElement(
-      "p",
-      { className: "col-xs-3 col-xs-offset-9 array-item-add text-right" },
-      _react2.default.createElement(IconBtn, {
-        type: "info",
-        icon: "plus",
-        className: "btn-add col-xs-12",
-        tabIndex: "0",
-        onClick: onClick,
-        disabled: disabled
-      })
-    )
-  );
-}
-
 if (process.env.NODE_ENV !== "production") {
-  ArrayField.propTypes = {
-    schema: _propTypes2.default.object.isRequired,
-    uiSchema: _propTypes2.default.shape({
-      "ui:options": _propTypes2.default.shape({
-        addable: _propTypes2.default.bool,
-        orderable: _propTypes2.default.bool,
-        removable: _propTypes2.default.bool
-      })
-    }),
-    idSchema: _propTypes2.default.object,
-    errorSchema: _propTypes2.default.object,
-    onChange: _propTypes2.default.func.isRequired,
-    onBlur: _propTypes2.default.func,
-    onFocus: _propTypes2.default.func,
-    formData: _propTypes2.default.array,
-    required: _propTypes2.default.bool,
-    disabled: _propTypes2.default.bool,
-    readonly: _propTypes2.default.bool,
-    autofocus: _propTypes2.default.bool,
-    registry: _propTypes2.default.shape({
-      widgets: _propTypes2.default.objectOf(_propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object])).isRequired,
-      fields: _propTypes2.default.objectOf(_propTypes2.default.func).isRequired,
-      definitions: _propTypes2.default.object.isRequired,
-      formContext: _propTypes2.default.object.isRequired
-    })
-  };
+  ArrayField.propTypes = types.fieldProps;
 }
 
 exports.default = ArrayField;

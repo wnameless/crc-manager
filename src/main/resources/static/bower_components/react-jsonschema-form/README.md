@@ -23,6 +23,7 @@ A [live playground](https://mozilla-services.github.io/react-jsonschema-form/) i
         - [Form data changes](#form-data-changes)
         - [Form field blur events](#form-field-blur-events)
         - [Form field focus events](#form-field-focus-events)
+     - [Submit form programmatically](#submit-form-programmatically)
   - [Form customization](#form-customization)
      - [The uiSchema object](#the-uischema-object)
      - [Alternative widgets](#alternative-widgets)
@@ -37,6 +38,8 @@ A [live playground](https://mozilla-services.github.io/react-jsonschema-form/) i
            - [Multiple files](#multiple-files)
            - [File widget input ref](#file-widget-input-ref)
      - [Object fields ordering](#object-fields-ordering)
+     - [Object item options](#object-item-options)
+        - [expandable option](#expandable-option)
      - [Array item options](#array-item-options)
         - [orderable option](#orderable-option)
         - [addable option](#addable-option)
@@ -57,6 +60,7 @@ A [live playground](https://mozilla-services.github.io/react-jsonschema-form/) i
      - [Field labels](#field-labels)
      - [HTML5 Input Types](#html5-input-types)
      - [Form attributes](#form-attributes)
+     - [Form disable](#form-disable)
   - [Advanced customization](#advanced-customization)
      - [Field template](#field-template)
      - [Array Field Template](#array-field-template)
@@ -238,6 +242,22 @@ Sometimes you may want to trigger events or modify external state when a field h
 
 Sometimes you may want to trigger events or modify external state when a field has been focused, so you can pass an `onFocus` handler, which will receive the id of the input that is focused and the field value.
 
+### Submit form programmatically
+You can use the reference to get your `Form` component and call the `submit` method to submit the form programmatically without a submit button.
+This method will dispatch the `submit` event of the form, and the function, that is passed to `onSubmit` props, will be called.
+
+```js
+const onSubmit = ({formData}) => console.log("Data submitted: ",  formData);
+let yourForm;
+
+render((
+  <Form schema={schema}
+        onSubmit={onSubmit} ref={(form) => {yourForm = form;}}/>
+), document.getElementById("app"));
+
+yourForm.submit();
+```
+
 ## Form customization
 
 ### The `uiSchema` object
@@ -348,9 +368,11 @@ Please note that, even though they are standardized, `datetime-local` and `date`
 - `alt-datetime`: Six `select` elements are used to select the year, the month, the day, the hour, the minute and the second;
 - `alt-date`: Three `select` elements are used to select the year, month and the day.
 
+> **Firefox 57 - 66**: Firefox partially supporting `date` and `time` input types, but not `datetime-local`, `month` or `week`
+
 ![](http://i.imgur.com/VF5tY60.png)
 
-You can customize the list of years displayed in the `year` dropdown by providing a ``yearsRange`` property to ``ui:options`` in your uiSchema:
+You can customize the list of years displayed in the `year` dropdown by providing a ``yearsRange`` property to ``ui:options`` in your uiSchema. Its also possible to remove the `Now` and `Clear` buttons with the `hideNowButton` and `hideClearButton` options.
 
 ```jsx
 uiSchema: {
@@ -359,6 +381,8 @@ uiSchema: {
       "ui:widget": "alt-datetime",
       "ui:options": {
         yearsRange: [1980, 2030],
+        hideNowButton: true,
+        hideClearButton: true,
       },
     },
   },
@@ -481,6 +505,22 @@ If a guaranteed fixed order is only important for some fields, you can insert a 
 ```js
 const uiSchema = {
   "ui:order": ["bar", "*"]
+};
+```
+
+### Object item options
+
+#### `expandable` option
+
+If `additionalProperties` contains a schema object, an add button for new properies is shown by default. The UX for editing properties whose names are user-defined is still experimental.
+
+You can turn support for `additionalProperties` off with the `expandable` option in `uiSchema`:
+
+```jsx
+const uiSchema = {
+  "ui:options":  {
+    expandable: false
+  }
 };
 ```
 
@@ -799,7 +839,7 @@ const uiSchema = {
 
 ### Placeholders
 
-You can add placeholder texst to an input by using the `ui:placeholder` uiSchema directive:
+You can add placeholder text to an input by using the `ui:placeholder` uiSchema directive:
 
 ```jsx
 const schema = {type: "string", format: "uri"};
@@ -863,7 +903,28 @@ The `Form` component supports the following html attributes:
   schema={} />
 ```
 
+### Form disable
+
+Its possible to disable the whole form by setting the `disabled` prop. The `disabled` prop is then forwarded down thru each field of the form. 
+
+```jsx
+<Form
+  disabled
+  schema={} />
+```
+
+If you just want to disable some of the fields see the `ui:disabled` parameter in the uiSchema directive. 
+
 ## Advanced customization
+
+
+_ | Custom Field  | Custom Template | Custom Widget
+--|---------- | ------------- | ----
+What it does | Overrides all behaviour | Overrides just the layout | Overrides just the input box (not layout, labels, or help, or validation)
+Usage | Global or per-field | Only global | Global or per-field
+Global Example | `<Form fields={MyCustomFields} />` |  `<Form ArrayFieldTemplate={ArrayFieldTemplate} />` | `<Form widgets={MyCustomWidgets} />`
+Per-Field Example | `"ui:field": MyField` |  N/A | `"ui:widget":MyWidget`
+Documentation | [Field](#field-props) | [Field Template](#field-template) - [Array Template](#array-field-template) - [Object Template](#object-field-template) - [Error List Template](#error-list-template) | [Custom Widgets](#custom-widget-components)
 
 ### Field template
 
@@ -983,7 +1044,7 @@ function ObjectFieldTemplate(props) {
     <div>
       {props.title}
       {props.description}
-      {props.properties.map(element => <div className="property-wrapper">{element.children}</div>)}
+      {props.properties.map(element => <div className="property-wrapper">{element.content}</div>)}
     </div>
   );
 }
@@ -1002,7 +1063,9 @@ The following props are passed to each `ObjectFieldTemplate`:
 - `TitleField`: The `TitleField` from the registry (in case you wanted to utilize it).
 - `title`: A string value containing the title for the object.
 - `description`: A string value containing the description for the object.
+- `disabled`: A boolean value stating if the object is disabled.
 - `properties`: An array of object representing the properties in the array. Each of the properties represent a child with properties described below.
+- `readonly`: A boolean value stating if the object is read-only.
 - `required`: A boolean value stating if the object is required.
 - `schema`: The schema object for this object.
 - `uiSchema`: The uiSchema object for this object field.
@@ -1027,15 +1090,13 @@ An error list template is basically a React stateless component being passed err
 function ErrorListTemplate(props) {
   const {errors} = props;
   return (
-    <div>
-      {errors.map((error, i) => {
-        return (
-          <li key={i}>
+    <ul>
+      {errors.map(error => (
+          <li key={error.stack}>
             {error.stack}
           </li>
-        );
-      })}
-    </div>
+        ))}
+    </ul>
   );
 }
 
@@ -1200,7 +1261,7 @@ render((
 
 #### Customizing widgets text input
 
-All the widgets that render a text input use the `BaseInput` component internally. If you need to customize all text inputs without customizing all widgets individially, you can provide a `BaseInput` component in the `widgets` property of `Form` (see [Custom component registration](#custom-component-registration).
+All the widgets that render a text input use the `BaseInput` component internally. If you need to customize all text inputs without customizing all widgets individually, you can provide a `BaseInput` component in the `widgets` property of `Form` (see [Custom component registration](#custom-component-registration).
 
 ### Custom field components
 
@@ -1742,7 +1803,12 @@ This component follows [JSON Schema](http://json-schema.org/documentation.html) 
 * `additionalItems` keyword for arrays
     This keyword works when `items` is an array. `additionalItems: true` is not supported because there's no widget to represent an item of any type. In this case it will be treated as no additional items allowed. `additionalItems` being a valid schema is supported.
 * `anyOf`, `allOf`, and `oneOf`, or multiple `types` (i.e. `"type": ["string", "array"]`
-    Nobody yet has come up with a PR that adds this feature with a simple and easy-to-understand UX.
+    The `anyOf` keyword is supported but has the following caveats:
+    - The `anyOf` keyword is not supported when used inside the `items` keyword
+      for arrays.
+    - Properties declared inside the `anyOf` should not overlap with properties
+      "outside" of the `anyOf`.
+
     You can use `oneOf` with [schema dependencies](#schema-dependencies) to dynamically add schema properties based on input data but this feature does not bring general support for `oneOf` elsewhere in a schema.
 
 ## Tips and tricks
@@ -1808,14 +1874,19 @@ $ git commit -m "Bump version $VERSION"
 $ git tag v$VERSION
 $ npm run dist
 $ npm publish
-$ git push --tags origin
+$ git push --tags origin master
 ```
 
 ## FAQ
 
 ### Q: Does rjsf support `oneOf`, `anyOf`, multiple types in an array, etc.?
 
-A: Not yet (except for a special case where you can use `oneOf` in [schema dependencies](#schema-dependencies)), but perhaps you will be the person whose PR will finally add the feature in a way that gets merged. For inspiration, see [#329](https://github.com/mozilla-services/react-jsonschema-form/pull/329) or [#417](https://github.com/mozilla-services/react-jsonschema-form/pull/417). See also: [#52](https://github.com/mozilla-services/react-jsonschema-form/issues/52), [#151](https://github.com/mozilla-services/react-jsonschema-form/issues/151), [#171](https://github.com/mozilla-services/react-jsonschema-form/issues/171), [#200](https://github.com/mozilla-services/react-jsonschema-form/issues/200), [#282](https://github.com/mozilla-services/react-jsonschema-form/issues/282), [#302](https://github.com/mozilla-services/react-jsonschema-form/pull/302), [#330](https://github.com/mozilla-services/react-jsonschema-form/issues/330), [#430](https://github.com/mozilla-services/react-jsonschema-form/issues/430), [#522](https://github.com/mozilla-services/react-jsonschema-form/issues/522), [#538](https://github.com/mozilla-services/react-jsonschema-form/issues/538), [#551](https://github.com/mozilla-services/react-jsonschema-form/issues/551), [#552](https://github.com/mozilla-services/react-jsonschema-form/issues/552), or [#648](https://github.com/mozilla-services/react-jsonschema-form/issues/648).
+A: The `anyOf` keyword is supported but has the following caveats:
+    - The `anyOf` keyword is not supported when used inside the `items` keyword
+      for arrays.
+    - Properties declared inside the `anyOf` should not overlap with properties
+      "outside" of the `anyOf`.
+There is also special cased where you can use `oneOf` in [schema dependencies](#schema-dependencies), If you'd like to help improve support for these keywords, see the following issues for inspiration [#329](https://github.com/mozilla-services/react-jsonschema-form/pull/329) or [#417](https://github.com/mozilla-services/react-jsonschema-form/pull/417). See also: [#52](https://github.com/mozilla-services/react-jsonschema-form/issues/52), [#151](https://github.com/mozilla-services/react-jsonschema-form/issues/151), [#171](https://github.com/mozilla-services/react-jsonschema-form/issues/171), [#200](https://github.com/mozilla-services/react-jsonschema-form/issues/200), [#282](https://github.com/mozilla-services/react-jsonschema-form/issues/282), [#302](https://github.com/mozilla-services/react-jsonschema-form/pull/302), [#330](https://github.com/mozilla-services/react-jsonschema-form/issues/330), [#430](https://github.com/mozilla-services/react-jsonschema-form/issues/430), [#522](https://github.com/mozilla-services/react-jsonschema-form/issues/522), [#538](https://github.com/mozilla-services/react-jsonschema-form/issues/538), [#551](https://github.com/mozilla-services/react-jsonschema-form/issues/551), [#552](https://github.com/mozilla-services/react-jsonschema-form/issues/552), or [#648](https://github.com/mozilla-services/react-jsonschema-form/issues/648).
 
 ### Q: Will react-jsonschema-form support Material, Ant-Design, Foundation, or [some other specific widget library or frontend style]?
 

@@ -19,29 +19,21 @@ package com.github.wnameless.spring.json.schema.form;
 
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 @MappedSuperclass
 public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
-  @Column
-  @Lob
-  protected String jsonData = "{}";
+  @Column @Lob protected String jsonData = "{}";
 
-  @Column
-  @Lob
-  protected String jsonSchema = "{}";
+  @Column @Lob protected String jsonSchema = "{}";
 
-  @Column
-  @Lob
-  protected String jsonUiSchema = "{}";
+  @Column @Lob protected String jsonUiSchema = "{}";
 
   public static final String UTF8_BOM = "\uFEFF";
 
@@ -88,19 +80,17 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
     Map<String, String> propertyTitles = newLinkedHashMap();
 
-    Map<String, Object> jsonSchema = gson.fromJson(getJsonSchema(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> jsonSchema =
+        gson.fromJson(getJsonSchema(), new TypeToken<Map<String, Object>>() {}.getType());
 
     @SuppressWarnings("unchecked")
     Map<String, Map<String, Object>> jsonSchemaProperties =
         (Map<String, Map<String, Object>>) jsonSchema.get("properties");
 
     for (String key : jsonSchemaProperties.keySet()) {
-      propertyTitles.put(key,
-          (String) jsonSchemaProperties.get(key).get("title"));
+      propertyTitles.put(key, (String) jsonSchemaProperties.get(key).get("title"));
     }
 
     return propertyTitles;
   }
-
 }

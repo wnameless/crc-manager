@@ -17,90 +17,57 @@
 		<tbody>
 			<tr th:each="case : ${jsfItems}">
 				<td>
-					<button type="button" class="btn btn-primary dropdown-toggle"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						<span class="fa fa-cogs"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<li
-							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/assignment'}"
-								th:text="#{ui.case.table.action.assign}"></a>
+						<li th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/assignment'}" th:text="#{ui.case.table.action.assign}"></a>
 						</li>
-						<li
-							th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}"
-							class="divider"></li>
-						<li
-							th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.case.table.action.dispatch}"></a>
+						<li th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" class="divider"></li>
+						<li th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/exec'}" th:text="#{ui.case.table.action.dispatch}"></a>
 						</li>
-						<li
-							th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/none'}"
-								th:text="#{ui.case.table.action.none}"></a>
+						<li th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/none'}" th:text="#{ui.case.table.action.none}"></a>
 						</li>
-						<li
-							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/permission'}"
-								th:text="#{ui.case.table.action.permission}"></a>
+						<li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/permission'}" th:text="#{ui.case.table.action.permission}"></a>
 						</li>
-						<li
-							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}"
-							class="divider"></li>
-						<li
-							th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/end'}"
-								th:text="#{ui.case.table.action.close}"></a>
+						<li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}" class="divider"></li>
+						<li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/end'}" th:text="#{ui.case.table.action.close}"></a>
 						</li>
-						<li
-							th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
-								th:text="#{ui.case.table.action.reopen}"></a>
+						<li th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/exec'}" th:text="#{ui.case.table.action.reopen}"></a>
 						</li>
-						<li
-							th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
-							<a class="dropdown-item"
-								th:href="@{'/cases/' + ${case.id} + '/status/new'}"
-								th:text="#{ui.case.table.action.renew}"></a>
+						<li th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
+							<a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/new'}" th:text="#{ui.case.table.action.renew}"></a>
 						</li>
 					</ul>
 				</td>
-				<td><a href="#" th:if="${@perm.canWrite(case)}"
-						th:attr="data-edit-path=${jsfPath + '/' + case.id + '/edit'}"
-						onclick="editFormEvent(this)">
+				<td><a href="#" th:if="${@perm.canWrite(case)}" th:attr="data-edit-path=${jsfPath + '/' + case.id + '/edit'}" onclick="editFormEvent(this)">
 						<span>
 							<i class="fa fa-edit"></i>
 						</span>
 					</a> <span th:if="${!@perm.canWrite(case)}">
 						<i class="fa fa-edit"></i>
-					</span> <a th:if="${@perm.canDelete()}"
-						th:href="@{'/cases/' + ${case.id} + '/delete'}">
+					</span> <a th:if="${@perm.canDelete()}" th:href="@{'/cases/' + ${case.id} + '/delete'}">
 						<span>
 							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
 						</span>
 					</a></td>
 				<td><a th:if="${!@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
-					<a th:if="${@perm.canRead(case)}" href="#"
-						th:attr="data-show-path=${jsfPath + '/' + case.id}"
-						onclick="showFormEvent(this)" th:inline="text">
+					<a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + case.id}" onclick="showFormEvent(this)" th:inline="text">
 						[[${case.irbNumber}]] </a></td>
-				<td><a th:if="${@perm.canRead(case)}"
-						th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
+				<td><a th:if="${@perm.canRead(case)}" th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
 						<span>
 							<i class="fa fa-medkit"></i>
 						</span>
 					</a> <span th:if="${!@perm.canRead(case)}">
 						<i class="fa fa-medkit"></i>
 					</span></td>
-				<td><a th:if="${@perm.canRead(case)}"
-						th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
+				<td><a th:if="${@perm.canRead(case)}" th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
 						<span>
 							<i class="fa fa-user-plus"></i>
 						</span>
@@ -117,35 +84,36 @@
 
 	<script th:replace="fragments/notify :: notify" type="text/javascript"></script>
 	<script type="text/javascript" th:inline="javascript">
-    var showFormEvent = function(node) {
-      axios.get($(node).attr('data-show-path')).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+		var showFormEvent = function(node) {
+			axios.get($(node).attr('data-show-path')).then(function(response) {
+				$('#jsf').html(response.data);
+			});
+		};
 
-    var editFormEvent = function(node) {
-      axios.get($(node).attr('data-edit-path')).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+		var editFormEvent = function(node) {
+			axios.get($(node).attr('data-edit-path')).then(function(response) {
+				$('#jsf').html(response.data);
+			});
+		};
 
-    $(function() {
-      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
-      $('#jsfTable').DataTable({
-        language: {
-          url: '/i18n/datatables-' + i18nLocale + '.json'
-        },
-        columnDefs: [{
-          targets: [0, 1, 3, 4],
-          orderable: false
-        }],
-        drawCallback: function(settings) {
-          $('#jsfTable').reflowTable('update');
-        }
-      });
+		$(function() {
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			$('#jsfTable').DataTable({
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				},
+				columnDefs: [{
+					targets: [0, 1, 3, 4],
+					orderable: false
+				}],
+				drawCallback: function(settings) {
+					$('#jsfTable').reflowTable('update');
+				}
+			});
 
-      $('#jsfTable').reflowTable();
-    });
-  </script>
+			$('#jsfTable').reflowTable();
+		});
+	</script>
 </div>
+
 </html>

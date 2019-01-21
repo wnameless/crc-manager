@@ -30,12 +30,12 @@ import com.wmw.crc.manager.repository.CaseRepository;
 @RestController
 public class CaseJsonDownloaderController {
 
-  @Autowired
-  CaseRepository caseRepository;
+@Autowired
+CaseRepository caseRepository;
 
-  @GetMapping("/json/cases/{id}")
-  BaseJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
-    return new BaseJsonSchemaForm(caseRepository.findById(id).get());
-  }
+@GetMapping("/json/cases/{id}")
+BaseJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
+        return new BaseJsonSchemaForm(caseRepository.findById(id).get());
+}
 
 }

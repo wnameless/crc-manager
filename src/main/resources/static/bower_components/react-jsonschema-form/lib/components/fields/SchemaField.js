@@ -36,6 +36,12 @@ var _keys = require("babel-runtime/core-js/object/keys");
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _utils = require("../../utils");
+
+var _IconButton = require("../IconButton");
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
 var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
@@ -44,11 +50,15 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _utils = require("../../utils");
+var _types = require("../../types");
+
+var types = _interopRequireWildcard(_types);
 
 var _UnsupportedField = require("./UnsupportedField");
 
 var _UnsupportedField2 = _interopRequireDefault(_UnsupportedField);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72,6 +82,15 @@ function getFieldComponent(schema, uiSchema, idSchema, fields) {
   }
 
   var componentName = COMPONENT_TYPES[(0, _utils.getSchemaType)(schema)];
+
+  // If the type is not defined and the schema uses 'anyOf', don't render
+  // a field and let the AnyOfField component handle the form display
+  if (!componentName && schema.anyOf) {
+    return function () {
+      return null;
+    };
+  }
+
   return componentName in fields ? fields[componentName] : function () {
     return _react2.default.createElement(_UnsupportedField2.default, {
       schema: schema,
@@ -100,6 +119,22 @@ function Label(props) {
       REQUIRED_FIELD_SYMBOL
     )
   );
+}
+
+function LabelInput(props) {
+  var id = props.id,
+      label = props.label,
+      onChange = props.onChange;
+
+  return _react2.default.createElement("input", {
+    className: "form-control",
+    type: "text",
+    id: id,
+    onBlur: function onBlur(event) {
+      return onChange(event.target.value);
+    },
+    defaultValue: label
+  });
 }
 
 function Help(props) {
@@ -147,7 +182,6 @@ function ErrorList(props) {
     )
   );
 }
-
 function DefaultTemplate(props) {
   var id = props.id,
       classNames = props.classNames,
@@ -158,23 +192,68 @@ function DefaultTemplate(props) {
       description = props.description,
       hidden = props.hidden,
       required = props.required,
-      displayLabel = props.displayLabel;
+      displayLabel = props.displayLabel,
+      onKeyChange = props.onKeyChange,
+      onDropPropertyClick = props.onDropPropertyClick;
 
   if (hidden) {
-    return children;
+    return _react2.default.createElement(
+      "div",
+      { className: "hidden" },
+      children
+    );
   }
+
+  var additional = props.schema.hasOwnProperty(_utils.ADDITIONAL_PROPERTY_FLAG);
+  var keyLabel = label + " Key";
 
   return _react2.default.createElement(
     "div",
     { className: classNames },
-    displayLabel && _react2.default.createElement(Label, { label: label, required: required, id: id }),
-    displayLabel && description ? description : null,
-    children,
-    errors,
-    help
+    _react2.default.createElement(
+      "div",
+      { className: additional ? "row" : "" },
+      additional && _react2.default.createElement(
+        "div",
+        { className: "col-xs-5 form-additional" },
+        _react2.default.createElement(
+          "div",
+          { className: "form-group" },
+          _react2.default.createElement(Label, { label: keyLabel, required: required, id: id + "-key" }),
+          _react2.default.createElement(LabelInput, {
+            label: label,
+            required: required,
+            id: id + "-key",
+            onChange: onKeyChange
+          })
+        )
+      ),
+      _react2.default.createElement(
+        "div",
+        {
+          className: additional ? "form-additional form-group col-xs-5" : "" },
+        displayLabel && _react2.default.createElement(Label, { label: label, required: required, id: id }),
+        displayLabel && description ? description : null,
+        children,
+        errors,
+        help
+      ),
+      _react2.default.createElement(
+        "div",
+        { className: "col-xs-2" },
+        additional && _react2.default.createElement(_IconButton2.default, {
+          type: "danger",
+          icon: "remove",
+          className: "array-item-remove btn-block",
+          tabIndex: "-1",
+          style: { border: "0" },
+          disabled: props.disabled || props.readonly,
+          onClick: onDropPropertyClick(props.label)
+        })
+      )
+    )
   );
 }
-
 if (process.env.NODE_ENV !== "production") {
   DefaultTemplate.propTypes = {
     id: _propTypes2.default.string,
@@ -209,6 +288,8 @@ function SchemaFieldRender(props) {
       errorSchema = props.errorSchema,
       idPrefix = props.idPrefix,
       name = props.name,
+      onKeyChange = props.onKeyChange,
+      onDropPropertyClick = props.onDropPropertyClick,
       required = props.required,
       _props$registry = props.registry,
       registry = _props$registry === undefined ? (0, _utils.getDefaultRegistry)() : _props$registry;
@@ -291,6 +372,8 @@ function SchemaFieldRender(props) {
     id: id,
     label: label,
     hidden: hidden,
+    onKeyChange: onKeyChange,
+    onDropPropertyClick: onDropPropertyClick,
     required: required,
     disabled: disabled,
     readonly: readonly,
@@ -302,10 +385,26 @@ function SchemaFieldRender(props) {
     uiSchema: uiSchema
   };
 
+  var _AnyOfField = registry.fields.AnyOfField;
+
   return _react2.default.createElement(
     FieldTemplate,
     fieldProps,
-    field
+    field,
+    schema.anyOf && !(0, _utils.isSelect)(schema) && _react2.default.createElement(_AnyOfField, {
+      disabled: disabled,
+      errorSchema: errorSchema,
+      formData: formData,
+      idPrefix: idPrefix,
+      idSchema: idSchema,
+      onBlur: props.onBlur,
+      onChange: props.onChange,
+      onFocus: props.onFocus,
+      schema: schema,
+      registry: registry,
+      safeRenderCompletion: props.safeRenderCompletion,
+      uiSchema: uiSchema
+    })
   );
 }
 
@@ -349,15 +448,7 @@ if (process.env.NODE_ENV !== "production") {
     idSchema: _propTypes2.default.object,
     formData: _propTypes2.default.any,
     errorSchema: _propTypes2.default.object,
-    registry: _propTypes2.default.shape({
-      widgets: _propTypes2.default.objectOf(_propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object])).isRequired,
-      fields: _propTypes2.default.objectOf(_propTypes2.default.func).isRequired,
-      definitions: _propTypes2.default.object.isRequired,
-      ArrayFieldTemplate: _propTypes2.default.func,
-      ObjectFieldTemplate: _propTypes2.default.func,
-      FieldTemplate: _propTypes2.default.func,
-      formContext: _propTypes2.default.object.isRequired
-    })
+    registry: types.registry.isRequired
   };
 }
 

@@ -1,7 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="new">
-	<div
-		class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+	<div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 		<h3 th:inline="text">
 			<span class="glyphicon glyphicon-list-alt"></span>
 			[[${case.trialName}]]
@@ -13,12 +12,10 @@
 		<div class="row">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-6">
-				<input id="nationalId" type="text" class="form-control"
-					th:placeholder="#{ui.subject.nationalid}">
+				<input id="nationalId" type="text" class="form-control" th:placeholder="#{ui.subject.nationalid}">
 			</div>
 			<div class="col-sm-4">
-				<button id="queryBtn" class="btn btn-primary"
-					th:text="#{ui.subject.search}"></button>
+				<button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
 			</div>
 		</div>
 		<hr />
@@ -26,84 +23,71 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-    var schema = JSON.parse(/*[[${jsfItem.jsonSchema}]]*/null);
-    var uiSchema = JSON.parse(/*[[${jsfItem.jsonUiSchema}]]*/null);
-    var formData = JSON.parse(/*[[${jsfItem.jsonData}]]*/null);
+		$(function() {
+			let schema = JSON.parse( /*[[${jsfItem.jsonSchema}]]*/ null);
+			let uiSchema = JSON.parse( /*[[${jsfItem.jsonUiSchema}]]*/ null);
+			let formData = JSON.parse( /*[[${jsfItem.jsonData}]]*/ null);
 
-    var onSubmit = function(f) {
-      axios.post(/*[[${jsfPath}]]*/null, f.formData).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+			let onSubmit = function(f) {
+				axios.post( /*[[${jsfPath}]]*/ null, f.formData)
+					.then(function(response) {
+						$('#jsf').html(response.data);
+					});
+			};
 
-    ReactDOM.render(React.createElement(FormComponent), document
-            .getElementById('jsfForm'));
+			ReactDOM.render(React.createElement(CostumFormComponent, {
+				schema: schema,
+				uiSchema: uiSchema,
+				formData: formData,
+				onSubmit: onSubmit,
+				btnText: '送出'
+			}), document.getElementById('jsfForm'));
 
-    $(function() {
-      $('#queryBtn')
-              .click(
-                      function() {
-                        if (!$('#nationalId').val()) {
-                          $
-                                  .notify(/*[[#{ui.subject.message.id-no-data}]]*/null);
-                          return;
-                        }
+			$('#queryBtn').click(function() {
+				if (!$('#nationalId').val()) {
+					$.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
+					return;
+				}
 
-                        axios
-                                .get(
-                                        '/subjects/query/'
-                                                + $('#nationalId').val())
-                                .then(
-                                        function(response) {
-                                          let patient = response.data;
+				axios.get('/subjects/query/' + $('#nationalId').val())
+					.then(function(response) {
+						let patient = response.data;
 
-                                          if (!patient.nationalId) {
-                                            $
-                                                    .notify(/*[[#{ui.subject.message.id-no-data}]]*/null);
-                                            return;
-                                          }
+						if (!patient.nationalId) {
+							$.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
+							return;
+						}
 
-                                          if (patient.patientId) {
-                                            $('#root_mrn').val(
-                                                    patient.patientId);
-                                          }
-                                          if (patient.name) {
-                                            $('#root_lastname').val(
-                                                    patient.name);
-                                          }
-                                          if (patient.nationalId) {
-                                            $('#root_taiwanId').val(
-                                                    patient.nationalId);
-                                            if (patient.nationalId[1] == '1') {
-                                              $($('input[type=radio]')[0])
-                                                      .prop('checked', true);
-                                            }
-                                            if (patient.nationalId[1] == '2') {
-                                              $($('input[type=radio]')[1])
-                                                      .prop('checked', true);
-                                            }
-                                          }
-                                          if (patient.birthday) {
-                                            $('#root_birthDate')
-                                                    .val(
-                                                            patient.birthday
-                                                                    .replace(
-                                                                            new RegExp(
-                                                                                    '/',
-                                                                                    'g'),
-                                                                            '-'));
-                                          }
-                                          if (patient.phone) {
-                                            $('#root_telephone1').val(
-                                                    patient.phone);
-                                          }
-                                          if (patient.address) {
-                                            $('#root_address').val(
-                                                    patient.address);
-                                          }
-                                        });
-                      });
-    });
-  </script>
+						if (patient.patientId) {
+							$('#root_mrn').val(patient.patientId);
+						}
+						if (patient.name) {
+							$('#root_lastname').val(patient.name);
+						}
+						if (patient.nationalId) {
+							$('#root_taiwanId').val(
+								patient.nationalId);
+							if (patient.nationalId[1] == '1') {
+								$($('input[type=radio]')[0]).prop('checked', true);
+							}
+							if (patient.nationalId[1] == '2') {
+								$($('input[type=radio]')[1]).prop('checked', true);
+							}
+						}
+						if (patient.birthday) {
+							$('#root_birthDate')
+								.val(patient.birthday.replace(new RegExp('/', 'g'), '-'));
+						}
+						if (patient.phone) {
+							$('#root_telephone1').val(patient.phone);
+						}
+						if (patient.address) {
+							$('#root_address').val(patient.address);
+						}
+					});
+			});
+		});
+	</script>
 </div>
+
 </html>

@@ -22,6 +22,7 @@ var _getIterator3 = _interopRequireDefault(_getIterator2);
 
 exports.toErrorList = toErrorList;
 exports.default = validateFormData;
+exports.isValid = isValid;
 
 var _lodash = require("lodash.topath");
 
@@ -214,6 +215,8 @@ function validateFormData(formData, schema, customValidate, transformErrors) {
   }
 
   var errors = transformAjvErrors(ajv.errors);
+  // Clear errors to prevent persistent errors, see #1104
+  ajv.errors = null;
 
   if (typeof transformErrors === "function") {
     errors = transformErrors(errors);
@@ -233,4 +236,17 @@ function validateFormData(formData, schema, customValidate, transformErrors) {
   var newErrors = toErrorList(newErrorSchema);
 
   return { errors: newErrors, errorSchema: newErrorSchema };
+}
+
+/**
+ * Validates data against a schema, returning true if the data is valid, or
+ * false otherwise. If the schema is invalid, then this function will return
+ * false.
+ */
+function isValid(schema, data) {
+  try {
+    return ajv.validate(schema, data);
+  } catch (e) {
+    return false;
+  }
 }

@@ -17,13 +17,6 @@
  */
 package com.wmw.crc.manager;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Case.Status;
 import com.wmw.crc.manager.model.Contraindication;
@@ -35,24 +28,25 @@ import com.wmw.crc.manager.service.tsgh.api.Drug;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
-
+import java.io.IOException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 import net.sf.rubycollect4j.RubyHash;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class ScheduledTasks {
 
-  @Autowired
-  CaseRepository caseRepo;
+  @Autowired CaseRepository caseRepo;
 
-  @Autowired
-  MedicineRepository medicineRepo;
+  @Autowired MedicineRepository medicineRepo;
 
-  @Autowired
-  TsghApi tsghApi;
+  @Autowired TsghApi tsghApi;
 
   @Scheduled(cron = "0 0 22 * * *")
   void refreshMedicines() {
@@ -86,8 +80,8 @@ public class ScheduledTasks {
   void refreshContraindications() {
     List<Case> cases = caseRepo.findByStatus(Status.EXEC);
     for (Case c : cases) {
-      RubyHash<Integer, RubyArray<Contraindication>> bundles = Ruby.Array
-          .of(c.getContraindications()).groupBy(Contraindication::getBundle);
+      RubyHash<Integer, RubyArray<Contraindication>> bundles =
+          Ruby.Array.of(c.getContraindications()).groupBy(Contraindication::getBundle);
 
       for (Subject s : c.getSubjects()) {
         PatientContraindication pc = new PatientContraindication();
@@ -99,8 +93,7 @@ public class ScheduledTasks {
         pc.setEndDate(c.getExpectedEndDate());
 
         if (bundles.containsKey(s.getContraindicationBundle())) {
-          RubyArray<Contraindication> cds =
-              bundles.get(s.getContraindicationBundle());
+          RubyArray<Contraindication> cds = bundles.get(s.getContraindicationBundle());
           for (Contraindication cd : cds) {
             SimpleDrug sd = new SimpleDrug();
             sd.setPhrase(cd.getPhrase());
@@ -112,11 +105,11 @@ public class ScheduledTasks {
         try {
           tsghApi.addPatientContraindication(pc);
         } catch (IOException e) {
-          log.error("TsghApi.addPatientContraindication for patient("
-              + s.getNationalId() + ") failed.", e);
+          log.error(
+              "TsghApi.addPatientContraindication for patient(" + s.getNationalId() + ") failed.",
+              e);
         }
       }
     }
   }
-
 }

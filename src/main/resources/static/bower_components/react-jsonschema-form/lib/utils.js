@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.guessType = exports.ADDITIONAL_PROPERTY_FLAG = undefined;
 
 var _setImmediate2 = require("babel-runtime/core-js/set-immediate");
 
@@ -69,6 +70,8 @@ exports.isFilesArray = isFilesArray;
 exports.isFixedItems = isFixedItems;
 exports.allowAdditionalItems = allowAdditionalItems;
 exports.optionsList = optionsList;
+exports.stubExistingAdditionalProperties = stubExistingAdditionalProperties;
+exports.resolveSchema = resolveSchema;
 exports.retrieveSchema = retrieveSchema;
 exports.deepEquals = deepEquals;
 exports.shouldRender = shouldRender;
@@ -93,6 +96,8 @@ var _fill = require("core-js/library/fn/array/fill");
 var _fill2 = _interopRequireDefault(_fill);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ADDITIONAL_PROPERTY_FLAG = exports.ADDITIONAL_PROPERTY_FLAG = "__additional_property";
 
 var widgetMap = {
   boolean: {
@@ -312,9 +317,9 @@ function mergeObjects(obj1, obj2) {
   // Recursively merge deeply nested objects.
   var acc = (0, _assign2.default)({}, obj1); // Prevent mutation of source object.
   return (0, _keys2.default)(obj2).reduce(function (acc, key) {
-    var left = obj1[key],
+    var left = obj1 ? obj1[key] : {},
         right = obj2[key];
-    if (obj1.hasOwnProperty(key) && isObject(right)) {
+    if (obj1 && obj1.hasOwnProperty(key) && isObject(right)) {
       acc[key] = mergeObjects(left, right, concatArrays);
     } else if (concatArrays && Array.isArray(left) && Array.isArray(right)) {
       acc[key] = left.concat(right);
@@ -521,19 +526,55 @@ function findSchemaDefinition($ref) {
   throw new Error("Could not find a definition for " + $ref + ".");
 }
 
-function retrieveSchema(schema) {
+// In the case where we have to implicitly create a schema, it is useful to know what type to use
+//  based on the data we are defining
+var guessType = exports.guessType = function guessType(value) {
+  if (Array.isArray(value)) {
+    return "array";
+  } else if (typeof value === "string") {
+    return "string";
+  } else if (value == null) {
+    return "null";
+  } else if (typeof value === "boolean") {
+    return "boolean";
+  } else if (!isNaN(value)) {
+    return "number";
+  } else if ((typeof value === "undefined" ? "undefined" : (0, _typeof3.default)(value)) === "object") {
+    return "object";
+  }
+  // Default to string if we can't figure it out
+  return "string";
+};
+
+// This function will create new "properties" items for each key in our formData
+function stubExistingAdditionalProperties(schema) {
+  var definitions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  // Clone the schema so we don't ruin the consumer's original
+  schema = (0, _extends4.default)({}, schema, {
+    properties: (0, _extends4.default)({}, schema.properties)
+  });
+  (0, _keys2.default)(formData).forEach(function (key) {
+    if (schema.properties.hasOwnProperty(key)) {
+      // No need to stub, our schema already has the property
+      return;
+    }
+    var additionalProperties = schema.additionalProperties.hasOwnProperty("type") ? (0, _extends4.default)({}, schema.additionalProperties) : { type: guessType(formData[key]) };
+    // The type of our new key should match the additionalProperties value;
+    schema.properties[key] = additionalProperties;
+    // Set our additional property flag so we know it was dynamically added
+    schema.properties[key][ADDITIONAL_PROPERTY_FLAG] = true;
+  });
+  return schema;
+}
+
+function resolveSchema(schema) {
   var definitions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   if (schema.hasOwnProperty("$ref")) {
-    // Retrieve the referenced schema definition.
-    var $refSchema = findSchemaDefinition(schema.$ref, definitions);
-    // Drop the $ref property of the source schema.
-    var $ref = schema.$ref,
-        localSchema = (0, _objectWithoutProperties3.default)(schema, ["$ref"]);
-    // Update referenced schema definition with local schema properties.
-
-    return retrieveSchema((0, _extends4.default)({}, $refSchema, localSchema), definitions, formData);
+    return resolveReference(schema, definitions, formData);
   } else if (schema.hasOwnProperty("dependencies")) {
     var resolvedSchema = resolveDependencies(schema, definitions, formData);
     return retrieveSchema(resolvedSchema, definitions, formData);
@@ -541,6 +582,29 @@ function retrieveSchema(schema) {
     // No $ref or dependencies attribute found, returning the original schema.
     return schema;
   }
+}
+
+function resolveReference(schema, definitions, formData) {
+  // Retrieve the referenced schema definition.
+  var $refSchema = findSchemaDefinition(schema.$ref, definitions);
+  // Drop the $ref property of the source schema.
+  var $ref = schema.$ref,
+      localSchema = (0, _objectWithoutProperties3.default)(schema, ["$ref"]);
+  // Update referenced schema definition with local schema properties.
+
+  return retrieveSchema((0, _extends4.default)({}, $refSchema, localSchema), definitions, formData);
+}
+
+function retrieveSchema(schema) {
+  var definitions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  var resolvedSchema = resolveSchema(schema, definitions, formData);
+  var hasAdditionalProperties = resolvedSchema.hasOwnProperty("additionalProperties") && resolvedSchema.additionalProperties !== false;
+  if (hasAdditionalProperties) {
+    return stubExistingAdditionalProperties(resolvedSchema, definitions, formData);
+  }
+  return resolvedSchema;
 }
 
 function resolveDependencies(schema, definitions, formData) {
@@ -579,13 +643,20 @@ function withDependentSchema(schema, definitions, formData, dependencyKey, depen
       dependentSchema = (0, _objectWithoutProperties3.default)(_retrieveSchema, ["oneOf"]);
 
   schema = mergeSchemas(schema, dependentSchema);
-  return oneOf === undefined ? schema : withExactlyOneSubschema(schema, definitions, formData, dependencyKey, oneOf);
+  // Since it does not contain oneOf, we return the original schema.
+  if (oneOf === undefined) {
+    return schema;
+  } else if (!Array.isArray(oneOf)) {
+    throw new Error("invalid: it is some " + (typeof oneOf === "undefined" ? "undefined" : (0, _typeof3.default)(oneOf)) + " instead of an array");
+  }
+  // Resolve $refs inside oneOf.
+  var resolvedOneOf = oneOf.map(function (subschema) {
+    return subschema.hasOwnProperty("$ref") ? resolveReference(subschema, definitions, formData) : subschema;
+  });
+  return withExactlyOneSubschema(schema, definitions, formData, dependencyKey, resolvedOneOf);
 }
 
 function withExactlyOneSubschema(schema, definitions, formData, dependencyKey, oneOf) {
-  if (!Array.isArray(oneOf)) {
-    throw new Error("invalid oneOf: it is some " + (typeof oneOf === "undefined" ? "undefined" : (0, _typeof3.default)(oneOf)) + " instead of an array");
-  }
   var validSubschemas = oneOf.filter(function (subschema) {
     if (!subschema.properties) {
       return false;
@@ -713,7 +784,7 @@ function toIdSchema(schema, id, definitions) {
   var idSchema = {
     $id: id || idPrefix
   };
-  if ("$ref" in schema) {
+  if ("$ref" in schema || "dependencies" in schema) {
     var _schema = retrieveSchema(schema, definitions, formData);
     return toIdSchema(_schema, id, definitions, formData, idPrefix);
   }

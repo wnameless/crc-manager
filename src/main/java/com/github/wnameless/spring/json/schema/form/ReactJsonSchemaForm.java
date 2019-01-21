@@ -15,27 +15,27 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller.api;
+package com.github.wnameless.spring.json.schema.form;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.Data;
 
 @Data
-public class Protocol {
+public class ReactJsonSchemaForm {
 
-  String protocolNumber;
+  String action;
 
-  List<Map<String, Object>> jsonData;
+  String schema;
 
-  String owner;
+  String uiSchema;
 
-  Set<String> managers;
+  String formData;
 
-  Set<String> editors;
-
-  Set<String> viewers;
-
-  String aa;
+  public static ReactJsonSchemaForm of(JsonSchemaForm jsonSchemaForm, String action) {
+    ReactJsonSchemaForm rjsf = new ReactJsonSchemaForm();
+    rjsf.setAction(action);
+    rjsf.setSchema(jsonSchemaForm.getJsonSchema());
+    rjsf.setUiSchema(jsonSchemaForm.getJsonUiSchema());
+    rjsf.setFormData(jsonSchemaForm.getJsonData());
+    return rjsf;
+  }
 }

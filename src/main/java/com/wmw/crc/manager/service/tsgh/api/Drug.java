@@ -18,12 +18,10 @@
 package com.wmw.crc.manager.service.tsgh.api;
 
 import java.util.List;
-
 import lombok.Data;
 
 @Data
 public class Drug {
-
   String name;
 
   String engName;
@@ -31,5 +29,4 @@ public class Drug {
   String hospitalCode;
 
   List<String> atcCode;
-
 }

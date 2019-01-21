@@ -1,72 +1,42 @@
 const Form = JSONSchemaForm.default;
 
 class CostumFormComponent extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-	
-	render() {
-		return (
-			<Form id={this.props.id}
-	        	name={this.props.name}
-	        	schema={this.props.schema}
-	        	uiSchema={this.props.uiSchema}
-	        	formData={this.props.formData}
-	        	onSubmit={this.props.onSubmit} >
-	    </Form>
-		)
-	}
-}
+  constructor(props) {
+    super(props);
+  }
 
-class FormComponent extends React.Component {
-   render() {
-        return (
-        	<Form id='reactForm'
-        		    name='reactForm'
-        		    schema={schema}
-        	      uiSchema={uiSchema}
-        	      formData={formData}
-        	      onSubmit={onSubmit} >
-        	  <div>
-              <button type="submit" class="btn btn-primary">送出</button>
-            </div>
-        	</Form>
-        )
-    }
-}
-
-class ReadOnlyFormComponent extends React.Component {
-	render() {
-		return (
-			<Form id='reactForm'
-	        	name='reactForm'
-	          noValidate='true'
-	          schema={schema}
-	        	uiSchema={uiSchema}
-	        	formData={formData}
-	        	onSubmit={onSubmit} >
-	      <div>
-	        <button type="submit" class="btn btn-primary">返回</button>
-	      </div>
-	    </Form>
-		)
-	}
-}
-
-class NoValidationFormComponent extends React.Component {
-	render() {
-		return (
-			<Form id='reactForm'
-	          name='reactForm'
-	        	noValidate='true'
-	          schema={schema}
-	        	uiSchema={uiSchema}
-	        	formData={formData}
-	        	onSubmit={onSubmit} >
-	      <div>
-	        <button type="submit" class="btn btn-primary">送出</button>
-	      </div>
-	    </Form>
-		)
-	}
+  render() {
+    return ( <
+      Form id = {
+        this.props.id
+      }
+      className = {
+        this.props.className
+      }
+      name = {
+        this.props.name
+      }
+      schema = {
+        this.props.schema
+      }
+      uiSchema = {
+        this.props.uiSchema
+      }
+      formData = {
+        this.props.formData
+      }
+      onSubmit = {
+        this.props.onSubmit
+      } >
+      <
+      div >
+      <
+      button type = "submit"
+      class = "btn btn-primary" > {
+        this.props.btnText
+      } < /button> <
+      /div> <
+      /Form>
+    )
+  }
 }

@@ -39,6 +39,7 @@ function CheckboxesWidget(props) {
       readonly = props.readonly,
       _onChange = props.onChange;
   var enumOptions = options.enumOptions,
+      enumDisabled = options.enumDisabled,
       inline = options.inline;
 
   return _react2.default.createElement(
@@ -46,7 +47,8 @@ function CheckboxesWidget(props) {
     { className: "checkboxes", id: id },
     enumOptions.map(function (option, index) {
       var checked = value.indexOf(option.value) !== -1;
-      var disabledCls = disabled || readonly ? "disabled" : "";
+      var itemDisabled = enumDisabled && enumDisabled.indexOf(option.value) != -1;
+      var disabledCls = disabled || itemDisabled || readonly ? "disabled" : "";
       var checkbox = _react2.default.createElement(
         "span",
         null,
@@ -54,7 +56,7 @@ function CheckboxesWidget(props) {
           type: "checkbox",
           id: id + "_" + index,
           checked: checked,
-          disabled: disabled || readonly,
+          disabled: disabled || itemDisabled || readonly,
           autoFocus: autofocus && index === 0,
           onChange: function onChange(event) {
             var all = enumOptions.map(function (_ref) {

@@ -19,10 +19,11 @@ package com.wmw.crc.manager.controller;
 
 import static com.google.common.collect.Maps.newHashMap;
 
+import com.github.wnameless.spring.json.schema.form.ReactJsonSchemaForm;
+import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.repository.CaseRepository;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,19 +35,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.repository.CaseRepository;
-
 @Controller
 public class CaseController {
 
-  @Autowired
-  CaseRepository caseRepo;
+  @Autowired CaseRepository caseRepo;
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases/index")
-  String index(HttpSession session, Authentication auth,
-      @RequestParam Map<String, String> allRequestParams, Model model) {
+  String index(
+      HttpSession session,
+      Authentication auth,
+      @RequestParam Map<String, String> allRequestParams,
+      Model model) {
     Iterable<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
@@ -56,8 +56,11 @@ public class CaseController {
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases")
-  String list(HttpSession session, Authentication auth,
-      @RequestParam Map<String, String> allRequestParams, Model model) {
+  String list(
+      HttpSession session,
+      Authentication auth,
+      @RequestParam Map<String, String> allRequestParams,
+      Model model) {
     Iterable<Case> cases = getCasesBySession(auth, session, allRequestParams);
 
     model.addAttribute("jsfPath", "/cases");
@@ -72,6 +75,7 @@ public class CaseController {
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
+    model.addAttribute("rjsf", ReactJsonSchemaForm.of(c, "/cases"));
     return "cases/show :: show";
   }
 
@@ -87,8 +91,12 @@ public class CaseController {
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/cases/{id}")
-  String save(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id, @RequestBody String formData) {
+  String save(
+      HttpSession session,
+      Authentication auth,
+      Model model,
+      @PathVariable("id") Long id,
+      @RequestBody String formData) {
     Case c = caseRepo.getOne(id);
     c.setJsonData(formData);
     caseRepo.save(c);
@@ -101,8 +109,8 @@ public class CaseController {
 
   @PreAuthorize("@perm.canDelete()")
   @GetMapping("/cases/{id}/delete")
-  String delete(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id) {
+  String delete(
+      HttpSession session, Authentication auth, Model model, @PathVariable("id") Long id) {
     Case c = caseRepo.getOne(id);
     caseRepo.delete(c);
 
@@ -112,8 +120,8 @@ public class CaseController {
     return "redirect:/cases/index";
   }
 
-  private Iterable<Case> getCasesBySession(Authentication auth,
-      HttpSession session, Map<String, String> allRequestParams) {
+  private Iterable<Case> getCasesBySession(
+      Authentication auth, HttpSession session, Map<String, String> allRequestParams) {
     Iterable<Case> cases;
 
     if (allRequestParams.containsKey("new")) {
@@ -152,5 +160,4 @@ public class CaseController {
 
     return cases;
   }
-
 }

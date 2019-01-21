@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
-<th:block th:include="fragments/header :: header-common"></th:block>
+	<th:block th:include="fragments/header :: header-common"></th:block>
 </head>
+
 <body>
 	<nav th:replace="fragments/navbar :: navbar-login"></nav>
 
 	<div class="container">
-		<div
-			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+		<div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 			<h3 th:inline="text">
 				<span class="glyphicon glyphicon-list-alt"></span>
 				[[${case.trialName}]]
@@ -18,15 +18,12 @@
 				</a>
 			</h3>
 			<hr>
-			<form th:action="@{'/cases/' + ${case.id} + '/assignment'}"
-				method="post">
+			<form th:action="@{'/cases/' + ${case.id} + '/assignment'}" method="post">
 				<div class="form-group">
 					<div class="input-group">
-						<input id="username" name="username" type="text"
-							class="form-control" readonly>
+						<input id="username" name="username" type="text" class="form-control" readonly>
 						<div class="input-group-btn">
-							<button id="assignBtn" type="submit" class="btn btn-default"
-								th:inline="text" disabled>
+							<button id="assignBtn" type="submit" class="btn btn-default" th:inline="text" disabled>
 								<span class="fa fa-user-plus"></span>
 								[[#{ui.case.assignment.assign}]]
 							</button>
@@ -46,8 +43,7 @@
 				</thead>
 				<tbody>
 					<tr th:each="user : ${users}">
-						<td><a class="usernameSelect" href="#"
-								th:text="${user.username}"></a></td>
+						<td><a class="usernameSelect" href="#" th:text="${user.username}"></a></td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.firstName}"></td>
@@ -58,25 +54,26 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-    $(function() {
-      $('.usernameSelect').click(function() {
-        $('#username').val(this.text);
-        $('#assignBtn').attr('disabled', false)
-        return false;
-      });
+		$(function() {
+			$('.usernameSelect').click(function() {
+				$('#username').val(this.text);
+				$('#assignBtn').attr('disabled', false)
+				return false;
+			});
 
-      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
-      $('#userTable').DataTable({
-        language: {
-          url: '/i18n/datatables-' + i18nLocale + '.json'
-        },
-        drawCallback: function(settings) {
-          $('#userTable').reflowTable('update');
-        }
-      });
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			$('#userTable').DataTable({
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				},
+				drawCallback: function(settings) {
+					$('#userTable').reflowTable('update');
+				}
+			});
 
-      $('#userTable').reflowTable();
-    });
-  </script>
+			$('#userTable').reflowTable();
+		});
+	</script>
 </body>
+
 </html>

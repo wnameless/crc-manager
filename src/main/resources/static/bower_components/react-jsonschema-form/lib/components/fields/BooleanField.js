@@ -16,11 +16,13 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require("prop-types");
+var _types = require("../../types");
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var types = _interopRequireWildcard(_types);
 
 var _utils = require("../../utils");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37,6 +39,8 @@ function BooleanField(props) {
       readonly = props.readonly,
       autofocus = props.autofocus,
       onChange = props.onChange,
+      onFocus = props.onFocus,
+      onBlur = props.onBlur,
       rawErrors = props.rawErrors;
   var title = schema.title;
   var widgets = registry.widgets,
@@ -57,6 +61,8 @@ function BooleanField(props) {
     schema: schema,
     id: idSchema && idSchema.$id,
     onChange: onChange,
+    onFocus: onFocus,
+    onBlur: onBlur,
     label: title === undefined ? name : title,
     value: formData,
     required: required,
@@ -70,24 +76,7 @@ function BooleanField(props) {
 }
 
 if (process.env.NODE_ENV !== "production") {
-  BooleanField.propTypes = {
-    schema: _propTypes2.default.object.isRequired,
-    uiSchema: _propTypes2.default.object,
-    idSchema: _propTypes2.default.object,
-    onChange: _propTypes2.default.func.isRequired,
-    formData: _propTypes2.default.bool,
-    required: _propTypes2.default.bool,
-    disabled: _propTypes2.default.bool,
-    readonly: _propTypes2.default.bool,
-    autofocus: _propTypes2.default.bool,
-    registry: _propTypes2.default.shape({
-      widgets: _propTypes2.default.objectOf(_propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object])).isRequired,
-      fields: _propTypes2.default.objectOf(_propTypes2.default.func).isRequired,
-      definitions: _propTypes2.default.object.isRequired,
-      formContext: _propTypes2.default.object.isRequired
-    }),
-    rawErrors: _propTypes2.default.arrayOf(_propTypes2.default.string)
-  };
+  BooleanField.propTypes = types.fieldProps;
 }
 
 BooleanField.defaultProps = {

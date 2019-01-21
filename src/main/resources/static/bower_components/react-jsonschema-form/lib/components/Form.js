@@ -118,7 +118,7 @@ var Form = function (_Component) {
         }
       }
 
-      (0, _utils.setState)(_this, { errors: [], errorSchema: {} }, function () {
+      _this.setState({ errors: [], errorSchema: {} }, function () {
         if (_this.props.onSubmit) {
           _this.props.onSubmit((0, _extends3.default)({}, _this.state, { status: "submitted" }));
         }
@@ -129,6 +129,7 @@ var Form = function (_Component) {
     if (_this.props.onChange && !(0, _utils.deepEquals)(_this.state.formData, _this.props.formData)) {
       _this.props.onChange(_this.state);
     }
+    _this.formElement = null;
     return _this;
   }
 
@@ -136,10 +137,10 @@ var Form = function (_Component) {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
       var nextState = this.getStateFromProps(nextProps);
-      this.setState(nextState);
-      if (!(0, _utils.deepEquals)(nextState.formData, nextProps.formData) && this.props.onChange) {
+      if (!(0, _utils.deepEquals)(nextState.formData, nextProps.formData) && !(0, _utils.deepEquals)(nextState.formData, this.state.formData) && this.props.onChange) {
         this.props.onChange(nextState);
       }
+      this.setState(nextState);
     }
   }, {
     key: "getStateFromProps",
@@ -237,8 +238,17 @@ var Form = function (_Component) {
       };
     }
   }, {
+    key: "submit",
+    value: function submit() {
+      if (this.formElement) {
+        this.formElement.dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var _props3 = this.props,
           children = _props3.children,
           safeRenderCompletion = _props3.safeRenderCompletion,
@@ -252,7 +262,8 @@ var Form = function (_Component) {
           autocomplete = _props3.autocomplete,
           enctype = _props3.enctype,
           acceptcharset = _props3.acceptcharset,
-          noHtml5Validate = _props3.noHtml5Validate;
+          noHtml5Validate = _props3.noHtml5Validate,
+          disabled = _props3.disabled;
       var _state2 = this.state,
           schema = _state2.schema,
           uiSchema = _state2.uiSchema,
@@ -276,7 +287,10 @@ var Form = function (_Component) {
           encType: enctype,
           acceptCharset: acceptcharset,
           noValidate: noHtml5Validate,
-          onSubmit: this.onSubmit },
+          onSubmit: this.onSubmit,
+          ref: function ref(form) {
+            _this2.formElement = form;
+          } },
         this.renderErrors(),
         _react2.default.createElement(_SchemaField, {
           schema: schema,
@@ -289,7 +303,8 @@ var Form = function (_Component) {
           onBlur: this.onBlur,
           onFocus: this.onFocus,
           registry: registry,
-          safeRenderCompletion: safeRenderCompletion
+          safeRenderCompletion: safeRenderCompletion,
+          disabled: disabled
         }),
         children ? children : _react2.default.createElement(
           "p",
@@ -310,6 +325,7 @@ Form.defaultProps = {
   uiSchema: {},
   noValidate: false,
   liveValidate: false,
+  disabled: false,
   safeRenderCompletion: false,
   noHtml5Validate: false,
   ErrorList: _ErrorList2.default

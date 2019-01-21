@@ -21,7 +21,6 @@ import lombok.Data;
 
 @Data
 public class Patient {
-
   String patientId;
 
   String name;
@@ -35,5 +34,4 @@ public class Patient {
   String phone;
 
   String address;
-
 }

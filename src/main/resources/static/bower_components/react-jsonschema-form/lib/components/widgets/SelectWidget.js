@@ -26,9 +26,10 @@ var nums = new _set2.default(["number", "integer"]);
  * This is a silly limitation in the DOM where option change event values are
  * always retrieved as strings.
  */
-function processValue(_ref, value) {
-  var type = _ref.type,
-      items = _ref.items;
+function processValue(schema, value) {
+  // "enum" is a reserved word, so only "type" and "items" can be destructured
+  var type = schema.type,
+      items = schema.items;
 
   if (value === "") {
     return undefined;
@@ -39,6 +40,21 @@ function processValue(_ref, value) {
   } else if (type === "number") {
     return (0, _utils.asNumber)(value);
   }
+
+  // If type is undefined, but an enum is present, try and infer the type from
+  // the enum values
+  if (schema.enum) {
+    if (schema.enum.every(function (x) {
+      return (0, _utils.guessType)(x) === "number";
+    })) {
+      return (0, _utils.asNumber)(value);
+    } else if (schema.enum.every(function (x) {
+      return (0, _utils.guessType)(x) === "boolean";
+    })) {
+      return value === "true";
+    }
+  }
+
   return value;
 }
 
@@ -99,9 +115,9 @@ function SelectWidget(props) {
       { value: "" },
       placeholder
     ),
-    enumOptions.map(function (_ref2, i) {
-      var value = _ref2.value,
-          label = _ref2.label;
+    enumOptions.map(function (_ref, i) {
+      var value = _ref.value,
+          label = _ref.label;
 
       var disabled = enumDisabled && enumDisabled.indexOf(value) != -1;
       return _react2.default.createElement(

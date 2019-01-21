@@ -1,0 +1,13 @@
+[{
+    "srcDir": "src",
+    "files": "**/*.java",
+    "command": "mvn compile",
+    "showOutput": true
+  },
+  {
+    "srcDir": "src/main/resources",
+    "destDir": "target/classes",
+    "files": "**/*.html",
+    "command": "cp ${srcFile} ${destFile} "
+  }
+]

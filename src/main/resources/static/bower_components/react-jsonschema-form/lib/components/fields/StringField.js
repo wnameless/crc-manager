@@ -16,11 +16,13 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require("prop-types");
+var _types = require("../../types");
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var types = _interopRequireWildcard(_types);
 
 var _utils = require("../../utils");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -56,7 +58,6 @@ function StringField(props) {
       options = (0, _objectWithoutProperties3.default)(_getUiOptions, ["widget", "placeholder"]);
 
   var Widget = (0, _utils.getWidget)(schema, widget, widgets);
-
   return _react2.default.createElement(Widget, {
     options: (0, _extends3.default)({}, options, { enumOptions: enumOptions }),
     schema: schema,
@@ -78,27 +79,7 @@ function StringField(props) {
 }
 
 if (process.env.NODE_ENV !== "production") {
-  StringField.propTypes = {
-    schema: _propTypes2.default.object.isRequired,
-    uiSchema: _propTypes2.default.object.isRequired,
-    idSchema: _propTypes2.default.object,
-    onChange: _propTypes2.default.func.isRequired,
-    onBlur: _propTypes2.default.func,
-    onFocus: _propTypes2.default.func,
-    formData: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
-    registry: _propTypes2.default.shape({
-      widgets: _propTypes2.default.objectOf(_propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object])).isRequired,
-      fields: _propTypes2.default.objectOf(_propTypes2.default.func).isRequired,
-      definitions: _propTypes2.default.object.isRequired,
-      formContext: _propTypes2.default.object.isRequired
-    }),
-    formContext: _propTypes2.default.object.isRequired,
-    required: _propTypes2.default.bool,
-    disabled: _propTypes2.default.bool,
-    readonly: _propTypes2.default.bool,
-    autofocus: _propTypes2.default.bool,
-    rawErrors: _propTypes2.default.arrayOf(_propTypes2.default.string)
-  };
+  StringField.propTypes = types.fieldProps;
 }
 
 StringField.defaultProps = {

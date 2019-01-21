@@ -1,7 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="edit">
-	<div
-		class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+	<div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 		<h3 th:inline="text">
 			<span class="glyphicon glyphicon-list-alt"></span>
 			[[${jsfItem.trialName}]]
@@ -14,18 +13,26 @@
 	</div>
 
 	<script type="text/javascript" th:inline="javascript">
-    var schema = JSON.parse(/*[[${jsfItem.jsonSchema}]]*/null);
-    var uiSchema = JSON.parse(/*[[${jsfItem.jsonUiSchema}]]*/null);
-    var formData = JSON.parse(/*[[${jsfItem.jsonData}]]*/null);
+		$(function() {
+			let schema = JSON.parse( /*[[${jsfItem.jsonSchema}]]*/ null);
+			let uiSchema = JSON.parse( /*[[${jsfItem.jsonUiSchema}]]*/ null);
+			let formData = JSON.parse( /*[[${jsfItem.jsonData}]]*/ null);
 
-    var onSubmit = function(f) {
-      axios.post(/*[[${jsfPath}]]*/null, f.formData).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+			let onSubmit = function(f) {
+				axios.post( /*[[${jsfPath}]]*/ null, f.formData).then(function(response) {
+					$('#jsf').html(response.data);
+				});
+			};
 
-    ReactDOM.render(React.createElement(FormComponent), document
-            .getElementById('jsfForm'));
-  </script>
+			ReactDOM.render(React.createElement(CostumFormComponent, {
+				schema: schema,
+				uiSchema: uiSchema,
+				formData: formData,
+				onSubmit: onSubmit,
+				btnText: '送出'
+			}), document.getElementById('jsfForm'));
+		});
+	</script>
 </div>
+
 </html>

@@ -12,11 +12,13 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require("prop-types");
+var _types = require("../../types");
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
+var types = _interopRequireWildcard(_types);
 
 var _utils = require("../../utils");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,15 +33,7 @@ function NumberField(props) {
 }
 
 if (process.env.NODE_ENV !== "production") {
-  NumberField.propTypes = {
-    schema: _propTypes2.default.object.isRequired,
-    uiSchema: _propTypes2.default.object,
-    idSchema: _propTypes2.default.object,
-    onChange: _propTypes2.default.func.isRequired,
-    formData: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-    required: _propTypes2.default.bool,
-    formContext: _propTypes2.default.object.isRequired
-  };
+  NumberField.propTypes = types.fieldProps;
 }
 
 NumberField.defaultProps = {

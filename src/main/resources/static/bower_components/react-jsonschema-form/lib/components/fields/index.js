@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _AnyOfField = require("./AnyOfField");
+
+var _AnyOfField2 = _interopRequireDefault(_AnyOfField);
+
 var _ArrayField = require("./ArrayField");
 
 var _ArrayField2 = _interopRequireDefault(_ArrayField);
@@ -43,6 +47,7 @@ var _UnsupportedField2 = _interopRequireDefault(_UnsupportedField);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+  AnyOfField: _AnyOfField2.default,
   ArrayField: _ArrayField2.default,
   BooleanField: _BooleanField2.default,
   DescriptionField: _DescriptionField2.default,
