@@ -53,6 +53,16 @@
 			<version>5.0.0</version>
 		</dependency>
 
+		<!-- Thymeleaf -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+
 		<!-- Keycloak -->
 		<dependency>
 			<groupId>org.keycloak</groupId>

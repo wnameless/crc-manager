@@ -1,13 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
-<head>
-    <th:block th:include="fragments/header :: header-common"></th:block>
-</head>
-
-<body>
-    <nav th:replace="fragments/navbar :: navbar-login"></nav>
-
+<section layout:fragment="content">
     <div class="container">
         <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
             <h3 th:inline="text">
@@ -76,6 +70,6 @@
             $('#userTable').reflowTable();
         });
     </script>
-</body>
+</section>
 
 </html>

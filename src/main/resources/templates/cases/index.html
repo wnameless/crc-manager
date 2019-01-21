@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-<th:block th:include="fragments/header :: header-common"></th:block>
-</head>
-<body>
-    <nav th:replace="fragments/navbar :: navbar-login"></nav>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
+<section layout:fragment="content">
     <div class="container">
         <div id="jsf">
             <div th:replace="cases/list :: list"></div>
         </div>
     </div>
-</body>
+</section>
+
 </html>

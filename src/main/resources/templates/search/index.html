@@ -1,95 +1,89 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
-<head>
-	<th:block th:include="fragments/header :: header-common"></th:block>
-</head>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <form>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <select id="field">
+                                <th:block th:each="propTtl : ${propertyTitles}">
+                                    <option th:if="${propTtl.value}" th:value="${propTtl.key}" th:text="${propTtl.value}"></option>
+                                    <option th:if="${propTtl.value == null}" th:value="${propTtl.key}" th:text="${propTtl.key}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <input id="value" type="text" class="form-control">
+                        <div class="input-group-btn">
+                            <select id="type">
+                                <option value="string" th:text="#{ui.search.string}"></option>
+                                <option value="number" th:text="#{ui.search.number}"></option>
+                            </select>
+                        </div>
+                        <div class="input-group-btn">
+                            <button id="addCriterion" type="button" class="btn btn-success">
+                                <span class="fa fa-plus"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="tags" type="text">
+                </div>
+                <div class="form-group">
+                    <input id="search" type="button" class="form-control btn btn-primary" th:value="#{ui.search.find}">
+                </div>
+            </form>
+        </div>
 
-<body>
-	<nav th:replace="fragments/navbar :: navbar-login"></nav>
+        <div class="row">
+            <div id="result"></div>
+        </div>
+    </div>
 
-	<div class="container">
-		<div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-			<form>
-				<div class="form-group">
-					<div class="input-group">
-						<div class="input-group-btn">
-							<select id="field">
-								<th:block th:each="propTtl : ${propertyTitles}">
-									<option th:if="${propTtl.value}" th:value="${propTtl.key}" th:text="${propTtl.value}"></option>
-									<option th:if="${propTtl.value == null}" th:value="${propTtl.key}" th:text="${propTtl.key}"></option>
-								</th:block>
-							</select>
-						</div>
-						<input id="value" type="text" class="form-control">
-						<div class="input-group-btn">
-							<select id="type">
-								<option value="string" th:text="#{ui.search.string}"></option>
-								<option value="number" th:text="#{ui.search.number}"></option>
-							</select>
-						</div>
-						<div class="input-group-btn">
-							<button id="addCriterion" type="button" class="btn btn-success">
-								<span class="fa fa-plus"></span>
-							</button>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<input id="tags" type="text">
-				</div>
-				<div class="form-group">
-					<input id="search" type="button" class="form-control btn btn-primary" th:value="#{ui.search.find}">
-				</div>
-			</form>
-		</div>
+    <script type="text/javascript">
+        $(function () {
+            $('#field').selectpicker({
+                width: 'fit'
+            });
+            $('#type').selectpicker({
+                width: 'auto'
+            });
 
-		<div class="row">
-			<div id="result"></div>
-		</div>
-	</div>
+            $('#search').click(
+                function () {
+                    if ($('#tags').tagsinput('items').length == 0) return false;
 
-	<script type="text/javascript">
-		$(function() {
-			$('#field').selectpicker({
-				width: 'fit'
-			});
-			$('#type').selectpicker({
-				width: 'auto'
-			});
+                    axios.post('/search', $('#tags').tagsinput('items')).then(
+                        function (response) {
+                            $('#result').html(response.data);
+                        });
+                });
 
-			$('#search').click(
-				function() {
-					if ($('#tags').tagsinput('items').length == 0) return false;
+            $('#addCriterion').click(function () {
+                if (!$('#value').val()) return false;
 
-					axios.post('/search', $('#tags').tagsinput('items')).then(
-						function(response) {
-							$('#result').html(response.data);
-						});
-				});
+                let type = $('#type option:selected').val();
+                let text = $('#field option:selected').text();
+                let key = $('#field option:selected').val();
+                let value = $('#value').val();
+                value = (type == 'string' ? value : Number(value)) || 0;
+                let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
+                $('#tags').tagsinput('add', {
+                    text: text + '[' + valueStr + ']',
+                    value: value,
+                    key: key
+                });
+            });
 
-			$('#addCriterion').click(function() {
-				if (!$('#value').val()) return false;
-
-				let type = $('#type option:selected').val();
-				let text = $('#field option:selected').text();
-				let key = $('#field option:selected').val();
-				let value = $('#value').val();
-				value = (type == 'string' ? value : Number(value)) || 0;
-				let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
-				$('#tags').tagsinput('add', {
-					text: text + '[' + valueStr + ']',
-					value: value,
-					key: key
-				});
-			});
-
-			$('#tags').tagsinput({
-				itemValue: 'value',
-				itemText: 'text'
-			});
-		});
-	</script>
-</body>
+            $('#tags').tagsinput({
+                itemValue: 'value',
+                itemText: 'text'
+            });
+        });
+    </script>
+</section>
 
 </html>

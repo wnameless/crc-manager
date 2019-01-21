@@ -1,98 +1,92 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-<th:block th:include="fragments/header :: header-common"></th:block>
-</head>
-<body>
-	<nav th:replace="fragments/navbar :: navbar-login"></nav>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
-	<div class="container">
-		<div style="height: 400px;"
-			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-			<h3 th:inline="text">
-				<span class="glyphicon glyphicon-list-alt"></span>
-				[[${case.trialName}]]
-				<a href="/cases/index">
-					<span class="fa fa-sign-out-alt" style="color: green;"></span>
-				</a>
-			</h3>
-			<hr>
-			<ul class="nav nav-tabs">
-				<li class="active">
-					<a data-toggle="tab" href="#managers"
-						th:text="#{ui.permission.manager}"></a>
-				</li>
-				<li>
-					<a data-toggle="tab" href="#editors"
-						th:text="#{ui.permission.editor}"></a>
-				</li>
-				<li>
-					<a data-toggle="tab" href="#viewers"
-						th:text="#{ui.permission.viewer}"></a>
-				</li>
-			</ul>
+<section layout:fragment="content">
+    <div class="container">
+        <div style="height: 400px;" class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3 th:inline="text">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                [[${case.trialName}]]
+                <a href="/cases/index">
+                    <span class="fa fa-sign-out-alt" style="color: green;"></span>
+                </a>
+            </h3>
+            <hr>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#managers" th:text="#{ui.permission.manager}"></a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#editors" th:text="#{ui.permission.editor}"></a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#viewers" th:text="#{ui.permission.viewer}"></a>
+                </li>
+            </ul>
 
-			<div class="tab-content">
-				<div id="managers" class="tab-pane fade in active">
-					<div th:replace="cases/permission/manager-list :: manager-list"
-						id="managerList"></div>
-				</div>
-				<div id="editors" class="tab-pane fade">
-					<div th:replace="cases/permission/editor-list :: editor-list"
-						id="editorList"></div>
-				</div>
-				<div id="viewers" class="tab-pane fade">
-					<div th:replace="cases/permission/viewer-list :: viewer-list"
-						id="viewerList"></div>
-				</div>
-			</div>
-		</div>
+            <div class="tab-content">
+                <div id="managers" class="tab-pane fade in active">
+                    <div th:replace="cases/permission/manager-list :: manager-list" id="managerList"></div>
+                </div>
+                <div id="editors" class="tab-pane fade">
+                    <div th:replace="cases/permission/editor-list :: editor-list" id="editorList"></div>
+                </div>
+                <div id="viewers" class="tab-pane fade">
+                    <div th:replace="cases/permission/viewer-list :: viewer-list" id="viewerList"></div>
+                </div>
+            </div>
+        </div>
 
-		<div
-			class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-			<table id="userTable" class="display">
-				<thead>
-					<tr>
-						<th th:text="#{ui.username}"></th>
-						<th>Email</th>
-						<th th:text="#{ui.lastname}"></th>
-						<th th:text="#{ui.firstname}"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="user : ${users}">
-						<td><a class="usernameSelect" href="#"
-								th:text="${user.username}"></a></td>
-						<td th:text="${user.email}"></td>
-						<td th:text="${user.lastName}"></td>
-						<td th:text="${user.firstName}"></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+        <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <table id="userTable" class="display">
+                <thead>
+                    <tr>
+                        <th th:text="#{ui.username}"></th>
+                        <th>Email</th>
+                        <th th:text="#{ui.lastname}"></th>
+                        <th th:text="#{ui.firstname}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td>
+                            <a class="usernameSelect" href="#" th:text="${user.username}"></a>
+                        </td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.firstName}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-	<script type="text/javascript" th:inline="javascript">
-    $(function() {
-      $('.usernameSelect').click(function() {
-        $('#manager').text(this.text);
-        $('#manager').val(this.text);
-        $('#editor').text(this.text);
-        $('#editor').val(this.text);
-        $('#viewer').text(this.text);
-        $('#viewer').val(this.text);
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            $('.usernameSelect').click(function () {
+                $('#manager').text(this.text);
+                $('#manager').val(this.text);
+                $('#editor').text(this.text);
+                $('#editor').val(this.text);
+                $('#viewer').text(this.text);
+                $('#viewer').val(this.text);
 
-        return false;
-      });
+                return false;
+            });
 
-      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
-      $('#userTable').DataTable({
-        language: {
-          url: '/i18n/datatables-' + i18nLocale + '.json'
-        }
-      });
-    });
-  </script>
-</body>
+            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+            $('#userTable').DataTable({
+                language: {
+                    url: '/i18n/datatables-' + i18nLocale + '.json'
+                },
+                drawCallback: function (settings) {
+                    $('#userTable').reflowTable('update');
+                }
+            });
+
+            $('#userTable').reflowTable();
+        });
+    </script>
+</section>
+
 </html>
