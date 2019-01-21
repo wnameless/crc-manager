@@ -14,4 +14,5 @@ public class CrcManagerApp {
   public static void main(String[] args) {
     SpringApplication.run(CrcManagerApp.class, args);
   }
+
 }

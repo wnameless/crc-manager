@@ -15,6 +15,13 @@
  */
 package com.wmw.crc.manager;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Case.Status;
 import com.wmw.crc.manager.model.Contraindication;
@@ -26,15 +33,11 @@ import com.wmw.crc.manager.service.tsgh.api.Drug;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
-import java.io.IOException;
-import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 import net.sf.rubycollect4j.RubyHash;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -113,4 +116,5 @@ public class ScheduledTasks {
       }
     }
   }
+
 }

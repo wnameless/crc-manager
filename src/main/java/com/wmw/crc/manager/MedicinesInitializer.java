@@ -17,11 +17,14 @@ package com.wmw.crc.manager;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonValue;
@@ -39,9 +42,7 @@ public class MedicinesInitializer {
 
   @PostConstruct
   void init() throws IOException {
-    if (medicineRepo.count() < 10) {
-      medicineRepo.deleteAll();
-
+    if (medicineRepo.count() == 0) {
       URL medicines = Resources.getResource("medicines.json");
       JsonValue medJsonArray =
           Json.parse(IOUtils.toString(medicines, Charsets.UTF_8));

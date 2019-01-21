@@ -30,7 +30,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a th:href="@{${keycloakUrl} + '/auth/realms/CRCManager/account'}" target="_blank" class="fa fa-user-cog fa-1x" th:text="#{ui.navbar.account}"></a>
+                    <a th:href="@{${@environment.getProperty('keycloak.auth-server-url')} + '/realms/CRCManager/account'}" target="_blank" class="fa fa-user-cog fa-1x" th:text="#{ui.navbar.account}"></a>
                 </li>
                 <li>
                     <a href="/logout" class="fa fa-sign-out-alt fa-1x" th:text="#{ui.navbar.logout}"></a>
