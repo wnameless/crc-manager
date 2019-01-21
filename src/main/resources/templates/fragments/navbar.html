@@ -1,58 +1,51 @@
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <nav th:fragment="navbar-login" class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" data-target="#navbarCollapse"
-				data-toggle="collapse" class="navbar-toggle">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="/">CRC Manager</a>
-		</div>
-		<div id="navbarCollapse" class="collapse navbar-collapse">
-			<ul class="nav navbar-nav">
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-					<a href="/cases/index?new" th:text="#{ui.navbar.case.new}"></a>
-				</li>
-				<li
-					sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-					<a href="/cases/index?exec" th:text="#{ui.navbar.case.exec}"></a>
-				</li>
-				<li
-					sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-					<a href="/cases/index?end" th:text="#{ui.navbar.case.end}"></a>
-				</li>
-				<li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-					<a href="/cases/index?none" th:text="#{ui.navbar.case.none}"></a>
-				</li>
-				<li
-					sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-					<a href="/search/index" th:text="#{ui.navbar.case.export}"></a>
-				</li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a th:href="@{${keycloakUrl} + '/auth/realms/CRCManager/account'}"
-						target="_blank" class="fa fa-user-cog fa-1x"
-						th:text="#{ui.navbar.account}"></a>
-				</li>
-				<li>
-					<a href="/logout" class="fa fa-sign-out-alt fa-1x"
-						th:text="#{ui.navbar.logout}"></a>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">CRC Manager</a>
+        </div>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
+                    <a href="/cases/index?new" th:text="#{ui.navbar.case.new}"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/cases/index?exec" th:text="#{ui.navbar.case.exec}"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/cases/index?end" th:text="#{ui.navbar.case.end}"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
+                    <a href="/cases/index?none" th:text="#{ui.navbar.case.none}"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/search/index" th:text="#{ui.navbar.case.export}"></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a th:href="@{${keycloakUrl} + '/auth/realms/CRCManager/account'}" target="_blank" class="fa fa-user-cog fa-1x" th:text="#{ui.navbar.account}"></a>
+                </li>
+                <li>
+                    <a href="/logout" class="fa fa-sign-out-alt fa-1x" th:text="#{ui.navbar.logout}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <nav th:fragment="navbar-logout" class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="/index">CRC Manager</a>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index">CRC Manager</a>
+        </div>
+    </div>
 </nav>
+
 </html>

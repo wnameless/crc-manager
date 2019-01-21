@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2018 ReiMed Co. to present.
- * All rights reserved.
+ * Copyright (c) 2018 ReiMed Co. to present. All rights reserved.
  */
 package com.wmw.crc.manager;
 

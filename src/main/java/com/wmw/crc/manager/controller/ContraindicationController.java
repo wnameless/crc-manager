@@ -1,7 +1,6 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -10,14 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.wmw.crc.manager.model.Case;
 import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
-
 import net.sf.rubycollect4j.Ruby;
 
 @Controller
