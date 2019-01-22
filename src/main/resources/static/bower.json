@@ -1,6 +1,0 @@
-{
-  "name": "bower-npm",
-  "dependencies": {
-    "react-jsonschema-form": "npm:react-jsonschema-form#v1.2.0"
-  }
-}
