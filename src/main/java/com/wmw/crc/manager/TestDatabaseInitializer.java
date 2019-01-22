@@ -33,8 +33,6 @@ import com.wmw.crc.manager.repository.CaseRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 
-import main.java.com.maximeroussy.invitrode.WordLengthException;
-
 @Profile("test")
 @Component
 public class TestDatabaseInitializer {
@@ -49,7 +47,7 @@ public class TestDatabaseInitializer {
   MedicineRepository medicineRepo;
 
   @PostConstruct
-  void init() throws IOException, WordLengthException {
+  void init() throws IOException {
     if (caseRepo.count() == 0) {
       Case c = new Case();
       URL url = Resources.getResource("json-schemas/test-data/4.json");
