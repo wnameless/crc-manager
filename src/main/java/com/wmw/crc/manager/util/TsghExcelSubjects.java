@@ -88,7 +88,7 @@ public class TsghExcelSubjects implements ExcelSubjects {
         }
 
         Subject subject = new Subject();
-        subject.setJsonData(new Gson().toJson(initData));
+        subject.setFormData(new Gson().toJson(initData));
 
         list.add(subject);
       }

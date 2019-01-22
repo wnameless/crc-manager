@@ -105,7 +105,7 @@ public class CaseController {
   String save(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id, @RequestBody String formData) {
     Case c = caseRepo.getOne(id);
-    c.setJsonData(formData);
+    c.setFormData(formData);
     caseRepo.save(c);
 
     Iterable<Case> cases = getCasesBySession(auth, session);

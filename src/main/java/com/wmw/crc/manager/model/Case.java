@@ -18,10 +18,12 @@ package com.wmw.crc.manager.model;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -33,11 +35,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+
 import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.json.JsonInitKey;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -141,18 +145,18 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   public Case() {
     try {
       URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-      setJsonSchema(Resources.toString(url, UTF_8));
+      setSchema(Resources.toString(url, UTF_8));
       url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-      setJsonUiSchema(Resources.toString(url, UTF_8));
+      setUiSchema(Resources.toString(url, UTF_8));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  public void setJsonData(String jsonData) {
-    super.setJsonData(jsonData);
-    setJsonInitData(jsonData);
+  public void setFormData(String formData) {
+    super.setFormData(formData);
+    setJsonInitData(formData);
   }
 
 }

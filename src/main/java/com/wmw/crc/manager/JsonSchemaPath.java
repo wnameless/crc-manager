@@ -21,12 +21,10 @@ public final class JsonSchemaPath {
       "json-schemas/application-schema.json";
   public static final String applicationUISchema =
       "json-schemas/application-ui-schema.json";
-  public static final String applicationData =
-      "json-schemas/application-data.json";
 
-  public static final String subjectSchema = "json-schemas/subject-schema.json";
+  public static final String subjectSchema = //
+      "json-schemas/subject-schema.json";
   public static final String subjectUISchema =
       "json-schemas/subject-ui-schema.json";
-  public static final String subjectData = "json-schemas/subject-data.json";
 
 }

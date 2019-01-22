@@ -52,7 +52,7 @@ public class ApiController {
       Protocol proc = new Protocol();
       proc.setProtocolNumber(c.getProjectNumber());
 
-      Map<String, Object> m1 = gson.fromJson(c.getJsonData(),
+      Map<String, Object> m1 = gson.fromJson(c.getFormData(),
           new TypeToken<Map<String, Object>>() {}.getType());
 
       proc.setJsonData(newArrayList(m1));
@@ -63,7 +63,7 @@ public class ApiController {
   @RequestMapping(path = "/protocols", method = RequestMethod.POST)
   String newCase(@RequestBody Protocol protocol) throws IOException {
     Case c = new Case();
-    c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
+    c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
 
     c.setOwner(protocol.getOwner().toLowerCase());
     if (protocol.getManagers() != null) {
@@ -88,7 +88,7 @@ public class ApiController {
       @PathVariable("irbNumber") String irbNumber) {
 
     Case c = caseRepo.findByIrbNumber(irbNumber);
-    c.setJsonData(gson.toJson(protocol.getJsonData().get(0)));
+    c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
     caseRepo.save(c);
 
     return "Update ok";

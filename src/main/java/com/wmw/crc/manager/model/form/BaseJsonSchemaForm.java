@@ -16,19 +16,20 @@
 package com.wmw.crc.manager.model.form;
 
 import com.github.wnameless.spring.json.schema.form.JsonSchemaForm;
+
 import lombok.Data;
 
 @Data
 public class BaseJsonSchemaForm implements JsonSchemaForm {
 
-  String jsonData;
-  String jsonSchema;
-  String jsonUiSchema;
+  String formData;
+  String schema;
+  String uiSchema;
 
   public BaseJsonSchemaForm(JsonSchemaForm jsonSchemaForm) {
-    jsonData = jsonSchemaForm.getJsonData();
-    jsonSchema = jsonSchemaForm.getJsonSchema();
-    jsonUiSchema = jsonSchemaForm.getJsonUiSchema();
+    formData = jsonSchemaForm.getFormData();
+    schema = jsonSchemaForm.getSchema();
+    uiSchema = jsonSchemaForm.getUiSchema();
   }
 
 }

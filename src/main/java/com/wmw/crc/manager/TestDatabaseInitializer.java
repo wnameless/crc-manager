@@ -37,7 +37,7 @@ import main.java.com.maximeroussy.invitrode.WordLengthException;
 
 @Profile("test")
 @Component
-public class DatabaseInitializer {
+public class TestDatabaseInitializer {
 
   @Autowired
   CaseRepository caseRepo;
@@ -55,27 +55,21 @@ public class DatabaseInitializer {
       URL url = Resources.getResource("json-schemas/test-data/4.json");
       BaseJsonSchemaForm bjsf = new Gson().fromJson(
           Resources.toString(url, Charsets.UTF_8), BaseJsonSchemaForm.class);
-      c.setJsonSchema(bjsf.getJsonSchema());
-      c.setJsonData(bjsf.getJsonData());
-      c.setJsonUiSchema(bjsf.getJsonUiSchema());
+      c.setFormData(bjsf.getFormData());
       caseRepo.save(c);
 
       c = new Case();
       url = Resources.getResource("json-schemas/test-data/5.json");
       bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
           BaseJsonSchemaForm.class);
-      c.setJsonSchema(bjsf.getJsonSchema());
-      c.setJsonData(bjsf.getJsonData());
-      c.setJsonUiSchema(bjsf.getJsonUiSchema());
+      c.setFormData(bjsf.getFormData());
       caseRepo.save(c);
 
       c = new Case();
       url = Resources.getResource("json-schemas/test-data/6.json");
       bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
           BaseJsonSchemaForm.class);
-      c.setJsonSchema(bjsf.getJsonSchema());
-      c.setJsonData(bjsf.getJsonData());
-      c.setJsonUiSchema(bjsf.getJsonUiSchema());
+      c.setFormData(bjsf.getFormData());
       caseRepo.save(c);
     }
 

@@ -1,41 +1,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="show">
-	<div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-		<h3 th:inline="text">
-			<span class="glyphicon glyphicon-list-alt"></span>
-			[[${case.trialName}]]
-			<a th:href="@{'/cases/' + ${case.id} + '/subjects/index'}">
-				<span class="fa fa-sign-out-alt" style="color: green;"></span>
-			</a>
-		</h3>
-		<hr>
-		<div id="jsfForm"></div>
-	</div>
+    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/' + ${case.id} + '/subjects/index')"></h3>
+        <hr>
+        <div id="jsfForm"></div>
+    </div>
 
-	<script type="text/javascript" th:inline="javascript">
-		$(function() {
-			let schema = JSON.parse( /*[[${jsfItem.jsonSchema}]]*/ null);
-			let uiSchema = JSON.parse( /*[[${jsfItem.jsonUiSchema}]]*/ null);
-			let formData = JSON.parse( /*[[${jsfItem.jsonData}]]*/ null);
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            let schema = JSON.parse( /*[[${jsfItem.schema}]]*/ null);
+            let uiSchema = JSON.parse( /*[[${jsfItem.uiSchema}]]*/ null);
+            let formData = JSON.parse( /*[[${jsfItem.formData}]]*/ null);
 
-			let onSubmit = function(f) {
-				axios.get( /*[[${jsfPath}]]*/ null)
-					.then(function(response) {
-						$('#jsf').html(response.data);
-					});
-			};
+            let onSubmit = function (f) {
+                axios.get( /*[[${jsfPath}]]*/ null)
+                    .then(function (response) {
+                        $('#jsf').html(response.data);
+                    });
+            };
 
-			ReactDOM.render(React.createElement(CostumFormComponent, {
-				schema: schema,
-				uiSchema: uiSchema,
-				formData: formData,
-				onSubmit: onSubmit,
-				btnText: '返回'
-			}), document.getElementById('jsfForm'));
+            ReactDOM.render(React.createElement(CostumFormComponent, {
+                schema: schema,
+                uiSchema: uiSchema,
+                formData: formData,
+                onSubmit: onSubmit,
+                btnText: '返回'
+            }), document.getElementById('jsfForm'));
 
-			$('#jsfForm :input').not('[type=submit]').attr('disabled', true);
-		});
-	</script>
+            $('#jsfForm :input').not('[type=submit]').attr('disabled', true);
+        });
+    </script>
 </div>
 
 </html>

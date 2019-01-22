@@ -31,15 +31,15 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Column
   @Lob
-  protected String jsonData = "{}";
+  protected String formData = "{}";
 
   @Column
   @Lob
-  protected String jsonSchema = "{}";
+  protected String schema = "{}";
 
   @Column
   @Lob
-  protected String jsonUiSchema = "{}";
+  protected String uiSchema = "{}";
 
   public static final String UTF8_BOM = "\uFEFF";
 
@@ -51,34 +51,33 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
   }
 
   @Override
-  public String getJsonData() {
-    return jsonData;
+  public String getFormData() {
+    return formData;
   }
 
   @Override
-  public void setJsonData(String jsonData) {
-
-    this.jsonData = removeUTF8BOM(jsonData);
+  public void setFormData(String formData) {
+    this.formData = removeUTF8BOM(formData);
   }
 
   @Override
-  public String getJsonSchema() {
-    return jsonSchema;
+  public String getSchema() {
+    return schema;
   }
 
   @Override
-  public void setJsonSchema(String jsonSchema) {
-    this.jsonSchema = removeUTF8BOM(jsonSchema);
+  public void setSchema(String schema) {
+    this.schema = removeUTF8BOM(schema);
   }
 
   @Override
-  public String getJsonUiSchema() {
-    return jsonUiSchema;
+  public String getUiSchema() {
+    return uiSchema;
   }
 
   @Override
-  public void setJsonUiSchema(String jsonUiSchema) {
-    this.jsonUiSchema = removeUTF8BOM(jsonUiSchema);
+  public void setUiSchema(String uiSchema) {
+    this.uiSchema = removeUTF8BOM(uiSchema);
   }
 
   public Map<String, String> propertyTitles() {
@@ -86,7 +85,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
     Map<String, String> propertyTitles = newLinkedHashMap();
 
-    Map<String, Object> jsonSchema = gson.fromJson(getJsonSchema(),
+    Map<String, Object> jsonSchema = gson.fromJson(getSchema(),
         new TypeToken<Map<String, Object>>() {}.getType());
 
     @SuppressWarnings("unchecked")

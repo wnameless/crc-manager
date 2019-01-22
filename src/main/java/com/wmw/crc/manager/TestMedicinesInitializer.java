@@ -35,7 +35,7 @@ import com.wmw.crc.manager.repository.MedicineRepository;
 
 @Profile("test")
 @Component
-public class MedicinesInitializer {
+public class TestMedicinesInitializer {
 
   @Autowired
   MedicineRepository medicineRepo;

@@ -4,13 +4,7 @@
 <section layout:fragment="content">
     <div class="container">
         <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-            <h3 th:inline="text">
-                <span class="glyphicon glyphicon-list-alt"></span>
-                [[${case.trialName}]]
-                <a href="/cases/index">
-                    <span class="fa fa-sign-out-alt" style="color: green;"></span>
-                </a>
-            </h3>
+            <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
             <hr>
             <form th:action="@{'/cases/' + ${case.id} + '/assignment'}" method="post">
                 <div class="form-group">

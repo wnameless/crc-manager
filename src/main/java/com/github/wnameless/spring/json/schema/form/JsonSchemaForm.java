@@ -17,15 +17,15 @@ package com.github.wnameless.spring.json.schema.form;
 
 public interface JsonSchemaForm {
 
-  String getJsonData();
+  String getFormData();
 
-  void setJsonData(String jsonData);
+  void setFormData(String formData);
 
-  String getJsonSchema();
+  String getSchema();
 
-  void setJsonSchema(String jsonSchema);
+  void setSchema(String schema);
 
-  String getJsonUiSchema();
+  String getUiSchema();
 
-  void setJsonUiSchema(String jsonUiSchema);
+  void setUiSchema(String uiSchema);
 }

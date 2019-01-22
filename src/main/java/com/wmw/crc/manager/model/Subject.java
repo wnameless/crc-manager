@@ -16,11 +16,14 @@
 package com.wmw.crc.manager.model;
 
 import static com.google.common.base.Charsets.UTF_8;
+
 import java.io.IOException;
 import java.net.URL;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
 import com.github.wnameless.json.JsonDataInitailizable;
 import com.github.wnameless.json.JsonInitKey;
 import com.github.wnameless.json.JsonInitValue;
@@ -28,6 +31,7 @@ import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -83,20 +87,20 @@ public class Subject extends JpaJsonSchemaForm
     try {
       URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
       String json = Resources.toString(url, UTF_8);
-      setJsonSchema(json);
+      setSchema(json);
 
       url = Resources.getResource(JsonSchemaPath.subjectUISchema);
       json = Resources.toString(url, UTF_8);
-      setJsonUiSchema(json);
+      setUiSchema(json);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  public void setJsonData(String jsonData) {
-    super.setJsonData(jsonData);
-    setJsonInitData(jsonData);
+  public void setFormData(String formData) {
+    super.setFormData(formData);
+    setJsonInitData(formData);
   }
 
 }

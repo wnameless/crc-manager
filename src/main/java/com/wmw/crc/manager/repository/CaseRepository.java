@@ -46,7 +46,7 @@ public interface CaseRepository
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
     Ruby.Array.copyOf(cases).keepIf(kase -> {
-      JsonValue data = Json.parse(kase.getJsonData());
+      JsonValue data = Json.parse(kase.getFormData());
       return isCriteriaMatch(data, groupedCriteria);
     });
 

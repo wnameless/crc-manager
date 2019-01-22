@@ -107,7 +107,7 @@ public class SubjectController {
     Case c = caseRepo.getOne(caseId);
 
     Subject s = new Subject();
-    s.setJsonData(formData);
+    s.setFormData(formData);
     if (findChildByValue(c.getSubjects(), s.getNationalId(),
         Subject::getNationalId) == null) {
       subjectRepo.save(s);
@@ -133,15 +133,15 @@ public class SubjectController {
 
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     if (subject != null) {
-      String jsonData = subject.getJsonData();
-      subject.setJsonData(formData);
+      String jsonData = subject.getFormData();
+      subject.setFormData(formData);
 
       int count = Ruby.Array.of(c.getSubjects()).count(
           s -> Objects.equals(s.getNationalId(), subject.getNationalId()));
       if (count == 1) {
         subjectRepo.save(subject);
       } else {
-        subject.setJsonData(jsonData);
+        subject.setFormData(jsonData);
         model.addAttribute("message",
             messageSource.getMessage("ctrl.subject.message.nationalid-existed",
                 new Object[] {}, locale));
@@ -249,10 +249,10 @@ public class SubjectController {
         && !subjectDateType.equals("bundleNumber")) {
       subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
-          String jsonData = s.getJsonData();
+          String jsonData = s.getFormData();
           JsonObject jo = Json.parse(jsonData).asObject();
           jo.set(subjectDateType, subjectDate);
-          s.setJsonData(jo.toString());
+          s.setFormData(jo.toString());
           subjectRepo.save(s);
         }
       });
@@ -288,7 +288,7 @@ public class SubjectController {
         for (Subject s : groups.get(true)) {
           Subject target = findChildByValue(c.getSubjects(), s.getNationalId(),
               Subject::getNationalId);
-          target.setJsonData(s.getJsonData());
+          target.setFormData(s.getFormData());
           subjectRepo.save(target);
         }
       }

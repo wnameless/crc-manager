@@ -37,8 +37,8 @@ public class JsonDataExportService {
   MessageSource messageSource;
 
   public Workbook toExcel(Case kase, Locale locale) {
-    JsonObject jsonSchema = Json.parse(kase.getJsonSchema()).asObject();
-    JsonObject jsonData = Json.parse(kase.getJsonData()).asObject();
+    JsonObject jsonSchema = Json.parse(kase.getSchema()).asObject();
+    JsonObject jsonData = Json.parse(kase.getFormData()).asObject();
 
     WorkbookWriter ww = WorkbookWriter.openXLSX();
 
@@ -61,12 +61,12 @@ public class JsonDataExportService {
 
     ww.createAndTurnToSheet(messageSource.getMessage(
         "service.export.sheet.subject.name", new Object[] {}, locale));
-    JsonObject schema = Json.parse(new Subject().getJsonSchema()).asObject();
+    JsonObject schema = Json.parse(new Subject().getSchema()).asObject();
     JsonObject props = schema.get("properties").asObject();
     ww.addRow(Ruby.Array.of(props.names())
         .map(key -> props.get(key).asObject().get("title").asString()));
     for (Subject subject : kase.getSubjects()) {
-      JsonObject data = Json.parse(subject.getJsonData()).asObject();
+      JsonObject data = Json.parse(subject.getFormData()).asObject();
       ww.addRow(
           Ruby.Array.of(props.names()).map(key -> data.names().contains(key)
               ? MinimalJsonUtils.val2String(data.get(key)) : ""));

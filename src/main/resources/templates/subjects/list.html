@@ -1,228 +1,205 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
-	<h3 th:inline="text">
-		<span class="glyphicon glyphicon-list-alt"></span>
-		[[${case.trialName}]]
-		<a href="/cases/index">
-			<span class="fa fa-sign-out-alt" style="color: green;"></span>
-		</a>
-	</h3>
-	<hr>
-	<form th:if="${@perm.canWrite(case)}" id="batchDating"
-		th:action="@{${jsfPath} + '/batchdating'}" method="POST">
-		<div class="form-row">
-			<div class="form-group col-md-1"></div>
-			<div class="form-group col-md-5">
-				<select id="subjectDateType" name="subjectDateType"
-					class="form-control" form="batchDating">
-					<option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
-					<option value="examDate" th:text="#{ui.subject.date.exam}"></option>
-					<option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
-					<option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
-					<option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
-					<option value="bundleNumber" th:text="#{ui.subject.bundle.number}"></option>
-				</select>
-			</div>
-			<div id="batchDateDiv" class="form-group col-md-4">
-				<input type="date" class="form-control" id="subjectDate"
-					name="subjectDate">
-			</div>
-			<div id="bundleNumberDiv" class="form-group col-md-4 hidden">
-				<select name="bundleNumber" class="form-control" form="batchDating">
-					<option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}"
-						th:text="${i}" th:selected="${i} == 1"></option>
-				</select>
-			</div>
-			<div class="form-group col-md-2">
-				<button type="submit" class="btn btn-primary"
-					th:text="#{ui.subject.batch}"></button>
-			</div>
-		</div>
-	</form>
+    <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
+    <hr>
+    <form th:if="${@perm.canWrite(case)}" id="batchDating" th:action="@{${jsfPath} + '/batchdating'}" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-5">
+                <select id="subjectDateType" name="subjectDateType" class="form-control" form="batchDating">
+                    <option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
+                    <option value="examDate" th:text="#{ui.subject.date.exam}"></option>
+                    <option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
+                    <option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
+                    <option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
+                    <option value="bundleNumber" th:text="#{ui.subject.bundle.number}"></option>
+                </select>
+            </div>
+            <div id="batchDateDiv" class="form-group col-md-4">
+                <input type="date" class="form-control" id="subjectDate" name="subjectDate">
+            </div>
+            <div id="bundleNumberDiv" class="form-group col-md-4 hidden">
+                <select name="bundleNumber" class="form-control" form="batchDating">
+                    <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${i}" th:selected="${i} == 1"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <button type="submit" class="btn btn-primary" th:text="#{ui.subject.batch}"></button>
+            </div>
+        </div>
+    </form>
 
-	<div th:if="${@perm.canWrite(case)}" class="col-md-12">
-		<hr />
-	</div>
+    <div th:if="${@perm.canWrite(case)}" class="col-md-12">
+        <hr>
+    </div>
 
-	<table id="jsfTable" class="display">
-		<thead>
-			<tr>
-				<th></th>
-				<th th:text="#{ui.subject.table.status}"></th>
-				<th th:text="#{ui.subject.table.bundle}"></th>
-				<th th:text="#{ui.subject.table.name}"></th>
-				<th th:text=#{ui.subject.table.nationalid}></th>
-				<th th:text=#{ui.subject.table.action}></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="subject : ${jsfItems}">
-				<td>
-					<div class="form-check">
-						<input type="checkbox" class="form-check-input"
-							th:value="${subject.id}" onchange="checkboxEvent()">
-					</div>
-				</td>
-				<td th:text="${@i18n.str(subject.status)}"></td>
-				<td><label th:if="${!@perm.canWrite(case)}"
-					th:text="${subject.contraindicationBundle}"></label>
+    <table id="jsfTable" class="display">
+        <thead>
+            <tr>
+                <th></th>
+                <th th:text="#{ui.subject.table.status}"></th>
+                <th th:text="#{ui.subject.table.bundle}"></th>
+                <th th:text="#{ui.subject.table.name}"></th>
+                <th th:text="#{ui.subject.table.nationalid}"></th>
+                <th th:text="#{ui.subject.table.action}"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="subject : ${jsfItems}">
+                <td>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" th:value="${subject.id}" onchange="checkboxEvent()">
+                    </div>
+                </td>
+                <td th:text="${@i18n.str(subject.status)}"></td>
+                <td>
+                    <label th:unless="${@perm.canWrite(case)}" th:text="${subject.contraindicationBundle}"></label>
 
-					<button th:if="${@perm.canWrite(case)}" type="button"
-						class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="true">
-						<span th:text="${subject.contraindicationBundle}"></span>
-					</button>
-					<ul th:if="${@perm.canWrite(case)}" class="dropdown-menu"
-						aria-labelledby="dropdownMenuButton">
-						<th:block th:each="i: ${#numbers.sequence(1, 9)}">
-							<li>
-								<a class="dropdown-item"
-									th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/bundle/' + ${i}}"
-									th:text="${i}"></a>
-							</li>
-						</th:block>
-					</ul></td>
-				<td th:text="${subject.name}"></td>
-				<td><a th:if="${@perm.canRead(case)}" href="#"
-						th:attr="data-show-path=${jsfPath + '/' + subject.id}"
-						onclick="showFormEvent(this)" th:text="${subject.nationalId}">
-					</a> <a th:if="${!@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
-				</td>
-				<td><a th:if="${@perm.canWrite(case)}" href="#"
-						th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
-						onclick="editFormEvent(this)">
-						<span>
-							<i class="fa fa-edit"></i>
-						</span>
-					</a> <span th:if="${!@perm.canWrite(case)}">
-						<i class="fa fa-edit"></i>
-					</span> <a th:if="${@perm.canDeleteSubject(case)}"
-						th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
-						th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
-						onclick="editFormEvent(this)">
-						<span>
-							<i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
-						</span>
-					</a></td>
-			</tr>
-		</tbody>
-	</table>
+                    <select th:if="${@perm.canWrite(case)}" class="form-control selectpicker" onchange="location = this.value;">
+                        <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/bundle/' + ${i}}"
+                            th:text="${i}" th:selected="${i == subject.contraindicationBundle}">
+                        </option>
+                    </select>
+                </td>
+                <td th:text="${subject.name}"></td>
+                <td>
+                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + subject.id}" onclick="showFormEvent(this)"
+                        th:text="${subject.nationalId}">
+                    </a>
+                    <a th:unless="${@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
+                </td>
+                <td>
+                    <a th:if="${@perm.canWrite(case)}" href="#" th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}" onclick="editFormEvent(this)">
+                        <span>
+                            <i class="fa fa-edit"></i>
+                        </span>
+                    </a>
+                    <span th:unless="${@perm.canWrite(case)}">
+                        <i class="fa fa-edit"></i>
+                    </span>
+                    <a th:if="${@perm.canDeleteSubject(case)}" th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
+                        th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}" onclick="editFormEvent(this)">
+                        <span>
+                            <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
+                        </span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-	<div th:if="${@perm.canWrite(case)}"
-		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-		<button id="addSubject" class="btn btn-block btn-default"
-			th:attr="data-edit-path=${jsfPath + '/new'}"
-			onclick="editFormEvent(this)" th:inline="text">
-			<span>
-				<i class="fa fa-plus" style="color: green"></i>
-			</span>
-			[[#{ui.subject.add}]]
-		</button>
-	</div>
+    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${jsfPath + '/new'}" onclick="editFormEvent(this)"
+            th:inline="text">
+            <span>
+                <i class="fa fa-plus" style="color: green"></i>
+            </span>
+            [[#{ui.subject.add}]]
+        </button>
+    </div>
 
-	<div th:if="${@perm.canWrite(case)}"
-		class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-		<form method="POST" th:action="${ jsfPath + '/index' }"
-			enctype="multipart/form-data">
-			<!-- COMPONENT START -->
-			<div class="form-group">
-				<div class="input-group input-file" name="subjectFile">
-					<span class="input-group-btn">
-						<button class="btn btn-default btn-choose" type="button"
-							th:text="#{ui.subject.file.select}"></button>
-					</span>
-					<input type="text" class="form-control"
-						placeholder='Choose a file...' />
-					<span class="input-group-btn">
-						<button id="uploadBtn" class="btn btn-warning" type="submit"
-							th:text="#{ui.subject.file.upload}" disabled></button>
-					</span>
-				</div>
-			</div>
-			<!-- COMPONENT END -->
-		</form>
-	</div>
+    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <form method="POST" th:action="${ jsfPath + '/index' }" enctype="multipart/form-data">
+            <!-- COMPONENT START -->
+            <div class="form-group">
+                <div class="input-group input-file" name="subjectFile">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-choose" type="button" th:text="#{ui.subject.file.select}"></button>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Choose a file...">
+                    <span class="input-group-btn">
+                        <button id="uploadBtn" class="btn btn-warning" type="submit" th:text="#{ui.subject.file.upload}" disabled></button>
+                    </span>
+                </div>
+            </div>
+            <!-- COMPONENT END -->
+        </form>
+    </div>
 
-	<script th:replace="fragments/notify :: notify"></script>
-	<script type="text/javascript" th:inline="javascript">
-    function bs_input_file() {
-      $(".input-file")
-              .before(
-                      function() {
+    <script th:replace="fragments/notify :: notify"></script>
+    <script type="text/javascript" th:inline="javascript">
+        function bs_input_file() {
+            $(".input-file")
+                .before(
+                    function () {
                         if (!$(this).prev().hasClass('input-ghost')) {
-                          var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
-                          element.attr("name", $(this).attr("name"));
-                          element.change(function() {
-                            element.next(element).find('input').val(
+                            var element = $(
+                                '<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
+                            element.attr('name', $(this).attr('name'));
+                            element.change(function () {
+                                element.next(element).find('input').val(
                                     (element.val()).split('\\').pop());
-                            $('#uploadBtn').removeAttr('disabled');
-                          });
-                          $(this).find("button.btn-choose").click(function() {
-                            element.click();
-                          });
-                          $(this).find('input').css("cursor", "pointer");
-                          $(this).find('input').mousedown(function() {
-                            $(this).parents('.input-file').prev().click();
-                            return false;
-                          });
-                          return element;
+                                $('#uploadBtn').removeAttr('disabled');
+                            });
+                            $(this).find("button.btn-choose").click(function () {
+                                element.click();
+                            });
+                            $(this).find('input').css('cursor', 'pointer');
+                            $(this).find('input').mousedown(function () {
+                                $(this).parents('.input-file').prev().click();
+                                return false;
+                            });
+                            return element;
                         }
-                      });
-    };
+                    });
+        };
 
-    var checkboxEvent = function() {
-      $("input[name='subjectIds[]']").remove();
+        var checkboxEvent = function () {
+            $('input[name="subjectIds[]"]').remove();
 
-      $('input:checked').each(function() {
-        $('<input>').attr({
-          type: 'hidden',
-          name: 'subjectIds[]',
-          value: this.value
-        }).appendTo('#batchDating');
-      });
-    };
+            $('input:checked').each(function () {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'subjectIds[]',
+                    value: this.value
+                }).appendTo('#batchDating');
+            });
+        };
 
-    var showFormEvent = function(node) {
-      axios.get($(node).attr('data-show-path')).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+        var showFormEvent = function (node) {
+            axios.get($(node).attr('data-show-path')).then(function (response) {
+                $('#jsf').html(response.data);
+            });
+        };
 
-    var editFormEvent = function(node) {
-      axios.get($(node).attr('data-edit-path')).then(function(response) {
-        $('#jsf').html(response.data);
-      });
-    };
+        var editFormEvent = function (node) {
+            axios.get($(node).attr('data-edit-path')).then(function (response) {
+                $('#jsf').html(response.data);
+            });
+        };
 
-    $(function() {
-      bs_input_file();
+        $(function () {
+            $('.selectpicker').selectpicker();
 
-      let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/null;
-      $('#jsfTable').DataTable({
-        columnDefs: [{
-          width: '36px',
-          targets: 0
-        }],
-        language: {
-          url: '/i18n/datatables-' + i18nLocale + '.json'
-        },
-        drawCallback: function(settings) {
-          $('#jsfTable').reflowTable('update');
-        }
-      });
+            bs_input_file();
 
-      $('#jsfTable').reflowTable();
-    });
+            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+            $('#jsfTable').DataTable({
+                columnDefs: [{
+                    width: '36px',
+                    targets: 0
+                }],
+                language: {
+                    url: '/i18n/datatables-' + i18nLocale + '.json'
+                },
+                drawCallback: function (settings) {
+                    $('#jsfTable').reflowTable('update');
+                }
+            });
 
-    $('#subjectDateType').change(function() {
-      if (this.value == 'bundleNumber') {
-        $('#batchDateDiv').addClass('hidden');
-        $('#bundleNumberDiv').removeClass('hidden');
-      } else {
-        $('#batchDateDiv').removeClass('hidden');
-        $('#bundleNumberDiv').addClass('hidden');
-      }
-    });
-  </script>
+            $('#jsfTable').reflowTable();
+        });
+
+        $('#subjectDateType').change(function () {
+            if (this.value == 'bundleNumber') {
+                $('#batchDateDiv').addClass('hidden');
+                $('#bundleNumberDiv').removeClass('hidden');
+            } else {
+                $('#batchDateDiv').removeClass('hidden');
+                $('#bundleNumberDiv').addClass('hidden');
+            }
+        });
+    </script>
 </div>
+
 </html>

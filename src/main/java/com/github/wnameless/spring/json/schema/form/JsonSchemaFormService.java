@@ -29,9 +29,9 @@ public class JsonSchemaFormService {
 
   public String toJsonString(JsonSchemaForm jsonSchemaForm) {
     JsonObject jo = Json.object();
-    jo.add("jsonData", Json.parse(jsonSchemaForm.getJsonData()));
-    jo.add("jsonSchema", Json.parse(jsonSchemaForm.getJsonSchema()));
-    jo.add("jsonUiSchema", Json.parse(jsonSchemaForm.getJsonUiSchema()));
+    jo.add("jsonData", Json.parse(jsonSchemaForm.getFormData()));
+    jo.add("jsonSchema", Json.parse(jsonSchemaForm.getSchema()));
+    jo.add("jsonUiSchema", Json.parse(jsonSchemaForm.getUiSchema()));
     return jo.toString();
   }
 
@@ -39,7 +39,7 @@ public class JsonSchemaFormService {
     if (jdi != null) {
       jdi.accept(jsonData, jsonSchemaForm);
     } else {
-      jsonSchemaForm.setJsonData(jsonData);
+      jsonSchemaForm.setFormData(jsonData);
     }
 
     if (jsonSchemaForm instanceof JsonDataInitailizable) {

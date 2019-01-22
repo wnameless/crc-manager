@@ -17,34 +17,23 @@
         <tbody>
             <tr th:each="case : ${jsfItems}">
                 <td>
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <span class="fa fa-cogs"></span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/assignment'}" th:text="#{ui.case.table.action.assign}"></a>
-                        </li>
-                        <li th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" class="divider"></li>
-                        <li th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/exec'}" th:text="#{ui.case.table.action.dispatch}"></a>
-                        </li>
-                        <li th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/none'}" th:text="#{ui.case.table.action.none}"></a>
-                        </li>
-                        <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/permission'}" th:text="#{ui.case.table.action.permission}"></a>
-                        </li>
-                        <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}" class="divider"></li>
-                        <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/end'}" th:text="#{ui.case.table.action.close}"></a>
-                        </li>
-                        <li th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/exec'}" th:text="#{ui.case.table.action.reopen}"></a>
-                        </li>
-                        <li th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
-                            <a class="dropdown-item" th:href="@{'/cases/' + ${case.id} + '/status/new'}" th:text="#{ui.case.table.action.renew}"></a>
-                        </li>
-                    </ul>
+                    <select class="form-control selectpicker glyphicon" onchange="location = this.value;">
+                        <option value="#" selected disabled hidden>&#xe019;</option>
+                        <option th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" th:value="@{'/cases/' + ${case.id} + '/assignment'}"
+                            th:text="#{ui.case.table.action.assign}"></option>
+                        <option th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" th:value="@{'/cases/' + ${case.id} + '/status/exec'}"
+                            th:text="#{ui.case.table.action.dispatch}"></option>
+                        <option th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}" class="dropdown-item" th:value="@{'/cases/' + ${case.id} + '/status/none'}"
+                            th:text="#{ui.case.table.action.none}"></option>
+                        <option th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}" class="dropdown-item" th:value="@{'/cases/' + ${case.id} + '/permission'}"
+                            th:text="#{ui.case.table.action.permission}"></option>
+                        <option th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}" class="dropdown-item" th:value="@{'/cases/' + ${case.id} + '/status/end'}"
+                            th:text="#{ui.case.table.action.close}"></option>
+                        <option th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}" class="dropdown-item" th:value="@{'/cases/' + ${case.id} + '/status/exec'}"
+                            th:text="#{ui.case.table.action.reopen}"></option>
+                        <option th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}" class="dropdown-item" th:value="@{'/cases/' + ${case.id} + '/status/new'}"
+                            th:text="#{ui.case.table.action.renew}"></option>
+                    </select>
                 </td>
                 <td>
                     <a href="#" th:if="${@perm.canWrite(case)}" th:attr="data-edit-path=${jsfPath + '/' + case.id + '/edit'}" onclick="editFormEvent(this)">
@@ -62,7 +51,7 @@
                     </a>
                 </td>
                 <td>
-                    <a th:if="${!@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
+                    <a th:unless="${@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
                     <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + case.id}" onclick="showFormEvent(this)"
                         th:inline="text">[[${case.irbNumber}]]</a>
                 </td>
@@ -72,7 +61,7 @@
                             <i class="fa fa-medkit"></i>
                         </span>
                     </a>
-                    <span th:if="${!@perm.canRead(case)}">
+                    <span th:unless="${@perm.canRead(case)}">
                         <i class="fa fa-medkit"></i>
                     </span>
                 </td>
@@ -82,7 +71,7 @@
                             <i class="fa fa-user-plus"></i>
                         </span>
                     </a>
-                    <span th:if="${!@perm.canRead(case)}">
+                    <span th:unless="${@perm.canRead(case)}">
                         <i class="fa fa-user-plus"></i>
                     </span>
                 </td>
@@ -109,6 +98,8 @@
         };
 
         $(function () {
+            $('.selectpicker').selectpicker();
+
             let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
             $('#jsfTable').DataTable({
                 language: {

@@ -1,0 +1,11 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<h3 th:fragment="title(text, backUrl)">
+    <a th:href="@{${backUrl}}">
+        <span class="fa fa-arrow-left" style="color: green;"></span>
+    </a>
+    <span class="glyphicon glyphicon-list-alt"></span>
+    [[${text}]]
+</h3>
+
+</html>
