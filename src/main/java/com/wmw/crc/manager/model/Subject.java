@@ -24,9 +24,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.github.wnameless.json.JsonDataInitailizable;
-import com.github.wnameless.json.JsonInitKey;
-import com.github.wnameless.json.JsonInitValue;
+import com.github.wnameless.json.JsonPopulatable;
+import com.github.wnameless.json.JsonPopulatedKey;
+import com.github.wnameless.json.JsonPopulatedValue;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
@@ -38,8 +38,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject extends JpaJsonSchemaForm
-    implements JsonDataInitailizable {
+public class Subject extends JpaJsonSchemaForm implements JsonPopulatable {
 
   public enum Status {
 
@@ -72,13 +71,13 @@ public class Subject extends JpaJsonSchemaForm
   @GeneratedValue
   Long id;
 
-  @JsonInitValue(SubjectStatusCustomizer.class)
+  @JsonPopulatedValue(SubjectStatusCustomizer.class)
   Status status = Status.PRESCREENING;
 
-  @JsonInitKey("lastname")
+  @JsonPopulatedKey("lastname")
   String name;
 
-  @JsonInitKey("taiwanId")
+  @JsonPopulatedKey("taiwanId")
   String nationalId;
 
   Integer contraindicationBundle = 1;
@@ -100,7 +99,7 @@ public class Subject extends JpaJsonSchemaForm
   @Override
   public void setFormData(String formData) {
     super.setFormData(formData);
-    setJsonInitData(formData);
+    setPopulatedJson(formData);
   }
 
 }

@@ -36,8 +36,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
-import com.github.wnameless.json.JsonDataInitailizable;
-import com.github.wnameless.json.JsonInitKey;
+import com.github.wnameless.json.JsonPopulatable;
+import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
@@ -48,7 +48,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity(name = "kase")
-public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
+public class Case extends JpaJsonSchemaForm implements JsonPopulatable {
 
   public enum Status {
     NEW, EXEC, END, NONE;
@@ -73,29 +73,29 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @GeneratedValue
   Long id;
 
-  @JsonInitKey("irbNum")
+  @JsonPopulatedKey("irbNum")
   String irbNumber;
 
-  @JsonInitKey("protocolNum")
+  @JsonPopulatedKey("protocolNum")
   String caseNumber;
 
-  @JsonInitKey("title")
+  @JsonPopulatedKey("title")
   String trialName;
 
-  @JsonInitKey("engTitle")
+  @JsonPopulatedKey("engTitle")
   String trialNameEng;
 
-  @JsonInitKey("PI[0].name")
+  @JsonPopulatedKey("PI[0].name")
   String piName;
 
   String coPiName;
 
   String associatePiName;
 
-  @JsonInitKey("crcNum")
+  @JsonPopulatedKey("crcNum")
   String projectNumber;
 
-  @JsonInitKey("nihReason")
+  @JsonPopulatedKey("nihReason")
   String projectType;
 
   int expectedNumberOfSubjectsLocal;
@@ -104,10 +104,10 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
 
   int expectedNumberOfSubjectsGlobal;
 
-  @JsonInitKey("proposedStartDate")
+  @JsonPopulatedKey("proposedStartDate")
   String expectedStartDate;
 
-  @JsonInitKey("proposedEndDate")
+  @JsonPopulatedKey("proposedEndDate")
   String expectedEndDate;
 
   @Enumerated(EnumType.STRING)
@@ -156,7 +156,7 @@ public class Case extends JpaJsonSchemaForm implements JsonDataInitailizable {
   @Override
   public void setFormData(String formData) {
     super.setFormData(formData);
-    setJsonInitData(formData);
+    setPopulatedJson(formData);
   }
 
 }

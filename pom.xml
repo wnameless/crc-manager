@@ -166,6 +166,11 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.wnameless</groupId>
+			<artifactId>json-bean-populator</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

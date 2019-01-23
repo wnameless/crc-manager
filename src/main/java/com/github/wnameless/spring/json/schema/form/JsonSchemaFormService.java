@@ -17,9 +17,10 @@ package com.github.wnameless.spring.json.schema.form;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.github.wnameless.json.JsonDataInitailizable;
+import com.github.wnameless.json.JsonPopulatable;
 
 @Service
 public class JsonSchemaFormService {
@@ -42,8 +43,8 @@ public class JsonSchemaFormService {
       jsonSchemaForm.setFormData(jsonData);
     }
 
-    if (jsonSchemaForm instanceof JsonDataInitailizable) {
-      ((JsonDataInitailizable) jsonSchemaForm).setJsonInitData(jsonData);
+    if (jsonSchemaForm instanceof JsonPopulatable) {
+      ((JsonPopulatable) jsonSchemaForm).setPopulatedJson(jsonData);
     }
   }
 
