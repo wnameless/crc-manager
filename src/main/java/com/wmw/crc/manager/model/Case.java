@@ -38,9 +38,9 @@ import javax.persistence.OneToMany;
 
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
-import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.model.form.JpaJsonSchemaForm;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -15,8 +15,6 @@
  */
 package com.wmw.crc.manager.model.form;
 
-import com.github.wnameless.spring.json.schema.form.JsonSchemaForm;
-
 import lombok.Data;
 
 @Data

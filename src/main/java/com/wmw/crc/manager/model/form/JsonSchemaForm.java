@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.json.schema.form;
+package com.wmw.crc.manager.model.form;
 
 public interface JsonSchemaForm {
 

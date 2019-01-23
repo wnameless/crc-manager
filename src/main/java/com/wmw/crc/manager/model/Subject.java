@@ -27,9 +27,9 @@ import javax.persistence.Id;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.json.JsonPopulatedValue;
-import com.github.wnameless.spring.json.schema.form.JpaJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.model.form.JpaJsonSchemaForm;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
 import lombok.Data;
