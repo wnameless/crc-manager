@@ -67,7 +67,8 @@ var CostumFormComponent = function (_React$Component) {
                     schema: this.props.schema,
                     uiSchema: this.props.uiSchema,
                     formData: this.props.formData,
-                    onSubmit: this.props.onSubmit
+                    onSubmit: this.props.onSubmit,
+                    disabled: this.props.disabled
                 },
                 React.createElement(
                     "div",

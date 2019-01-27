@@ -41,10 +41,10 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
   @Lob
   protected String uiSchema = "{}";
 
-  public static final String UTF8_BOM = "\uFEFF";
+  public static final String UTF16_BOM = "\uFEFF";
 
-  private static String removeUTF8BOM(String s) {
-    if (s.startsWith(UTF8_BOM)) {
+  private static String removeUTF16BOM(String s) {
+    if (s.startsWith(UTF16_BOM)) {
       s = s.substring(1);
     }
     return s;
@@ -57,7 +57,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setFormData(String formData) {
-    this.formData = removeUTF8BOM(formData);
+    this.formData = removeUTF16BOM(formData);
   }
 
   @Override
@@ -67,7 +67,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setSchema(String schema) {
-    this.schema = removeUTF8BOM(schema);
+    this.schema = removeUTF16BOM(schema);
   }
 
   @Override
@@ -77,7 +77,7 @@ public abstract class JpaJsonSchemaForm implements JsonSchemaForm {
 
   @Override
   public void setUiSchema(String uiSchema) {
-    this.uiSchema = removeUTF8BOM(uiSchema);
+    this.uiSchema = removeUTF16BOM(uiSchema);
   }
 
   public Map<String, String> propertyTitles() {
