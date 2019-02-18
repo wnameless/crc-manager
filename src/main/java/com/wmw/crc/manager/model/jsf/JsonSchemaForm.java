@@ -13,15 +13,19 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model;
+package com.wmw.crc.manager.model.jsf;
 
-import lombok.Data;
+public interface JsonSchemaForm {
 
-@Data
-public class Criterion {
+  String getFormData();
 
-  private String key;
+  void setFormData(String formData);
 
-  private Object value;
+  String getSchema();
 
+  void setSchema(String schema);
+
+  String getUiSchema();
+
+  void setUiSchema(String uiSchema);
 }

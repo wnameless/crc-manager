@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -21,7 +21,7 @@ import net.sf.rubycollect4j.Ruby;
 public class ContraindicationController {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
@@ -35,7 +35,7 @@ public class ContraindicationController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}/contraindications")
   String index(Model model, @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
 
     Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
     model.addAttribute("case", c);
@@ -48,7 +48,7 @@ public class ContraindicationController {
       @RequestParam("bundle") Integer bundle,
       @RequestParam("phrase") String phrase,
       @RequestParam("atcCode") String atcCode) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
 
     if (!isNullOrEmpty(phrase) || !isNullOrEmpty(atcCode)) {
       Contraindication cd = new Contraindication();
@@ -70,7 +70,7 @@ public class ContraindicationController {
   @GetMapping("cases/{id}/contraindications/{cdId}")
   String remove(Model model, @PathVariable("id") Long id,
       @PathVariable("cdId") Long cdId) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
 
     Ruby.Array.of(c.getContraindications())
         .removeIf(cd -> cd.getId().equals(cdId));

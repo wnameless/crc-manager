@@ -40,15 +40,15 @@ import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
-import com.wmw.crc.manager.model.form.JpaJsonSchemaForm;
+import com.wmw.crc.manager.model.jsf.JpaJsonSchemaForm;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
-@Entity(name = "kase")
-public class Case extends JpaJsonSchemaForm implements JsonPopulatable {
+@Entity
+public class CaseStudy extends JpaJsonSchemaForm implements JsonPopulatable {
 
   public enum Status {
     NEW, EXEC, END, NONE;
@@ -142,7 +142,7 @@ public class Case extends JpaJsonSchemaForm implements JsonPopulatable {
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> viewers = newLinkedHashSet();
 
-  public Case() {
+  public CaseStudy() {
     try {
       URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
       setSchema(Resources.toString(url, UTF_8));

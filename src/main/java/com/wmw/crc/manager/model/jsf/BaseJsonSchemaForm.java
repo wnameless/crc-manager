@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model.form;
+package com.wmw.crc.manager.model.jsf;
 
 import lombok.Data;
 

@@ -33,16 +33,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.Criterion;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.form.Criterion;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.JsonDataExportService;
 
 @Controller
 public class SearchController {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   JsonDataExportService dataExport;
@@ -50,7 +50,7 @@ public class SearchController {
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/search/index")
   String index(Model model) {
-    model.addAttribute("propertyTitles", new Case().propertyTitles());
+    model.addAttribute("propertyTitles", new CaseStudy().propertyTitles());
     return "search/index";
   }
 
@@ -58,7 +58,7 @@ public class SearchController {
   @PostMapping("/search")
   String search(Model model, Authentication auth,
       @RequestBody List<Criterion> criteria) {
-    Iterable<Case> cases = caseRepo.findByUserAndCriteria(auth, criteria);
+    Iterable<CaseStudy> cases = caseRepo.findByUserAndCriteria(auth, criteria);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -70,7 +70,7 @@ public class SearchController {
   @ResponseBody
   HttpEntity<byte[]> download(@PathVariable("id") Long id, Locale locale)
       throws IOException {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
 
     Workbook wb = dataExport.toExcel(kase, locale);
 

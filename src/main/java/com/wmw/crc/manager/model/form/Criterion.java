@@ -15,17 +15,13 @@
  */
 package com.wmw.crc.manager.model.form;
 
-public interface JsonSchemaForm {
+import lombok.Data;
 
-  String getFormData();
+@Data
+public class Criterion {
 
-  void setFormData(String formData);
+  private String key;
 
-  String getSchema();
+  private Object value;
 
-  void setSchema(String schema);
-
-  String getUiSchema();
-
-  void setUiSchema(String uiSchema);
 }

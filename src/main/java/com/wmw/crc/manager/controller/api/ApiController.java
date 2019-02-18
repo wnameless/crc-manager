@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.KeycloakService;
 import net.sf.rubycollect4j.Ruby;
 
@@ -39,7 +39,7 @@ import net.sf.rubycollect4j.Ruby;
 public class ApiController {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   KeycloakService keycloak;
@@ -62,7 +62,7 @@ public class ApiController {
 
   @RequestMapping(path = "/protocols", method = RequestMethod.POST)
   String newCase(@RequestBody Protocol protocol) throws IOException {
-    Case c = new Case();
+    CaseStudy c = new CaseStudy();
     c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
 
     c.setOwner(protocol.getOwner().toLowerCase());
@@ -87,7 +87,7 @@ public class ApiController {
   String updateCase(@RequestBody Protocol protocol,
       @PathVariable("irbNumber") String irbNumber) {
 
-    Case c = caseRepo.findByIrbNumber(irbNumber);
+    CaseStudy c = caseRepo.findByIrbNumber(irbNumber);
     c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
     caseRepo.save(c);
 

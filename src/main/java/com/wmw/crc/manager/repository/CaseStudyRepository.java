@@ -18,31 +18,34 @@ package com.wmw.crc.manager.repository;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.Criterion;
-import com.wmw.crc.manager.model.QCase;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.QCaseStudy;
+import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.util.MinimalJsonUtils;
+
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
 @Repository("caseRepo")
-public interface CaseRepository
-    extends JpaRepository<Case, Long>, QuerydslPredicateExecutor<Case> {
+public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
+    QuerydslPredicateExecutor<CaseStudy> {
 
-  default Iterable<Case> findByUserAndCriteria(Authentication auth,
+  default Iterable<CaseStudy> findByUserAndCriteria(Authentication auth,
       List<Criterion> criteria) {
-    Iterable<Case> cases = findByUser(auth);
+    Iterable<CaseStudy> cases = findByUser(auth);
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
     Ruby.Array.copyOf(cases).keepIf(kase -> {
@@ -101,7 +104,7 @@ public interface CaseRepository
     return c;
   }
 
-  default Iterable<Case> findByUser(Authentication auth) {
+  default Iterable<CaseStudy> findByUser(Authentication auth) {
     String username = auth.getName();
 
     if (username.equals("super") || username.equals("admin")) return findAll();
@@ -110,8 +113,8 @@ public interface CaseRepository
         username, username, username);
   }
 
-  default Iterable<Case> findByUserAndStatus(Authentication auth,
-      Case.Status status) {
+  default Iterable<CaseStudy> findByUserAndStatus(Authentication auth,
+      CaseStudy.Status status) {
     Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
     if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
         || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
@@ -119,7 +122,7 @@ public interface CaseRepository
     }
 
     String username = auth.getName();
-    QCase qCase = QCase.case$;
+    QCaseStudy qCase = QCaseStudy.caseStudy;
     BooleanExpression isStatus = qCase.status.eq(status);
     BooleanExpression isOwner = qCase.owner.eq(username);
     BooleanExpression hasManager = qCase.managers.contains(username);
@@ -129,9 +132,9 @@ public interface CaseRepository
         isStatus.and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)));
   }
 
-  default Iterable<Case> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
+  default Iterable<CaseStudy> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
       String username1, String username2, String username3, String username4) {
-    QCase qCase = QCase.case$;
+    QCaseStudy qCase = QCaseStudy.caseStudy;
     BooleanExpression isOwner = qCase.owner.eq(username1);
     BooleanExpression hasManager = qCase.managers.contains(username2);
     BooleanExpression hasEditor = qCase.editors.contains(username3);
@@ -139,8 +142,8 @@ public interface CaseRepository
     return findAll(isOwner.or(hasManager).or(hasEditor).or(hasViewer));
   }
 
-  List<Case> findByStatus(Case.Status status);
+  List<CaseStudy> findByStatus(CaseStudy.Status status);
 
-  Case findByIrbNumber(String irbNumber);
+  CaseStudy findByIrbNumber(String irbNumber);
 
 }

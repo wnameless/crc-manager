@@ -38,9 +38,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.ExcelSubjectUploadService;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
@@ -53,7 +53,7 @@ import net.sf.rubycollect4j.RubyArray;
 public class SubjectController {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
@@ -70,7 +70,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
   String index(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -81,7 +81,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects")
   String list(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -92,7 +92,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/new")
   String newItem(Model model, @PathVariable("caseId") Long caseId) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -104,7 +104,7 @@ public class SubjectController {
   @PostMapping("/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
       @RequestBody String formData, Locale locale) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     Subject s = new Subject();
     s.setFormData(formData);
@@ -129,7 +129,7 @@ public class SubjectController {
   String update(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @RequestBody String formData,
       Locale locale) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     if (subject != null) {
@@ -158,7 +158,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}")
   String show(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     model.addAttribute("case", c);
@@ -171,7 +171,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/edit")
   String edit(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     model.addAttribute("case", c);
@@ -184,7 +184,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/delete")
   String delete(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
 
     if (c.getSubjects().remove(subject)) {
@@ -199,7 +199,7 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/status/{status}")
   String alterStatus(@PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @PathVariable("status") String status) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     subject.setStatus(Subject.Status.fromString(status));
     subjectRepo.save(subject);
@@ -212,7 +212,7 @@ public class SubjectController {
   String alterBundle(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id,
       @PathVariable("bundleNumber") Integer bundleNumber) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     Subject subject =
         Ruby.Array.of(c.getSubjects()).find(s -> s.getId().equals(id));
@@ -234,7 +234,7 @@ public class SubjectController {
           required = false) List<Long> subjectIds,
       @RequestParam(name = "bundleNumber") Integer bundleNumber,
       Locale locale) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
     List<Subject> subjects = c.getSubjects();
 
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
@@ -275,7 +275,7 @@ public class SubjectController {
   String batchFile(RedirectAttributes redirAttrs,
       @PathVariable("caseId") Long caseId,
       @RequestParam("subjectFile") MultipartFile file) {
-    Case c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.getOne(caseId);
 
     ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {

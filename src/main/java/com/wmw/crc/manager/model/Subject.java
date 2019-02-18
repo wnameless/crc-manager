@@ -29,7 +29,7 @@ import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.json.JsonPopulatedValue;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
-import com.wmw.crc.manager.model.form.JpaJsonSchemaForm;
+import com.wmw.crc.manager.model.jsf.JpaJsonSchemaForm;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
 import lombok.Data;

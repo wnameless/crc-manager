@@ -20,15 +20,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import net.sf.rubycollect4j.Ruby;
 
 @Service("perm")
 public class CasePermissionService {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   public boolean isUser() {
     Authentication auth =
@@ -37,7 +37,7 @@ public class CasePermissionService {
         new SimpleGrantedAuthority("ROLE_USER")) || isAdmin() || isSuper();
   }
 
-  public boolean canManage(Case kase) {
+  public boolean canManage(CaseStudy kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
@@ -46,11 +46,11 @@ public class CasePermissionService {
   }
 
   public boolean canManage(Long caseId) {
-    Case kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.getOne(caseId);
     return canManage(kase);
   }
 
-  public boolean canRead(Case kase) {
+  public boolean canRead(CaseStudy kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     return isSuper() || isAdmin() || isOwner(kase)
@@ -63,14 +63,14 @@ public class CasePermissionService {
   }
 
   public boolean canRead(Long caseId) {
-    Case kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.getOne(caseId);
     return canRead(kase);
   }
 
-  public boolean canWrite(Case kase) {
+  public boolean canWrite(CaseStudy kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
-    boolean isOpenCase = kase.getStatus() != Case.Status.END;
+    boolean isOpenCase = kase.getStatus() != CaseStudy.Status.END;
     return isSuper() //
         || isAdmin()//
         || (isOpenCase && (isOwner(kase)
@@ -81,7 +81,7 @@ public class CasePermissionService {
   }
 
   public boolean canWrite(Long caseId) {
-    Case kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.getOne(caseId);
     return canWrite(kase);
   }
 
@@ -89,7 +89,7 @@ public class CasePermissionService {
     return isSuper() || isAdmin();
   }
 
-  public boolean canClose(Case kase) {
+  public boolean canClose(CaseStudy kase) {
     return isSuper() || isAdmin() || isOwner(kase);
   }
 
@@ -105,10 +105,10 @@ public class CasePermissionService {
     return isSuper() || isAdmin();
   }
 
-  public boolean canDeleteSubject(Case kase) {
+  public boolean canDeleteSubject(CaseStudy kase) {
     Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
-    boolean isOpenCase = kase.getStatus() != Case.Status.END;
+    boolean isOpenCase = kase.getStatus() != CaseStudy.Status.END;
     return isSuper() //
         || isAdmin() //
         || (isOpenCase && (isOwner(kase) || Ruby.Set.copyOf(kase.getManagers())
@@ -116,11 +116,11 @@ public class CasePermissionService {
   }
 
   public boolean canDeleteSubject(Long caseId) {
-    Case kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.getOne(caseId);
     return canDeleteSubject(kase);
   }
 
-  public boolean isOwner(Case kase) {
+  public boolean isOwner(CaseStudy kase) {
     if (kase.getOwner() == null) return false;
 
     Authentication auth =

@@ -31,39 +31,39 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 
 @Controller
 public class CaseController {
 
   @ModelAttribute("CASES_STATUS")
-  Case.Status currentStatus(HttpSession session,
+  CaseStudy.Status currentStatus(HttpSession session,
       @RequestParam Map<String, String> allRequestParams) {
     if (allRequestParams.containsKey("new")) {
-      session.setAttribute("CASES_STATUS", Case.Status.NEW);
-      return Case.Status.NEW;
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.NEW);
+      return CaseStudy.Status.NEW;
     } else if (allRequestParams.containsKey("exec")) {
-      session.setAttribute("CASES_STATUS", Case.Status.EXEC);
-      return Case.Status.EXEC;
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
+      return CaseStudy.Status.EXEC;
     } else if (allRequestParams.containsKey("end")) {
-      session.setAttribute("CASES_STATUS", Case.Status.END);
-      return Case.Status.END;
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.END);
+      return CaseStudy.Status.END;
     } else if (allRequestParams.containsKey("none")) {
-      session.setAttribute("CASES_STATUS", Case.Status.NONE);
-      return Case.Status.NONE;
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.NONE);
+      return CaseStudy.Status.NONE;
     }
 
-    return Case.Status.EXEC;
+    return CaseStudy.Status.EXEC;
   }
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases/index")
   String index(HttpSession session, Authentication auth, Model model) {
-    Iterable<Case> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -73,7 +73,7 @@ public class CaseController {
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases")
   String list(HttpSession session, Authentication auth, Model model) {
-    Iterable<Case> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -83,7 +83,7 @@ public class CaseController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
@@ -93,7 +93,7 @@ public class CaseController {
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/cases/{id}/edit")
   String edit(Model model, @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
 
     model.addAttribute("jsfPath", "/cases/" + id);
     model.addAttribute("jsfItem", c);
@@ -104,11 +104,11 @@ public class CaseController {
   @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id, @RequestBody String formData) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
     c.setFormData(formData);
     caseRepo.save(c);
 
-    Iterable<Case> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "cases/list :: list";
@@ -118,19 +118,19 @@ public class CaseController {
   @GetMapping("/cases/{id}/delete")
   String delete(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
     caseRepo.delete(c);
 
-    Iterable<Case> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "redirect:/cases/index";
   }
 
-  private Iterable<Case> getCasesBySession(Authentication auth,
+  private Iterable<CaseStudy> getCasesBySession(Authentication auth,
       HttpSession session) {
     return caseRepo.findByUserAndStatus(auth,
-        (Case.Status) session.getAttribute("CASES_STATUS"));
+        (CaseStudy.Status) session.getAttribute("CASES_STATUS"));
   }
 
 }

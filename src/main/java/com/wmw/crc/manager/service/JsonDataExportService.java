@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.wnameless.workbookaccessor.WorkbookWriter;
-import com.wmw.crc.manager.model.Case;
+import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.util.MinimalJsonUtils;
 import net.sf.rubycollect4j.Ruby;
@@ -36,7 +36,7 @@ public class JsonDataExportService {
   @Autowired
   MessageSource messageSource;
 
-  public Workbook toExcel(Case kase, Locale locale) {
+  public Workbook toExcel(CaseStudy kase, Locale locale) {
     JsonObject jsonSchema = Json.parse(kase.getSchema()).asObject();
     JsonObject jsonData = Json.parse(kase.getFormData()).asObject();
 

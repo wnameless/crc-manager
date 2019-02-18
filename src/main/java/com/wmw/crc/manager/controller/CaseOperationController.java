@@ -29,16 +29,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.Case.Status;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.CaseStudy.Status;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.KeycloakService;
 
 @Controller
 public class CaseOperationController {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   KeycloakService keycloak;
@@ -50,9 +50,9 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
   String alterStatus(@PathVariable("id") Long id,
       @PathVariable("status") String status) {
-    Case c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.getOne(id);
     String currentStatus = c.getStatus().toString().toLowerCase();
-    c.setStatus(Case.Status.fromString(status));
+    c.setStatus(CaseStudy.Status.fromString(status));
     caseRepo.save(c);
 
     return "redirect:/cases/index?" + currentStatus;
@@ -70,7 +70,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/assignment", method = POST)
   String assign(@PathVariable("id") Long id,
       @RequestParam("username") String username) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     kase.setOwner(username);
     kase.setStatus(Status.EXEC);
     caseRepo.save(kase);
@@ -90,7 +90,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/managers", method = POST)
   String addManager(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     String manager = body.get("manager").toString();
     kase.getManagers().add(manager);
     caseRepo.save(kase);
@@ -106,7 +106,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/managers", method = DELETE)
   String removeManager(Model model, @PathVariable("id") Long id,
       @RequestParam("manager") String manager, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     kase.getManagers().remove(manager);
     caseRepo.save(kase);
 
@@ -121,7 +121,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/editors", method = POST)
   String addEditor(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     String editor = body.get("editor").toString();
     kase.getEditors().add(editor);
     caseRepo.save(kase);
@@ -137,7 +137,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/editors", method = DELETE)
   String removeEditor(Model model, @PathVariable("id") Long id,
       @RequestParam("editor") String editor, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     kase.getEditors().remove(editor);
     caseRepo.save(kase);
 
@@ -152,7 +152,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = POST)
   String addViewer(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     String viewer = body.get("viewer").toString();
     kase.getViewers().add(viewer);
     caseRepo.save(kase);
@@ -168,7 +168,7 @@ public class CaseOperationController {
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = DELETE)
   String removeViewer(Model model, @PathVariable("id") Long id,
       @RequestParam("viewer") String viewer, Locale locale) {
-    Case kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.getOne(id);
     kase.getViewers().remove(viewer);
     caseRepo.save(kase);
 

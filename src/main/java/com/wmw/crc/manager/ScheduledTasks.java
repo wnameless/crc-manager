@@ -22,12 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.Case.Status;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
@@ -44,7 +44,7 @@ import net.sf.rubycollect4j.RubyHash;
 public class ScheduledTasks {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   MedicineRepository medicineRepo;
@@ -82,8 +82,8 @@ public class ScheduledTasks {
 
   @Scheduled(cron = "0 0 23 * * *")
   void refreshContraindications() {
-    List<Case> cases = caseRepo.findByStatus(Status.EXEC);
-    for (Case c : cases) {
+    List<CaseStudy> cases = caseRepo.findByStatus(Status.EXEC);
+    for (CaseStudy c : cases) {
       RubyHash<Integer, RubyArray<Contraindication>> bundles = Ruby.Array
           .of(c.getContraindications()).groupBy(Contraindication::getBundle);
 

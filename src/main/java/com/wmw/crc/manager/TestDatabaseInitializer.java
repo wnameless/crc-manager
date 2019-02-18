@@ -27,9 +27,9 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
-import com.wmw.crc.manager.model.Case;
-import com.wmw.crc.manager.model.form.BaseJsonSchemaForm;
-import com.wmw.crc.manager.repository.CaseRepository;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.jsf.BaseJsonSchemaForm;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 
@@ -38,7 +38,7 @@ import com.wmw.crc.manager.repository.SubjectRepository;
 public class TestDatabaseInitializer {
 
   @Autowired
-  CaseRepository caseRepo;
+  CaseStudyRepository caseRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
@@ -49,21 +49,21 @@ public class TestDatabaseInitializer {
   @PostConstruct
   void init() throws IOException {
     if (caseRepo.count() == 0) {
-      Case c = new Case();
+      CaseStudy c = new CaseStudy();
       URL url = Resources.getResource("json-schemas/test-data/4.json");
       BaseJsonSchemaForm bjsf = new Gson().fromJson(
           Resources.toString(url, Charsets.UTF_8), BaseJsonSchemaForm.class);
       c.setFormData(bjsf.getFormData());
       caseRepo.save(c);
 
-      c = new Case();
+      c = new CaseStudy();
       url = Resources.getResource("json-schemas/test-data/5.json");
       bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
           BaseJsonSchemaForm.class);
       c.setFormData(bjsf.getFormData());
       caseRepo.save(c);
 
-      c = new Case();
+      c = new CaseStudy();
       url = Resources.getResource("json-schemas/test-data/6.json");
       bjsf = new Gson().fromJson(Resources.toString(url, Charsets.UTF_8),
           BaseJsonSchemaForm.class);

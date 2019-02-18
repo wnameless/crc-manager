@@ -20,15 +20,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import com.wmw.crc.manager.model.form.BaseJsonSchemaForm;
-import com.wmw.crc.manager.repository.CaseRepository;
+
+import com.wmw.crc.manager.model.jsf.BaseJsonSchemaForm;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 
 @Profile("test")
 @RestController
 public class CaseJsonDownloaderController {
 
   @Autowired
-  CaseRepository caseRepository;
+  CaseStudyRepository caseRepository;
 
   @GetMapping("/json/cases/{id}")
   BaseJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
