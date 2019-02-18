@@ -35,7 +35,7 @@ import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.KeycloakService;
 
 @Controller
-public class CaseOperationController {
+public class CaseStudyOperationController {
 
   @Autowired
   CaseStudyRepository caseRepo;

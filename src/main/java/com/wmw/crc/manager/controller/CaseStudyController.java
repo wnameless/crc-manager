@@ -35,7 +35,7 @@ import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 
 @Controller
-public class CaseController {
+public class CaseStudyController {
 
   @ModelAttribute("CASES_STATUS")
   CaseStudy.Status currentStatus(HttpSession session,

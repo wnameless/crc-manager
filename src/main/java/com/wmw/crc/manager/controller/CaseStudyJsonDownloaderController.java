@@ -26,7 +26,7 @@ import com.wmw.crc.manager.repository.CaseStudyRepository;
 
 @Profile("test")
 @RestController
-public class CaseJsonDownloaderController {
+public class CaseStudyJsonDownloaderController {
 
   @Autowired
   CaseStudyRepository caseRepository;
