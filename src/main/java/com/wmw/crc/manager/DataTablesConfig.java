@@ -22,4 +22,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(
     repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
-public class DataTablesConfiguration {}
+public class DataTablesConfig {}

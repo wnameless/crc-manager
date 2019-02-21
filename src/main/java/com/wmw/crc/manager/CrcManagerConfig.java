@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 
 @ComponentScan("com.github.wnameless")
 @Configuration
-public class AppConfig {
+public class CrcManagerConfig {
 
   @Primary
   @Bean
