@@ -16,11 +16,15 @@
 package com.wmw.crc.manager.repository;
 
 import java.util.List;
+
+import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.stereotype.Repository;
+
 import com.wmw.crc.manager.model.Medicine;
 
+@JaversSpringDataAuditable
 @Repository
 public interface MedicineRepository
     extends DataTablesRepository<Medicine, Long> {

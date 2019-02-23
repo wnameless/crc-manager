@@ -36,6 +36,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.google.common.io.Resources;
@@ -113,11 +115,13 @@ public class CaseStudy extends JpaJsonSchemaForm implements JsonPopulatable {
   @Enumerated(EnumType.STRING)
   Status status = Status.NEW;
 
+  @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
 
+  @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_contraindication",
       joinColumns = @JoinColumn(name = "case_id"),
