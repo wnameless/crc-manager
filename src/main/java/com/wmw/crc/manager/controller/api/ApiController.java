@@ -16,10 +16,11 @@
 package com.wmw.crc.manager.controller.api;
 
 import static com.google.common.collect.Lists.newArrayList;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,11 +28,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.KeycloakService;
+
 import net.sf.rubycollect4j.Ruby;
 
 @RequestMapping("/api/1.0/ptms")
@@ -51,11 +53,7 @@ public class ApiController {
     return newArrayList(Ruby.Array.of(caseRepo.findAll()).map(c -> {
       Protocol proc = new Protocol();
       proc.setProtocolNumber(c.getProjectNumber());
-
-      Map<String, Object> m1 = gson.fromJson(c.getFormData(),
-          new TypeToken<Map<String, Object>>() {}.getType());
-
-      proc.setJsonData(newArrayList(m1));
+      proc.setJsonData(newArrayList(c.getFormData()));
       return proc;
     }));
   }
@@ -63,7 +61,7 @@ public class ApiController {
   @RequestMapping(path = "/protocols", method = RequestMethod.POST)
   String newCase(@RequestBody Protocol protocol) throws IOException {
     CaseStudy c = new CaseStudy();
-    c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
+    c.setFormData(protocol.getJsonData().get(0));
 
     c.setOwner(protocol.getOwner().toLowerCase());
     if (protocol.getManagers() != null) {
@@ -86,9 +84,8 @@ public class ApiController {
   @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
   String updateCase(@RequestBody Protocol protocol,
       @PathVariable("irbNumber") String irbNumber) {
-
     CaseStudy c = caseRepo.findByIrbNumber(irbNumber);
-    c.setFormData(gson.toJson(protocol.getJsonData().get(0)));
+    c.setFormData(protocol.getJsonData().get(0));
     caseRepo.save(c);
 
     return "Update ok";

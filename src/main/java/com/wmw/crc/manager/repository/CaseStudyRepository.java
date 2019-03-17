@@ -27,15 +27,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.QCaseStudy;
 import com.wmw.crc.manager.model.form.Criterion;
-import com.wmw.crc.manager.util.MinimalJsonUtils;
+import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
@@ -50,44 +50,44 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     Iterable<CaseStudy> cases = findByUser(auth);
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
-    Ruby.Array.copyOf(cases).keepIf(kase -> {
-      JsonValue data = Json.parse(kase.getFormData());
+
+    return Ruby.Array.copyOf(cases).keepIf(kase -> {
+      JsonNode data = kase.getFormData();
       return isCriteriaMatch(data, groupedCriteria);
     });
-
-    return cases;
   }
 
-  default boolean isCriteriaMatch(JsonValue data,
+  default boolean isCriteriaMatch(JsonNode data,
       ListMultimap<String, Object> criteria) {
     if (!data.isObject()) return false;
 
+    ObjectNode dataObj = (ObjectNode) data;
+
     boolean isMatch = true;
     for (String key : criteria.keySet()) {
-      if (!data.asObject().names().contains(key)) return false;
+      if (!dataObj.has(key)) return false;
 
       if (criteria.get(key).get(0) instanceof String) {
-        String target = data.asObject().get(key).isString()
-            ? data.asObject().get(key).asString() : MinimalJsonUtils
-                .findFirstAsString(data.asObject().get(key), "name");
+        String target =
+            dataObj.get(key).isTextual() ? dataObj.get(key).textValue()
+                : JsonNodeUtils.findFirstAsString(dataObj.get(key), "name");
 
         RubyArray<String> strings =
             Ruby.Array.of(criteria.get(key)).map(o -> o.toString());
 
-        if (!strings.map(s -> target.contains(s)).contains(true)) {
+        if (!strings.map(s -> target.contains(s)).contains(Boolean.TRUE)) {
           isMatch = false;
           break;
         }
       } else /* Number */ {
-        BigDecimal target = data.asObject().get(key).isNumber()
-            ? new BigDecimal(data.asObject().get(key).toString())
-            : BigDecimal.ZERO;
+        BigDecimal target = dataObj.get(key).isNumber()
+            ? new BigDecimal(dataObj.get(key).asText()) : BigDecimal.ZERO;
         RubyArray<Number> numbers =
             Ruby.Array.of(criteria.get(key)).map(o -> (Number) o);
 
         if (!numbers
             .map(n -> target.compareTo(new BigDecimal(n.toString())) == 0)
-            .contains(true)) {
+            .contains(Boolean.TRUE)) {
           isMatch = false;
           break;
         }

@@ -38,11 +38,14 @@ import javax.persistence.OneToMany;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
+import com.github.wnameless.spring.react.JpaReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
-import com.wmw.crc.manager.model.jsf.JpaJsonSchemaForm;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,7 +53,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class CaseStudy extends JpaJsonSchemaForm implements JsonPopulatable {
+public class CaseStudy extends JpaReactJsonSchemaForm
+    implements JsonPopulatable {
 
   public enum Status {
     NEW, EXEC, END, NONE;
@@ -147,20 +151,26 @@ public class CaseStudy extends JpaJsonSchemaForm implements JsonPopulatable {
   Set<String> viewers = newLinkedHashSet();
 
   public CaseStudy() {
+    ObjectMapper mapper = new ObjectMapper();
+
     try {
       URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-      setSchema(Resources.toString(url, UTF_8));
+      setSchema(mapper.readTree(Resources.toString(url, UTF_8)));
       url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-      setUiSchema(Resources.toString(url, UTF_8));
+      setUiSchema(mapper.readTree(Resources.toString(url, UTF_8)));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  public void setFormData(String formData) {
+  public void setFormData(JsonNode formData) {
     super.setFormData(formData);
-    setPopulatedJson(formData);
+    try {
+      setPopulatedJson(new ObjectMapper().writeValueAsString(formData));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

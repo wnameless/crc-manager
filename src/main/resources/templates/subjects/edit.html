@@ -8,23 +8,19 @@
 
     <script type="text/javascript" th:inline="javascript">
         $(function () {
-            let schema = JSON.parse( /*[[${jsfItem.schema}]]*/ null);
-            let uiSchema = JSON.parse( /*[[${jsfItem.uiSchema}]]*/ null);
-            let formData = JSON.parse( /*[[${jsfItem.formData}]]*/ null);
-
             let onSubmit = function (f) {
                 axios.post( /*[[${jsfPath}]]*/ null, f.formData).then(function (response) {
                     $('#jsf').html(response.data);
                 });
             };
 
-            ReactDOM.render(React.createElement(CostumFormComponent, {
-                schema: schema,
-                uiSchema: uiSchema,
-                formData: formData,
-                onSubmit: onSubmit,
-                btnText: '送出'
-            }), document.getElementById('jsfForm'));
+            let rjsfOpt = Object.assign({
+                btnText: '送出',
+                onSubmit: onSubmit
+            }, /*[[${jsfItem.toRjsfMap()}]]*/ {});
+
+            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
+                document.getElementById('jsfForm'));
         });
     </script>
 </div>

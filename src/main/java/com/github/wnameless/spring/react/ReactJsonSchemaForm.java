@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018 Wei-Ming Wu
+ * Copyright 2019 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,29 +13,35 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller.api;
+package com.github.wnameless.spring.react;
 
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.Data;
+public interface ReactJsonSchemaForm {
 
-@Data
-public class Protocol {
+  JsonNode getFormData();
 
-  String protocolNumber;
+  void setFormData(JsonNode formData);
 
-  List<JsonNode> jsonData;
+  JsonNode getSchema();
 
-  String owner;
+  void setSchema(JsonNode schema);
 
-  Set<String> managers;
+  JsonNode getUiSchema();
 
-  Set<String> editors;
+  void setUiSchema(JsonNode uiSchema);
 
-  Set<String> viewers;
+  default Map<String, JsonNode> toRjsfMap() {
+    Map<String, JsonNode> map = new HashMap<>();
 
-  String aa;
+    map.put("formData", getFormData());
+    map.put("schema", getSchema());
+    map.put("uiSchema", getUiSchema());
+
+    return map;
+  }
+
 }

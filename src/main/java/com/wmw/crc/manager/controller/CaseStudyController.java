@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 
@@ -103,9 +105,12 @@ public class CaseStudyController {
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id, @RequestBody String formData) {
+      @PathVariable("id") Long id, @RequestBody String formData)
+      throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+
     CaseStudy c = caseRepo.getOne(id);
-    c.setFormData(formData);
+    c.setFormData(mapper.readTree(formData));
     caseRepo.save(c);
 
     Iterable<CaseStudy> cases = getCasesBySession(auth, session);

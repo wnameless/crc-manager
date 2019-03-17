@@ -16,19 +16,25 @@
 package com.wmw.crc.manager.service;
 
 import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.workbookaccessor.WorkbookWriter;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.util.MinimalJsonUtils;
+import com.wmw.crc.manager.util.JsonNodeUtils;
+
 import net.sf.rubycollect4j.Ruby;
+import net.sf.rubycollect4j.RubyArray;
 
 @Service
 public class JsonDataExportService {
@@ -37,22 +43,25 @@ public class JsonDataExportService {
   MessageSource messageSource;
 
   public Workbook toExcel(CaseStudy kase, Locale locale) {
-    JsonObject jsonSchema = Json.parse(kase.getSchema()).asObject();
-    JsonObject jsonData = Json.parse(kase.getFormData()).asObject();
+    JsonNode jsonSchema = kase.getSchema();
+    JsonNode jsonData = kase.getFormData();
 
     WorkbookWriter ww = WorkbookWriter.openXLSX();
 
     ww.setSheetName(messageSource.getMessage("service.export.sheet.case.name",
         new Object[] {}, locale));
-    JsonObject properties = jsonSchema.get("properties").asObject();
-    for (String key : properties.names()) {
-      if (key.equals("requiredFiles") || key.equals("preview")) continue;
+    JsonNode properties = jsonSchema.get("properties");
+    Iterator<Entry<String, JsonNode>> fields = properties.fields();
+    while (fields.hasNext()) {
+      Entry<String, JsonNode> f = fields.next();
+      if (f.getKey().equals("requiredFiles") || f.getKey().equals("preview"))
+        continue;
 
       List<Object> row = newArrayList();
-      row.add(properties.get(key).asObject().get("title") == null ? key
-          : properties.get(key).asObject().get("title").asString());
-      if (jsonData.names().contains(key)) {
-        row.addAll(MinimalJsonUtils.splitValToList(jsonData.get(key)));
+      row.add(f.getValue().get("title") == null ? f.getKey()
+          : f.getValue().get("title").textValue());
+      if (jsonData.has(f.getKey())) {
+        row.addAll(JsonNodeUtils.splitValToList(jsonData.get(f.getKey())));
       } else {
         row.add("");
       }
@@ -61,15 +70,14 @@ public class JsonDataExportService {
 
     ww.createAndTurnToSheet(messageSource.getMessage(
         "service.export.sheet.subject.name", new Object[] {}, locale));
-    JsonObject schema = Json.parse(new Subject().getSchema()).asObject();
-    JsonObject props = schema.get("properties").asObject();
-    ww.addRow(Ruby.Array.of(props.names())
-        .map(key -> props.get(key).asObject().get("title").asString()));
+    JsonNode schema = new Subject().getSchema();
+    JsonNode props = schema.get("properties");
+    RubyArray<String> fieldNames = Ruby.Array.copyOf(props.fieldNames());
+    ww.addRow(fieldNames.map(key -> props.get(key).get("title").textValue()));
     for (Subject subject : kase.getSubjects()) {
-      JsonObject data = Json.parse(subject.getFormData()).asObject();
-      ww.addRow(
-          Ruby.Array.of(props.names()).map(key -> data.names().contains(key)
-              ? MinimalJsonUtils.val2String(data.get(key)) : ""));
+      JsonNode data = subject.getFormData();
+      ww.addRow(fieldNames.map(
+          key -> data.has(key) ? JsonNodeUtils.val2String(data.get(key)) : ""));
     }
 
     return ww.getWorkbook();

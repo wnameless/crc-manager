@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.wnameless.spring.react.ReactJsonSchemaFormUtils;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -50,7 +53,8 @@ public class SearchController {
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/search/index")
   String index(Model model) {
-    model.addAttribute("propertyTitles", new CaseStudy().propertyTitles());
+    model.addAttribute("propertyTitles",
+        ReactJsonSchemaFormUtils.propertyTitles(new CaseStudy()));
     return "search/index";
   }
 

@@ -24,12 +24,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.json.JsonPopulatedValue;
+import com.github.wnameless.spring.react.JpaReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
-import com.wmw.crc.manager.model.jsf.JpaJsonSchemaForm;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
 import lombok.Data;
@@ -38,7 +41,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject extends JpaJsonSchemaForm implements JsonPopulatable {
+public class Subject extends JpaReactJsonSchemaForm implements JsonPopulatable {
 
   public enum Status {
 
@@ -86,20 +89,29 @@ public class Subject extends JpaJsonSchemaForm implements JsonPopulatable {
     try {
       URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
       String json = Resources.toString(url, UTF_8);
-      setSchema(json);
+      setSchema(FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory()
+          .get().readTree(json));
 
       url = Resources.getResource(JsonSchemaPath.subjectUISchema);
       json = Resources.toString(url, UTF_8);
-      setUiSchema(json);
+      setUiSchema(FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory()
+          .get().readTree(json));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  public void setFormData(String formData) {
+  public void setFormData(JsonNode formData) {
     super.setFormData(formData);
-    setPopulatedJson(formData);
+    String json = "{}";
+    try {
+      json = FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory().get()
+          .writeValueAsString(formData);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    setPopulatedJson(json);
   }
 
 }

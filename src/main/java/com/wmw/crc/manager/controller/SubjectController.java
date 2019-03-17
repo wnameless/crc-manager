@@ -18,11 +18,13 @@ package com.wmw.crc.manager.controller;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.util.EntityUtils.findChildById;
 import static com.wmw.crc.manager.util.EntityUtils.findChildByValue;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,8 +38,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -46,6 +49,7 @@ import com.wmw.crc.manager.service.ExcelSubjectUploadService;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.util.ExcelSubjects;
+
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
@@ -103,7 +107,7 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
-      @RequestBody String formData, Locale locale) {
+      @RequestBody JsonNode formData, Locale locale) {
     CaseStudy c = caseRepo.getOne(caseId);
 
     Subject s = new Subject();
@@ -127,13 +131,13 @@ public class SubjectController {
   @PreAuthorize("@perm.canWrite(#caseId)")
   @PostMapping("/cases/{caseId}/subjects/{id}")
   String update(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id, @RequestBody String formData,
+      @PathVariable("id") Long id, @RequestBody JsonNode formData,
       Locale locale) {
     CaseStudy c = caseRepo.getOne(caseId);
 
     Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
     if (subject != null) {
-      String jsonData = subject.getFormData();
+      JsonNode jsonData = subject.getFormData();
       subject.setFormData(formData);
 
       int count = Ruby.Array.of(c.getSubjects()).count(
@@ -249,10 +253,9 @@ public class SubjectController {
         && !subjectDateType.equals("bundleNumber")) {
       subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
-          String jsonData = s.getFormData();
-          JsonObject jo = Json.parse(jsonData).asObject();
-          jo.set(subjectDateType, subjectDate);
-          s.setFormData(jo.toString());
+          ObjectNode jsonData = (ObjectNode) s.getFormData();
+          jsonData.put(subjectDateType, subjectDate);
+          s.setFormData(jsonData);
           subjectRepo.save(s);
         }
       });

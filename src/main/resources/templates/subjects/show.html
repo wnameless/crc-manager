@@ -8,10 +8,6 @@
 
     <script type="text/javascript" th:inline="javascript">
         $(function () {
-            let schema = JSON.parse( /*[[${jsfItem.schema}]]*/ null);
-            let uiSchema = JSON.parse( /*[[${jsfItem.uiSchema}]]*/ null);
-            let formData = JSON.parse( /*[[${jsfItem.formData}]]*/ null);
-
             let onSubmit = function (f) {
                 axios.get( /*[[${jsfPath}]]*/ null)
                     .then(function (response) {
@@ -19,14 +15,14 @@
                     });
             };
 
-            ReactDOM.render(React.createElement(CostumFormComponent, {
-                schema: schema,
-                uiSchema: uiSchema,
-                formData: formData,
-                onSubmit: onSubmit,
+            let rjsfOpt = Object.assign({
                 btnText: '返回',
+                onSubmit: onSubmit,
                 disabled: true
-            }), document.getElementById('jsfForm'));
+            }, /*[[${jsfItem.toRjsfMap()}]]*/ {});
+
+            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
+                document.getElementById('jsfForm'));
         });
     </script>
 </div>
