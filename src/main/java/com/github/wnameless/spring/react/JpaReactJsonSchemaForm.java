@@ -17,6 +17,7 @@ package com.github.wnameless.spring.react;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,17 +28,20 @@ import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 public abstract class JpaReactJsonSchemaForm implements ReactJsonSchemaForm {
 
   @Convert(converter = JsonNodeConverter.class)
-  @Column(length = 20000)
+  @Lob
+  @Column
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Column(length = 20000)
+  @Lob
+  @Column
   protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Column(length = 20000)
+  @Lob
+  @Column
   protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 

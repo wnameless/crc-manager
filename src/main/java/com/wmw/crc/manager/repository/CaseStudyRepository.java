@@ -51,10 +51,9 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
 
-    return Ruby.Array.copyOf(cases).keepIf(kase -> {
-      JsonNode data = kase.getFormData();
-      return isCriteriaMatch(data, groupedCriteria);
-    });
+    return Ruby.Array.copyOf(cases)
+        .keepIf(kase -> isCriteriaMatch(kase.getFormData(), groupedCriteria))
+        .toList();
   }
 
   default boolean isCriteriaMatch(JsonNode data,
