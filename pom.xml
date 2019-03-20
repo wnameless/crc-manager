@@ -26,6 +26,12 @@
 	</repositories>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.wnameless</groupId>
+			<artifactId>spring-react-jsonschema-form</artifactId>
+			<version>master-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -119,11 +125,6 @@
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.github.wnameless</groupId>
-			<artifactId>jpa-type-flattenedjson</artifactId>
-			<version>0.2.0</version>
-		</dependency>
 
 		<!-- Retrofit 2 -->
 		<dependency>
@@ -135,13 +136,6 @@
 			<groupId>com.squareup.retrofit2</groupId>
 			<artifactId>converter-gson</artifactId>
 			<version>${retrofit.version}</version>
-		</dependency>
-
-		<!-- JSON -->
-		<dependency>
-			<groupId>com.github.wnameless</groupId>
-			<artifactId>json-flattener</artifactId>
-			<version>0.6.0</version>
 		</dependency>
 
 		<!-- Excel -->

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.wnameless.spring.react.BaseReactJsonSchemaForm;
+import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 
@@ -33,9 +33,9 @@ public class CaseStudyJsonDownloaderController {
   CaseStudyRepository caseRepository;
 
   @GetMapping("/json/cases/{id}")
-  BaseReactJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
+  SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
     CaseStudy cs = caseRepository.findById(id).get();
-    BaseReactJsonSchemaForm rsjf = new BaseReactJsonSchemaForm();
+    SimpleReactJsonSchemaForm rsjf = new SimpleReactJsonSchemaForm();
 
     rsjf.setFormData(cs.getFormData());
     rsjf.setSchema(cs.getSchema());

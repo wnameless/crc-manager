@@ -26,6 +26,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,6 +36,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
@@ -41,9 +44,11 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
+import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
-import com.github.wnameless.spring.react.JpaReactJsonSchemaForm;
+import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
 
@@ -53,8 +58,25 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class CaseStudy extends JpaReactJsonSchemaForm
-    implements JsonPopulatable {
+public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
 
   public enum Status {
     NEW, EXEC, END, NONE;
@@ -165,7 +187,7 @@ public class CaseStudy extends JpaReactJsonSchemaForm
 
   @Override
   public void setFormData(JsonNode formData) {
-    super.setFormData(formData);
+    this.formData = formData;
     try {
       setPopulatedJson(new ObjectMapper().writeValueAsString(formData));
     } catch (JsonProcessingException e) {

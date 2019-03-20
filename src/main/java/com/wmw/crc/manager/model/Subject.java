@@ -20,17 +20,21 @@ import static com.google.common.base.Charsets.UTF_8;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
+import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.json.JsonPopulatedValue;
-import com.github.wnameless.spring.react.JpaReactJsonSchemaForm;
+import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
@@ -41,7 +45,25 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject extends JpaReactJsonSchemaForm implements JsonPopulatable {
+public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  @Convert(converter = JsonNodeConverter.class)
+  @Lob
+  @Column
+  protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
 
   public enum Status {
 
@@ -103,7 +125,7 @@ public class Subject extends JpaReactJsonSchemaForm implements JsonPopulatable {
 
   @Override
   public void setFormData(JsonNode formData) {
-    super.setFormData(formData);
+    this.formData = formData;
     String json = "{}";
     try {
       json = FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory().get()
