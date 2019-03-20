@@ -16,7 +16,10 @@
 package com.wmw.crc.manager.service;
 
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
+
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -24,19 +27,27 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import net.sf.rubycollect4j.Ruby;
 
 @Service("keycloak")
 public class KeycloakService {
 
-  Keycloak kc =
-      KeycloakBuilder.builder().serverUrl("http://120.126.47.32:8081/auth")
-          .realm("CRCManager").username("super").password("1qaz@WSX")
-          .clientId("crc-manager")
-          .resteasyClient(
-              new ResteasyClientBuilder().connectionPoolSize(10).build())
-          .build();
+  @Value("${keycloak.auth-server-url}")
+  String keycloakAuthServerUrl;
+
+  Keycloak kc;
+
+  @PostConstruct
+  void init() {
+    kc = KeycloakBuilder.builder().serverUrl(keycloakAuthServerUrl)
+        .realm("CRCManager").username("super").password("1qaz@WSX")
+        .clientId("crc-manager").resteasyClient(
+            new ResteasyClientBuilder().connectionPoolSize(10).build())
+        .build();
+  }
 
   public List<UserRepresentation> getNormalUsers() {
     return Ruby.Array.of(kc.realm("CRCManager").users().list())
