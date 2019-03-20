@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,8 +51,7 @@ public class TsghExcelSubjects implements ExcelSubjects {
     try {
       wb = WorkbookFactory.create(file.getInputStream());
       extractSubjects();
-    } catch (EncryptedDocumentException | InvalidFormatException
-        | IOException e) {
+    } catch (EncryptedDocumentException | IOException e) {
       errorMessage = "檔案不支援";
     }
   }

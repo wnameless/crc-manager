@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>com.github.wnameless</groupId>
 			<artifactId>workbook-accessor</artifactId>
-			<version>1.3.3</version>
+			<version>1.4.0</version>
 		</dependency>
 
 		<!-- Lang -->
