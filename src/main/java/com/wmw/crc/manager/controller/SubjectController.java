@@ -50,9 +50,11 @@ import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
+@Slf4j
 @Controller
 public class SubjectController {
 
@@ -311,14 +313,16 @@ public class SubjectController {
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/subjects/query/{nationalId}")
+  @GetMapping("/cases/{caseId}/subjects/query/{nationalId}")
   @ResponseBody
-  Patient searchPatient(@PathVariable("nationalId") String nationalId) {
+  Patient searchPatient(@PathVariable("caseId") Long caseId,
+      @PathVariable("nationalId") String nationalId) {
     Patient patient;
     try {
       patient = tsghApi.findPatientById(nationalId);
       patient.setNationalId(nationalId);
     } catch (IOException e) {
+      log.error("Patient seaching failed!", e);
       patient = new Patient();
     }
 

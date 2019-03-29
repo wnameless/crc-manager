@@ -39,7 +39,8 @@
                     return;
                 }
 
-                axios.get('/subjects/query/' + $('#nationalId').val())
+                let caseId = /*[[${case.id}]]*/ '';
+                axios.get('/cases/' + caseId + '/subjects/query/' + $('#nationalId').val())
                     .then(function (response) {
                         let patient = response.data;
 
