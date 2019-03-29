@@ -62,6 +62,11 @@ public class ScheduledTasks {
       return;
     }
 
+    if (drugs == null || drugs.size() == 0) {
+      log.error("TsghApi.getDrugs failed.", "Drugs: " + drugs);
+      return;
+    }
+
     medicineRepo.deleteAll();
 
     for (Drug drug : drugs) {
