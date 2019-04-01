@@ -57,17 +57,11 @@ public class ScheduledTasks {
     List<Drug> drugs;
     try {
       drugs = tsghApi.getDrugs();
+      if (!drugs.isEmpty()) medicineRepo.deleteAll();
     } catch (IOException e) {
       log.error("TsghApi.getDrugs failed.", e);
       return;
     }
-
-    if (drugs == null || drugs.size() == 0) {
-      log.error("TsghApi.getDrugs failed.", "Drugs: " + drugs);
-      return;
-    }
-
-    medicineRepo.deleteAll();
 
     for (Drug drug : drugs) {
       Medicine med = new Medicine();

@@ -17,10 +17,15 @@ package com.wmw.crc.manager.service.tsgh.api;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -36,7 +41,12 @@ public class TsghApi {
 
   @PostConstruct
   void postConstruct() {
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
+    HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    OkHttpClient client =
+        new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).client(client)
         .addConverterFactory(GsonConverterFactory.create()).build();
     service = retrofit.create(TsghService.class);
   }
