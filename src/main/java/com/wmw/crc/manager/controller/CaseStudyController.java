@@ -16,11 +16,18 @@
 package com.wmw.crc.manager.controller;
 
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -31,10 +38,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+
+import net.sf.rubycollect4j.Ruby;
 
 @Controller
 public class CaseStudyController {
@@ -97,9 +108,51 @@ public class CaseStudyController {
   String edit(Model model, @PathVariable("id") Long id) {
     CaseStudy c = caseRepo.getOne(id);
 
+    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
+    JsonNode schema = c.getSchema();
+    JsonNode formData = c.getFormData();
+    JsonNode fileNode =
+        schema.get("properties").get("requiredFiles").get("properties");
+    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
+      String fileTitle = fileNode.get(fileId).get("title").textValue();
+      JsonNode requiredFiles = formData.get("requiredFiles");
+      JsonNode requiredFile = null;
+      if (requiredFiles != null) {
+        requiredFile = requiredFiles.get(fileId);
+      }
+      files.put(fileId,
+          new AbstractMap.SimpleEntry<>(fileTitle, requiredFile != null));
+    }
+
     model.addAttribute("jsfPath", "/cases/" + id);
     model.addAttribute("jsfItem", c);
+    model.addAttribute("files", files);
     return "cases/edit :: edit";
+  }
+
+  @PreAuthorize("@perm.canWrite(#id)")
+  @GetMapping("/cases/{id}/files/{fileId}")
+  @ResponseBody
+  HttpEntity<byte[]> downloadFile(Model model, @PathVariable("id") Long id,
+      @PathVariable("fileId") String fileId) {
+    CaseStudy c = caseRepo.getOne(id);
+
+    JsonNode formData = c.getFormData();
+    String base64 = formData.get("requiredFiles").get(fileId).textValue();
+    String[] base64Array = base64.split(";");
+
+    String type = base64Array[0].substring(5);
+    String name = base64Array[1].substring(5);
+    String data = base64Array[2].substring(7);
+
+    byte[] dataByteArray = Base64.decodeBase64(data.getBytes());
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(type));
+    header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
+    header.setContentLength(dataByteArray.length);
+
+    return new HttpEntity<byte[]>(dataByteArray, header);
   }
 
   @PreAuthorize("@perm.canWrite(#id)")

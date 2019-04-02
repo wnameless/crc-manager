@@ -63,13 +63,14 @@
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + subject.id}" onclick="showFormEvent(this)"
-                        th:text="${subject.nationalId}">
+                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + subject.id}"
+                        onclick="showFormEvent(this)" th:text="${subject.nationalId}">
                     </a>
                     <a th:unless="${@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
                 </td>
                 <td>
-                    <a th:if="${@perm.canWrite(case)}" href="#" th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}" onclick="editFormEvent(this)">
+                    <a th:if="${@perm.canWrite(case)}" href="#" th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
+                        onclick="editFormEvent(this)">
                         <span>
                             <i class="fa fa-edit"></i>
                         </span>
@@ -92,14 +93,14 @@
         <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${jsfPath + '/new'}" onclick="editFormEvent(this)"
             th:inline="text">
             <span>
-                <i class="fa fa-plus" style="color: green"></i>
+                <i class="fa fa-plus text-success"></i>
             </span>
             [[#{ui.subject.add}]]
         </button>
     </div>
 
     <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <form method="POST" th:action="${ jsfPath + '/index' }" enctype="multipart/form-data">
+        <form method="POST" th:action="@{${jsfPath} + '/index'}" enctype="multipart/form-data">
             <!-- COMPONENT START -->
             <div class="form-group">
                 <div class="input-group input-file" name="subjectFile">
@@ -108,7 +109,8 @@
                     </span>
                     <input type="text" class="form-control" placeholder="Choose a file...">
                     <span class="input-group-btn">
-                        <button id="uploadBtn" class="btn btn-warning" type="submit" th:text="#{ui.subject.file.upload}" disabled></button>
+                        <button id="uploadBtn" class="btn btn-warning" type="submit" th:text="#{ui.subject.file.upload}"
+                            disabled></button>
                     </span>
                 </div>
             </div>
