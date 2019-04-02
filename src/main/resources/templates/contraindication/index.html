@@ -16,7 +16,7 @@
                 <div id="contraindications" class="tab-pane fade in active">
                     <ul id="contraindicationList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
                         <li class="list-group-item" th:each="cd : ${case.contraindications}">
-                            <span th:text="#{ui.contraindication.bundle} + ': [' + ${cd.bundle} + '] / ' + #{ui.contraindication.atc.prefix} + ': ' + (${#strings.isEmpty(cd.atcCode)} ? #{ui.contraindication.none} : '[ ' + ${cd.atcCode} + ' ]')"></span>
+                            <span th:text="#{ui.contraindication.bundle} + ': [' + ${cd.bundle} + '] / ' + #{ui.contraindication.atc.prefix} + ': ' + (${#strings.isEmpty(cd.atcCode)} ? #{ui.contraindication.none} : '[ ' + ${cd.atcCode} + ' ] - ' + ${cd.detail})"></span>
                             <a th:if="${@perm.canWrite(case)}" th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
                                 <i th:attr="val=${cd.id}" class="fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
                             </a>
@@ -47,6 +47,7 @@
                     </select>
                 </div>
                 <input name="phrase" type="hidden" class="form-control" th:placeholder="#{ui.contraindication.medicine.keyword}">
+                <input id="medicineId" name="medicineId" type="hidden">
                 <div class="form-group col-md-8">
                     <label>ATC</label>
                     <input id="atcCode" name="atcCode" type="text" class="form-control" th:placeholder="#{ui.contraindication.atc.prefix}">
@@ -54,7 +55,8 @@
                 <div class="form-group col-md-2">
                     <label>&nbsp;</label>
                     <button th:if="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"></button>
-                    <button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}" disabled></button>
+                    <button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"
+                        disabled></button>
                 </div>
             </form>
         </div>
@@ -80,8 +82,9 @@
     </div>
 
     <script type="text/javascript" th:inline="javascript">
-        function atcCodeSelect(atc) {
+        function atcCodeSelect(atc, medicineId) {
             $('#atcCode').val(atc);
+            $('#medicineId').val(medicineId)
         };
 
         $(function () {
@@ -93,51 +96,51 @@
                     url: '/i18n/datatables-' + i18nLocale + '.json'
                 },
                 columns: [{
-                        data: 'name'
-                    },
-                    {
-                        data: 'engName'
-                    },
-                    {
-                        data: 'atcCode1',
-                        render: function (data, type, row, meta) {
-                            if (type === 'display' && data !== null) {
-                                data = '<a onclick="atcCodeSelect(\'' + data +
-                                    '\')" href="#">' + data + '</a>';
-                            }
-                            return data;
+                    data: 'name'
+                },
+                {
+                    data: 'engName'
+                },
+                {
+                    data: 'atcCode1',
+                    render: function (data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                            data = '<a onclick="atcCodeSelect(\'' + data +
+                                '\', ' + row.id + ')" href="#">' + data + '</a>';
                         }
-                    },
-                    {
-                        data: 'atcCode2',
-                        render: function (data, type, row, meta) {
-                            if (type === 'display' && data !== null) {
-                                data = '<a onclick="atcCodeSelect(\'' + data +
-                                    '\')" href="#">' + data + '</a>';
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        data: 'atcCode3',
-                        render: function (data, type, row, meta) {
-                            if (type === 'display' && data !== null) {
-                                data = '<a onclick="atcCodeSelect(\'' + data +
-                                    '\')" href="#">' + data + '</a>';
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        data: 'atcCode4',
-                        render: function (data, type, row, meta) {
-                            if (type === 'display' && data !== null) {
-                                data = '<a onclick="atcCodeSelect(\'' + data +
-                                    '\')" href="#">' + data + '</a>';
-                            }
-                            return data;
-                        }
+                        return data;
                     }
+                },
+                {
+                    data: 'atcCode2',
+                    render: function (data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                            data = '<a onclick="atcCodeSelect(\'' + data +
+                                '\', ' + row.id + ')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'atcCode3',
+                    render: function (data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                            data = '<a onclick="atcCodeSelect(\'' + data +
+                                '\', ' + row.id + ')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'atcCode4',
+                    render: function (data, type, row, meta) {
+                        if (type === 'display' && data !== null) {
+                            data = '<a onclick="atcCodeSelect(\'' + data +
+                                '\', ' + row.id + ')" href="#">' + data + '</a>';
+                        }
+                        return data;
+                    }
+                }
                 ],
                 drawCallback: function (settings) {
                     $('table#medicines').reflowTable('update');

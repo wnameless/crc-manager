@@ -6,10 +6,10 @@
                 <th style="width: 30px;" th:text="#{ui.case.table.action}"></th>
                 <th style="width: 30px;"></th>
                 <th style="width: 90px;" th:text="#{ui.case.table.irbnumber}"></th>
-                <th style="width: 60px;" th:text="#{ui.case.table.contraindication}"></th>
-                <th style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
+                <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.contraindication}"></th>
+                <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
                 <th th:text="#{ui.case.table.name.chinese}"></th>
-                <th style="width: 80px;" th:text="#{ui.case.table.pi}"></th>
+                <th class="text-center" style="width: 80px;" th:text="#{ui.case.table.pi}"></th>
                 <th style="width: 60px;" th:text="#{ui.case.table.time.start}"></th>
                 <th style="width: 60px;" th:text="#{ui.case.table.time.end}"></th>
             </tr>
@@ -55,7 +55,7 @@
                     <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + case.id}" onclick="showFormEvent(this)"
                         th:inline="text">[[${case.irbNumber}]]</a>
                 </td>
-                <td>
+                <td class="text-center">
                     <a th:if="${@perm.canRead(case)}" th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
                         <span>
                             <i class="fa fa-medkit"></i>
@@ -65,7 +65,7 @@
                         <i class="fa fa-medkit"></i>
                     </span>
                 </td>
-                <td>
+                <td class="text-center">
                     <a th:if="${@perm.canRead(case)}" th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
                         <span>
                             <i class="fa fa-user-plus"></i>
@@ -76,7 +76,7 @@
                     </span>
                 </td>
                 <td th:text="${case.trialName}"></td>
-                <td th:text="${case.piName}"></td>
+                <td class="text-center" th:text="${case.piName}"></td>
                 <td th:text="${case.expectedStartDate}"></td>
                 <td th:text="${case.expectedEndDate}"></td>
             </tr>

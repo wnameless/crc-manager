@@ -18,6 +18,7 @@ package com.wmw.crc.manager.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,5 +36,7 @@ public class Contraindication {
   String phrase;
 
   String atcCode;
+
+  String detail;
 
 }
