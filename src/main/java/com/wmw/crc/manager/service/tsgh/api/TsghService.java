@@ -16,17 +16,18 @@
 package com.wmw.crc.manager.service.tsgh.api;
 
 import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface TsghService {
 
-  @GET("patients/{nationalId}")
-  Call<Patient> searchPatient(@Path("nationalId") String nationalId);
+  @GET("patients")
+  Call<Patient> searchPatient(@Query("nationalId") String nationalId);
 
   @GET("/drugs")
   Call<List<Drug>> listDrugs();
