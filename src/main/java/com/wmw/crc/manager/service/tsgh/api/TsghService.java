@@ -27,7 +27,7 @@ import retrofit2.http.Query;
 public interface TsghService {
 
   @GET("patients")
-  Call<Patient> searchPatient(@Query("nationalId") String nationalId);
+  Call<List<Patient>> searchPatient(@Query("nationalId") String nationalId);
 
   @GET("/drugs")
   Call<List<Drug>> listDrugs();

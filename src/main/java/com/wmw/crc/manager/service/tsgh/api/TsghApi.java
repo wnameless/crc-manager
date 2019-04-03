@@ -52,9 +52,10 @@ public class TsghApi {
   }
 
   public Patient findPatientById(String nationalId) throws IOException {
-    Call<Patient> call = service.searchPatient(nationalId);
-    Response<Patient> res = call.execute();
-    return res.body();
+    Call<List<Patient>> call = service.searchPatient(nationalId);
+    Response<List<Patient>> res = call.execute();
+    List<Patient> body = res.body();
+    return body == null || body.isEmpty() ? null : body.get(0);
   }
 
   public List<Drug> getDrugs() throws IOException {

@@ -66,8 +66,12 @@
                             }
                         }
                         if (patient.birthday) {
-                            $('#root_birthDate')
-                                .val(patient.birthday.replace(new RegExp('/', 'g'), '-'));
+                            let year = patient.birthday.substr(0, 3);
+                            year = parseInt(year) + 1911;
+                            let month = patient.birthday.substr(3, 2);
+                            let day = patient.birthday.substr(5, 2);
+
+                            $('#root_birthDate').val(`${year}-${month}-${day}`);
                         }
                         if (patient.phone) {
                             $('#root_telephone1').val(patient.phone);
