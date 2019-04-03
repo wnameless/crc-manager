@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.TsghService.ContraindicationRefreshResult;
 import com.wmw.crc.manager.util.InfoOpt;
@@ -30,12 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class ScheduledTasks {
-
-  @Autowired
-  CaseStudyRepository caseRepo;
-
-  @Autowired
-  MedicineRepository medicineRepo;
 
   @Autowired
   TsghService tsghService;
