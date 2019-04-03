@@ -15,60 +15,25 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
-@Service
-public class TsghApi {
+public interface TsghApi {
 
-  @Value("${api.tsgh.baseurl}")
-  String baseUrl;
+  @GET("patients")
+  Call<List<Patient>> searchPatient(@Query("nationalId") String nationalId);
 
-  TsghService service;
+  @GET("/drugs")
+  Call<List<Drug>> listDrugs();
 
-  @PostConstruct
-  void postConstruct() {
-    HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-    OkHttpClient client =
-        new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).client(client)
-        .addConverterFactory(GsonConverterFactory.create()).build();
-    service = retrofit.create(TsghService.class);
-  }
-
-  public Patient findPatientById(String nationalId) throws IOException {
-    Call<List<Patient>> call = service.searchPatient(nationalId);
-    Response<List<Patient>> res = call.execute();
-    List<Patient> body = res.body();
-    return body == null || body.isEmpty() ? null : body.get(0);
-  }
-
-  public List<Drug> getDrugs() throws IOException {
-    Call<List<Drug>> call = service.listDrugs();
-    Response<List<Drug>> res = call.execute();
-    return res.body();
-  }
-
-  public ResponseBody addPatientContraindication(PatientContraindication pc)
-      throws IOException {
-    Call<ResponseBody> call = service.addPatientContraindication(pc);
-    Response<ResponseBody> res = call.execute();
-    return res.body();
-  }
+  @POST("/contraindications")
+  Call<ResponseBody> addPatientContraindication(
+      @Body PatientContraindication pc);
 
 }

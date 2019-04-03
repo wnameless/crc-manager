@@ -52,8 +52,8 @@ import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.ExcelSubjectUploadService;
+import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
-import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +77,7 @@ public class SubjectController {
   ExcelSubjectUploadService uploadService;
 
   @Autowired
-  TsghApi tsghApi;
+  TsghService tsghApi;
 
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
