@@ -67,6 +67,7 @@ public class CaseStudyController {
       return CaseStudy.Status.NONE;
     }
 
+    session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
     return CaseStudy.Status.EXEC;
   }
 
@@ -98,8 +99,25 @@ public class CaseStudyController {
   String show(@PathVariable("id") Long id, Model model) {
     CaseStudy c = caseRepo.getOne(id);
 
+    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
+    JsonNode schema = c.getSchema();
+    JsonNode formData = c.getFormData();
+    JsonNode fileNode =
+        schema.get("properties").get("requiredFiles").get("properties");
+    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
+      String fileTitle = fileNode.get(fileId).get("title").textValue();
+      JsonNode requiredFiles = formData.get("requiredFiles");
+      JsonNode requiredFile = null;
+      if (requiredFiles != null) {
+        requiredFile = requiredFiles.get(fileId);
+      }
+      files.put(fileId,
+          new AbstractMap.SimpleEntry<>(fileTitle, requiredFile != null));
+    }
+
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
+    model.addAttribute("files", files);
     return "cases/show :: show";
   }
 

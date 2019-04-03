@@ -118,6 +118,11 @@
         </form>
     </div>
 
+    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <a th:href="@{${jsfPath} + '/uploadexample'}">範例檔案下載</a>
+    </div>
+
+
     <script th:replace="fragments/notify :: notify"></script>
     <script type="text/javascript" th:inline="javascript">
         function bs_input_file() {

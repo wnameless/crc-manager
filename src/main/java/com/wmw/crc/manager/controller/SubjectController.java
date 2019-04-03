@@ -20,6 +20,8 @@ import static com.wmw.crc.manager.util.EntityUtils.findChildById;
 import static com.wmw.crc.manager.util.EntityUtils.findChildByValue;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +29,9 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +46,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.io.Resources;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -327,6 +333,25 @@ public class SubjectController {
     }
 
     return patient;
+  }
+
+  @PreAuthorize("@perm.canWrite(#id)")
+  @GetMapping("/cases/{id}/subjects/uploadexample")
+  @ResponseBody
+  HttpEntity<byte[]> downloadExample(Model model, @PathVariable("id") Long id)
+      throws IOException {
+    URL exampleUrl = Resources.getResource("examples/三總受試者名單範本.xlsx");
+
+    byte[] dataByteArray = Resources.toByteArray(exampleUrl);
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    header.set(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + URLEncoder.encode("三總受試者名單範本.xlsx", "UTF-8"));
+    header.setContentLength(dataByteArray.length);
+
+    return new HttpEntity<byte[]>(dataByteArray, header);
   }
 
 }
