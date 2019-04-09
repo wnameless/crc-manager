@@ -19,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.TsghService.ContraindicationRefreshResult;
-import com.wmw.crc.manager.util.InfoOpt;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,15 +34,15 @@ public class ScheduledTasks {
 
   @Scheduled(cron = "0 0 22 * * *")
   void refreshMedicines() {
-    InfoOpt<Integer> opt = tsghService.refreshMedicines();
-    if (opt.isAbsent()) log.warn(opt.getInfomation());
+    AdvOpt<Integer> opt = tsghService.refreshMedicines();
+    if (opt.isAbsent()) log.warn(opt.getMessage());
   }
 
   @Scheduled(cron = "0 0 23 * * *")
   void refreshContraindications() {
-    InfoOpt<ContraindicationRefreshResult> opt =
+    AdvOpt<ContraindicationRefreshResult> opt =
         tsghService.refreshContraindications();
-    if (opt.get().getFailedCount() != 0) log.warn(opt.getInfomation());
+    if (opt.get().getFailedCount() != 0) log.warn(opt.getMessage());
   }
 
 }

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Contraindication;
@@ -36,7 +37,6 @@ import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
-import com.wmw.crc.manager.util.InfoOpt;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -98,14 +98,14 @@ public class TsghService {
     return res.body();
   }
 
-  public InfoOpt<Integer> refreshMedicines() {
+  public AdvOpt<Integer> refreshMedicines() {
     List<Drug> drugs;
     try {
       drugs = getDrugs();
       if (!drugs.isEmpty()) medicineRepo.deleteAll();
     } catch (IOException e) {
       log.error("TsghService#getDrugs failed.", e);
-      return InfoOpt.ofNullable(null, "TsghService::getDrugs failed.");
+      return AdvOpt.ofNullable(null, "TsghService::getDrugs failed.");
     }
 
     for (Drug drug : drugs) {
@@ -123,11 +123,11 @@ public class TsghService {
       medicineRepo.save(med);
     }
 
-    return InfoOpt.of(drugs.size(),
+    return AdvOpt.of(drugs.size(),
         "Total " + drugs.size() + " medicines has been updated.");
   }
 
-  public InfoOpt<ContraindicationRefreshResult> refreshContraindications() {
+  public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
     ContraindicationRefreshResult crr = new ContraindicationRefreshResult();
 
     List<CaseStudy> cases = caseRepo.findByStatus(Status.EXEC);
@@ -166,7 +166,7 @@ public class TsghService {
       }
     }
 
-    return InfoOpt.of(crr,
+    return AdvOpt.of(crr,
         "" + crr.getSuccessCount() + " contraindications has been added. "
             + crr.getFailedCount() + " contraindications are failed.");
   }

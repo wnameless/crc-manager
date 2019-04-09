@@ -35,14 +35,14 @@ public class TestController {
   @GetMapping("test/medicines/refresh")
   @ResponseBody
   String refreshMedicines() {
-    return tsghService.refreshMedicines().getInfomation();
+    return tsghService.refreshMedicines().getMessage();
   }
 
   @PreAuthorize("@perm.isAdmin()")
   @GetMapping("test/contraindications/refresh")
   @ResponseBody
   String refreshContraindications() {
-    return tsghService.refreshContraindications().getInfomation();
+    return tsghService.refreshContraindications().getMessage();
   }
 
 }
