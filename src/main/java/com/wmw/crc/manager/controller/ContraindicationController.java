@@ -66,6 +66,7 @@ public class ContraindicationController {
       cd.setAtcCode(atcCode);
       if (med.isPresent()) {
         cd.setDetail(med.get().getName() + "(" + med.get().getEngName() + ")");
+        cd.setScientificName(med.get().getScientificName());
       }
       contraindicationRepo.save(cd);
 

@@ -112,6 +112,7 @@ public class TsghService {
       Medicine med = new Medicine();
       med.setName(drug.getName());
       med.setEngName(drug.getEngName());
+      med.setScientificName(drug.getScientificName());
       med.setHospitalCode(drug.getHospitalCode());
       if (drug.getAtcCode() != null) {
         RubyArray<String> atcCodes = Ruby.Array.of(drug.getAtcCode());

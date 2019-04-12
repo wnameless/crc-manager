@@ -39,4 +39,6 @@ public class Contraindication {
 
   String detail;
 
+  String scientificName;
+
 }

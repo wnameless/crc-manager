@@ -3,20 +3,39 @@
 
 <section layout:fragment="content">
     <div class="container">
-        <div style="height: 300px;" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="row col-sm-10 col-sm-offset-1">
             <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
             <hr>
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a data-toggle="tab" href="#contraindications" th:text="#{ui.contraindication}"></a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div id="contraindications" class="tab-pane fade in active">
-                    <ul id="contraindicationList" class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+            <div style="height: 300px;" class="panel panel-default">
+                <div class="panel-heading">[[#{ui.contraindication}]]</div>
+                <div class="panel-body" style="padding: 1px;">
+                    <ul id="contraindicationList" class="list-group" style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
                         <li class="list-group-item" th:each="cd : ${case.contraindications}">
-                            <span th:text="#{ui.contraindication.bundle} + ': [' + ${cd.bundle} + '] / ' + #{ui.contraindication.atc.prefix} + ': ' + (${#strings.isEmpty(cd.atcCode)} ? #{ui.contraindication.none} : '[ ' + ${cd.atcCode} + ' ] - ' + ${cd.detail})"></span>
+                            <span class="text-primary">
+                                [[#{ui.contraindication.bundle} + ': ']]</span>
+                            <span>
+                                [[${cd.bundle}]]
+                            </span>
+                            ,
+                            <span class="text-danger">
+                                [[#{ui.contraindication.atc.prefix} + ': ']]
+                            </span>
+                            <span>
+                                [[ (${#strings.isEmpty(cd.atcCode)} ?
+                                #{ui.contraindication.none} : ${cd.atcCode})]]
+                            </span>
+                            ,
+                            <span class="text-success">
+                                [[#{ui.contraindication.scientific_name} +': ']]
+                            </span>
+                            <span>
+                                [[(${#strings.isEmpty(cd.scientificName)} ?
+                                #{ui.contraindication.none} : ${cd.scientificName})]]
+                            </span>
+                            ,
+                            <span>
+                                [[#{ui.contraindication.medicine_name} + ': ' + ${cd.detail}]]
+                            </span>
                             <a th:if="${@perm.canWrite(case)}" th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
                                 <i th:attr="val=${cd.id}" class="fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
                             </a>
@@ -26,11 +45,11 @@
             </div>
         </div>
 
-        <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="row col-sm-10 col-sm-offset-1">
             <hr>
         </div>
 
-        <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="row col-sm-10 col-sm-offset-1">
             <form th:action="@{'/cases/' + ${case.id} + '/contraindications'}" method="POST" class="form-row">
                 <div class="form-group col-md-2">
                     <label th:text="#{ui.contraindication.bundle}"></label>
@@ -48,11 +67,11 @@
                 </div>
                 <input name="phrase" type="hidden" class="form-control" th:placeholder="#{ui.contraindication.medicine.keyword}">
                 <input id="medicineId" name="medicineId" type="hidden">
-                <div class="form-group col-md-8">
+                <div class="form-group col-sm-8">
                     <label>ATC</label>
                     <input id="atcCode" name="atcCode" type="text" class="form-control" th:placeholder="#{ui.contraindication.atc.prefix}">
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-sm-1">
                     <label>&nbsp;</label>
                     <button th:if="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"></button>
                     <button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"
@@ -61,16 +80,17 @@
             </form>
         </div>
 
-        <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="row col-sm-10 col-sm-offset-1">
             <hr>
         </div>
 
-        <div class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="row col-sm-10 col-sm-offset-1">
             <table id="medicines">
                 <thead>
                     <tr>
-                        <th th:text="#{ui.contraindication.table.name}"></th>
-                        <th th:text="#{ui.contraindication.table.name.english}"></th>
+                        <th>[[#{ui.contraindication.table.name}]]</th>
+                        <th>[[#{ui.contraindication.table.name.english}]]</th>
+                        <th>[[#{ui.contraindication.table.name.scientific}]]</th>
                         <th>ATC1</th>
                         <th>ATC2</th>
                         <th>ATC3</th>
@@ -100,6 +120,9 @@
                 },
                 {
                     data: 'engName'
+                },
+                {
+                    data: 'scientificName'
                 },
                 {
                     data: 'atcCode1',

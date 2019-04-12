@@ -67,7 +67,9 @@ public class CaseStudyController {
       return CaseStudy.Status.NONE;
     }
 
-    session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
+    if (session.getAttribute("CASES_STATUS") == null) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
+    }
     return CaseStudy.Status.EXEC;
   }
 

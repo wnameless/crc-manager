@@ -51,6 +51,7 @@ public class TestMedicinesInitializer {
         Medicine m = new Medicine();
         m.setName(med.asObject().getString("name", null));
         m.setEngName(med.asObject().getString("engName", null));
+        m.setScientificName(med.asObject().getString("scientificName", null));
         JsonArray atc = med.asObject().get("atcCode").asArray();
         for (int idx = 0; idx < atc.size(); idx++) {
           switch (idx) {
