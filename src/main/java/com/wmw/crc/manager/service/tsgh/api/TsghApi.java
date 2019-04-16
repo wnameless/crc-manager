@@ -29,10 +29,10 @@ public interface TsghApi {
   @GET("patients")
   Call<List<Patient>> searchPatient(@Query("nationalId") String nationalId);
 
-  @GET("/drugs")
+  @GET("drugs")
   Call<List<Drug>> listDrugs();
 
-  @POST("/contraindications")
+  @POST("contraindications")
   Call<ResponseBody> addPatientContraindication(
       @Body PatientContraindication pc);
 
