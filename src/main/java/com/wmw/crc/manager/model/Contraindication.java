@@ -41,4 +41,6 @@ public class Contraindication {
 
   String scientificName;
 
+  String hospitalCode;
+
 }

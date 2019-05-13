@@ -24,4 +24,8 @@ public class SimpleDrug {
 
   String atcCode;
 
+  String hospitalCode;
+
+  String memo;
+
 }

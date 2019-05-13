@@ -64,6 +64,7 @@ public class ContraindicationController {
       cd.setBundle(bundle);
       cd.setPhrase(phrase);
       cd.setAtcCode(atcCode);
+      cd.setHospitalCode(med.get().getHospitalCode());
       if (med.isPresent()) {
         cd.setDetail(med.get().getName() + "(" + med.get().getEngName() + ")");
         cd.setScientificName(med.get().getScientificName());

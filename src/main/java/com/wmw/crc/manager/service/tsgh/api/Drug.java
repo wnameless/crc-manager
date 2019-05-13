@@ -30,4 +30,6 @@ public class Drug {
   String hospitalCode;
 
   List<String> atcCode;
+
+  String takekind;
 }

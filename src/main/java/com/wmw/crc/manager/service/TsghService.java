@@ -37,6 +37,7 @@ import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
+import com.wmw.crc.manager.service.tsgh.api.TsghResponse;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -79,16 +80,17 @@ public class TsghService {
   }
 
   public Patient findPatientById(String nationalId) throws IOException {
-    Call<List<Patient>> call = tsghApi.searchPatient(nationalId);
-    Response<List<Patient>> res = call.execute();
-    List<Patient> body = res.body();
-    return body == null || body.isEmpty() ? null : body.get(0);
+    Call<TsghResponse<Patient>> call = tsghApi.searchPatient(nationalId);
+    Response<TsghResponse<Patient>> res = call.execute();
+    TsghResponse<Patient> body = res.body();
+    return body == null || body.getData().isEmpty() ? null
+        : body.getData().get(0);
   }
 
   public List<Drug> getDrugs() throws IOException {
-    Call<List<Drug>> call = tsghApi.listDrugs();
-    Response<List<Drug>> res = call.execute();
-    return res.body();
+    Call<TsghResponse<Drug>> call = tsghApi.listDrugs();
+    Response<TsghResponse<Drug>> res = call.execute();
+    return res.body().getData();
   }
 
   public ResponseBody addPatientContraindication(PatientContraindication pc)
@@ -121,6 +123,7 @@ public class TsghService {
         med.setAtcCode3(atcCodes.at(2));
         med.setAtcCode4(atcCodes.at(3));
       }
+      med.setTakekind(drug.getTakekind());
       medicineRepo.save(med);
     }
 
@@ -152,6 +155,7 @@ public class TsghService {
             SimpleDrug sd = new SimpleDrug();
             sd.setPhrase(cd.getPhrase());
             sd.setAtcCode(cd.getAtcCode());
+            sd.setHospitalCode(cd.getHospitalCode());
             pc.getDrugs().add(sd);
           }
         }

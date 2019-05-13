@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018 Wei-Ming Wu
+ * Copyright 2019 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,40 +13,19 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model;
+package com.wmw.crc.manager.service.tsgh.api;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.util.List;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
-@Entity
-public class Medicine {
+public class TsghResponse<E> {
 
-  @Id
-  @GeneratedValue
-  Long id;
+  String Status;
 
-  String name;
+  List<E> Data;
 
-  String engName;
-
-  String scientificName;
-
-  String hospitalCode;
-
-  String atcCode1;
-
-  String atcCode2;
-
-  String atcCode3;
-
-  String atcCode4;
-
-  String takekind;
+  String ErrorMessage;
 
 }
