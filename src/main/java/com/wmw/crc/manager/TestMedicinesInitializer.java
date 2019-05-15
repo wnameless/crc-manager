@@ -43,15 +43,17 @@ public class TestMedicinesInitializer {
   @PostConstruct
   void init() throws IOException {
     if (medicineRepo.count() == 0) {
-      URL medicines = Resources.getResource("medicines.json");
-      JsonValue medJsonArray =
+      URL medicines = Resources.getResource("drugs.json");
+      JsonValue medJsonObject =
           Json.parse(IOUtils.toString(medicines, Charsets.UTF_8));
 
-      for (JsonValue med : medJsonArray.asArray()) {
+      for (JsonValue med : medJsonObject.asObject().get("Data").asArray()) {
         Medicine m = new Medicine();
-        m.setName(med.asObject().getString("name", null));
-        m.setEngName(med.asObject().getString("engName", null));
-        m.setScientificName(med.asObject().getString("scientificName", null));
+        m.setName(jsonVal2Str(med.asObject().get("name")));
+        m.setEngName(jsonVal2Str(med.asObject().get("engName")));
+        m.setHospitalCode(jsonVal2Str(med.asObject().get("hospitalCode")));
+        m.setScientificName(jsonVal2Str(med.asObject().get("scientificName")));
+        m.setTakekind(jsonVal2Str(med.asObject().get("takekind")));
         JsonArray atc = med.asObject().get("atcCode").asArray();
         for (int idx = 0; idx < atc.size(); idx++) {
           switch (idx) {
@@ -72,6 +74,10 @@ public class TestMedicinesInitializer {
         }
       }
     }
+  }
+
+  String jsonVal2Str(JsonValue jsonValue) {
+    return jsonValue.isNull() ? "" : jsonValue.asString();
   }
 
 }
