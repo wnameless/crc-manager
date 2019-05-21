@@ -157,12 +157,14 @@ public class TsghService {
                     cd.getPhrase(), cd.getPhrase(), cd.getPhrase());
 
             for (Medicine med : meds) {
-              SimpleDrug sd = new SimpleDrug();
-              sd.setPhrase(cd.getPhrase());
-              sd.setAtcCode(med.getAtcCode1());
-              sd.setHospitalCode(med.getHospitalCode());
-              sd.setMemo(cd.getMemo());
-              pc.getDrugs().add(sd);
+              if (cd.getTakekinds().contains(med.getTakekind())) {
+                SimpleDrug sd = new SimpleDrug();
+                sd.setPhrase(cd.getPhrase());
+                sd.setAtcCode(med.getAtcCode1());
+                sd.setHospitalCode(med.getHospitalCode());
+                sd.setMemo(cd.getMemo());
+                pc.getDrugs().add(sd);
+              }
             }
           }
         }
