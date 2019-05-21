@@ -12,29 +12,23 @@
                     <ul id="contraindicationList" class="list-group" style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
                         <li class="list-group-item" th:each="cd : ${case.contraindications}">
                             <span class="text-primary">
-                                [[#{ui.contraindication.bundle} + ': ']]</span>
+                                [[#{ui.contraindication.bundle} + ': ']]
+                            </span>
                             <span>
                                 [[${cd.bundle}]]
                             </span>
                             ,
                             <span class="text-danger">
-                                [[#{ui.contraindication.atc.prefix} + ': ']]
+                                [[#{ui.contraindication.keyword} + ': ']]
                             </span>
                             <span>
-                                [[ (${#strings.isEmpty(cd.atcCode)} ?
-                                #{ui.contraindication.none} : ${cd.atcCode})]]
+                                [[${cd.phrase}]]
                             </span>
-                            ,
-                            <span class="text-success">
-                                [[#{ui.contraindication.scientific_name} +': ']]
+                            <span class="text-warning">
+                                [[#{ui.contraindication.memo} + ': ']]
                             </span>
                             <span>
-                                [[(${#strings.isEmpty(cd.scientificName)} ?
-                                #{ui.contraindication.none} : ${cd.scientificName})]]
-                            </span>
-                            ,
-                            <span>
-                                [[#{ui.contraindication.medicine_name} + ': ' + ${cd.detail}]]
+                                [[${cd.memo}]]
                             </span>
                             <a th:if="${@perm.canWrite(case)}" th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
                                 <i th:attr="val=${cd.id}" class="fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
@@ -65,11 +59,21 @@
                         <option>9</option>
                     </select>
                 </div>
-                <input name="phrase" type="hidden" class="form-control" th:placeholder="#{ui.contraindication.medicine.keyword}">
-                <input id="medicineId" name="medicineId" type="hidden">
                 <div class="form-group col-sm-8">
-                    <label>ATC</label>
-                    <input id="atcCode" name="atcCode" type="text" class="form-control" th:placeholder="#{ui.contraindication.atc.prefix}">
+                    <label>[[#{ui.contraindication.medicine.keyword_and_usage}]]</label>
+                    <input name="phrase" type="text" class="form-control" th:placeholder="#{ui.contraindication.medicine.keyword}">
+                    <select name="takekinds" multiple data-role="tagsinput">
+                        <option value="內用藥水劑">11</option>
+                        <option value="內用藥錠劑">12</option>
+                        <option value="內用藥粉劑">13</option>
+                        <option value="注射藥">21</option>
+                        <option value="點滴">31</option>
+                        <option value="外用藥">41</option>
+                        <option value="中藥">51</option>
+                    </select>
+                    <hr>
+                    <label>備註</label>
+                    <textarea name="memo" class="form-control"></textarea>
                 </div>
                 <div class="form-group col-sm-1">
                     <label>&nbsp;</label>
@@ -91,10 +95,7 @@
                         <th>[[#{ui.contraindication.table.name}]]</th>
                         <th>[[#{ui.contraindication.table.name.english}]]</th>
                         <th>[[#{ui.contraindication.table.name.scientific}]]</th>
-                        <th>ATC1</th>
-                        <th>ATC2</th>
-                        <th>ATC3</th>
-                        <th>ATC4</th>
+                        <th>ATC codes</th>
                     </tr>
                 </thead>
             </table>
@@ -102,11 +103,6 @@
     </div>
 
     <script type="text/javascript" th:inline="javascript">
-        function atcCodeSelect(atc, medicineId) {
-            $('#atcCode').val(atc);
-            $('#medicineId').val(medicineId)
-        };
-
         $(function () {
             let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
             $('table#medicines').DataTable({
@@ -127,41 +123,9 @@
                 {
                     data: 'atcCode1',
                     render: function (data, type, row, meta) {
-                        if (type === 'display' && data !== null) {
-                            data = '<a onclick="atcCodeSelect(\'' + data +
-                                '\', ' + row.id + ')" href="#">' + data + '</a>';
-                        }
-                        return data;
-                    }
-                },
-                {
-                    data: 'atcCode2',
-                    render: function (data, type, row, meta) {
-                        if (type === 'display' && data !== null) {
-                            data = '<a onclick="atcCodeSelect(\'' + data +
-                                '\', ' + row.id + ')" href="#">' + data + '</a>';
-                        }
-                        return data;
-                    }
-                },
-                {
-                    data: 'atcCode3',
-                    render: function (data, type, row, meta) {
-                        if (type === 'display' && data !== null) {
-                            data = '<a onclick="atcCodeSelect(\'' + data +
-                                '\', ' + row.id + ')" href="#">' + data + '</a>';
-                        }
-                        return data;
-                    }
-                },
-                {
-                    data: 'atcCode4',
-                    render: function (data, type, row, meta) {
-                        if (type === 'display' && data !== null) {
-                            data = '<a onclick="atcCodeSelect(\'' + data +
-                                '\', ' + row.id + ')" href="#">' + data + '</a>';
-                        }
-                        return data;
+                        return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
+                            return el != null;
+                        }).join(', ');
                     }
                 }
                 ],

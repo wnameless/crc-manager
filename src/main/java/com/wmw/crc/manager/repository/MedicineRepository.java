@@ -31,4 +31,7 @@ public interface MedicineRepository
   List<Medicine> findByNameContainsOrEngNameContainsAllIgnoreCase(String name,
       String engName, Pageable pageRequest);
 
+  List<Medicine> findByNameContainsOrEngNameContainsOrScientificNameContainsAllIgnoreCase(
+      String name, String engName, String scientificName);
+
 }

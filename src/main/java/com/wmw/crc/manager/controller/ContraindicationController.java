@@ -2,7 +2,7 @@ package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
-import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
@@ -51,24 +50,23 @@ public class ContraindicationController {
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("cases/{id}/contraindications")
   String add(Model model, @PathVariable("id") Long id,
-      @RequestParam("medicineId") Long medicineId,
       @RequestParam("bundle") Integer bundle,
       @RequestParam("phrase") String phrase,
-      @RequestParam("atcCode") String atcCode) {
+      @RequestParam("takekinds") List<String> takekinds,
+      @RequestParam("memo") String memo) {
     CaseStudy c = caseRepo.getOne(id);
 
-    Optional<Medicine> med = medicineRepo.findById(medicineId);
+    System.err.println(bundle);
+    System.err.println(phrase);
+    System.err.println(takekinds);
+    System.err.println(memo);
 
-    if (!isNullOrEmpty(phrase) || !isNullOrEmpty(atcCode)) {
+    if (!isNullOrEmpty(phrase)) {
       Contraindication cd = new Contraindication();
       cd.setBundle(bundle);
       cd.setPhrase(phrase);
-      cd.setAtcCode(atcCode);
-      cd.setHospitalCode(med.get().getHospitalCode());
-      if (med.isPresent()) {
-        cd.setDetail(med.get().getName() + "(" + med.get().getEngName() + ")");
-        cd.setScientificName(med.get().getScientificName());
-      }
+      cd.setTakekinds(takekinds);
+      cd.setMemo(memo);
       contraindicationRepo.save(cd);
 
       c.getContraindications().add(cd);

@@ -152,11 +152,18 @@ public class TsghService {
           RubyArray<Contraindication> cds =
               bundles.get(s.getContraindicationBundle());
           for (Contraindication cd : cds) {
-            SimpleDrug sd = new SimpleDrug();
-            sd.setPhrase(cd.getPhrase());
-            sd.setAtcCode(cd.getAtcCode());
-            sd.setHospitalCode(cd.getHospitalCode());
-            pc.getDrugs().add(sd);
+            List<Medicine> meds = medicineRepo
+                .findByNameContainsOrEngNameContainsOrScientificNameContainsAllIgnoreCase(
+                    cd.getPhrase(), cd.getPhrase(), cd.getPhrase());
+
+            for (Medicine med : meds) {
+              SimpleDrug sd = new SimpleDrug();
+              sd.setPhrase(cd.getPhrase());
+              sd.setAtcCode(med.getAtcCode1());
+              sd.setHospitalCode(med.getHospitalCode());
+              sd.setMemo(cd.getMemo());
+              pc.getDrugs().add(sd);
+            }
           }
         }
 

@@ -15,6 +15,11 @@
  */
 package com.wmw.crc.manager.model;
 
+import static javax.persistence.FetchType.EAGER;
+
+import java.util.List;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,12 +40,9 @@ public class Contraindication {
 
   String phrase;
 
-  String atcCode;
+  @ElementCollection(fetch = EAGER)
+  List<String> takekinds;
 
-  String detail;
-
-  String scientificName;
-
-  String hospitalCode;
+  String memo;
 
 }
