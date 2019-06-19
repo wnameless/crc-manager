@@ -118,7 +118,9 @@ public class TsghExcelSubjects implements ExcelSubjects {
       if (!value.equals(sdf.format(date))) {
         date = null;
       }
-    } catch (ParseException e) {}
+    } catch (ParseException e) {
+      date = new Date(Long.parseLong(value));
+    }
 
     return date != null;
   }
