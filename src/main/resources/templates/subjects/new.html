@@ -50,8 +50,12 @@
                         }
 
                         if (patient.patientId) {
-                            $('#root_mrn').val(patient.patientId);
+                            $('#root_mrn').val(patient.patientId.join(','));
                         }
+                        if (patient.trialId) {
+                            $('#root_subjectId').val(patient.trialId.join(','));
+                        }
+
                         if (patient.name) {
                             $('#root_lastname').val(patient.name);
                         }

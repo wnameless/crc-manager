@@ -15,11 +15,15 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 public class Patient {
-  String patientId;
+  List<String> patientId;
+
+  List<String> trialId;
 
   String name;
 
