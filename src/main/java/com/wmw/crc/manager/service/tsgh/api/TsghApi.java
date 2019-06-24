@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -29,7 +31,7 @@ public interface TsghApi {
       @Query("nationalId") String nationalId);
 
   @GET("drugs")
-  Call<TsghResponse<Drug>> listDrugs();
+  Call<TsghResponse<List<Drug>>> listDrugs();
 
   @POST("Contraindications")
   Call<ResponseBody> addPatientContraindication(

@@ -15,8 +15,6 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data
@@ -24,7 +22,7 @@ public class TsghResponse<E> {
 
   String Status;
 
-  List<E> Data;
+  E Data;
 
   String ErrorMessage;
 

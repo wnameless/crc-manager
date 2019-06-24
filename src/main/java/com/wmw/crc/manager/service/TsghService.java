@@ -83,13 +83,12 @@ public class TsghService {
     Call<TsghResponse<Patient>> call = tsghApi.searchPatient(nationalId);
     Response<TsghResponse<Patient>> res = call.execute();
     TsghResponse<Patient> body = res.body();
-    return body == null || body.getData().isEmpty() ? null
-        : body.getData().get(0);
+    return body == null ? null : body.getData();
   }
 
   public List<Drug> getDrugs() throws IOException {
-    Call<TsghResponse<Drug>> call = tsghApi.listDrugs();
-    Response<TsghResponse<Drug>> res = call.execute();
+    Call<TsghResponse<List<Drug>>> call = tsghApi.listDrugs();
+    Response<TsghResponse<List<Drug>>> res = call.execute();
     return res.body().getData();
   }
 
