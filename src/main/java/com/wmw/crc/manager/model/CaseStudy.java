@@ -36,7 +36,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
@@ -61,19 +60,16 @@ import lombok.EqualsAndHashCode;
 public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();

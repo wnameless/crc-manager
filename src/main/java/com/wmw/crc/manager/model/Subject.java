@@ -25,7 +25,6 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -48,19 +47,16 @@ import lombok.EqualsAndHashCode;
 public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
-  @Lob
   @Column(columnDefinition = "text")
   protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
