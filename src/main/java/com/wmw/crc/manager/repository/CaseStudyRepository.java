@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
-import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.security.core.Authentication;
@@ -40,7 +39,7 @@ import com.wmw.crc.manager.util.JsonNodeUtils;
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository("caseRepo")
 public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     QuerydslPredicateExecutor<CaseStudy> {

@@ -39,8 +39,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -141,13 +139,13 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
   @Enumerated(EnumType.STRING)
   Status status = Status.NEW;
 
-  @DiffIgnore
+  // @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
 
-  @DiffIgnore
+  // @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "case_contraindication",
       joinColumns = @JoinColumn(name = "case_id"),
