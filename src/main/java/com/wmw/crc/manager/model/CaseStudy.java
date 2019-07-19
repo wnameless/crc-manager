@@ -68,7 +68,7 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Convert(converter = JsonNodeConverter.class)
   @Lob
-  @Column(columnDefinition = "`schema`")
+  @Column
   protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
