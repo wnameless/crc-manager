@@ -49,19 +49,19 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Convert(converter = JsonNodeConverter.class)
   @Lob
-  @Column
+  @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
   @Lob
-  @Column
+  @Column(columnDefinition = "text")
   protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   @Convert(converter = JsonNodeConverter.class)
   @Lob
-  @Column
+  @Column(columnDefinition = "text")
   protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
