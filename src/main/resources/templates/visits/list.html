@@ -39,8 +39,6 @@
 			let subjectId = /*[[${subject.id}]]*/ null;
 
 			axios.get('/cases/' + caseId + '/subjects/' + subjectId + '/visits/' + $(this).attr('visitId'));
-
-			alert($(this).prop('checked'));
 		});
 
 		$(function () {
