@@ -17,6 +17,7 @@ package com.wmw.crc.manager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
 
@@ -29,9 +30,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.repository.VisitRepository;
 
 @Profile("test")
 @Component
@@ -42,6 +46,9 @@ public class TestDatabaseInitializer {
 
   @Autowired
   SubjectRepository subjectRepo;
+
+  @Autowired
+  VisitRepository visitRepo;
 
   @Autowired
   MedicineRepository medicineRepo;
@@ -69,6 +76,20 @@ public class TestDatabaseInitializer {
           new ObjectMapper().readTree(Resources.toString(url, Charsets.UTF_8));
       c.setFormData(bjsf.get("formData"));
       caseRepo.save(c);
+
+      Subject s = new Subject();
+      s.setName("Tester");
+      s.setNationalId("A123456789");
+      s.setCaseStudy(c);
+      subjectRepo.save(s);
+
+      Visit v = new Visit();
+      v.setDivision("Neurotology");
+      v.setDoctor("Strange");
+      v.setDate(LocalDate.now());
+      v.setRoom("221B");
+      v.setSubject(s);
+      visitRepo.save(v);
     }
 
   }

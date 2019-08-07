@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018 Wei-Ming Wu
+ * Copyright 2019 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,21 +13,27 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.repository;
+package com.wmw.crc.manager.controller.api;
 
-import java.util.List;
+import java.time.LocalDate;
 
-import org.javers.spring.annotation.JaversSpringDataAuditable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Data;
 
-import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.Subject;
+@Data
+public class NewVisit {
 
-@JaversSpringDataAuditable
-@Repository
-public interface SubjectRepository extends JpaRepository<Subject, Long> {
+  String nationalId;
 
-  List<Subject> findAllByCaseStudy(CaseStudy caseStudy);
+  String division;
+
+  String doctor;
+
+  String room;
+
+  LocalDate date;
+
+  boolean contraindicationSuspected;
+
+  boolean reviewed;
 
 }

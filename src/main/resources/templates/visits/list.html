@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="list">
+	<h3
+		th:replace="fragments/form :: title(text=${subject.name + '(' + subject.nationalId + ')' }, backUrl=${'/cases/' + case.id + '/subjects/index'})">
+	</h3>
+	<hr>
+
+	<table id="jsfTable" class="display">
+		<thead>
+			<tr>
+				<th th:text="#{ui.subject.visit.division}"></th>
+				<th th:text="#{ui.subject.visit.doctor}"></th>
+				<th th:text="#{ui.subject.visit.room}"></th>
+				<th th:text="#{ui.subject.visit.date}"></th>
+				<th th:text="#{ui.subject.visit.contraindicationSuspected}"></th>
+				<th th:text="#{ui.subject.visit.reviewed}"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="v : ${visits}">
+				<td th:text="${v.division}"></td>
+				<td th:text="${v.doctor}"></td>
+				<td th:text="${v.room}"></td>
+				<td th:text="${v.date}"></td>
+				<td th:text="${v.contraindicationSuspected ? 'Yes' : 'No'}"></td>
+				<td>
+					<input th:attr="visitId=${v.id}" type="checkbox" class="form-check-input check-reviewed"
+						th:value="${v.reviewed}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<script th:replace="fragments/notify :: notify"></script>
+	<script th:inline="javascript">
+		$('.check-reviewed').change(function () {
+			let caseId =/*[[${case.id}]]*/ null;
+			let subjectId = /*[[${subject.id}]]*/ null;
+
+			axios.get('/cases/' + caseId + '/subjects/' + subjectId + '/visits/' + $(this).attr('visitId'));
+
+			alert($(this).prop('checked'));
+		});
+
+		$(function () {
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			$('#jsfTable').DataTable({
+				columnDefs: [{
+					width: '36px',
+					targets: 0
+				}],
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				},
+				drawCallback: function (settings) {
+					$('#jsfTable').reflowTable('update');
+				}
+			});
+
+			$('#jsfTable').reflowTable();
+		});
+	</script>
+</div>
+
+</html>

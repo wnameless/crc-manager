@@ -38,7 +38,7 @@ import net.sf.rubycollect4j.Ruby;
 
 @RequestMapping("/api/1.0/ptms")
 @RestController
-public class ApiController {
+public class PtmsApiController {
 
   @Autowired
   CaseStudyRepository caseRepo;

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+
+<section layout:fragment="content">
+	<div class="container">
+		<div th:replace="visits/list :: list"></div>
+	</div>
+</section>
+
+</html>

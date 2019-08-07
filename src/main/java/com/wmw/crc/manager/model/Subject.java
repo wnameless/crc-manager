@@ -19,12 +19,21 @@ import static com.google.common.base.Charsets.UTF_8;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -102,6 +111,21 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
   String nationalId;
 
   Integer contraindicationBundle = 1;
+
+  @ManyToOne
+  @JoinTable(name = "case_subject",
+      joinColumns = { @JoinColumn(name = "subject_id") },
+      inverseJoinColumns = { @JoinColumn(name = "case_id") })
+  private CaseStudy caseStudy;
+
+  @DiffIgnore
+  @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL,
+      orphanRemoval = true, fetch = FetchType.EAGER)
+  List<Visit> visits;
+
+  public long unreviewedVisits() {
+    return visits.stream().filter(v -> !v.isReviewed()).count();
+  }
 
   public Subject() {
     try {

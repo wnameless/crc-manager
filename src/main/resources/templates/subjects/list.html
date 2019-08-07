@@ -1,26 +1,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
-    <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
-    <hr>
-    <form th:if="${@perm.canWrite(case)}" id="batchDating" th:action="@{${jsfPath} + '/batchdating'}" method="POST">
-        <div class="form-row">
-            <div class="form-group col-md-1"></div>
-            <div class="form-group col-md-5">
-                <select id="subjectDateType" name="subjectDateType" class="form-control" form="batchDating">
-                    <option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
-                    <option value="examDate" th:text="#{ui.subject.date.exam}"></option>
-                    <option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
-                    <option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
-                    <option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
-                    <option value="bundleNumber" th:text="#{ui.subject.bundle.number}"></option>
-                </select>
-            </div>
-            <div id="batchDateDiv" class="form-group col-md-4">
-                <input type="date" class="form-control" id="subjectDate" name="subjectDate">
-            </div>
-            <div id="bundleNumberDiv" class="form-group col-md-4 hidden">
-                <select name="bundleNumber" class="form-control" form="batchDating">
-                    <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${i}" th:selected="${i} == 1"></option>
+	<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
+	<hr>
+	<form th:if="${@perm.canWrite(case)}" id="batchDating" th:action="@{${jsfPath} + '/batchdating'}" method="POST">
+		<div class="form-row">
+			<div class="form-group col-md-1"></div>
+			<div class="form-group col-md-5">
+				<select id="subjectDateType" name="subjectDateType" class="form-control" form="batchDating">
+					<option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
+					<option value="examDate" th:text="#{ui.subject.date.exam}"></option>
+					<option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
+					<option value="completeDate" th:text="#{ui.subject.date.complete}"></option>
+					<option value="dropoutDate" th:text="#{ui.subject.date.dropout}"></option>
+					<option value="bundleNumber" th:text="#{ui.subject.bundle.number}"></option>
+				</select>
+			</div>
+			<div id="batchDateDiv" class="form-group col-md-4">
+				<input type="date" class="form-control" id="subjectDate" name="subjectDate">
+			</div>
+			<div id="bundleNumberDiv" class="form-group col-md-4 hidden">
+				<select name="bundleNumber" class="form-control" form="batchDating">
+					<option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${i}" th:selected="${i} == 1"></option>
                 </select>
             </div>
             <div class="form-group col-md-2">
@@ -40,7 +40,8 @@
                 <th th:text="#{ui.subject.table.status}"></th>
                 <th th:text="#{ui.subject.table.bundle}"></th>
                 <th th:text="#{ui.subject.table.name}"></th>
-                <th th:text="#{ui.subject.table.nationalid}"></th>
+				<th th:text="#{ui.subject.table.nationalid}"></th>
+				<th th:text="#{ui.subject.table.unreviewed-visits}"></th>
                 <th th:text="#{ui.subject.table.action}"></th>
             </tr>
         </thead>
@@ -67,7 +68,10 @@
                         onclick="showFormEvent(this)" th:text="${subject.nationalId}">
                     </a>
                     <a th:unless="${@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
-                </td>
+				</td>
+				<td>
+					<a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/visits' }" th:text="${subject.unreviewedVisits()}"></a>
+				</td>
                 <td>
                     <a th:if="${@perm.canWrite(case)}" href="#" th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
                         onclick="editFormEvent(this)">
@@ -125,88 +129,88 @@
 
     <script th:replace="fragments/notify :: notify"></script>
     <script type="text/javascript" th:inline="javascript">
-        function bs_input_file() {
-            $(".input-file")
-                .before(
-                    function () {
-                        if (!$(this).prev().hasClass('input-ghost')) {
-                            var element = $(
-                                '<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
-                            element.attr('name', $(this).attr('name'));
-                            element.change(function () {
-                                element.next(element).find('input').val(
-                                    (element.val()).split('\\').pop());
-                                $('#uploadBtn').removeAttr('disabled');
-                            });
-                            $(this).find("button.btn-choose").click(function () {
-                                element.click();
-                            });
-                            $(this).find('input').css('cursor', 'pointer');
-                            $(this).find('input').mousedown(function () {
-                                $(this).parents('.input-file').prev().click();
-                                return false;
-                            });
-                            return element;
-                        }
-                    });
-        };
+		function bs_input_file() {
+			$(".input-file")
+				.before(
+					function () {
+						if (!$(this).prev().hasClass('input-ghost')) {
+							var element = $(
+								'<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
+							element.attr('name', $(this).attr('name'));
+							element.change(function () {
+								element.next(element).find('input').val(
+									(element.val()).split('\\').pop());
+								$('#uploadBtn').removeAttr('disabled');
+							});
+							$(this).find("button.btn-choose").click(function () {
+								element.click();
+							});
+							$(this).find('input').css('cursor', 'pointer');
+							$(this).find('input').mousedown(function () {
+								$(this).parents('.input-file').prev().click();
+								return false;
+							});
+							return element;
+						}
+					});
+		};
 
-        var checkboxEvent = function () {
-            $('input[name="subjectIds[]"]').remove();
+		var checkboxEvent = function () {
+			$('input[name="subjectIds[]"]').remove();
 
-            $('input:checked').each(function () {
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'subjectIds[]',
-                    value: this.value
-                }).appendTo('#batchDating');
-            });
-        };
+			$('input:checked').each(function () {
+				$('<input>').attr({
+					type: 'hidden',
+					name: 'subjectIds[]',
+					value: this.value
+				}).appendTo('#batchDating');
+			});
+		};
 
-        var showFormEvent = function (node) {
-            axios.get($(node).attr('data-show-path')).then(function (response) {
-                $('#jsf').html(response.data);
-            });
-        };
+		var showFormEvent = function (node) {
+			axios.get($(node).attr('data-show-path')).then(function (response) {
+				$('#jsf').html(response.data);
+			});
+		};
 
-        var editFormEvent = function (node) {
-            axios.get($(node).attr('data-edit-path')).then(function (response) {
-                $('#jsf').html(response.data);
-            });
-        };
+		var editFormEvent = function (node) {
+			axios.get($(node).attr('data-edit-path')).then(function (response) {
+				$('#jsf').html(response.data);
+			});
+		};
 
-        $(function () {
-            $('.selectpicker').selectpicker();
+		$(function () {
+			$('.selectpicker').selectpicker();
 
-            bs_input_file();
+			bs_input_file();
 
-            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
-            $('#jsfTable').DataTable({
-                columnDefs: [{
-                    width: '36px',
-                    targets: 0
-                }],
-                language: {
-                    url: '/i18n/datatables-' + i18nLocale + '.json'
-                },
-                drawCallback: function (settings) {
-                    $('#jsfTable').reflowTable('update');
-                }
-            });
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			$('#jsfTable').DataTable({
+				columnDefs: [{
+					width: '36px',
+					targets: 0
+				}],
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				},
+				drawCallback: function (settings) {
+					$('#jsfTable').reflowTable('update');
+				}
+			});
 
-            $('#jsfTable').reflowTable();
-        });
+			$('#jsfTable').reflowTable();
+		});
 
-        $('#subjectDateType').change(function () {
-            if (this.value == 'bundleNumber') {
-                $('#batchDateDiv').addClass('hidden');
-                $('#bundleNumberDiv').removeClass('hidden');
-            } else {
-                $('#batchDateDiv').removeClass('hidden');
-                $('#bundleNumberDiv').addClass('hidden');
-            }
-        });
-    </script>
+		$('#subjectDateType').change(function () {
+			if (this.value == 'bundleNumber') {
+				$('#batchDateDiv').addClass('hidden');
+				$('#bundleNumberDiv').removeClass('hidden');
+			} else {
+				$('#batchDateDiv').removeClass('hidden');
+				$('#bundleNumberDiv').addClass('hidden');
+			}
+		});
+	</script>
 </div>
 
 </html>
