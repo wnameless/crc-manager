@@ -32,8 +32,4 @@ public class NewVisit {
 
   LocalDate date;
 
-  boolean contraindicationSuspected;
-
-  boolean reviewed;
-
 }
