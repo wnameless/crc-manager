@@ -34,4 +34,6 @@ public class NewVisit {
 
   boolean contraindicationSuspected;
 
+  String irbNumber;
+
 }

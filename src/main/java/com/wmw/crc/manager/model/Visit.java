@@ -51,6 +51,8 @@ public class Visit {
 
   boolean contraindicationSuspected;
 
+  String irbNumber;
+
   boolean reviewed;
 
 }
