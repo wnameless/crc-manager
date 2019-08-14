@@ -17,8 +17,13 @@ package com.wmw.crc.manager.controller.api;
 
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +44,12 @@ public class TsghApiController {
   @Autowired
   VisitRepository visitRepo;
 
+  @Autowired
+  JavaMailSender emailSender;
+
+  @Autowired
+  Environment env;
+
   @RequestMapping(path = "/visits", method = RequestMethod.POST)
   String addVisit(@RequestBody NewVisit newVisit) {
     List<Subject> subjects =
@@ -49,6 +60,31 @@ public class TsghApiController {
       BeanUtils.copyProperties(newVisit, visit);
       visit.setSubject(s);
       visitRepo.save(visit);
+
+      String email1 = s.getCaseStudy().getPiEmail1();
+      String email2 = s.getCaseStudy().getPiEmail1();
+
+      if (env.acceptsProfiles(Profiles.of("email"))) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("Contraindication Suspected");
+        message.setText("Name: " + s.getName() + "\n" //
+            + "NationalID: " + s.getNationalId() + "\n" //
+            + "Date: " + visit.getDate() + "\n" //
+            + "Division: " + visit.getDivision() + "\n" //
+            + "Doctor: " + visit.getDoctor() + "\n" //
+            + "Room: " + visit.getRoom() + "\n" //
+            + "ContraindicationSuspected: "
+            + visit.isContraindicationSuspected() + "\n" //
+        );
+        if (Strings.isNotBlank(email1)) {
+          message.setTo(email1);
+          emailSender.send(message);
+        }
+        if (Strings.isNotBlank(email2)) {
+          message.setTo(email2);
+          emailSender.send(message);
+        }
+      }
     }
 
     return "Visit added";
