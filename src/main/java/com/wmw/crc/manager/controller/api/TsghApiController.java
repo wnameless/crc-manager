@@ -62,7 +62,6 @@ public class TsghApiController {
       visitRepo.save(visit);
 
       String email1 = s.getCaseStudy().getPiEmail1();
-      String email2 = s.getCaseStudy().getPiEmail1();
 
       if (env.acceptsProfiles(Profiles.of("email"))) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -78,10 +77,6 @@ public class TsghApiController {
         );
         if (Strings.isNotBlank(email1)) {
           message.setTo(email1);
-          emailSender.send(message);
-        }
-        if (Strings.isNotBlank(email2)) {
-          message.setTo(email2);
           emailSender.send(message);
         }
       }
