@@ -112,9 +112,11 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
   @JsonPopulatedKey("PI[0].name")
   String piName;
 
-  String coPiName;
+  @JsonPopulatedKey("PI[0].email1")
+  String piEmail1;
 
-  String associatePiName;
+  @JsonPopulatedKey("PI[0].email2")
+  String piEmail2;
 
   @JsonPopulatedKey("crcNum")
   String projectNumber;
