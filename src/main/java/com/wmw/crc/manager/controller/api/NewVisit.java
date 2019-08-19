@@ -17,6 +17,8 @@ package com.wmw.crc.manager.controller.api;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -30,6 +32,7 @@ public class NewVisit {
 
   String room;
 
+  @JsonFormat(pattern = "yyyyMMdd")
   LocalDate date;
 
   boolean contraindicationSuspected;

@@ -16,6 +16,7 @@
 package com.wmw.crc.manager.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -144,8 +145,8 @@ public class TsghService {
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
         pc.setPatientId(s.getNationalId());
-        pc.setStartDate(c.getExpectedStartDate());
-        pc.setEndDate(c.getExpectedEndDate());
+        pc.setStartDate(LocalDate.parse(c.getExpectedStartDate()));
+        pc.setEndDate(LocalDate.parse(c.getExpectedEndDate()));
 
         if (bundles.containsKey(s.getContraindicationBundle())) {
           RubyArray<Contraindication> cds =
