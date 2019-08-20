@@ -34,10 +34,10 @@ public class PatientContraindication {
 
   String irbName;
 
-  @JsonFormat(pattern = "yyyyMMdd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
   LocalDate startDate;
 
-  @JsonFormat(pattern = "yyyyMMdd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
   LocalDate endDate;
 
   List<SimpleDrug> drugs = new ArrayList<>();
