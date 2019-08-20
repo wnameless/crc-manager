@@ -160,7 +160,10 @@ public class TsghService {
                     cd.getPhrase(), cd.getPhrase(), cd.getPhrase());
 
             for (Medicine med : meds) {
-              if (cd.getTakekinds().contains(med.getTakekind())) {
+              RubyArray<String> medTakeKinds =
+                  Ruby.String.of(med.getTakekind()).eachChar().toA();
+
+              if (medTakeKinds.intersection(cd.getTakekinds()).anyʔ()) {
                 SimpleDrug sd = new SimpleDrug();
                 sd.setPhrase(cd.getPhrase());
                 sd.setAtcCode(med.getAtcCode1());
