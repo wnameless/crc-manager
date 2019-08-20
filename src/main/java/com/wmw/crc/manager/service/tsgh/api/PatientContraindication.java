@@ -15,11 +15,8 @@
  */
 package com.wmw.crc.manager.service.tsgh.api;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 
@@ -34,11 +31,11 @@ public class PatientContraindication {
 
   String irbName;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
-  LocalDate startDate;
+  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+  String startDate;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
-  LocalDate endDate;
+  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+  String endDate;
 
   List<SimpleDrug> drugs = new ArrayList<>();
 
