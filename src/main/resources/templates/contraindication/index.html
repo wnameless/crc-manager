@@ -2,147 +2,159 @@
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
 <section layout:fragment="content">
-    <div class="container">
-        <div class="row col-sm-10 col-sm-offset-1">
-            <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
-            <hr>
-            <div style="height: 300px;" class="panel panel-default">
-                <div class="panel-heading">[[#{ui.contraindication}]]</div>
-                <div class="panel-body" style="padding: 1px;">
-                    <ul id="contraindicationList" class="list-group" style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
-                        <li class="list-group-item" th:each="cd : ${case.contraindications}">
-                            <span class="text-primary">
-                                [[#{ui.contraindication.bundle} + ': ']]
-                            </span>
-                            <span>
-                                [[${cd.bundle}]]
-                            </span>
-                            ,
-                            <span class="text-danger">
-                                [[#{ui.contraindication.keyword} + ': ']]
-                            </span>
-                            <span>
-                                [[${cd.phrase}]]
-                            </span>
-                            <span class="text-success">
-                                [[#{ui.contraindication.medicine.usage} + ': ']]
-                            </span>
-                            <span>
-                                [[${cd.takekinds}]]
-                            </span>
-                            <span class="text-warning">
-                                [[#{ui.contraindication.memo} + ': ']]
-                            </span>
-                            <span>
-                                [[${cd.memo}]]
-                            </span>
-                            <a th:if="${@perm.canWrite(case)}" th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
-                                <i th:attr="val=${cd.id}" class="fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+	<div class="container">
+		<div class="row col-sm-10 col-sm-offset-1">
+			<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
+			<hr>
+			<div style="height: 300px;" class="panel panel-default">
+				<div class="panel-heading">[[#{ui.contraindication}]]</div>
+				<div class="panel-body" style="padding: 1px;">
+					<ul id="contraindicationList" class="list-group"
+						style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
+						<li class="list-group-item" th:each="cd : ${case.contraindications}">
+							<span class="text-primary">
+								[[#{ui.contraindication.bundle} + ': ']]
+							</span>
+							<span>
+								[[${cd.bundle}]]
+							</span>
+							,
+							<span class="text-danger">
+								[[#{ui.contraindication.keyword} + ': ']]
+							</span>
+							<span>
+								[[${cd.phrase}]]
+							</span>
+							<span class="text-success">
+								[[#{ui.contraindication.medicine.usage} + ': ']]
+							</span>
+							<span>
+								<th:block th:each="tk : ${cd.takekinds}">
+									[[#{'takekinds.' + ${tk}}]]
+								</th:block>
+							</span>
+							<span class="text-warning">
+								[[#{ui.contraindication.memo} + ': ']]
+							</span>
+							<span>
+								[[${cd.memo}]]
+							</span>
+							<a th:if="${@perm.canWrite(case)}"
+								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
+								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
+									style="color: red; margin-top: 3px;"></i>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
-        <div class="row col-sm-10 col-sm-offset-1">
-            <hr>
-        </div>
+		<div class="row col-sm-10 col-sm-offset-1">
+			<hr>
+		</div>
 
-        <div class="row col-sm-10 col-sm-offset-1">
-            <form th:action="@{'/cases/' + ${case.id} + '/contraindications'}" method="POST" class="form-row">
-                <div class="form-group col-md-2">
-                    <label th:text="#{ui.contraindication.bundle}"></label>
-                    <select name="bundle" class="form-control">
-                        <option selected>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                    </select>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label>[[#{ui.contraindication.medicine.keyword_and_usage}]]</label>
-                    <input name="phrase" type="text" class="form-control" th:placeholder="#{ui.contraindication.medicine.keyword}">
-                    <select name="takekinds" multiple data-role="tagsinput">
-                        <option value="內用藥水劑">11</option>
-                        <option value="內用藥錠劑">12</option>
-                        <option value="內用藥粉劑">13</option>
-                        <option value="注射藥">21</option>
-                        <option value="點滴">31</option>
-                        <option value="外用藥">41</option>
-                        <option value="中藥">51</option>
-                    </select>
-                    <hr>
-                    <label>備註</label>
-                    <textarea name="memo" class="form-control"></textarea>
-                </div>
-                <div class="form-group col-sm-1">
-                    <label>&nbsp;</label>
-                    <button th:if="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"></button>
-                    <button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary" th:text="#{ui.contraindication.add}"
-                        disabled></button>
-                </div>
-            </form>
-        </div>
+		<div class="row col-sm-10 col-sm-offset-1">
+			<form th:action="@{'/cases/' + ${case.id} + '/contraindications'}" method="POST" class="form-row">
+				<div class="form-group col-md-2">
+					<label th:text="#{ui.contraindication.bundle}"></label>
+					<select name="bundle" class="form-control">
+						<option selected>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+						<option>9</option>
+					</select>
+				</div>
+				<div class="form-group col-sm-8">
+					<label>[[#{ui.contraindication.medicine.keyword_and_usage}]]</label>
+					<input name="phrase" type="text" class="form-control"
+						th:placeholder="#{ui.contraindication.medicine.keyword}">
+					<input id="takekinds" name="takekinds">
+					<hr>
+					<label>備註</label>
+					<textarea name="memo" class="form-control"></textarea>
+				</div>
+				<div class="form-group col-sm-1">
+					<label>&nbsp;</label>
+					<button th:if="${@perm.canWrite(case)}" type="submit" class="btn btn-primary"
+						th:text="#{ui.contraindication.add}"></button>
+					<button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary"
+						th:text="#{ui.contraindication.add}" disabled></button>
+				</div>
+			</form>
+		</div>
 
-        <div class="row col-sm-10 col-sm-offset-1">
-            <hr>
-        </div>
+		<div class="row col-sm-10 col-sm-offset-1">
+			<hr>
+		</div>
 
-        <div class="row col-sm-10 col-sm-offset-1">
-            <table id="medicines">
-                <thead>
-                    <tr>
-                        <th>[[#{ui.contraindication.table.name}]]</th>
-                        <th>[[#{ui.contraindication.table.name.english}]]</th>
-                        <th>[[#{ui.contraindication.table.name.scientific}]]</th>
-                        <th>ATC codes</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
+		<div class="row col-sm-10 col-sm-offset-1">
+			<table id="medicines">
+				<thead>
+					<tr>
+						<th>[[#{ui.contraindication.table.name}]]</th>
+						<th>[[#{ui.contraindication.table.name.english}]]</th>
+						<th>[[#{ui.contraindication.table.name.scientific}]]</th>
+						<th>ATC codes</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 
-    <script type="text/javascript" th:inline="javascript">
-        $(function () {
-            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
-            $('table#medicines').DataTable({
-                ajax: '/data/medicines',
-                serverSide: true,
-                language: {
-                    url: '/i18n/datatables-' + i18nLocale + '.json'
-                },
-                columns: [{
-                    data: 'name'
-                },
-                {
-                    data: 'engName'
-                },
-                {
-                    data: 'scientificName'
-                },
-                {
-                    data: 'atcCode1',
-                    render: function (data, type, row, meta) {
-                        return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
-                            return el != null;
-                        }).join(', ');
-                    }
-                }
-                ],
-                drawCallback: function (settings) {
-                    $('table#medicines').reflowTable('update');
-                }
-            });
+	<script type="text/javascript" th:inline="javascript">
+		$(function () {
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			$('table#medicines').DataTable({
+				ajax: '/data/medicines',
+				serverSide: true,
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				},
+				columns: [{
+					data: 'name'
+				},
+				{
+					data: 'engName'
+				},
+				{
+					data: 'scientificName'
+				},
+				{
+					data: 'atcCode1',
+					render: function (data, type, row, meta) {
+						return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
+							return el != null;
+						}).join(', ');
+					}
+				}
+				],
+				drawCallback: function (settings) {
+					$('table#medicines').reflowTable('update');
+				}
+			});
 
-            $('table#medicines').reflowTable();
-        });
-    </script>
+			$('table#medicines').reflowTable();
+
+			var elt = $('#takekinds');
+			elt.tagsinput({
+				itemValue: 'value',
+				itemText: 'text'
+			});
+			elt.tagsinput('add', { "value": 11, "text": "內用藥水劑" });
+			elt.tagsinput('add', { "value": 12, "text": "內用藥錠劑" });
+			elt.tagsinput('add', { "value": 13, "text": "內用藥粉劑" });
+			elt.tagsinput('add', { "value": 21, "text": "注射藥" });
+			elt.tagsinput('add', { "value": 31, "text": "點滴" });
+			elt.tagsinput('add', { "value": 41, "text": "外用藥" });
+			elt.tagsinput('add', { "value": 51, "text": "中藥" });
+		});
+	</script>
 </section>
 
 </html>

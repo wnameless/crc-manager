@@ -40,10 +40,52 @@ public class ContraindicationController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}/contraindications")
   String index(Model model, @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy cs = caseRepo.getOne(id);
 
-    Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
-    model.addAttribute("case", c);
+    // System.err.println("HAHA");
+    // List<CaseStudy> cases = caseRepo.findByStatus(Status.EXEC);
+    // for (CaseStudy c : cases) {
+    // RubyHash<Integer, RubyArray<Contraindication>> bundles = Ruby.Array
+    // .of(c.getContraindications()).groupBy(Contraindication::getBundle);
+    //
+    // for (Subject s : c.getSubjects()) {
+    // PatientContraindication pc = new PatientContraindication();
+    // pc.setNationalId(s.getNationalId());
+    // pc.setIrbName(c.getTrialName());
+    // pc.setIrbNumber(c.getIrbNumber());
+    // pc.setPatientId(s.getNationalId());
+    // pc.setStartDate(LocalDate.parse(c.getExpectedStartDate())
+    // .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    // pc.setEndDate(LocalDate.parse(c.getExpectedEndDate())
+    // .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    //
+    // if (bundles.containsKey(s.getContraindicationBundle())) {
+    // RubyArray<Contraindication> cds =
+    // bundles.get(s.getContraindicationBundle());
+    // for (Contraindication cd : cds) {
+    // List<Medicine> meds = medicineRepo
+    // .findByNameContainsOrEngNameContainsOrScientificNameContainsAllIgnoreCase(
+    // cd.getPhrase(), cd.getPhrase(), cd.getPhrase());
+    //
+    // for (Medicine med : meds) {
+    // if (cd.getTakekinds().contains(med.getTakekind())) {
+    // SimpleDrug sd = new SimpleDrug();
+    // sd.setPhrase(cd.getPhrase());
+    // sd.setAtcCode(med.getAtcCode1());
+    // sd.setHospitalCode(med.getHospitalCode());
+    // sd.setMemo(cd.getMemo());
+    // pc.getDrugs().add(sd);
+    // }
+    // }
+    // }
+    // }
+    //
+    // System.err.println(pc);
+    // }
+    // }
+
+    Ruby.Array.of(cs.getContraindications()).sortByǃ(cd -> cd.getBundle());
+    model.addAttribute("case", cs);
     return "contraindication/index";
   }
 
@@ -54,12 +96,7 @@ public class ContraindicationController {
       @RequestParam("phrase") String phrase,
       @RequestParam("takekinds") List<String> takekinds,
       @RequestParam("memo") String memo) {
-    CaseStudy c = caseRepo.getOne(id);
-
-    System.err.println(bundle);
-    System.err.println(phrase);
-    System.err.println(takekinds);
-    System.err.println(memo);
+    CaseStudy cs = caseRepo.getOne(id);
 
     if (!isNullOrEmpty(phrase)) {
       Contraindication cd = new Contraindication();
@@ -69,12 +106,12 @@ public class ContraindicationController {
       cd.setMemo(memo);
       contraindicationRepo.save(cd);
 
-      c.getContraindications().add(cd);
-      caseRepo.save(c);
+      cs.getContraindications().add(cd);
+      caseRepo.save(cs);
     }
 
-    Ruby.Array.of(c.getContraindications()).sortByǃ(cd -> cd.getBundle());
-    model.addAttribute("case", c);
+    Ruby.Array.of(cs.getContraindications()).sortByǃ(cd -> cd.getBundle());
+    model.addAttribute("case", cs);
     return "contraindication/index";
   }
 
