@@ -32,7 +32,7 @@ public class NewVisit {
 
   String room;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   LocalDate date;
 
   boolean contraindicationSuspected;
