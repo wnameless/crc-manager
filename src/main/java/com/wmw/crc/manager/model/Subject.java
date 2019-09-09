@@ -110,6 +110,9 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
   @JsonPopulatedKey("taiwanId")
   String nationalId;
 
+  @JsonPopulatedKey("mrn")
+  String patientId;
+
   Integer contraindicationBundle = 1;
 
   @ManyToOne

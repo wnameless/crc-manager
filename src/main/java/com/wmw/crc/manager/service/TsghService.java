@@ -94,11 +94,11 @@ public class TsghService {
     return res.body().getData();
   }
 
-  public ResponseBody addPatientContraindication(PatientContraindication pc)
-      throws IOException {
+  public Response<ResponseBody> addPatientContraindication(
+      PatientContraindication pc) throws IOException {
     Call<ResponseBody> call = tsghApi.addPatientContraindication(pc);
     Response<ResponseBody> res = call.execute();
-    return res.body();
+    return res;
   }
 
   public AdvOpt<Integer> refreshMedicines() {
@@ -145,7 +145,7 @@ public class TsghService {
         pc.setNationalId(s.getNationalId());
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
-        pc.setPatientId(s.getNationalId());
+        pc.setPatientId(s.getPatientId());
         pc.setStartDate(LocalDate.parse(c.getExpectedStartDate())
             .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         pc.setEndDate(LocalDate.parse(c.getExpectedEndDate())
@@ -173,8 +173,15 @@ public class TsghService {
         }
 
         try {
-          addPatientContraindication(pc);
-          crr.increaseSuccessCount();
+          Response<ResponseBody> res = addPatientContraindication(pc);
+
+          if (res.isSuccessful()) {
+            crr.increaseSuccessCount();
+          } else {
+            log.error("TsghService#addPatientContraindication for patient("
+                + s.getNationalId() + ") failed.");
+            crr.increaseFailedCount();
+          }
         } catch (IOException e) {
           log.error("TsghService#addPatientContraindication for patient("
               + s.getNationalId() + ") failed.", e);
