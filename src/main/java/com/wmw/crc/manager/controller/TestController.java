@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wmw.crc.manager.service.CrcManagerService;
 import com.wmw.crc.manager.service.TsghService;
 
 @Profile("test")
@@ -30,6 +31,9 @@ public class TestController {
 
   @Autowired
   TsghService tsghService;
+
+  @Autowired
+  CrcManagerService crcManagerService;
 
   @PreAuthorize("@perm.isAdmin()")
   @GetMapping("test/medicines/refresh")
@@ -43,6 +47,13 @@ public class TestController {
   @ResponseBody
   String refreshContraindications() {
     return tsghService.refreshContraindications().getMessage();
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("test/contraindications/tester")
+  @ResponseBody
+  String tester() {
+    return "tester";
   }
 
 }
