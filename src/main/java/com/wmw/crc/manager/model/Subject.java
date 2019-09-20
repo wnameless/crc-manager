@@ -19,6 +19,7 @@ import static com.google.common.base.Charsets.UTF_8;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -119,12 +120,12 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
   @JoinTable(name = "case_subject",
       joinColumns = { @JoinColumn(name = "subject_id") },
       inverseJoinColumns = { @JoinColumn(name = "case_id") })
-  private CaseStudy caseStudy;
+  CaseStudy caseStudy;
 
   @DiffIgnore
   @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL,
       orphanRemoval = true, fetch = FetchType.EAGER)
-  List<Visit> visits;
+  List<Visit> visits = new ArrayList<>();
 
   public long unreviewedVisits() {
     return visits.stream().filter(v -> !v.isReviewed()).count();
