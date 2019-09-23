@@ -77,7 +77,7 @@ public class SubjectController {
   ExcelSubjectUploadService uploadService;
 
   @Autowired
-  TsghService tsghApi;
+  TsghService tsghService;
 
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
@@ -325,7 +325,7 @@ public class SubjectController {
       @PathVariable("nationalId") String nationalId) {
     Patient patient;
     try {
-      patient = tsghApi.findPatientById(nationalId);
+      patient = tsghService.findPatientById(nationalId);
       patient.setNationalId(nationalId);
     } catch (IOException e) {
       log.error("Patient seaching failed!", e);
