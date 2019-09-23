@@ -58,7 +58,12 @@ public class TsghServiceTestImpl implements TsghService {
 
   @Override
   public Patient findPatientById(String nationalId) throws IOException {
-    return null;
+    Patient patient = new Patient();
+
+    patient.setNationalId(nationalId);
+    patient.setBirthday("19800101");
+
+    return patient;
   }
 
   @Override

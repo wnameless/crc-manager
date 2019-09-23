@@ -4,4 +4,4 @@
 /.settings
 .DS_Store
 *.db
-*.log
+crcmanager.log*
