@@ -78,12 +78,20 @@
                             }
                         }
                         if (patient.birthday) {
-                            let year = patient.birthday.substr(0, 3);
-                            year = parseInt(year) + 1911;
-                            let month = patient.birthday.substr(3, 2);
-                            let day = patient.birthday.substr(5, 2);
+                            if (patient.birthday.length == 7) {
+                                let year = patient.birthday.substr(0, 3);
+                                year = parseInt(year) + 1911;
+                                let month = patient.birthday.substr(3, 2);
+                                let day = patient.birthday.substr(5, 2);
 
-                            formData.birthDate = `${year}-${month}-${day}`;
+                                formData.birthDate = `${year}-${month}-${day}`;
+                            } else if (patient.birthday.length == 8) {
+                                let year = patient.birthday.substr(0, 4);
+                                let month = patient.birthday.substr(4, 2);
+                                let day = patient.birthday.substr(6, 2);
+
+                                formData.birthDate = `${year}-${month}-${day}`;
+                            }
                             // $('#root_birthDate').val(`${year}-${month}-${day}`);
                         }
                         if (patient.phone) {
@@ -96,11 +104,11 @@
                         }
 
                         rjsfOpt = Object.assign(rjsfOpt, {
-                        formData: formData
-                    });
+                            formData: formData
+                        });
 
-                    ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                        document.getElementById('jsfForm'));
+                        ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
+                            document.getElementById('jsfForm'));
                     });
             });
         });
