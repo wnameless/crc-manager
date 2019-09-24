@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.mail.SimpleMailMessage;
@@ -47,6 +48,9 @@ public class TsghApiController {
   @Autowired
   JavaMailSender emailSender;
 
+  @Value("${contraindication.manager.mail}")
+  String contraindicationManagerMail;
+
   @Autowired
   Environment env;
 
@@ -61,7 +65,7 @@ public class TsghApiController {
       visit.setSubject(s);
       visitRepo.save(visit);
 
-      String email1 = s.getCaseStudy().getPiEmail1();
+      // String email1 = s.getCaseStudy().getPiEmail1();
 
       if (env.acceptsProfiles(Profiles.of("email"))) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -75,8 +79,8 @@ public class TsghApiController {
             + "ContraindicationSuspected: "
             + visit.isContraindicationSuspected() + "\n" //
         );
-        if (Strings.isNotBlank(email1)) {
-          message.setTo(email1);
+        if (Strings.isNotBlank(contraindicationManagerMail)) {
+          message.setTo(contraindicationManagerMail);
           emailSender.send(message);
         }
       }
