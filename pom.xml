@@ -13,9 +13,9 @@
 	</parent>
 
 	<properties>
-		<keycloak.version>4.8.3.Final</keycloak.version>
-		<resteasy.version>3.6.2.Final</resteasy.version>
-		<retrofit.version>2.5.0</retrofit.version>
+		<keycloak.version>8.0.1</keycloak.version>
+		<resteasy.version>3.9.3.Final</resteasy.version>
+		<retrofit.version>2.7.0</retrofit.version>
 	</properties>
 
 	<repositories>

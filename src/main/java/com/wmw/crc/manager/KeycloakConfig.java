@@ -21,6 +21,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.keycloak.adapters.springsecurity.filter.QueryParamPresenceRequestMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.wmw.crc.manager.security.CustomKeycloakWebSecurityConfigurerAdapter;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
-public class KeycloakConfig extends CustomKeycloakWebSecurityConfigurerAdapter {
+public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   @Bean
   @Override
@@ -89,7 +88,7 @@ public class KeycloakConfig extends CustomKeycloakWebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
+  public static KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
     return new KeycloakSpringBootConfigResolver();
   }
 
