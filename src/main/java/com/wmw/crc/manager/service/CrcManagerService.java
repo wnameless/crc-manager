@@ -19,21 +19,43 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.QSubject;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 
 @Service
 public class CrcManagerService {
 
+  @Autowired
+  CaseStudyRepository caseRepo;
+
   @PersistenceContext
   EntityManager em;
+
+  public Iterable<CaseStudy> getCasesBySession(Authentication auth,
+      HttpSession session) {
+    return caseRepo.findByUserAndStatus(auth,
+        (CaseStudy.Status) session.getAttribute("CASES_STATUS"));
+  }
+
+  public Page<CaseStudy> getCasesBySession(Authentication auth,
+      HttpSession session, Pageable pageable) {
+    return caseRepo.findByUserAndStatus(auth,
+        (CaseStudy.Status) session.getAttribute("CASES_STATUS"), pageable);
+  }
 
   public AdvOpt<List<Subject>> findExecSubjects(String nationalId) {
     JPAQuery<Subject> query = new JPAQuery<>(em);

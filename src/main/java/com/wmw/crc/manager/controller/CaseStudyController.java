@@ -25,6 +25,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -44,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.service.CrcManagerService;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -76,20 +80,29 @@ public class CaseStudyController {
   @Autowired
   CaseStudyRepository caseRepo;
 
+  @Autowired
+  CrcManagerService crcManagerService;
+
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases/index")
-  String index(HttpSession session, Authentication auth, Model model) {
-    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
+  String index(HttpSession session, Authentication auth, Model model,
+      @PageableDefault(sort = "trialName") Pageable pageable) {
+    Iterable<CaseStudy> cases =
+        crcManagerService.getCasesBySession(auth, session);
+    Page<CaseStudy> page =
+        crcManagerService.getCasesBySession(auth, session, pageable);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
+    model.addAttribute("page", page);
     return "cases/index";
   }
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/cases")
   String list(HttpSession session, Authentication auth, Model model) {
-    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases =
+        crcManagerService.getCasesBySession(auth, session);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
@@ -186,7 +199,8 @@ public class CaseStudyController {
     c.setFormData(mapper.readTree(formData));
     caseRepo.save(c);
 
-    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases =
+        crcManagerService.getCasesBySession(auth, session);
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "cases/list :: list";
@@ -199,16 +213,11 @@ public class CaseStudyController {
     CaseStudy c = caseRepo.getOne(id);
     caseRepo.delete(c);
 
-    Iterable<CaseStudy> cases = getCasesBySession(auth, session);
+    Iterable<CaseStudy> cases =
+        crcManagerService.getCasesBySession(auth, session);
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItems", cases);
     return "redirect:/cases/index";
-  }
-
-  private Iterable<CaseStudy> getCasesBySession(Authentication auth,
-      HttpSession session) {
-    return caseRepo.findByUserAndStatus(auth,
-        (CaseStudy.Status) session.getAttribute("CASES_STATUS"));
   }
 
 }

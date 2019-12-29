@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.javers.spring.annotation.JaversSpringDataAuditable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.security.core.Authentication;
@@ -133,6 +135,26 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         isStatus.and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)));
   }
 
+  default Page<CaseStudy> findByUserAndStatus(Authentication auth,
+      CaseStudy.Status status, Pageable pageable) {
+    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
+      return findByStatus(status, pageable);
+    }
+
+    String username = auth.getName();
+    QCaseStudy qCase = QCaseStudy.caseStudy;
+    BooleanExpression isStatus = qCase.status.eq(status);
+    BooleanExpression isOwner = qCase.owner.eq(username);
+    BooleanExpression hasManager = qCase.managers.contains(username);
+    BooleanExpression hasEditor = qCase.editors.contains(username);
+    BooleanExpression hasViewer = qCase.viewers.contains(username);
+    return findAll(
+        isStatus.and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)),
+        pageable);
+  }
+
   default Iterable<CaseStudy> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
       String username1, String username2, String username3, String username4) {
     QCaseStudy qCase = QCaseStudy.caseStudy;
@@ -144,6 +166,8 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
   }
 
   List<CaseStudy> findByStatus(CaseStudy.Status status);
+
+  Page<CaseStudy> findByStatus(CaseStudy.Status status, Pageable pageable);
 
   CaseStudy findByIrbNumber(String irbNumber);
 
