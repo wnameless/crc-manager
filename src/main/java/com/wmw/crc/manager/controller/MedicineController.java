@@ -16,11 +16,13 @@
 package com.wmw.crc.manager.controller;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.repository.MedicineRepository;
 
@@ -31,7 +33,7 @@ public class MedicineController {
   private MedicineRepository medcineRepo;
 
   @GetMapping("/data/medicines")
-  public DataTablesOutput<Medicine> getUsers(@Valid DataTablesInput input) {
+  public DataTablesOutput<Medicine> getMedicines(@Valid DataTablesInput input) {
     return medcineRepo.findAll(input);
   }
 
