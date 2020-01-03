@@ -18,8 +18,10 @@ package com.wmw.crc.manager.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.Locale;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -55,7 +58,7 @@ public class CaseStudyOperationController {
     c.setStatus(CaseStudy.Status.fromString(status));
     caseRepo.save(c);
 
-    return "redirect:/cases/index?" + currentStatus;
+    return "redirect:/cases?" + currentStatus;
   }
 
   @PreAuthorize("@perm.canAssign()")
@@ -75,7 +78,7 @@ public class CaseStudyOperationController {
     kase.setStatus(Status.EXEC);
     caseRepo.save(kase);
 
-    return "redirect:/cases/index?new";
+    return "redirect:/cases?new";
   }
 
   @PreAuthorize("@perm.canManage(#id)")

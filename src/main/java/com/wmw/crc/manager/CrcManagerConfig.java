@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 
@@ -35,6 +36,11 @@ public class CrcManagerConfig {
     // For CSIS API compatibility
     builder.featuresToEnable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
     return builder;
+  }
+
+  @Bean
+  public SpringDataDialect springDataDialect() {
+    return new SpringDataDialect();
   }
 
 }

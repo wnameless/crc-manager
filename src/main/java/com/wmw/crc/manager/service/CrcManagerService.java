@@ -57,6 +57,13 @@ public class CrcManagerService {
         (CaseStudy.Status) session.getAttribute("CASES_STATUS"), pageable);
   }
 
+  public Page<CaseStudy> getCasesBySession(Authentication auth,
+      HttpSession session, String search, Pageable pageable) {
+    return caseRepo.findByUserAndStatus(auth,
+        (CaseStudy.Status) session.getAttribute("CASES_STATUS"), search,
+        pageable);
+  }
+
   public AdvOpt<List<Subject>> findExecSubjects(String nationalId) {
     JPAQuery<Subject> query = new JPAQuery<>(em);
     QSubject qSubject = QSubject.subject;

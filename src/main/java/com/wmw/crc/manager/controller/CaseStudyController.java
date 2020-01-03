@@ -15,12 +15,16 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
@@ -40,6 +44,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -54,29 +59,6 @@ import net.sf.rubycollect4j.Ruby;
 @Controller
 public class CaseStudyController {
 
-  @ModelAttribute("CASES_STATUS")
-  CaseStudy.Status currentStatus(HttpSession session,
-      @RequestParam Map<String, String> allRequestParams) {
-    if (allRequestParams.containsKey("new")) {
-      session.setAttribute("CASES_STATUS", CaseStudy.Status.NEW);
-      return CaseStudy.Status.NEW;
-    } else if (allRequestParams.containsKey("exec")) {
-      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
-      return CaseStudy.Status.EXEC;
-    } else if (allRequestParams.containsKey("end")) {
-      session.setAttribute("CASES_STATUS", CaseStudy.Status.END);
-      return CaseStudy.Status.END;
-    } else if (allRequestParams.containsKey("none")) {
-      session.setAttribute("CASES_STATUS", CaseStudy.Status.NONE);
-      return CaseStudy.Status.NONE;
-    }
-
-    if (session.getAttribute("CASES_STATUS") == null) {
-      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
-    }
-    return CaseStudy.Status.EXEC;
-  }
-
   @Autowired
   CaseStudyRepository caseRepo;
 
@@ -84,29 +66,27 @@ public class CaseStudyController {
   CrcManagerService crcManagerService;
 
   @PreAuthorize("@perm.isUser()")
-  @GetMapping("/cases/index")
-  String index(HttpSession session, Authentication auth, Model model,
-      @PageableDefault(sort = "trialName") Pageable pageable) {
-    Iterable<CaseStudy> cases =
-        crcManagerService.getCasesBySession(auth, session);
-    Page<CaseStudy> page =
-        crcManagerService.getCasesBySession(auth, session, pageable);
+  @RequestMapping(path = "/cases", method = { GET, PUT })
+  String index(HttpServletRequest req, HttpSession session, Authentication auth,
+      Model model, @PageableDefault(sort = "trialName") Pageable pageable,
+      @RequestParam(required = false) String search) {
+    Page<CaseStudy> page;
+    if (search != null && !search.isEmpty()) {
+      page =
+          crcManagerService.getCasesBySession(auth, session, search, pageable);
+    } else {
+      page = crcManagerService.getCasesBySession(auth, session, pageable);
+    }
 
     model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItems", cases);
+    model.addAttribute("pageable", pageable);
     model.addAttribute("page", page);
-    return "cases/index";
-  }
-
-  @PreAuthorize("@perm.isUser()")
-  @GetMapping("/cases")
-  String list(HttpSession session, Authentication auth, Model model) {
-    Iterable<CaseStudy> cases =
-        crcManagerService.getCasesBySession(auth, session);
-
-    model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItems", cases);
-    return "cases/list :: list";
+    model.addAttribute("search", search);
+    if (req.getMethod().equals("GET")) {
+      return "cases/index";
+    } else {
+      return "cases/list :: list";
+    }
   }
 
   @PreAuthorize("@perm.canRead(#id)")
@@ -191,7 +171,8 @@ public class CaseStudyController {
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id, @RequestBody String formData)
+      @PathVariable("id") Long id, @RequestBody String formData,
+      @PageableDefault(sort = "trialName") Pageable pageable)
       throws IOException {
     ObjectMapper mapper = new ObjectMapper();
 
@@ -199,25 +180,52 @@ public class CaseStudyController {
     c.setFormData(mapper.readTree(formData));
     caseRepo.save(c);
 
-    Iterable<CaseStudy> cases =
-        crcManagerService.getCasesBySession(auth, session);
+    Page<CaseStudy> page =
+        crcManagerService.getCasesBySession(auth, session, pageable);
+
     model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItems", cases);
+    model.addAttribute("pageable", pageable);
+    model.addAttribute("page", page);
     return "cases/list :: list";
   }
 
   @PreAuthorize("@perm.canDelete()")
   @GetMapping("/cases/{id}/delete")
   String delete(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id) {
+      @PathVariable("id") Long id,
+      @PageableDefault(sort = "trialName") Pageable pageable) {
     CaseStudy c = caseRepo.getOne(id);
     caseRepo.delete(c);
 
-    Iterable<CaseStudy> cases =
-        crcManagerService.getCasesBySession(auth, session);
+    Page<CaseStudy> page =
+        crcManagerService.getCasesBySession(auth, session, pageable);
     model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItems", cases);
-    return "redirect:/cases/index";
+    model.addAttribute("pageable", pageable);
+    model.addAttribute("page", page);
+    return "redirect:/cases";
+  }
+
+  @ModelAttribute("CASES_STATUS")
+  CaseStudy.Status currentStatus(HttpSession session,
+      @RequestParam Map<String, String> allRequestParams) {
+    if (allRequestParams.containsKey("new")) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.NEW);
+      return CaseStudy.Status.NEW;
+    } else if (allRequestParams.containsKey("exec")) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
+      return CaseStudy.Status.EXEC;
+    } else if (allRequestParams.containsKey("end")) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.END);
+      return CaseStudy.Status.END;
+    } else if (allRequestParams.containsKey("none")) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.NONE);
+      return CaseStudy.Status.NONE;
+    }
+
+    if (session.getAttribute("CASES_STATUS") == null) {
+      session.setAttribute("CASES_STATUS", CaseStudy.Status.EXEC);
+    }
+    return CaseStudy.Status.EXEC;
   }
 
 }

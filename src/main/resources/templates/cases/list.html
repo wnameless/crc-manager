@@ -2,7 +2,8 @@
 <div th:fragment="list">
     <div class="row">
         <div class="col-sm-4">
-            <div class="btn-group dropdown" sd:page-size-selector="dropdown"></div>
+            <div class="btn-group dropdown" sd:page-size-selector="dropdown">
+            </div>
         </div>
         <div class="col-sm-4">
             <div></div>
@@ -14,6 +15,10 @@
                     <button class="btn btn-default" type="button" onclick="searchEvent(this)"><span
                             class="fas fa-search"></span></button>
                 </span>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="resetEvent(this)"><span
+                            class="fas fa-eraser"></span></button>
+                </span>
             </div>
         </div>
     </div>
@@ -23,13 +28,23 @@
             <tr>
                 <th style="width: 70px;" th:text="#{ui.case.table.action}"></th>
                 <th style="width: 50px;"></th>
-                <th style="width: 130px;" th:text="#{ui.case.table.irbnumber}"></th>
+                <th style="width: 130px;">
+                    <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
+                </th>
                 <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
                 <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
-                <th th:text="#{ui.case.table.name.chinese}"></th>
-                <th class="text-center" style="width: 90px;" th:text="#{ui.case.table.pi}"></th>
-                <th style="width: 90px;" th:text="#{ui.case.table.time.start}"></th>
-                <th style="width: 90px;" th:text="#{ui.case.table.time.end}"></th>
+                <th>
+                    <a class="sorted" sd:pagination-sort="trialName" th:text="#{ui.case.table.name.chinese}"></a>
+                </th>
+                <th class="text-center" style="width: 90px;">
+                    <a class="sorted" sd:pagination-sort="piName" th:text="#{ui.case.table.pi}"></a>
+                </th>
+                <th style="width: 90px;">
+                    <a class="sorted" sd:pagination-sort="expectedStartDate" th:text="#{ui.case.table.time.start}"></a>
+                </th>
+                <th style="width: 90px;">
+                    <a class="sorted" sd:pagination-sort="expectedEndDate" th:text="#{ui.case.table.time.end}"></a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -51,7 +66,7 @@
                                     th:text="#{ui.case.table.action.dispatch}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a  th:href="@{'/cases/' + ${case.id} + '/status/none'}"
+                                <a th:href="@{'/cases/' + ${case.id} + '/status/none'}"
                                     th:text="#{ui.case.table.action.none}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
@@ -128,7 +143,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{'/bfr/index?search=' + ${search == null ? '' : search}}">
+                    sd:pagination-url="@{'/cases?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
@@ -148,6 +163,26 @@
 
         var editFormEvent = function (node) {
             axios.get($(node).attr('data-edit-path')).then(function (response) {
+                $('#jsf').html(response.data);
+            });
+        };
+
+        var searchEvent = function (node) {
+            axios.put('/cases', {}, {
+                params: {
+                    search: $('#search').val()
+                }
+            }).then(function (response) {
+                $('#jsf').html(response.data);
+            });
+        };
+
+        var resetEvent = function (node) {
+            axios.put('/cases', {}, {
+                params: {
+                    search: ''
+                }
+            }).then(function (response) {
                 $('#jsf').html(response.data);
             });
         };

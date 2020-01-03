@@ -155,6 +155,36 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         pageable);
   }
 
+  default Page<CaseStudy> findByUserAndStatus(Authentication auth,
+      CaseStudy.Status status, String search, Pageable pageable) {
+    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+
+    String username = auth.getName();
+    QCaseStudy qCase = QCaseStudy.caseStudy;
+    BooleanExpression isStatus = qCase.status.eq(status);
+    BooleanExpression isOwner = qCase.owner.eq(username);
+    BooleanExpression hasManager = qCase.managers.contains(username);
+    BooleanExpression hasEditor = qCase.editors.contains(username);
+    BooleanExpression hasViewer = qCase.viewers.contains(username);
+
+    BooleanExpression irbContains = qCase.irbNumber.contains(search);
+    BooleanExpression nameContains = qCase.trialName.contains(search);
+    BooleanExpression piContains = qCase.piName.contains(search);
+    BooleanExpression startDateContains =
+        qCase.expectedStartDate.contains(search);
+    BooleanExpression endDateContains = qCase.expectedEndDate.contains(search);
+    BooleanExpression searchCond = irbContains.or(nameContains).or(piContains)
+        .or(startDateContains).or(endDateContains);
+
+    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
+      return findAll(searchCond.and(isStatus), pageable);
+    }
+
+    return findAll(searchCond.and(isStatus)
+        .and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)), pageable);
+  }
+
   default Iterable<CaseStudy> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
       String username1, String username2, String username3, String username4) {
     QCaseStudy qCase = QCaseStudy.caseStudy;

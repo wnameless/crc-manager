@@ -70,12 +70,14 @@ public class TestDatabaseInitializer {
       c.setFormData(bjsf.get("formData"));
       caseRepo.save(c);
 
-      c = new CaseStudy();
-      url = Resources.getResource("json-schemas/test-data/6.json");
-      bjsf =
-          new ObjectMapper().readTree(Resources.toString(url, Charsets.UTF_8));
-      c.setFormData(bjsf.get("formData"));
-      caseRepo.save(c);
+      for (int i = 0; i <= 30; i++) {
+        c = new CaseStudy();
+        url = Resources.getResource("json-schemas/test-data/6.json");
+        bjsf = new ObjectMapper()
+            .readTree(Resources.toString(url, Charsets.UTF_8));
+        c.setFormData(bjsf.get("formData"));
+        caseRepo.save(c);
+      }
 
       Subject s = new Subject();
       s.setName("Tester");

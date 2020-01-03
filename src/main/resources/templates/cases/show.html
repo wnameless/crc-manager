@@ -2,7 +2,7 @@
 
 <div th:fragment="show">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl='/cases/index')"></h3>
+        <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl='/cases')"></h3>
 
         <hr>
 
@@ -41,7 +41,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = function (f) {
-                axios.get( /*[[${jsfPath}]]*/ null)
+                axios.put( /*[[${jsfPath}]]*/ null)
                     .then(function (response) {
                         $('#jsf').html(response.data);
                     });

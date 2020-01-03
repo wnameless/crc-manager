@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
-	<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/index')"></h3>
+	<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases')"></h3>
 	<hr>
 	<form th:if="${@perm.canWrite(case)}" id="batchDating" th:action="@{${jsfPath} + '/batchdating'}" method="POST">
 		<div class="form-row">
