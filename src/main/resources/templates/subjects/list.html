@@ -131,34 +131,33 @@
     <script type="text/javascript" th:inline="javascript">
 		function bs_input_file() {
 			$(".input-file")
-				.before(
-					function () {
-						if (!$(this).prev().hasClass('input-ghost')) {
-							var element = $(
-								'<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
-							element.attr('name', $(this).attr('name'));
-							element.change(function () {
-								element.next(element).find('input').val(
-									(element.val()).split('\\').pop());
-								$('#uploadBtn').removeAttr('disabled');
-							});
-							$(this).find("button.btn-choose").click(function () {
-								element.click();
-							});
-							$(this).find('input').css('cursor', 'pointer');
-							$(this).find('input').mousedown(function () {
-								$(this).parents('.input-file').prev().click();
-								return false;
-							});
-							return element;
-						}
-					});
+				.before(() => {
+					if (!$(this).prev().hasClass('input-ghost')) {
+						var element = $(
+							'<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
+						element.attr('name', $(this).attr('name'));
+						element.change(function () {
+							element.next(element).find('input').val(
+								(element.val()).split('\\').pop());
+							$('#uploadBtn').removeAttr('disabled');
+						});
+						$(this).find("button.btn-choose").click(() => {
+							element.click();
+						});
+						$(this).find('input').css('cursor', 'pointer');
+						$(this).find('input').mousedown(() => {
+							$(this).parents('.input-file').prev().click();
+							return false;
+						});
+						return element;
+					}
+				});
 		};
 
-		var checkboxEvent = function () {
+		var checkboxEvent = () => {
 			$('input[name="subjectIds[]"]').remove();
 
-			$('input:checked').each(function () {
+			$('input:checked').each(() => {
 				$('<input>').attr({
 					type: 'hidden',
 					name: 'subjectIds[]',
@@ -168,18 +167,20 @@
 		};
 
 		var showFormEvent = function (node) {
-			axios.get($(node).attr('data-show-path')).then(function (response) {
-				$('#jsf').html(response.data);
-			});
+			axios.get($(node).attr('data-show-path'))
+				.then((response) => {
+					$('#jsf').html(response.data);
+				});
 		};
 
-		var editFormEvent = function (node) {
-			axios.get($(node).attr('data-edit-path')).then(function (response) {
-				$('#jsf').html(response.data);
-			});
+		var editFormEvent = (node) => {
+			axios.get($(node).attr('data-edit-path'))
+				.then((response) => {
+					$('#jsf').html(response.data);
+				});
 		};
 
-		$(function () {
+		$(() => {
 			$('.selectpicker').selectpicker();
 
 			bs_input_file();
@@ -193,7 +194,7 @@
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
 				},
-				drawCallback: function (settings) {
+				drawCallback: (settings) => {
 					$('#jsfTable').reflowTable('update');
 				}
 			});
@@ -201,7 +202,7 @@
 			$('#jsfTable').reflowTable();
 		});
 
-		$('#subjectDateType').change(function () {
+		$('#subjectDateType').change(() => {
 			if (this.value == 'bundleNumber') {
 				$('#batchDateDiv').addClass('hidden');
 				$('#bundleNumberDiv').removeClass('hidden');

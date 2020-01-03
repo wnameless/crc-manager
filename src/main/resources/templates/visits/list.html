@@ -34,7 +34,7 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script th:inline="javascript">
-		$('.check-reviewed').change(function () {
+		$('.check-reviewed').change(() => {
 			let caseId =/*[[${case.id}]]*/ null;
 			let subjectId = /*[[${subject.id}]]*/ null;
 
@@ -51,7 +51,7 @@
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
 				},
-				drawCallback: function (settings) {
+				drawCallback: (settings) => {
 					$('#jsfTable').reflowTable('update');
 				}
 			});

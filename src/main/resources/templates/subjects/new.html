@@ -20,9 +20,9 @@
 
     <script type="text/javascript" th:inline="javascript">
         $(function () {
-            let onSubmit = function (f) {
+            let onSubmit = (f) => {
                 axios.post( /*[[${jsfPath}]]*/ null, f.formData)
-                    .then(function (response) {
+                    .then((response) => {
                         $('#jsf').html(response.data);
                     });
             };
@@ -35,7 +35,7 @@
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
 
-            $('#queryBtn').click(function () {
+            $('#queryBtn').click(() => {
                 if (!$('#nationalId').val()) {
                     $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
                     return;
@@ -43,7 +43,7 @@
 
                 let caseId = /*[[${case.id}]]*/ '';
                 axios.get('/cases/' + caseId + '/subjects/query/' + $('#nationalId').val())
-                    .then(function (response) {
+                    .then((response) => {
                         let patient = response.data;
                         let formData = rjsfOpt.formData;
 

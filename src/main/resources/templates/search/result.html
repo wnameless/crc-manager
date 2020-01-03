@@ -13,7 +13,8 @@
 		</thead>
 		<tbody>
 			<tr th:each="case : ${jsfItems}">
-				<td><a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm" th:href="@{'/download/case/' + ${case.id}}" th:inline="text">
+				<td><a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm"
+						th:href="@{'/download/case/' + ${case.id}}" th:inline="text">
 						[[#{ui.search.export}]]
 						<span class="fa fa-download"></span>
 					</a></td>
@@ -28,13 +29,13 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script type="text/javascript" th:inline="javascript">
-		$(function() {
+		$(() => {
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
 			$('#jsfTable').DataTable({
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
 				},
-				drawCallback: function(settings) {
+				drawCallback: function (settings) {
 					$('#jsfTable').reflowTable('update');
 				}
 			});

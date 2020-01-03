@@ -12,11 +12,11 @@
             <div class="input-group">
                 <input id="search" type="text" class="form-control" placeholder="Search for..." th:value="${search}">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="searchEvent(this)"><span
+                    <button class="btn btn-default" type="button" onclick="searchEvent($('#search').val())"><span
                             class="fas fa-search"></span></button>
                 </span>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="resetEvent(this)"><span
+                    <button class="btn btn-default" type="button" onclick="searchEvent('')"><span
                             class="fas fa-eraser"></span></button>
                 </span>
             </div>
@@ -155,39 +155,29 @@
 
     <script th:replace="fragments/notify :: notify" type="text/javascript"></script>
     <script type="text/javascript" th:inline="javascript">
-        var showFormEvent = function (node) {
+        var showFormEvent = (node) => {
             axios.get($(node).attr('data-show-path')).then(function (response) {
                 $('#jsf').html(response.data);
             });
         };
 
-        var editFormEvent = function (node) {
+        var editFormEvent = (node) => {
             axios.get($(node).attr('data-edit-path')).then(function (response) {
                 $('#jsf').html(response.data);
             });
         };
 
-        var searchEvent = function (node) {
+        var searchEvent = (q) => {
             axios.put('/cases', {}, {
                 params: {
-                    search: $('#search').val()
+                    search: q
                 }
-            }).then(function (response) {
+            }).then((response) => {
                 $('#jsf').html(response.data);
             });
         };
 
-        var resetEvent = function (node) {
-            axios.put('/cases', {}, {
-                params: {
-                    search: ''
-                }
-            }).then(function (response) {
-                $('#jsf').html(response.data);
-            });
-        };
-
-        $(function () {
+        $(() => {
             $('#jsfTable').reflowTable();
         });
     </script>

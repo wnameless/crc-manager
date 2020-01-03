@@ -20,12 +20,15 @@
                         <th:block th:each="file : ${files}">
                             <a th:unless="${file.value.value}" class="list-group-item list-group-item-action">
                                 [[${file.value.key}]]
-                                <label th:unless="${file.value.value}" class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
+                                <label th:unless="${file.value.value}"
+                                    class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
                             </a>
-                            <a th:if="${file.value.value}" th:href="@{/cases/{id}/files/{fileId}(id=${jsfItem.id}, fileId=${file.key})}"
+                            <a th:if="${file.value.value}"
+                                th:href="@{/cases/{id}/files/{fileId}(id=${jsfItem.id}, fileId=${file.key})}"
                                 class="list-group-item list-group-item-action">
                                 [[${file.value.key}]]
-                                <label th:if="${file.value.value}" class="pull-right">[[#{ui.case.files.download}]]</label>
+                                <label th:if="${file.value.value}"
+                                    class="pull-right">[[#{ui.case.files.download}]]</label>
                             </a>
                         </th:block>
                     </div>
@@ -39,10 +42,10 @@
     </div>
 
     <script type="text/javascript" th:inline="javascript">
-        $(function () {
-            let onSubmit = function (f) {
+        $(() => {
+            let onSubmit = (f) => {
                 axios.put( /*[[${jsfPath}]]*/ null)
-                    .then(function (response) {
+                    .then((response) => {
                         $('#jsf').html(response.data);
                     });
             };

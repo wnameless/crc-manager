@@ -10,8 +10,10 @@
                         <div class="input-group-btn">
                             <select id="field">
                                 <th:block th:each="propTtl : ${propertyTitles}">
-                                    <option th:if="${propTtl.value}" th:value="${propTtl.key}" th:text="${propTtl.value}"></option>
-                                    <option th:if="${propTtl.value == null}" th:value="${propTtl.key}" th:text="${propTtl.key}"></option>
+                                    <option th:if="${propTtl.value}" th:value="${propTtl.key}"
+                                        th:text="${propTtl.value}"></option>
+                                    <option th:if="${propTtl.value == null}" th:value="${propTtl.key}"
+                                        th:text="${propTtl.key}"></option>
                                 </th:block>
                             </select>
                         </div>
@@ -53,16 +55,16 @@
             });
 
             $('#search').click(
-                function () {
+                () => {
                     if ($('#tags').tagsinput('items').length == 0) return false;
 
-                    axios.post('/search', $('#tags').tagsinput('items')).then(
-                        function (response) {
+                    axios.post('/search', $('#tags').tagsinput('items'))
+                        .then((response) => {
                             $('#result').html(response.data);
                         });
                 });
 
-            $('#addCriterion').click(function () {
+            $('#addCriterion').click(() => {
                 if (!$('#value').val()) return false;
 
                 let type = $('#type option:selected').val();
