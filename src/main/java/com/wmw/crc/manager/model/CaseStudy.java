@@ -34,9 +34,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
@@ -56,6 +58,12 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
+@Table(indexes = { //
+    @Index(columnList = "irbNumber", unique = false),
+    @Index(columnList = "trialName", unique = false),
+    @Index(columnList = "piName", unique = false),
+    @Index(columnList = "expectedStartDate", unique = false),
+    @Index(columnList = "expectedEndDate", unique = false) })
 @Entity
 public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
 
