@@ -49,11 +49,4 @@ public class TestController {
     return tsghService.refreshContraindications().getMessage();
   }
 
-  @PreAuthorize("@perm.isAdmin()")
-  @GetMapping("test/contraindications/tester")
-  @ResponseBody
-  String tester() {
-    return "tester";
-  }
-
 }
