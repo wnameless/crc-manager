@@ -54,17 +54,16 @@
                 width: 'auto'
             });
 
-            $('#search').click(
-                () => {
-                    if ($('#tags').tagsinput('items').length == 0) return false;
+            $('#search').click(function () {
+                if ($('#tags').tagsinput('items').length == 0) return false;
 
-                    axios.post('/search', $('#tags').tagsinput('items'))
-                        .then((response) => {
-                            $('#result').html(response.data);
-                        });
-                });
+                axios.post('/search', $('#tags').tagsinput('items'))
+                    .then((response) => {
+                        $('#result').html(response.data);
+                    });
+            });
 
-            $('#addCriterion').click(() => {
+            $('#addCriterion').click(function () {
                 if (!$('#value').val()) return false;
 
                 let type = $('#type option:selected').val();

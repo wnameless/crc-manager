@@ -34,7 +34,7 @@
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script th:inline="javascript">
-		$('.check-reviewed').change(() => {
+		$('.check-reviewed').change(function () {
 			let caseId =/*[[${case.id}]]*/ null;
 			let subjectId = /*[[${subject.id}]]*/ null;
 

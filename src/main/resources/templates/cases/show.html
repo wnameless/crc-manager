@@ -42,7 +42,7 @@
     </div>
 
     <script type="text/javascript" th:inline="javascript">
-        $(() => {
+        $(function () {
             let onSubmit = (f) => {
                 axios.put( /*[[${jsfPath}]]*/ null)
                     .then((response) => {

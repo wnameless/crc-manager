@@ -129,35 +129,38 @@
 
     <script th:replace="fragments/notify :: notify"></script>
     <script type="text/javascript" th:inline="javascript">
-		function bs_input_file() {
-			$(".input-file")
-				.before(() => {
+		var bs_input_file = function () {
+			$('.input-file').before(
+				function () {
 					if (!$(this).prev().hasClass('input-ghost')) {
-						var element = $(
-							'<input type="file" class="input-ghost" style="visibility:hidden; height:0">');
+						var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
 						element.attr('name', $(this).attr('name'));
 						element.change(function () {
-							element.next(element).find('input').val(
-								(element.val()).split('\\').pop());
+							element.next(element).find('input').val((element.val()).split('\\').pop());
 							$('#uploadBtn').removeAttr('disabled');
 						});
-						$(this).find("button.btn-choose").click(() => {
+						$(this).find('button.btn-choose').click(function () {
 							element.click();
 						});
+						$(this).find('button.btn-reset').click(function () {
+							element.val(null);
+							$(this).parents('.input-file').find('input').val('');
+						});
 						$(this).find('input').css('cursor', 'pointer');
-						$(this).find('input').mousedown(() => {
+						$(this).find('input').mousedown(function () {
 							$(this).parents('.input-file').prev().click();
 							return false;
 						});
 						return element;
 					}
-				});
+				}
+			);
 		};
 
-		var checkboxEvent = () => {
+		var checkboxEvent = function () {
 			$('input[name="subjectIds[]"]').remove();
 
-			$('input:checked').each(() => {
+			$('input:checked').each(function () {
 				$('<input>').attr({
 					type: 'hidden',
 					name: 'subjectIds[]',
@@ -173,14 +176,14 @@
 				});
 		};
 
-		var editFormEvent = (node) => {
+		var editFormEvent = function (node) {
 			axios.get($(node).attr('data-edit-path'))
 				.then((response) => {
 					$('#jsf').html(response.data);
 				});
 		};
 
-		$(() => {
+		$(function () {
 			$('.selectpicker').selectpicker();
 
 			bs_input_file();
@@ -202,7 +205,7 @@
 			$('#jsfTable').reflowTable();
 		});
 
-		$('#subjectDateType').change(() => {
+		$('#subjectDateType').change(function () {
 			if (this.value == 'bundleNumber') {
 				$('#batchDateDiv').addClass('hidden');
 				$('#bundleNumberDiv').removeClass('hidden');
