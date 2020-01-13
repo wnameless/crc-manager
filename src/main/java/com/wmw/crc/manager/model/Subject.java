@@ -38,6 +38,7 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.JsonPopulatable;
@@ -56,19 +57,29 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
+  public static final JsonNode SCHEMA;
+  public static final JsonNode UI_SCHEMA;
+  static {
+    URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
+    JsonNode jsonNode = null;
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    SCHEMA = jsonNode;
+    url = Resources.getResource(JsonSchemaPath.subjectUISchema);
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    UI_SCHEMA = jsonNode;
+  }
+
   @Convert(converter = JsonNodeConverter.class)
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
-      .getObjectMapperFactory().get().createObjectNode();
-
-  @Convert(converter = JsonNodeConverter.class)
-  @Column(columnDefinition = "text")
-  protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
-      .getObjectMapperFactory().get().createObjectNode();
-
-  @Convert(converter = JsonNodeConverter.class)
-  @Column(columnDefinition = "text")
-  protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
   public enum Status {
@@ -131,21 +142,7 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
     return visits.stream().filter(v -> !v.isReviewed()).count();
   }
 
-  public Subject() {
-    try {
-      URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
-      String json = Resources.toString(url, UTF_8);
-      setSchema(FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory()
-          .get().readTree(json));
-
-      url = Resources.getResource(JsonSchemaPath.subjectUISchema);
-      json = Resources.toString(url, UTF_8);
-      setUiSchema(FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory()
-          .get().readTree(json));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+  public Subject() {}
 
   @Override
   public void setFormData(JsonNode formData) {
@@ -159,5 +156,20 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
     }
     setPopulatedJson(json);
   }
+
+  public JsonNode getSchema() {
+    return SCHEMA;
+  }
+
+  @Override
+  public JsonNode getUiSchema() {
+    return UI_SCHEMA;
+  }
+
+  @Override
+  public void setSchema(JsonNode schema) {}
+
+  @Override
+  public void setUiSchema(JsonNode uiSchema) {}
 
 }

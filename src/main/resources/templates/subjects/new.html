@@ -35,7 +35,7 @@
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
 
-            $('#queryBtn').click(() => {
+            $('#queryBtn').click(function () {
                 if (!$('#nationalId').val()) {
                     $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
                     return;
