@@ -199,16 +199,16 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
   Set<String> viewers = newLinkedHashSet();
 
   public CaseStudy() {
-    ObjectMapper mapper = new ObjectMapper();
-
-    try {
-      URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-      setSchema(mapper.readTree(Resources.toString(url, UTF_8)));
-      url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-      setUiSchema(mapper.readTree(Resources.toString(url, UTF_8)));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // ObjectMapper mapper = new ObjectMapper();
+    //
+    // try {
+    // URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
+    // setSchema(mapper.readTree(Resources.toString(url, UTF_8)));
+    // url = Resources.getResource(JsonSchemaPath.applicationUISchema);
+    // setUiSchema(mapper.readTree(Resources.toString(url, UTF_8)));
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
   }
 
   @Override
