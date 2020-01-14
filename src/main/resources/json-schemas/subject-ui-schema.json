@@ -16,5 +16,59 @@
     "ui:options": {
       "rows": 3
     }
+  },
+  "birthDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
+  },
+  "icfDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
+  },
+  "examDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
+  },
+  "accrualDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
+  },
+  "completeDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
+  },
+  "dropoutDate": {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      "yearsRange": [
+        1850,
+        2150
+      ]
+    }
   }
 }
