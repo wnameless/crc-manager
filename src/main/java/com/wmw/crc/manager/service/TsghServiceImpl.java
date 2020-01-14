@@ -34,7 +34,9 @@ import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
@@ -69,6 +71,12 @@ public class TsghServiceImpl implements TsghService {
 
   @Autowired
   MedicineRepository medicineRepo;
+
+  @Autowired
+  ContraindicationRepository contraindicationRepo;
+
+  @Autowired
+  SubjectRepository subjectRepo;
 
   @PostConstruct
   void postConstruct() {
@@ -138,10 +146,14 @@ public class TsghServiceImpl implements TsghService {
 
     List<CaseStudy> cases = caseRepo.findByStatus(Status.EXEC);
     for (CaseStudy c : cases) {
-      RubyHash<Integer, RubyArray<Contraindication>> bundles = Ruby.Array
-          .of(c.getContraindications()).groupBy(Contraindication::getBundle);
+      List<Contraindication> contraindications =
+          contraindicationRepo.findAllByCaseStudy(c);
 
-      for (Subject s : c.getSubjects()) {
+      RubyHash<Integer, RubyArray<Contraindication>> bundles =
+          Ruby.Array.of(contraindications).groupBy(Contraindication::getBundle);
+
+      List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+      for (Subject s : subjects) {
         PatientContraindication pc = new PatientContraindication();
         pc.setNationalId(s.getNationalId());
         pc.setIrbName(c.getTrialName());

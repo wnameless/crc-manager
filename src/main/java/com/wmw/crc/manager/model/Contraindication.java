@@ -23,6 +23,9 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,5 +47,11 @@ public class Contraindication {
   List<String> takekinds;
 
   String memo;
+
+  @ManyToOne
+  @JoinTable(name = "case_contraindication",
+      joinColumns = { @JoinColumn(name = "contraindication_id") },
+      inverseJoinColumns = { @JoinColumn(name = "case_id") })
+  CaseStudy caseStudy;
 
 }
