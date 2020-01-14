@@ -204,16 +204,16 @@
 			});
 
 			$('#jsfTable').reflowTable();
-		});
 
-		$('#subjectDateType').change(function () {
-			if (this.value == 'bundleNumber') {
-				$('#batchDateDiv').addClass('hidden');
-				$('#bundleNumberDiv').removeClass('hidden');
-			} else {
-				$('#batchDateDiv').removeClass('hidden');
-				$('#bundleNumberDiv').addClass('hidden');
-			}
+			$('#subjectDateType').change(function () {
+				if (this.value == 'bundleNumber') {
+					$('#batchDateDiv').addClass('hidden');
+					$('#bundleNumberDiv').removeClass('hidden');
+				} else {
+					$('#batchDateDiv').removeClass('hidden');
+					$('#bundleNumberDiv').addClass('hidden');
+				}
+			});
 		});
 	</script>
 </div>
