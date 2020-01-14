@@ -18,57 +18,21 @@
     }
   },
   "birthDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        1900,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   },
   "icfDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        2000,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   },
   "examDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        2000,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   },
   "accrualDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        2000,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   },
   "completeDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        2000,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   },
   "dropoutDate": {
-    "ui:widget": "alt-date",
-    "ui:options": {
-      "yearsRange": [
-        2000,
-        2100
-      ]
-    }
+    "ui:widget": "date"
   }
 }
