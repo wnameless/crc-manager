@@ -54,7 +54,7 @@ public class VisitController {
   @GetMapping("/cases/{caseId}/subjects/{id}/visits")
   String index(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
     Subject subject = Ruby.Array.of(subjects).find(s -> s.getId().equals(id));
 
@@ -69,7 +69,7 @@ public class VisitController {
   @ResponseBody
   Boolean checkReviewed(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("subjectId") Long subjectId, @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
     Subject subject =
         Ruby.Array.of(subjects).find(s -> s.getId().equals(subjectId));

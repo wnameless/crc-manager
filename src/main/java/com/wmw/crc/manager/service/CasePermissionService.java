@@ -20,8 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+
 import net.sf.rubycollect4j.Ruby;
 
 @Service("perm")
@@ -46,7 +48,7 @@ public class CasePermissionService {
   }
 
   public boolean canManage(Long caseId) {
-    CaseStudy kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.findById(caseId).get();
     return canManage(kase);
   }
 
@@ -63,7 +65,7 @@ public class CasePermissionService {
   }
 
   public boolean canRead(Long caseId) {
-    CaseStudy kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.findById(caseId).get();
     return canRead(kase);
   }
 
@@ -81,7 +83,7 @@ public class CasePermissionService {
   }
 
   public boolean canWrite(Long caseId) {
-    CaseStudy kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.findById(caseId).get();
     return canWrite(kase);
   }
 
@@ -116,7 +118,7 @@ public class CasePermissionService {
   }
 
   public boolean canDeleteSubject(Long caseId) {
-    CaseStudy kase = caseRepo.getOne(caseId);
+    CaseStudy kase = caseRepo.findById(caseId).get();
     return canDeleteSubject(kase);
   }
 

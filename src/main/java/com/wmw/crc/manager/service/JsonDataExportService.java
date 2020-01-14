@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.workbookaccessor.WorkbookWriter;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import net.sf.rubycollect4j.Ruby;
@@ -41,6 +42,9 @@ public class JsonDataExportService {
 
   @Autowired
   MessageSource messageSource;
+
+  @Autowired
+  SubjectRepository subjectRepo;
 
   public Workbook toExcel(CaseStudy kase, Locale locale) {
     JsonNode jsonSchema = kase.getSchema();
@@ -74,7 +78,7 @@ public class JsonDataExportService {
     JsonNode props = schema.get("properties");
     RubyArray<String> fieldNames = Ruby.Array.copyOf(props.fieldNames());
     ww.addRow(fieldNames.map(key -> props.get(key).get("title").textValue()));
-    for (Subject subject : kase.getSubjects()) {
+    for (Subject subject : subjectRepo.findAllByCaseStudy(kase)) {
       JsonNode data = subject.getFormData();
       ww.addRow(fieldNames.map(
           key -> data.has(key) ? JsonNodeUtils.val2String(data.get(key)) : ""));

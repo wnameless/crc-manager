@@ -74,7 +74,7 @@ public class SearchController {
   @ResponseBody
   HttpEntity<byte[]> download(@PathVariable("id") Long id, Locale locale)
       throws IOException {
-    CaseStudy kase = caseRepo.getOne(id);
+    CaseStudy kase = caseRepo.findById(id).get();
 
     Workbook wb = dataExport.toExcel(kase, locale);
 
