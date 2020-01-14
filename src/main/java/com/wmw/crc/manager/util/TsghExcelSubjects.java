@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.joda.time.DateTime;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
@@ -93,7 +94,10 @@ public class TsghExcelSubjects implements ExcelSubjects {
         subject.setFormData(FlattenedJsonTypeConfigurer.INSTANCE
             .getObjectMapperFactory().get().valueToTree(initData));
 
-        list.add(subject);
+        if (subject.getNationalId() != null
+            && !subject.getNationalId().trim().isEmpty()) {
+          list.add(subject);
+        }
       }
 
       subjects.addAll(list);
@@ -102,13 +106,29 @@ public class TsghExcelSubjects implements ExcelSubjects {
     }
   }
 
-  private String normalizeDate(String date) {
-    if (date == null || date.isEmpty()) return date;
-    return date.replace('/', '-');
+  private String normalizeDate(String dateStr) {
+    if (dateStr == null || dateStr.isEmpty()) return dateStr;
+
+    Date date = null;
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    try {
+      date = sdf.parse(dateStr);
+      if (!dateStr.equals(sdf.format(date))) {
+        date = null;
+      }
+    } catch (ParseException e) {
+      DateTime dt = new DateTime().withDate(1899, 12, 31)
+          .plusDays(Integer.parseInt(dateStr) - 1);
+      date = dt.toDate();
+    }
+
+    sdf = new SimpleDateFormat("yyyy-MM-dd");
+    return sdf.format(date);
   }
 
   private boolean isValidFormat(String value) {
-    if (value == null || value.isEmpty()) return true;
+    if (value == null || value.isEmpty() || value.matches("\\d+")) return true;
 
     Date date = null;
 
@@ -118,9 +138,7 @@ public class TsghExcelSubjects implements ExcelSubjects {
       if (!value.equals(sdf.format(date))) {
         date = null;
       }
-    } catch (ParseException e) {
-      date = new Date(Long.parseLong(value));
-    }
+    } catch (ParseException e) {}
 
     return date != null;
   }
