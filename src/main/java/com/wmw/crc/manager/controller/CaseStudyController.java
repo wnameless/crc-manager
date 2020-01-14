@@ -92,7 +92,7 @@ public class CaseStudyController {
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.findById(id).get();
 
     Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
     JsonNode schema = c.getSchema();
@@ -119,7 +119,7 @@ public class CaseStudyController {
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/cases/{id}/edit")
   String edit(Model model, @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.findById(id).get();
 
     Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
     JsonNode schema = c.getSchema();
@@ -148,7 +148,7 @@ public class CaseStudyController {
   @ResponseBody
   HttpEntity<byte[]> downloadFile(Model model, @PathVariable("id") Long id,
       @PathVariable("fileId") String fileId) {
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.findById(id).get();
 
     JsonNode formData = c.getFormData();
     String base64 = formData.get("requiredFiles").get(fileId).textValue();
@@ -176,7 +176,7 @@ public class CaseStudyController {
       throws IOException {
     ObjectMapper mapper = new ObjectMapper();
 
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.findById(id).get();
     c.setFormData(mapper.readTree(formData));
     caseRepo.save(c);
 
@@ -194,7 +194,7 @@ public class CaseStudyController {
   String delete(HttpSession session, Authentication auth, Model model,
       @PathVariable("id") Long id,
       @PageableDefault(sort = "trialName") Pageable pageable) {
-    CaseStudy c = caseRepo.getOne(id);
+    CaseStudy c = caseRepo.findById(id).get();
     caseRepo.delete(c);
 
     Page<CaseStudy> page =

@@ -11,7 +11,7 @@
 				<div class="panel-body" style="padding: 1px;">
 					<ul id="contraindicationList" class="list-group"
 						style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
-						<li class="list-group-item" th:each="cd : ${case.contraindications}">
+						<li class="list-group-item" th:each="cd : ${contraindications}">
 							<span class="text-primary">
 								[[#{ui.contraindication.bundle} + ': ']]
 							</span>

@@ -32,6 +32,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
@@ -183,17 +184,17 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
   // Permission
   String owner;
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_managers",
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> managers = newLinkedHashSet();
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_editors",
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> editors = newLinkedHashSet();
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_viewers",
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> viewers = newLinkedHashSet();

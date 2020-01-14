@@ -82,29 +82,31 @@ public class SubjectController {
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
   String index(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", c.getSubjects());
+    model.addAttribute("jsfItems", subjects);
     return "subjects/index";
   }
 
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects")
   String list(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", c.getSubjects());
+    model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/new")
   String newItem(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -116,15 +118,17 @@ public class SubjectController {
   @PostMapping("/cases/{caseId}/subjects")
   String create(Model model, @PathVariable("caseId") Long caseId,
       @RequestBody JsonNode formData, Locale locale) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     Subject s = new Subject();
     s.setFormData(formData);
-    if (findChildByValue(c.getSubjects(), s.getNationalId(),
+    if (findChildByValue(subjects, s.getNationalId(),
         Subject::getNationalId) == null) {
+      s.setCaseStudy(c);
       subjectRepo.save(s);
-      c.getSubjects().add(s);
-      caseRepo.save(c);
+
+      subjects = subjectRepo.findAllByCaseStudy(c);
     } else {
       model.addAttribute("message", messageSource.getMessage(
           "ctrl.subject.message.nationalid-existed", new Object[] {}, locale));
@@ -132,7 +136,7 @@ public class SubjectController {
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", c.getSubjects());
+    model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";
   }
 
@@ -141,14 +145,15 @@ public class SubjectController {
   String update(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @RequestBody JsonNode formData,
       Locale locale) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
-    Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
+    Subject subject = findChildById(subjects, id, Subject::getId);
     if (subject != null) {
       JsonNode jsonData = subject.getFormData();
       subject.setFormData(formData);
 
-      int count = Ruby.Array.of(c.getSubjects()).count(
+      int count = Ruby.Array.of(subjects).count(
           s -> Objects.equals(s.getNationalId(), subject.getNationalId()));
       if (count == 1) {
         subjectRepo.save(subject);
@@ -162,7 +167,7 @@ public class SubjectController {
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", c.getSubjects());
+    model.addAttribute("jsfItems", subjects);
     return "subjects/list :: list";
   }
 
@@ -170,8 +175,10 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}")
   String show(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(caseId);
-    Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+
+    Subject subject = findChildById(subjects, id, Subject::getId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -183,8 +190,10 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/edit")
   String edit(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(caseId);
-    Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+
+    Subject subject = findChildById(subjects, id, Subject::getId);
 
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects/" + id);
@@ -196,11 +205,12 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/delete")
   String delete(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.getOne(caseId);
-    Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
-    if (c.getSubjects().remove(subject)) {
-      caseRepo.save(c);
+    Subject subject = findChildById(subjects, id, Subject::getId);
+
+    if (subject != null) {
       subjectRepo.delete(subject);
     }
 
@@ -211,8 +221,10 @@ public class SubjectController {
   @GetMapping("/cases/{caseId}/subjects/{id}/status/{status}")
   String alterStatus(@PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id, @PathVariable("status") String status) {
-    CaseStudy c = caseRepo.getOne(caseId);
-    Subject subject = findChildById(c.getSubjects(), id, Subject::getId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+
+    Subject subject = findChildById(subjects, id, Subject::getId);
     subject.setStatus(Subject.Status.fromString(status));
     subjectRepo.save(subject);
 
@@ -224,10 +236,10 @@ public class SubjectController {
   String alterBundle(Model model, @PathVariable("caseId") Long caseId,
       @PathVariable("id") Long id,
       @PathVariable("bundleNumber") Integer bundleNumber) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
-    Subject subject =
-        Ruby.Array.of(c.getSubjects()).find(s -> s.getId().equals(id));
+    Subject subject = Ruby.Array.of(subjects).find(s -> s.getId().equals(id));
     if (subject != null) {
       subject.setContraindicationBundle(bundleNumber);
       subjectRepo.save(subject);
@@ -246,8 +258,8 @@ public class SubjectController {
           required = false) List<Long> subjectIds,
       @RequestParam(name = "bundleNumber") Integer bundleNumber,
       Locale locale) {
-    CaseStudy c = caseRepo.getOne(caseId);
-    List<Subject> subjects = c.getSubjects();
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", messageSource.getMessage(
@@ -286,19 +298,21 @@ public class SubjectController {
   String batchFile(RedirectAttributes redirAttrs,
       @PathVariable("caseId") Long caseId,
       @RequestParam("subjectFile") MultipartFile file) {
-    CaseStudy c = caseRepo.getOne(caseId);
+    CaseStudy c = caseRepo.findById(caseId).get();
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {
       List<String> nationalIds =
-          Ruby.Array.of(c.getSubjects()).map(Subject::getNationalId).toList();
+          Ruby.Array.of(subjects).map(Subject::getNationalId).toList();
       Map<Boolean, RubyArray<Subject>> groups = Ruby.Array.of(es.getSubjects())
           .groupBy(s -> nationalIds.contains(s.getNationalId())).toMap();
 
       if (groups.containsKey(true)) {
         for (Subject s : groups.get(true)) {
-          Subject target = findChildByValue(c.getSubjects(), s.getNationalId(),
+          Subject target = findChildByValue(subjects, s.getNationalId(),
               Subject::getNationalId);
+
           target.setFormData(s.getFormData());
           subjectRepo.save(target);
         }
@@ -307,9 +321,12 @@ public class SubjectController {
       if (groups.containsKey(false)) {
         List<Subject> targets =
             groups.get(false).uniq(s -> s.getNationalId()).toList();
+
+        for (Subject s : targets) {
+          s.setCaseStudy(c);
+        }
+
         subjectRepo.saveAll(targets);
-        c.getSubjects().addAll(targets);
-        caseRepo.save(c);
       }
     } else {
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
