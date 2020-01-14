@@ -21,8 +21,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        1900,
+        2100
       ]
     }
   },
@@ -30,8 +30,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        2000,
+        2100
       ]
     }
   },
@@ -39,8 +39,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        2000,
+        2100
       ]
     }
   },
@@ -48,8 +48,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        2000,
+        2100
       ]
     }
   },
@@ -57,8 +57,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        2000,
+        2100
       ]
     }
   },
@@ -66,8 +66,8 @@
     "ui:widget": "alt-date",
     "ui:options": {
       "yearsRange": [
-        1850,
-        2150
+        2000,
+        2100
       ]
     }
   }
