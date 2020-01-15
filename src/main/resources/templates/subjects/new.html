@@ -35,6 +35,11 @@
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
 
+            $('input[type="date"]').attr({
+                min: '1900-01-01',
+                max: '2100-12-31'
+            });
+
             $('#queryBtn').click(function () {
                 if (!$('#nationalId').val()) {
                     $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
