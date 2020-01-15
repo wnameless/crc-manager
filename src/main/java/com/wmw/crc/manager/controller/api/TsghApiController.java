@@ -35,6 +35,9 @@ import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.VisitRepository;
 import com.wmw.crc.manager.service.CrcManagerService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RequestMapping("/api/1.0/tsgh")
 @RestController
 public class TsghApiController {
@@ -81,7 +84,11 @@ public class TsghApiController {
         );
         if (Strings.isNotBlank(contraindicationManagerMail)) {
           message.setTo(contraindicationManagerMail);
-          emailSender.send(message);
+          try {
+            emailSender.send(message);
+          } catch (Exception e) {
+            log.error("Email CANNOT be sent", e);
+          }
         }
       }
     }
