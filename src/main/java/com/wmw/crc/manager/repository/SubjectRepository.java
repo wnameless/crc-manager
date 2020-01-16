@@ -30,4 +30,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
   List<Subject> findAllByCaseStudy(CaseStudy caseStudy);
 
+  Subject findByIdAndCaseStudy(Long id, CaseStudy caseStudy);
+
 }

@@ -23,13 +23,6 @@ public class EntityUtils {
 
   private EntityUtils() {}
 
-  public static <T> T findChildById(List<T> coll, Long id,
-      Function<T, Long> getId) {
-    coll = coll.stream().filter(t -> id.equals(getId.apply(t)))
-        .collect(Collectors.toList());
-    return coll.isEmpty() ? null : coll.get(0);
-  }
-
   public static <T, V> T findChildByValue(List<T> coll, V value,
       Function<T, V> getValue) {
     coll = coll.stream().filter(t -> value.equals(getValue.apply(t)))
