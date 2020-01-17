@@ -60,52 +60,52 @@ public class I18nService {
     }
   }
 
-  public String caseManagerAdded(Object[] args, Locale locale) {
+  public String caseManagerAdded(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.manager-added",
         args, locale);
   }
 
-  public String caseManagerRemoved(Object[] args, Locale locale) {
+  public String caseManagerRemoved(Locale locale, Object... args) {
     return messageSource.getMessage(
         "ctrl.case.operation.message.manager-removed", args, locale);
   }
 
-  public String caseEditorAdded(Object[] args, Locale locale) {
+  public String caseEditorAdded(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.editor-added",
         args, locale);
   }
 
-  public String caseEditorRemoved(Object[] args, Locale locale) {
+  public String caseEditorRemoved(Locale locale, Object... args) {
     return messageSource
         .getMessage("ctrl.case.operation.message.editor-removed", args, locale);
   }
 
-  public String caseViewerAdded(Object[] args, Locale locale) {
+  public String caseViewerAdded(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.viewer-added",
         args, locale);
   }
 
-  public String caseViewerRemoved(Object[] args, Locale locale) {
+  public String caseViewerRemoved(Locale locale, Object... args) {
     return messageSource
         .getMessage("ctrl.case.operation.message.viewer-removed", args, locale);
   }
 
-  public String subjectNationalIDExisted(Object[] args, Locale locale) {
+  public String subjectNationalIDExisted(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.subject.message.nationalid-existed",
         new Object[] {}, locale);
   }
 
-  public String subjectDropoutDateCannotClear(Object[] args, Locale locale) {
+  public String subjectDropoutDateCannotClear(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.subject.message.dropout-cannot-clear",
         new Object[] {}, locale);
   }
 
-  public String subjectDateUnselect(Object[] args, Locale locale) {
+  public String subjectDateUnselect(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.subject.message.date-unselect",
         new Object[] {}, locale);
   }
 
-  public String subjectUnselect(Object[] args, Locale locale) {
+  public String subjectUnselect(Locale locale, Object... args) {
     return messageSource.getMessage("ctrl.subject.message.subject-unselect",
         new Object[] {}, locale);
   }

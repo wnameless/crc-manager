@@ -124,8 +124,7 @@ public class SubjectController {
     s = subjectService.createSubject(c, s);
 
     if (s == null) {
-      model.addAttribute("message",
-          i18n.subjectNationalIDExisted(new Object[] {}, locale));
+      model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
     }
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -161,16 +160,14 @@ public class SubjectController {
 
     boolean dropoutSafe = subjectService.secureDropoutDate(subject, formData);
     if (!dropoutSafe) {
-      model.addAttribute("message",
-          i18n.subjectDropoutDateCannotClear(new Object[] {}, locale));
+      model.addAttribute("message", i18n.subjectDropoutDateCannotClear(locale));
     }
 
     if (subject != null && dropoutSafe) {
       subject = subjectService.updateSubject(c, subject, formData);
 
       if (subject == null) {
-        model.addAttribute("message",
-            i18n.subjectNationalIDExisted(new Object[] {}, locale));
+        model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
       }
     }
 
@@ -264,11 +261,9 @@ public class SubjectController {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
-      redirAttrs.addFlashAttribute("message",
-          i18n.subjectDateUnselect(new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
-      redirAttrs.addFlashAttribute("message",
-          i18n.subjectUnselect(new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message", i18n.subjectUnselect(locale));
     }
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null

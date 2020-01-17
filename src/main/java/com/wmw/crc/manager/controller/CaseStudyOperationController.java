@@ -98,8 +98,7 @@ public class CaseStudyOperationController {
     cs.getManagers().add(manager);
     caseRepo.save(cs);
 
-    model.addAttribute("message",
-        i18n.caseManagerAdded(new Object[] { manager }, locale));
+    model.addAttribute("message", i18n.caseManagerAdded(locale, manager));
     model.addAttribute("case", cs);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -112,8 +111,7 @@ public class CaseStudyOperationController {
     kase.getManagers().remove(manager);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        i18n.caseManagerRemoved(new Object[] { manager }, locale));
+    model.addAttribute("message", i18n.caseManagerRemoved(locale, manager));
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -127,8 +125,7 @@ public class CaseStudyOperationController {
     kase.getEditors().add(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        i18n.caseEditorAdded(new Object[] { editor }, locale));
+    model.addAttribute("message", i18n.caseEditorAdded(locale, editor));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -141,8 +138,7 @@ public class CaseStudyOperationController {
     kase.getEditors().remove(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        i18n.caseEditorRemoved(new Object[] { editor }, locale));
+    model.addAttribute("message", i18n.caseEditorRemoved(locale, editor));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -156,8 +152,7 @@ public class CaseStudyOperationController {
     cs.getViewers().add(viewer);
     caseRepo.save(cs);
 
-    model.addAttribute("message",
-        i18n.caseViewerAdded(new Object[] { viewer }, locale));
+    model.addAttribute("message", i18n.caseViewerAdded(locale, viewer));
     model.addAttribute("case", cs);
     return "cases/permission/viewer-list :: viewer-list";
   }
@@ -170,8 +165,7 @@ public class CaseStudyOperationController {
     cs.getViewers().remove(viewer);
     caseRepo.save(cs);
 
-    model.addAttribute("message",
-        i18n.caseViewerRemoved(new Object[] { viewer }, locale));
+    model.addAttribute("message", i18n.caseViewerRemoved(locale, viewer));
     model.addAttribute("case", cs);
     return "cases/permission/viewer-list :: viewer-list";
   }
