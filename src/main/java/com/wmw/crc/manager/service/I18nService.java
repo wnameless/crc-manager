@@ -16,10 +16,12 @@
 package com.wmw.crc.manager.service;
 
 import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+
 import com.wmw.crc.manager.model.Subject.Status;
 
 @Service("i18n")
@@ -56,6 +58,46 @@ public class I18nService {
         return messageSource.getMessage("ui.subject.status.prescreening",
             new Object[] {}, locale);
     }
+  }
+
+  public String caseManagerAdded(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.case.operation.message.manager-added",
+        args, locale);
+  }
+
+  public String caseManagerRemoved(Object[] args, Locale locale) {
+    return messageSource.getMessage(
+        "ctrl.case.operation.message.manager-removed", args, locale);
+  }
+
+  public String caseEditorAdded(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.case.operation.message.editor-added",
+        args, locale);
+  }
+
+  public String caseEditorRemoved(Object[] args, Locale locale) {
+    return messageSource
+        .getMessage("ctrl.case.operation.message.editor-removed", args, locale);
+  }
+
+  public String caseViewerAdded(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.case.operation.message.viewer-added",
+        args, locale);
+  }
+
+  public String caseViewerRemoved(Object[] args, Locale locale) {
+    return messageSource
+        .getMessage("ctrl.case.operation.message.viewer-removed", args, locale);
+  }
+
+  public String subjectNationalIDExisted(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.subject.message.nationalid-existed",
+        new Object[] {}, locale);
+  }
+
+  public String subjectDropoutDateCannotClear(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.subject.message.dropout-cannot-clear",
+        new Object[] {}, locale);
   }
 
 }
