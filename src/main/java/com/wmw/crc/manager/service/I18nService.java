@@ -100,4 +100,14 @@ public class I18nService {
         new Object[] {}, locale);
   }
 
+  public String subjectDateUnselect(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.subject.message.date-unselect",
+        new Object[] {}, locale);
+  }
+
+  public String subjectUnselect(Object[] args, Locale locale) {
+    return messageSource.getMessage("ctrl.subject.message.subject-unselect",
+        new Object[] {}, locale);
+  }
+
 }

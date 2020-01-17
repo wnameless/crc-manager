@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -66,9 +65,6 @@ public class SubjectController {
 
   @Autowired
   SubjectRepository subjectRepo;
-
-  @Autowired
-  MessageSource messageSource;
 
   @Autowired
   ExcelSubjectUploadService uploadService;
@@ -268,11 +264,11 @@ public class SubjectController {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
-      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
-          "ctrl.subject.message.date-unselect", new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message",
+          i18n.subjectDateUnselect(new Object[] {}, locale));
     } else if (subjectIds == null) {
-      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
-          "ctrl.subject.message.subject-unselect", new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message",
+          i18n.subjectUnselect(new Object[] {}, locale));
     }
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null

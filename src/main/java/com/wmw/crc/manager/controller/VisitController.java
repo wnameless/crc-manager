@@ -18,7 +18,6 @@ package com.wmw.crc.manager.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,9 +45,6 @@ public class VisitController {
 
   @Autowired
   VisitRepository visitRepo;
-
-  @Autowired
-  MessageSource messageSource;
 
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/{id}/visits")

@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,9 +45,6 @@ public class CaseStudyOperationController {
 
   @Autowired
   KeycloakService keycloak;
-
-  @Autowired
-  MessageSource messageSource;
 
   @Autowired
   I18nService i18n;
