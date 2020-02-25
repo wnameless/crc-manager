@@ -31,6 +31,7 @@ import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
+import com.wmw.crc.manager.util.SubjectVisitUtils;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -56,7 +57,8 @@ public class VisitController {
 
     model.addAttribute("case", c);
     model.addAttribute("subject", subject);
-    model.addAttribute("visits", subject.getVisits());
+    model.addAttribute("visits",
+        SubjectVisitUtils.trimVisits(subject.getVisits()));
     return "visits/index";
   }
 

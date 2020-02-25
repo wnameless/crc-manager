@@ -48,6 +48,7 @@ import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
+import com.wmw.crc.manager.util.SubjectVisitUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -139,7 +140,8 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
   List<Visit> visits = new ArrayList<>();
 
   public long unreviewedVisits() {
-    return visits.stream().filter(v -> !v.isReviewed()).count();
+    return SubjectVisitUtils.trimVisits(visits).stream()
+        .filter(v -> !v.isReviewed()).count();
   }
 
   public Subject() {}
