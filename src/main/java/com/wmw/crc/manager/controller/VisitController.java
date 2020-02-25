@@ -18,7 +18,6 @@ package com.wmw.crc.manager.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +31,7 @@ import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
+import com.wmw.crc.manager.util.SubjectVisitUtils;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -47,9 +47,6 @@ public class VisitController {
   @Autowired
   VisitRepository visitRepo;
 
-  @Autowired
-  MessageSource messageSource;
-
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/{id}/visits")
   String index(Model model, @PathVariable("caseId") Long caseId,
@@ -60,7 +57,8 @@ public class VisitController {
 
     model.addAttribute("case", c);
     model.addAttribute("subject", subject);
-    model.addAttribute("visits", subject.getVisits());
+    model.addAttribute("visits",
+        SubjectVisitUtils.trimVisits(subject.getVisits()));
     return "visits/index";
   }
 

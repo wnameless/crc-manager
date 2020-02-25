@@ -22,11 +22,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public final class JsonNodeUtils {
+import lombok.experimental.UtilityClass;
 
-  private JsonNodeUtils() {}
+@UtilityClass
+public class JsonNodeUtils {
 
-  public static String findFirstAsString(JsonNode jn, String key) {
+  public String findFirstAsString(JsonNode jn, String key) {
     if (jn.isObject()) {
       if (jn.has(key)) {
         if (jn.get("name").isTextual()) {
@@ -53,7 +54,7 @@ public final class JsonNodeUtils {
     return "";
   }
 
-  public static List<String> splitValToList(JsonNode jv) {
+  public List<String> splitValToList(JsonNode jv) {
     List<String> vals = newArrayList();
 
     if (jv.isArray()) {
@@ -75,7 +76,7 @@ public final class JsonNodeUtils {
     return vals;
   }
 
-  public static String val2String(JsonNode val) {
+  public String val2String(JsonNode val) {
     return val.isTextual() ? val.textValue() : val.asText();
   }
 

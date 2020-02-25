@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.KeycloakService;
 
 @Controller
@@ -47,7 +47,7 @@ public class CaseStudyOperationController {
   KeycloakService keycloak;
 
   @Autowired
-  MessageSource messageSource;
+  I18nService i18n;
 
   @PreAuthorize("@perm.canManage(#id)")
   @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
@@ -73,10 +73,10 @@ public class CaseStudyOperationController {
   @RequestMapping(path = "/cases/{id}/assignment", method = POST)
   String assign(@PathVariable("id") Long id,
       @RequestParam("username") String username) {
-    CaseStudy kase = caseRepo.findById(id).get();
-    kase.setOwner(username);
-    kase.setStatus(Status.EXEC);
-    caseRepo.save(kase);
+    CaseStudy cs = caseRepo.findById(id).get();
+    cs.setOwner(username);
+    cs.setStatus(Status.EXEC);
+    caseRepo.save(cs);
 
     return "redirect:/cases?new";
   }
@@ -93,15 +93,13 @@ public class CaseStudyOperationController {
   @RequestMapping(path = "/cases/{id}/permission/managers", method = POST)
   String addManager(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
-    CaseStudy kase = caseRepo.findById(id).get();
+    CaseStudy cs = caseRepo.findById(id).get();
     String manager = body.get("manager").toString();
-    kase.getManagers().add(manager);
-    caseRepo.save(kase);
+    cs.getManagers().add(manager);
+    caseRepo.save(cs);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.manager-added",
-            new Object[] { manager }, locale));
-    model.addAttribute("case", kase);
+    model.addAttribute("message", i18n.caseManagerAdded(locale, manager));
+    model.addAttribute("case", cs);
     return "cases/permission/manager-list :: manager-list";
   }
 
@@ -113,9 +111,7 @@ public class CaseStudyOperationController {
     kase.getManagers().remove(manager);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.manager-removed",
-            new Object[] { manager }, locale));
+    model.addAttribute("message", i18n.caseManagerRemoved(locale, manager));
     model.addAttribute("case", kase);
     return "cases/permission/manager-list :: manager-list";
   }
@@ -129,9 +125,7 @@ public class CaseStudyOperationController {
     kase.getEditors().add(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.editor-added",
-            new Object[] { editor }, locale));
+    model.addAttribute("message", i18n.caseEditorAdded(locale, editor));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -144,9 +138,7 @@ public class CaseStudyOperationController {
     kase.getEditors().remove(editor);
     caseRepo.save(kase);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.editor-removed",
-            new Object[] { editor }, locale));
+    model.addAttribute("message", i18n.caseEditorRemoved(locale, editor));
     model.addAttribute("case", kase);
     return "cases/permission/editor-list :: editor-list";
   }
@@ -155,15 +147,13 @@ public class CaseStudyOperationController {
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = POST)
   String addViewer(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
-    CaseStudy kase = caseRepo.findById(id).get();
+    CaseStudy cs = caseRepo.findById(id).get();
     String viewer = body.get("viewer").toString();
-    kase.getViewers().add(viewer);
-    caseRepo.save(kase);
+    cs.getViewers().add(viewer);
+    caseRepo.save(cs);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.viewer-added",
-            new Object[] { viewer }, locale));
-    model.addAttribute("case", kase);
+    model.addAttribute("message", i18n.caseViewerAdded(locale, viewer));
+    model.addAttribute("case", cs);
     return "cases/permission/viewer-list :: viewer-list";
   }
 
@@ -171,14 +161,12 @@ public class CaseStudyOperationController {
   @RequestMapping(path = "/cases/{id}/permission/viewers", method = DELETE)
   String removeViewer(Model model, @PathVariable("id") Long id,
       @RequestParam("viewer") String viewer, Locale locale) {
-    CaseStudy kase = caseRepo.findById(id).get();
-    kase.getViewers().remove(viewer);
-    caseRepo.save(kase);
+    CaseStudy cs = caseRepo.findById(id).get();
+    cs.getViewers().remove(viewer);
+    caseRepo.save(cs);
 
-    model.addAttribute("message",
-        messageSource.getMessage("ctrl.case.operation.message.viewer-removed",
-            new Object[] { viewer }, locale));
-    model.addAttribute("case", kase);
+    model.addAttribute("message", i18n.caseViewerRemoved(locale, viewer));
+    model.addAttribute("case", cs);
     return "cases/permission/viewer-list :: viewer-list";
   }
 

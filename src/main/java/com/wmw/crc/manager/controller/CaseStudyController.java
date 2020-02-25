@@ -19,22 +19,17 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -49,12 +44,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CrcManagerService;
-
-import net.sf.rubycollect4j.Ruby;
 
 @Controller
 public class CaseStudyController {
@@ -70,45 +62,22 @@ public class CaseStudyController {
   String index(HttpServletRequest req, HttpSession session, Authentication auth,
       Model model, @PageableDefault(sort = "trialName") Pageable pageable,
       @RequestParam(required = false) String search) {
-    Page<CaseStudy> page;
-    if (search != null && !search.isEmpty()) {
-      page =
-          crcManagerService.getCasesBySession(auth, session, search, pageable);
-    } else {
-      page = crcManagerService.getCasesBySession(auth, session, pageable);
-    }
+    Page<CaseStudy> page =
+        crcManagerService.getCasesBySession(auth, session, search, pageable);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("pageable", pageable);
     model.addAttribute("page", page);
     model.addAttribute("search", search);
-    if (req.getMethod().equals("GET")) {
-      return "cases/index";
-    } else {
-      return "cases/list :: list";
-    }
+    return req.getMethod().equals("GET") ? "cases/index" : "cases/list :: list";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
     CaseStudy c = caseRepo.findById(id).get();
-
-    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
-    JsonNode schema = c.getSchema();
-    JsonNode formData = c.getFormData();
-    JsonNode fileNode =
-        schema.get("properties").get("requiredFiles").get("properties");
-    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
-      String fileTitle = fileNode.get(fileId).get("title").textValue();
-      JsonNode requiredFiles = formData.get("requiredFiles");
-      JsonNode requiredFile = null;
-      if (requiredFiles != null) {
-        requiredFile = requiredFiles.get(fileId);
-      }
-      files.put(fileId,
-          new AbstractMap.SimpleEntry<>(fileTitle, requiredFile != null));
-    }
+    Map<String, Entry<String, Boolean>> files =
+        crcManagerService.getFilesFromCaseStudy(c);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
@@ -121,21 +90,8 @@ public class CaseStudyController {
   String edit(Model model, @PathVariable("id") Long id) {
     CaseStudy c = caseRepo.findById(id).get();
 
-    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
-    JsonNode schema = c.getSchema();
-    JsonNode formData = c.getFormData();
-    JsonNode fileNode =
-        schema.get("properties").get("requiredFiles").get("properties");
-    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
-      String fileTitle = fileNode.get(fileId).get("title").textValue();
-      JsonNode requiredFiles = formData.get("requiredFiles");
-      JsonNode requiredFile = null;
-      if (requiredFiles != null) {
-        requiredFile = requiredFiles.get(fileId);
-      }
-      files.put(fileId,
-          new AbstractMap.SimpleEntry<>(fileTitle, requiredFile != null));
-    }
+    Map<String, Entry<String, Boolean>> files =
+        crcManagerService.getFilesFromCaseStudy(c);
 
     model.addAttribute("jsfPath", "/cases/" + id);
     model.addAttribute("jsfItem", c);
@@ -150,34 +106,17 @@ public class CaseStudyController {
       @PathVariable("fileId") String fileId) {
     CaseStudy c = caseRepo.findById(id).get();
 
-    JsonNode formData = c.getFormData();
-    String base64 = formData.get("requiredFiles").get(fileId).textValue();
-    String[] base64Array = base64.split(";");
-
-    String type = base64Array[0].substring(5);
-    String name = base64Array[1].substring(5);
-    String data = base64Array[2].substring(7);
-
-    byte[] dataByteArray = Base64.decodeBase64(data.getBytes());
-
-    HttpHeaders header = new HttpHeaders();
-    header.setContentType(MediaType.valueOf(type));
-    header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
-    header.setContentLength(dataByteArray.length);
-
-    return new HttpEntity<byte[]>(dataByteArray, header);
+    return crcManagerService.getDownloadableFile(c, fileId);
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/cases/{id}")
   String save(HttpSession session, Authentication auth, Model model,
-      @PathVariable("id") Long id, @RequestBody String formData,
+      @PathVariable("id") Long id, @RequestBody JsonNode formData,
       @PageableDefault(sort = "trialName") Pageable pageable)
       throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-
     CaseStudy c = caseRepo.findById(id).get();
-    c.setFormData(mapper.readTree(formData));
+    c.setFormData(formData);
     caseRepo.save(c);
 
     Page<CaseStudy> page =
@@ -199,6 +138,7 @@ public class CaseStudyController {
 
     Page<CaseStudy> page =
         crcManagerService.getCasesBySession(auth, session, pageable);
+
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("pageable", pageable);
     model.addAttribute("page", page);

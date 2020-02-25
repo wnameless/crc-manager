@@ -16,10 +16,12 @@
 package com.wmw.crc.manager.service;
 
 import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+
 import com.wmw.crc.manager.model.Subject.Status;
 
 @Service("i18n")
@@ -56,6 +58,56 @@ public class I18nService {
         return messageSource.getMessage("ui.subject.status.prescreening",
             new Object[] {}, locale);
     }
+  }
+
+  public String caseManagerAdded(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.case.operation.message.manager-added",
+        args, locale);
+  }
+
+  public String caseManagerRemoved(Locale locale, Object... args) {
+    return messageSource.getMessage(
+        "ctrl.case.operation.message.manager-removed", args, locale);
+  }
+
+  public String caseEditorAdded(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.case.operation.message.editor-added",
+        args, locale);
+  }
+
+  public String caseEditorRemoved(Locale locale, Object... args) {
+    return messageSource
+        .getMessage("ctrl.case.operation.message.editor-removed", args, locale);
+  }
+
+  public String caseViewerAdded(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.case.operation.message.viewer-added",
+        args, locale);
+  }
+
+  public String caseViewerRemoved(Locale locale, Object... args) {
+    return messageSource
+        .getMessage("ctrl.case.operation.message.viewer-removed", args, locale);
+  }
+
+  public String subjectNationalIDExisted(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.subject.message.nationalid-existed",
+        new Object[] {}, locale);
+  }
+
+  public String subjectDropoutDateCannotClear(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.subject.message.dropout-cannot-clear",
+        new Object[] {}, locale);
+  }
+
+  public String subjectDateUnselect(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.subject.message.date-unselect",
+        new Object[] {}, locale);
+  }
+
+  public String subjectUnselect(Locale locale, Object... args) {
+    return messageSource.getMessage("ctrl.subject.message.subject-unselect",
+        new Object[] {}, locale);
   }
 
 }

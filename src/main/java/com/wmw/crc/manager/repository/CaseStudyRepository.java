@@ -112,8 +112,8 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
 
     if (username.equals("super") || username.equals("admin")) return findAll();
 
-    return findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(username,
-        username, username, username);
+    return findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+        username, username, username, username);
   }
 
   default Iterable<CaseStudy> findByUserAndStatus(Authentication auth,
@@ -185,7 +185,7 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         .and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)), pageable);
   }
 
-  default Iterable<CaseStudy> findByOwnerEqualsOrManagersInOrEditorsInOrViewersIn(
+  default Iterable<CaseStudy> findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
       String username1, String username2, String username3, String username4) {
     QCaseStudy qCase = QCaseStudy.caseStudy;
     BooleanExpression isOwner = qCase.owner.eq(username1);

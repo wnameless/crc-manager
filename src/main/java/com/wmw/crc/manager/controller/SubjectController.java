@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -48,6 +47,7 @@ import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.ExcelSubjectUploadService;
+import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.SubjectService;
 import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
@@ -67,9 +67,6 @@ public class SubjectController {
   SubjectRepository subjectRepo;
 
   @Autowired
-  MessageSource messageSource;
-
-  @Autowired
   ExcelSubjectUploadService uploadService;
 
   @Autowired
@@ -77,6 +74,9 @@ public class SubjectController {
 
   @Autowired
   SubjectService subjectService;
+
+  @Autowired
+  I18nService i18n;
 
   @PreAuthorize("@perm.canRead(#caseId)")
   @GetMapping("/cases/{caseId}/subjects/index")
@@ -124,10 +124,8 @@ public class SubjectController {
     s = subjectService.createSubject(c, s);
 
     if (s == null) {
-      model.addAttribute("message", messageSource.getMessage(
-          "ctrl.subject.message.nationalid-existed", new Object[] {}, locale));
+      model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
     }
-
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", subjectRepo.findAllByCaseStudy(c));
@@ -162,18 +160,14 @@ public class SubjectController {
 
     boolean dropoutSafe = subjectService.secureDropoutDate(subject, formData);
     if (!dropoutSafe) {
-      model.addAttribute("message",
-          messageSource.getMessage("ctrl.subject.message.dropout-cannot-clear",
-              new Object[] {}, locale));
+      model.addAttribute("message", i18n.subjectDropoutDateCannotClear(locale));
     }
 
     if (subject != null && dropoutSafe) {
       subject = subjectService.updateSubject(c, subject, formData);
 
       if (subject == null) {
-        model.addAttribute("message",
-            messageSource.getMessage("ctrl.subject.message.nationalid-existed",
-                new Object[] {}, locale));
+        model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
       }
     }
 
@@ -267,11 +261,9 @@ public class SubjectController {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
-      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
-          "ctrl.subject.message.date-unselect", new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
-      redirAttrs.addFlashAttribute("message", messageSource.getMessage(
-          "ctrl.subject.message.subject-unselect", new Object[] {}, locale));
+      redirAttrs.addFlashAttribute("message", i18n.subjectUnselect(locale));
     }
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null
