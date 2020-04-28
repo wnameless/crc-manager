@@ -38,7 +38,7 @@ public class SubjectVisitUtils {
       datedVisits.put(v.getDate(), v);
     });
 
-    for (LocalDate key : datedVisits.keys()) {
+    for (LocalDate key : datedVisits.keySet()) {
       List<Visit> trimmedVisits = new ArrayList<>();
 
       boolean hasContraindication = false;
