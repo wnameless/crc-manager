@@ -30,10 +30,10 @@ import lombok.experimental.UtilityClass;
 public class SubjectVisitUtils {
 
   public Collection<Visit> trimVisits(List<Visit> visits) {
-    ListMultimap<LocalDate, Visit> datedVisits = ArrayListMultimap.create();
     ListMultimap<LocalDate, Visit> trimmedDatedVisits =
         ArrayListMultimap.create();
 
+    ListMultimap<LocalDate, Visit> datedVisits = ArrayListMultimap.create();
     visits.forEach(v -> {
       datedVisits.put(v.getDate(), v);
     });
