@@ -16,12 +16,10 @@
 package com.wmw.crc.manager.service;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -61,33 +59,26 @@ public class VisitService {
       BeanUtils.copyProperties(newVisit, visit);
       visit.setSubject(s);
       visitRepo.save(visit);
-
-      Set<String> emails = s.getCaseStudy().getEmails();
-
-      if (env.acceptsProfiles(Profiles.of("email")) && !emails.isEmpty()) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Contraindication Suspected Visit");
-        message.setText("Name: " + s.getName() + "\n" //
-            + "NationalID: " + s.getNationalId() + "\n" //
-            + "Date: " + visit.getDate() + "\n" //
-            + "Division: " + visit.getDivision() + "\n" //
-            + "Doctor: " + visit.getDoctor() + "\n" //
-            + "Room: " + visit.getRoom() + "\n" //
-            + "ContraindicationSuspected: "
-            + visit.isContraindicationSuspected() + "\n" //
-        );
-
-        for (String email : emails) {
-          message.setTo(email);
-          try {
-            emailSender.send(message);
-          } catch (Exception e) {
-            log.error("Email CANNOT be sent to " + email, e);
-          }
-        }
-      }
     }
+  }
 
+  public SimpleMailMessage createVisitEmail(Visit visit) {
+    SimpleMailMessage message = new SimpleMailMessage();
+
+    Subject s = visit.getSubject();
+    message.setSubject("Contraindication Suspected Visit");
+    message.setText("Name: " + s.getName() + "\n" //
+        + "NationalID: " + s.getNationalId() + "\n" //
+        + "Date: " + visit.getDate() + "\n" //
+        + "Division: " + visit.getDivision() + "\n" //
+        + "Doctor: " + visit.getDoctor() + "\n" //
+        + "Room: " + visit.getRoom() + "\n" //
+        + "ContraindicationSuspected: " + visit.isContraindicationSuspected()
+        + "\n" //
+        + "------------------------------" //
+    );
+
+    return message;
   }
 
 }

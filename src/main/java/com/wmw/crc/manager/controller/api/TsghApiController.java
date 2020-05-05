@@ -37,4 +37,21 @@ public class TsghApiController {
     return "Visit added";
   }
 
+  // @RequestMapping(path = "/visits", method = RequestMethod.GET)
+  // String addFakeVisit() {
+  // NewVisit newVisit = new NewVisit();
+  //
+  // newVisit.setIrbNumber("123456789");
+  // newVisit.setRoom("F");
+  // newVisit.setNationalId("A111222333");
+  // newVisit.setDoctor("Faker");
+  // newVisit.setDivision("Fake");
+  // newVisit.setContraindicationSuspected(false);
+  // newVisit.setDate(LocalDate.now().minusDays(1));
+  //
+  // visitService.addVisit(newVisit);
+  //
+  // return "Visit added";
+  // }
+
 }
