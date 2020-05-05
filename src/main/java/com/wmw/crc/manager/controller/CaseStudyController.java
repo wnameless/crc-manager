@@ -85,6 +85,19 @@ public class CaseStudyController {
     return "cases/show :: show";
   }
 
+  @PreAuthorize("@perm.canRead(#id)")
+  @GetMapping("/cases/{id}/index")
+  String showIndex(@PathVariable("id") Long id, Model model) {
+    CaseStudy c = caseRepo.findById(id).get();
+    Map<String, Entry<String, Boolean>> files =
+        crcManagerService.getFilesFromCaseStudy(c);
+
+    model.addAttribute("jsfPath", "/cases");
+    model.addAttribute("jsfItem", c);
+    model.addAttribute("files", files);
+    return "cases/show :: index";
+  }
+
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/cases/{id}/edit")
   String edit(Model model, @PathVariable("id") Long id) {

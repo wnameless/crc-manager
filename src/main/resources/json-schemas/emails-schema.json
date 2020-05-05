@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "listOfEmails": {
+      "type": "array",
+      "title": "禁忌用藥通知 Email List",
+      "items": {
+        "type": "string",
+        "format": "email",
+        "default": ""
+      }
+    }
+  }
+}

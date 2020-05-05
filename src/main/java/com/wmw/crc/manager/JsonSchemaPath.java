@@ -27,4 +27,6 @@ public final class JsonSchemaPath {
   public static final String subjectUISchema =
       "json-schemas/subject-ui-schema.json";
 
+  public static final String emailsSchema = "json-schemas/emails-schema.json";
+
 }
