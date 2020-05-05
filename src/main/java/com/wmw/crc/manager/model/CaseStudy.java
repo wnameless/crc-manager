@@ -21,6 +21,7 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -199,18 +200,12 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> viewers = newLinkedHashSet();
 
-  public CaseStudy() {
-    // ObjectMapper mapper = new ObjectMapper();
-    //
-    // try {
-    // URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-    // setSchema(mapper.readTree(Resources.toString(url, UTF_8)));
-    // url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-    // setUiSchema(mapper.readTree(Resources.toString(url, UTF_8)));
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-  }
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "case_emails",
+      joinColumns = @JoinColumn(name = "case_id"))
+  Set<String> emails = new LinkedHashSet<>();
+
+  public CaseStudy() {}
 
   @Override
   public void setFormData(JsonNode formData) {

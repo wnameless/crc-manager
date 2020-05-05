@@ -15,83 +15,24 @@
  */
 package com.wmw.crc.manager.controller.api;
 
-import java.util.List;
-
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.model.Visit;
-import com.wmw.crc.manager.repository.VisitRepository;
-import com.wmw.crc.manager.service.CrcManagerService;
+import com.wmw.crc.manager.service.VisitService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @RequestMapping("/api/1.0/tsgh")
 @RestController
 public class TsghApiController {
 
   @Autowired
-  CrcManagerService crcManagerService;
-
-  @Autowired
-  VisitRepository visitRepo;
-
-  @Autowired
-  JavaMailSender emailSender;
-
-  @Value("${contraindication.manager.mail}")
-  String contraindicationManagerMail;
-
-  @Autowired
-  Environment env;
+  VisitService visitService;
 
   @RequestMapping(path = "/visits", method = RequestMethod.POST)
   String addVisit(@RequestBody NewVisit newVisit) {
-    List<Subject> subjects =
-        crcManagerService.findExecSubjects(newVisit.getNationalId()).get();
-
-    for (Subject s : subjects) {
-      Visit visit = new Visit();
-      BeanUtils.copyProperties(newVisit, visit);
-      visit.setSubject(s);
-      visitRepo.save(visit);
-
-      // String email1 = s.getCaseStudy().getPiEmail1();
-
-      if (env.acceptsProfiles(Profiles.of("email"))) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Contraindication Suspected");
-        message.setText("Name: " + s.getName() + "\n" //
-            + "NationalID: " + s.getNationalId() + "\n" //
-            + "Date: " + visit.getDate() + "\n" //
-            + "Division: " + visit.getDivision() + "\n" //
-            + "Doctor: " + visit.getDoctor() + "\n" //
-            + "Room: " + visit.getRoom() + "\n" //
-            + "ContraindicationSuspected: "
-            + visit.isContraindicationSuspected() + "\n" //
-        );
-        if (Strings.isNotBlank(contraindicationManagerMail)) {
-          message.setTo(contraindicationManagerMail);
-          try {
-            emailSender.send(message);
-          } catch (Exception e) {
-            log.error("Email CANNOT be sent", e);
-          }
-        }
-      }
-    }
+    visitService.addVisit(newVisit);
 
     return "Visit added";
   }

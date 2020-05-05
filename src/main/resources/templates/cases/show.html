@@ -36,6 +36,10 @@
             </div>
         </div>
 
+        <hr th:if="${@perm.canWrite(jsfItem)}">
+
+        <a th:if="${@perm.canWrite(jsfItem)}" th:href="@{/cases/{id}/emails(id=${jsfItem.id})}" th:text="#{ui.case.emails}"></a>
+
         <hr>
 
         <div id="jsfForm"></div>
@@ -61,5 +65,17 @@
         });
     </script>
 </div>
+
+</html>
+
+<html th:fragment="index" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+
+<section layout:fragment="content">
+    <div class="container">
+        <div id="jsf">
+            <div th:replace="cases/show :: show"></div>
+        </div>
+    </div>
+</section>
 
 </html>
