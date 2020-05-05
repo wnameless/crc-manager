@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,8 +24,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.wmw.crc.manager.service.CrcManagerService;
 import com.wmw.crc.manager.service.TsghService;
+import com.wmw.crc.manager.service.VisitService;
 
 @Profile("test")
 @Controller
@@ -33,7 +35,7 @@ public class TestController {
   TsghService tsghService;
 
   @Autowired
-  CrcManagerService crcManagerService;
+  VisitService visitService;
 
   @PreAuthorize("@perm.isAdmin()")
   @GetMapping("test/medicines/refresh")
@@ -47,6 +49,13 @@ public class TestController {
   @ResponseBody
   String refreshContraindications() {
     return tsghService.refreshContraindications().getMessage();
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("test/visits/send")
+  @ResponseBody
+  List<String> sendVisitEmails() {
+    return visitService.sendVisitEmails();
   }
 
 }

@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -25,11 +26,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.wmw.crc.manager.controller.api.NewVisit;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
+import com.wmw.crc.manager.util.SubjectVisitUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.rubycollect4j.Ruby;
 
 @Slf4j
 @Service
@@ -40,6 +47,12 @@ public class VisitService {
 
   @Autowired
   CrcManagerService crcManagerService;
+
+  @Autowired
+  CaseStudyRepository caseStudyRepo;
+
+  @Autowired
+  SubjectRepository subjectRepo;
 
   @Autowired
   VisitRepository visitRepo;
@@ -79,6 +92,63 @@ public class VisitService {
     );
 
     return message;
+  }
+
+  public List<String> sendVisitEmails() {
+    List<String> results = new ArrayList<>();
+
+    List<CaseStudy> cases = caseStudyRepo.findByStatus(Status.EXEC);
+
+    for (CaseStudy c : cases) {
+      if (c.getEmails().isEmpty()) {
+        String msg = "No email list on CaseStudy[" + c.getTrialName() + "]";
+        results.add(msg);
+        log.info(msg);
+        continue;
+      }
+
+      List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+      List<String> messages = new ArrayList<>();
+      for (Subject s : subjects) {
+        if (s.unreviewedVisits() <= 0) continue;
+
+        for (Visit v : SubjectVisitUtils.trimVisits(s.getVisits())) {
+          if (v.isReviewed()) continue;
+
+          SimpleMailMessage message = createVisitEmail(v);
+          messages.add(message.getText());
+        }
+      }
+
+      if (messages.isEmpty()) {
+        String msg =
+            "No unreviewed visits on CaseStudy[" + c.getTrialName() + "]";
+        results.add(msg);
+        log.info(msg);
+      } else {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject(
+            "Contraindication Suspected Visits (" + messages.size() + ")");
+        message.setText(Ruby.Array.of(messages).join("\n"));
+        message.setTo(c.getEmails().toArray(new String[messages.size()]));
+
+        try {
+          emailSender.send(message);
+          String msg = "Email of " + messages.size()
+              + " visits has been sent to following addresses: " + c.getEmails()
+              + " on CaseStudy[" + c.getTrialName() + "]";
+          results.add(msg);
+          log.info(msg);
+        } catch (Exception e) {
+          String msg = "Failed to send visit email to following addresses: "
+              + c.getEmails() + " on CaseStudy[" + c.getTrialName() + "]";
+          results.add(msg);
+          log.error(msg, e);
+        }
+      }
+    }
+
+    return results;
   }
 
 }
