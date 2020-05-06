@@ -15,35 +15,6 @@
  */
 package com.wmw.crc.manager.util;
 
-import static org.junit.Assert.assertEquals;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.wmw.crc.manager.model.Visit;
-
 public class SubjectVisitUtilsTest {
-
-  @Test
-  public void testTrimVisits() {
-    List<Visit> visits = new ArrayList<>();
-
-    Visit visit = new Visit();
-    visit.setDate(LocalDate.now());
-    visit.setDivision("A");
-    visit.setDoctor("a");
-    visits.add(visit);
-
-    visit = new Visit();
-    visit.setDate(LocalDate.now());
-    visit.setDivision("B");
-    visit.setDoctor("b");
-    visits.add(visit);
-
-    assertEquals(1, SubjectVisitUtils.trimVisits(visits).size());
-  }
 
 }
