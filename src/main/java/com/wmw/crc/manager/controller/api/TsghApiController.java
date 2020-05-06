@@ -46,8 +46,8 @@ public class TsghApiController {
   // newVisit.setNationalId("A111222333");
   // newVisit.setDoctor("Faker");
   // newVisit.setDivision("Fake");
-  // newVisit.setContraindicationSuspected(false);
-  // newVisit.setDate(LocalDate.now().minusDays(1));
+  // newVisit.setContraindicationSuspected(true);
+  // newVisit.setDate(LocalDate.now());
   //
   // visitService.addVisit(newVisit);
   //

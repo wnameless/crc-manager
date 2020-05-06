@@ -33,7 +33,6 @@ import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
-import com.wmw.crc.manager.util.SubjectVisitUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
@@ -69,9 +68,21 @@ public class VisitService {
 
     for (Subject s : subjects) {
       Visit visit = new Visit();
-      BeanUtils.copyProperties(newVisit, visit);
-      visit.setSubject(s);
-      visitRepo.save(visit);
+      if (newVisit.isContraindicationSuspected()) {
+        BeanUtils.copyProperties(newVisit, visit);
+        visit.setSubject(s);
+        visitRepo.save(visit);
+      } else {
+        boolean isDuplicated = visitRepo
+            .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
+                s, newVisit.getDivision(), newVisit.getDoctor(),
+                newVisit.getRoom(), newVisit.getDate(), false);
+        if (!isDuplicated) {
+          BeanUtils.copyProperties(newVisit, visit);
+          visit.setSubject(s);
+          visitRepo.save(visit);
+        }
+      }
     }
   }
 
@@ -112,7 +123,7 @@ public class VisitService {
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
 
-        for (Visit v : SubjectVisitUtils.trimVisits(s.getVisits())) {
+        for (Visit v : s.getVisits()) {
           if (v.isReviewed()) continue;
 
           SimpleMailMessage message = createVisitEmail(v);
