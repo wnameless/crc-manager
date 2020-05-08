@@ -16,12 +16,12 @@
 package com.wmw.crc.manager.util;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +39,9 @@ import net.sf.rubycollect4j.Ruby;
 
 public class TsghExcelSubjects implements ExcelSubjects {
 
-  private static final List<String> titles = Ruby.Array
-      .of("一般病例號", "姓名", "病歷號碼", "生日", "電話號碼", "ID", "地址", "簽ICF日期", "體檢日期")
-      .freeze();
+  private static final List<String> titles =
+      Ruby.Array.of("一般病例號", "姓名", "病歷號碼", "篩選號碼", "受試號碼", "生日", "電話號碼", "ID",
+          "地址", "簽ICF日期", "體檢日期", "嚴重不良事件數").freeze();
 
   private Workbook wb;
   private List<Subject> subjects = newArrayList();
@@ -67,16 +67,22 @@ public class TsghExcelSubjects implements ExcelSubjects {
           return !titles.contains(k);
         }).toMap();
 
-        if (!isValidFormat(row.get("生日")) || !isValidFormat(row.get("簽ICF日期"))
-            || !isValidFormat(row.get("體檢日期"))) {
+        if (!isValidDate(row.get("生日")) || !isValidDate(row.get("簽ICF日期"))
+            || !isValidDate(row.get("體檢日期"))) {
           errorMessage = "存在不符合格式日期";
           return;
         }
+        if (!isValidInteger(row.get("嚴重不良事件數"))) {
+          errorMessage = "存在不符合格式數字";
+          return;
+        }
 
-        Map<String, String> initData = newHashMap();
+        Map<String, Object> initData = new HashMap<>();
         initData.put("mrn", row.get("一般病例號"));
         initData.put("lastname", row.get("姓名"));
         initData.put("subjectId", row.get("病歷號碼"));
+        initData.put("screenNo", row.get("篩選號碼"));
+        initData.put("subjectNo", row.get("受試號碼"));
         if (row.get("生日") != null && !row.get("生日").isEmpty()) {
           initData.put("birthDate", normalizeDate(row.get("生日")));
         }
@@ -89,6 +95,7 @@ public class TsghExcelSubjects implements ExcelSubjects {
         if (row.get("體檢日期") != null && !row.get("體檢日期").isEmpty()) {
           initData.put("examDate", normalizeDate(row.get("體檢日期")));
         }
+        initData.put("saeCount", normalizeInteger(row.get("嚴重不良事件數")));
 
         Subject subject = new Subject();
         subject.setFormData(FlattenedJsonTypeConfigurer.INSTANCE
@@ -104,6 +111,15 @@ public class TsghExcelSubjects implements ExcelSubjects {
     } else {
       errorMessage = "Excel表頭不齊全";
     }
+  }
+
+  private int normalizeInteger(String intStr) {
+    if (intStr == null || intStr.trim().isEmpty()) return 0;
+    int i = 0;
+    try {
+      i = Integer.parseInt(intStr);
+    } catch (NumberFormatException e) {}
+    return i < 0 ? 0 : i;
   }
 
   private String normalizeDate(String dateStr) {
@@ -127,7 +143,18 @@ public class TsghExcelSubjects implements ExcelSubjects {
     return sdf.format(date);
   }
 
-  private boolean isValidFormat(String value) {
+  private boolean isValidInteger(String value) {
+    if (value == null || value.isEmpty()) return true;
+
+    try {
+      Integer.parseInt(value);
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+
+  private boolean isValidDate(String value) {
     if (value == null || value.isEmpty() || value.matches("\\d+")) return true;
 
     Date date = null;
