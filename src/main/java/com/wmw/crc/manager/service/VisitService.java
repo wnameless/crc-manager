@@ -141,7 +141,7 @@ public class VisitService {
         message.setSubject(
             "Contraindication Suspected Visits (" + messages.size() + ")");
         message.setText(Ruby.Array.of(messages).join("\n"));
-        message.setTo(c.getEmails().toArray(new String[messages.size()]));
+        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 
         try {
           emailSender.send(message);
