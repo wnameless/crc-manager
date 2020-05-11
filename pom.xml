@@ -4,18 +4,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wmw.project</groupId>
 	<artifactId>crc-manager</artifactId>
-	<version>0.0.40-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.2.RELEASE</version>
+		<version>2.2.7.RELEASE</version>
 	</parent>
 
 	<properties>
-		<keycloak.version>8.0.1</keycloak.version>
-		<resteasy.version>3.9.3.Final</resteasy.version>
-		<retrofit.version>2.7.0</retrofit.version>
+		<keycloak.version>10.0.1</keycloak.version>
+		<resteasy.version>3.11.2.Final</resteasy.version>
+		<retrofit.version>2.8.1</retrofit.version>
 	</properties>
 
 	<repositories>
