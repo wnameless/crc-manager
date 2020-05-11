@@ -73,11 +73,11 @@ public class VisitService {
         visit.setSubject(s);
         visitRepo.save(visit);
       } else {
-        boolean isDuplicated = visitRepo
+        boolean isExisted = visitRepo
             .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
                 s, newVisit.getDivision(), newVisit.getDoctor(),
                 newVisit.getRoom(), newVisit.getDate(), false);
-        if (!isDuplicated) {
+        if (!isExisted) {
           BeanUtils.copyProperties(newVisit, visit);
           visit.setSubject(s);
           visitRepo.save(visit);
