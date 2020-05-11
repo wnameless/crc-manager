@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.workbookaccessor.WorkbookReader;
+import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.Subject;
 
 import net.sf.rubycollect4j.Ruby;
@@ -86,7 +87,9 @@ public class TsghExcelSubjects implements ExcelSubjects {
         if (row.get("生日") != null && !row.get("生日").isEmpty()) {
           initData.put("birthDate", normalizeDate(row.get("生日")));
         }
-        initData.put("telephone1", row.get("電話號碼"));
+        if (!Strings.isNullOrEmpty(row.get("電話號碼"))) {
+          initData.put("telephone1", row.get("電話號碼"));
+        }
         initData.put("taiwanId", row.get("ID"));
         initData.put("address", row.get("地址"));
         if (row.get("簽ICF日期") != null && !row.get("簽ICF日期").isEmpty()) {
