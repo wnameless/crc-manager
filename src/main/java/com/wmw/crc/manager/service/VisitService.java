@@ -112,7 +112,7 @@ public class VisitService {
 
     for (CaseStudy c : cases) {
       if (c.getEmails().isEmpty()) {
-        String msg = "No email list on CaseStudy[" + c.getTrialName() + "]";
+        String msg = "No email list on CaseStudy[" + c.getCaseNumber() + "]";
         results.add(msg);
         log.info(msg);
         continue;
@@ -133,7 +133,7 @@ public class VisitService {
 
       if (messages.isEmpty()) {
         String msg =
-            "No unreviewed visits on CaseStudy[" + c.getTrialName() + "]";
+            "No unreviewed visits on CaseStudy[" + c.getCaseNumber() + "]";
         results.add(msg);
         log.info(msg);
       } else {
@@ -147,12 +147,12 @@ public class VisitService {
           emailSender.send(message);
           String msg = "Email of " + messages.size()
               + " visits has been sent to following addresses: " + c.getEmails()
-              + " on CaseStudy[" + c.getTrialName() + "]";
+              + " on CaseStudy[" + c.getCaseNumber() + "]";
           results.add(msg);
           log.info(msg);
         } catch (Exception e) {
           String msg = "Failed to send visit email to following addresses: "
-              + c.getEmails() + " on CaseStudy[" + c.getTrialName() + "]";
+              + c.getEmails() + " on CaseStudy[" + c.getCaseNumber() + "]";
           results.add(msg);
           log.error(msg, e);
         }
