@@ -191,6 +191,9 @@
 
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
 			$('#jsfTable').DataTable({
+				order: [
+					[4, "asc"]
+				],
 				columnDefs: [{
 					width: '36px',
 					targets: 0
