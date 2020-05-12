@@ -109,8 +109,9 @@ public class VisitService {
     List<String> results = new ArrayList<>();
 
     List<CaseStudy> cases = caseStudyRepo.findByStatus(Status.EXEC);
-
     for (CaseStudy c : cases) {
+      List<String> messages = new ArrayList<>();
+
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getCaseNumber() + "]";
         results.add(msg);
@@ -119,16 +120,13 @@ public class VisitService {
       }
 
       List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-      List<String> messages = new ArrayList<>();
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
 
-        for (Visit v : s.getVisits()) {
-          if (v.isReviewed()) continue;
-
+        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
           SimpleMailMessage message = createVisitEmail(v);
           messages.add(message.getText());
-        }
+        });
       }
 
       if (messages.isEmpty()) {
