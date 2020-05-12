@@ -49,7 +49,7 @@ public class ScheduledTasks {
     if (opt.get().getFailedCount() != 0) log.warn(opt.getMessage());
   }
 
-  @Scheduled(cron = "0 0 8-21 * * *")
+  @Scheduled(cron = "0 15 8-21 * * *")
   void sendVisitEmails() {
     visitService.sendVisitEmails();
   }

@@ -25,7 +25,7 @@
 				<td th:text="${v.contraindicationSuspected ? 'Yes' : 'No'}"></td>
 				<td>
 					<input th:attr="visitId=${v.id}" type="checkbox" class="form-check-input check-reviewed"
-						th:value="${v.reviewed}">
+						th:value="${v.reviewed}" th:checked="${v.reviewed}">
 				</td>
 			</tr>
 		</tbody>
