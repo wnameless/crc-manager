@@ -47,9 +47,9 @@ import net.sf.rubycollect4j.RubyArray;
 public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     QuerydslPredicateExecutor<CaseStudy> {
 
-  default Iterable<CaseStudy> findByUserAndCriteria(Authentication auth,
+  default List<CaseStudy> findByUserAndCriteria(Authentication auth,
       List<Criterion> criteria) {
-    Iterable<CaseStudy> cases = findByUser(auth);
+    Iterable<CaseStudy> cases = findAllByUser(auth);
 
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
 
@@ -107,7 +107,7 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     return c;
   }
 
-  default Iterable<CaseStudy> findByUser(Authentication auth) {
+  default Iterable<CaseStudy> findAllByUser(Authentication auth) {
     String username = auth.getName();
 
     if (username.equals("super") || username.equals("admin")) return findAll();

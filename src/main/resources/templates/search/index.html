@@ -8,8 +8,8 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <select id="field">
-                                <th:block th:each="propTtl : ${propertyTitles}">
+                            <select id="caseField">
+                                <th:block th:each="propTtl : ${casePropertyTitles}">
                                     <option th:if="${propTtl.value}" th:value="${propTtl.key}"
                                         th:text="${propTtl.value}"></option>
                                     <option th:if="${propTtl.value == null}" th:value="${propTtl.key}"
@@ -17,15 +17,41 @@
                                 </th:block>
                             </select>
                         </div>
-                        <input id="value" type="text" class="form-control">
+                        <input id="caseValue" type="text" class="form-control">
                         <div class="input-group-btn">
-                            <select id="type">
+                            <select id="caseType">
                                 <option value="string" th:text="#{ui.search.string}"></option>
                                 <option value="number" th:text="#{ui.search.number}"></option>
                             </select>
                         </div>
                         <div class="input-group-btn">
-                            <button id="addCriterion" type="button" class="btn btn-success">
+                            <button id="addCaseCriterion" type="button" class="btn btn-success">
+                                <span class="fa fa-plus"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <select id="subjectField">
+                                <th:block th:each="propTtl : ${subjectPropertyTitles}">
+                                    <option th:if="${propTtl.value}" th:value="${propTtl.key}"
+                                        th:text="${propTtl.value}"></option>
+                                    <option th:if="${propTtl.value == null}" th:value="${propTtl.key}"
+                                        th:text="${propTtl.key}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <input id="subjectValue" type="text" class="form-control">
+                        <div class="input-group-btn">
+                            <select id="subjectType">
+                                <option value="string" th:text="#{ui.search.string}"></option>
+                                <option value="number" th:text="#{ui.search.number}"></option>
+                            </select>
+                        </div>
+                        <div class="input-group-btn">
+                            <button id="addSubjectCriterion" type="button" class="btn btn-success">
                                 <span class="fa fa-plus"></span>
                             </button>
                         </div>
@@ -47,15 +73,21 @@
 
     <script type="text/javascript">
         $(function () {
-            $('#field').selectpicker({
+            $('#caseField').selectpicker({
                 width: 'fit'
             });
-            $('#type').selectpicker({
+            $('#caseType').selectpicker({
+                width: 'auto'
+            });
+            $('#subjectField').selectpicker({
+                width: 'fit'
+            });
+            $('#subjectType').selectpicker({
                 width: 'auto'
             });
 
             $('#search').click(function () {
-                if ($('#tags').tagsinput('items').length == 0) return false;
+                // if ($('#tags').tagsinput('items').length == 0) return false;
 
                 axios.post('/search', $('#tags').tagsinput('items'))
                     .then((response) => {
@@ -63,19 +95,37 @@
                     });
             });
 
-            $('#addCriterion').click(function () {
-                if (!$('#value').val()) return false;
+            $('#addCaseCriterion').click(function () {
+                if (!$('#caseValue').val()) return false;
 
-                let type = $('#type option:selected').val();
-                let text = $('#field option:selected').text();
-                let key = $('#field option:selected').val();
-                let value = $('#value').val();
+                let type = $('#caseType option:selected').val();
+                let text = $('#caseField option:selected').text();
+                let key = $('#caseField option:selected').val();
+                let value = $('#caseValue').val();
                 value = (type == 'string' ? value : Number(value)) || 0;
                 let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
                 $('#tags').tagsinput('add', {
                     text: text + '[' + valueStr + ']',
                     value: value,
-                    key: key
+                    key: key,
+                    type: 'CaseStudy'
+                });
+            });
+
+            $('#addSubjectCriterion').click(function () {
+                if (!$('#subjectValue').val()) return false;
+
+                let type = $('#subjectType option:selected').val();
+                let text = $('#subjectField option:selected').text();
+                let key = $('#subjectField option:selected').val();
+                let value = $('#subjectValue').val();
+                value = (type == 'string' ? value : Number(value)) || 0;
+                let valueStr = (type == 'string' ? '"' + value + '"' : (value || 0));
+                $('#tags').tagsinput('add', {
+                    text: text + '[' + valueStr + ']',
+                    value: value,
+                    key: key,
+                    type: 'Subject'
                 });
             });
 

@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +39,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.wnameless.spring.react.ReactJsonSchemaFormUtils;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.JsonDataExportService;
+
+import net.sf.rubycollect4j.Ruby;
 
 @Controller
 public class SearchController {
@@ -48,13 +54,18 @@ public class SearchController {
   CaseStudyRepository caseRepo;
 
   @Autowired
+  SubjectRepository subjectRepo;
+
+  @Autowired
   JsonDataExportService dataExport;
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping("/search/index")
   String index(Model model) {
-    model.addAttribute("propertyTitles",
+    model.addAttribute("casePropertyTitles",
         ReactJsonSchemaFormUtils.propertyTitles(new CaseStudy()));
+    model.addAttribute("subjectPropertyTitles",
+        ReactJsonSchemaFormUtils.propertyTitles(new Subject()));
     return "search/index";
   }
 
@@ -62,10 +73,36 @@ public class SearchController {
   @PostMapping("/search")
   String search(Model model, Authentication auth,
       @RequestBody List<Criterion> criteria) {
-    Iterable<CaseStudy> cases = caseRepo.findByUserAndCriteria(auth, criteria);
+    List<Criterion> caseCriterion =
+        criteria.stream().filter(c -> Objects.equals(c.getType(), "CaseStudy"))
+            .collect(Collectors.toList());
+    List<Criterion> subjectCriterion =
+        criteria.stream().filter(c -> Objects.equals(c.getType(), "Subject"))
+            .collect(Collectors.toList());
+
+    List<CaseStudy> casesBySubjectCrits = null;
+    if (caseCriterion.isEmpty() && !subjectCriterion.isEmpty()) {
+      Iterable<CaseStudy> readableCases = caseRepo.findAllByUser(auth);
+
+      Iterable<Subject> casesBySubjects = subjectRepo
+          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
+      casesBySubjectCrits =
+          Ruby.Enumerator.of(casesBySubjects).map(s -> s.getCaseStudy());
+    } else {
+      List<CaseStudy> readableCases =
+          caseRepo.findByUserAndCriteria(auth, caseCriterion);
+
+      Iterable<Subject> casesBySubjects = subjectRepo
+          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
+      casesBySubjectCrits =
+          Ruby.Enumerator.of(casesBySubjects).map(s -> s.getCaseStudy());
+
+      casesBySubjectCrits.addAll(readableCases);
+    }
 
     model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItems", cases);
+    model.addAttribute("jsfItems",
+        Ruby.Array.copyOf(casesBySubjectCrits).uniq().toList());
     return "search/result :: result";
   }
 

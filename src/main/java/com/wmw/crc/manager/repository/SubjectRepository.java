@@ -15,18 +15,91 @@
  */
 package com.wmw.crc.manager.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.model.form.Criterion;
+import com.wmw.crc.manager.util.JsonNodeUtils;
+
+import net.sf.rubycollect4j.Ruby;
+import net.sf.rubycollect4j.RubyArray;
 
 @JaversSpringDataAuditable
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
+
+  default List<Subject> findByCaseStudiesAndCriteria(Iterable<CaseStudy> cases,
+      List<Criterion> criteria) {
+    List<Subject> subjects = findAllByCaseStudyIn(cases);
+
+    ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
+
+    return Ruby.Array.copyOf(subjects)
+        .keepIf(
+            subject -> isCriteriaMatch(subject.getFormData(), groupedCriteria))
+        .toList();
+  }
+
+  default boolean isCriteriaMatch(JsonNode data,
+      ListMultimap<String, Object> criteria) {
+    if (!data.isObject()) return false;
+
+    ObjectNode dataObj = (ObjectNode) data;
+
+    boolean isMatch = true;
+    for (String key : criteria.keySet()) {
+      if (!dataObj.has(key)) return false;
+
+      if (criteria.get(key).get(0) instanceof String) {
+        String target =
+            dataObj.get(key).isTextual() ? dataObj.get(key).textValue()
+                : JsonNodeUtils.findFirstAsString(dataObj.get(key), "name");
+
+        RubyArray<String> strings =
+            Ruby.Array.of(criteria.get(key)).map(o -> o.toString());
+
+        if (!strings.map(s -> target.contains(s)).contains(Boolean.TRUE)) {
+          isMatch = false;
+          break;
+        }
+      } else /* Number */ {
+        BigDecimal target = dataObj.get(key).isNumber()
+            ? new BigDecimal(dataObj.get(key).asText()) : BigDecimal.ZERO;
+        RubyArray<Number> numbers =
+            Ruby.Array.of(criteria.get(key)).map(o -> (Number) o);
+
+        if (!numbers
+            .map(n -> target.compareTo(new BigDecimal(n.toString())) == 0)
+            .contains(Boolean.TRUE)) {
+          isMatch = false;
+          break;
+        }
+      }
+    }
+
+    return isMatch;
+  }
+
+  default ListMultimap<String, Object> groupedCriteria(
+      List<Criterion> criteria) {
+    ListMultimap<String, Object> c = ArrayListMultimap.create();
+    for (Criterion criterion : criteria) {
+      c.put(criterion.getKey(), criterion.getValue());
+    }
+    return c;
+  }
+
+  List<Subject> findAllByCaseStudyIn(Iterable<CaseStudy> cases);
 
   List<Subject> findAllByCaseStudy(CaseStudy caseStudy);
 
