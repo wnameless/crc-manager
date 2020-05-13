@@ -28,6 +28,8 @@ import lombok.experimental.UtilityClass;
 public class JsonNodeUtils {
 
   public String findFirstAsString(JsonNode jn, String key) {
+    if (jn == null) return "";
+
     if (jn.isObject()) {
       if (jn.has(key)) {
         if (jn.get("name").isTextual()) {

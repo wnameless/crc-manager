@@ -17,6 +17,7 @@ package com.wmw.crc.manager.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,11 @@ import org.springframework.stereotype.Service;
 import com.wmw.crc.manager.controller.api.NewVisit;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
+import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
 
@@ -55,6 +58,9 @@ public class VisitService {
 
   @Autowired
   VisitRepository visitRepo;
+
+  @Autowired
+  ContraindicationRepository contraindicationRepo;
 
   @Autowired
   JavaMailSender emailSender;
@@ -90,16 +96,28 @@ public class VisitService {
     SimpleMailMessage message = new SimpleMailMessage();
 
     Subject s = visit.getSubject();
+    CaseStudy c = s.getCaseStudy();
+    List<Contraindication> contraindications =
+        contraindicationRepo.findAllByCaseStudy(c);
     message.setSubject("Contraindication Suspected Visit");
-    message.setText("Name: " + s.getName() + "\n" //
-        + "NationalID: " + s.getNationalId() + "\n" //
-        + "Date: " + visit.getDate() + "\n" //
-        + "Division: " + visit.getDivision() + "\n" //
-        + "Doctor: " + visit.getDoctor() + "\n" //
-        + "Room: " + visit.getRoom() + "\n" //
-        + "ContraindicationSuspected: " + visit.isContraindicationSuspected()
-        + "\n" //
-        + "------------------------------" //
+    message.setText( //
+        "•姓名: " + s.getName() + "\n" //
+            + "•醫院病歷號: " + s.getPatientId() + "\n" //
+            // + "Date: " + visit.getDate() + "\n" //
+            + "•看診科別: " + visit.getDivision() + "\n" //
+            + "•看診醫師: " + visit.getDoctor() + "\n" //
+            + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
+            + "/subjects/" + s.getId() + "/visits" //
+            + "•開立禁忌用藥: "
+            + Ruby.Array.of(contraindications)
+                .select(cd -> Objects.equals(cd.getBundle(),
+                    s.getContraindicationBundle()))
+                .map(cd -> cd.getPhrase() + cd.getTakekinds()).join(", ")
+            + "\n"
+            // + "Room: " + visit.getRoom() + "\n" //
+            // + "ContraindicationSuspected: "
+            // + visit.isContraindicationSuspected() + "\n" //
+            + "------------------------------" //
     );
 
     return message;
@@ -109,8 +127,9 @@ public class VisitService {
     List<String> results = new ArrayList<>();
 
     List<CaseStudy> cases = caseStudyRepo.findByStatus(Status.EXEC);
-
     for (CaseStudy c : cases) {
+      List<String> messages = new ArrayList<>();
+
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getCaseNumber() + "]";
         results.add(msg);
@@ -119,16 +138,13 @@ public class VisitService {
       }
 
       List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-      List<String> messages = new ArrayList<>();
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
 
-        for (Visit v : s.getVisits()) {
-          if (v.isReviewed()) continue;
-
+        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
           SimpleMailMessage message = createVisitEmail(v);
           messages.add(message.getText());
-        }
+        });
       }
 
       if (messages.isEmpty()) {
@@ -138,9 +154,10 @@ public class VisitService {
         log.info(msg);
       } else {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject(
-            "Contraindication Suspected Visits (" + messages.size() + ")");
-        message.setText(Ruby.Array.of(messages).join("\n"));
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+        message.setSubject("CRC Manager 【看診通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        message.setText(prefix + Ruby.Array.of(messages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 
         try {

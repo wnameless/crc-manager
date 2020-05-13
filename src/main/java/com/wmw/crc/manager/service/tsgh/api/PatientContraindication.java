@@ -39,4 +39,8 @@ public class PatientContraindication {
 
   List<SimpleDrug> drugs = new ArrayList<>();
 
+  String piName;
+
+  String piPhone;
+
 }
