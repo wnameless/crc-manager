@@ -24,4 +24,6 @@ public class Criterion {
 
   private Object value;
 
+  private String type;
+
 }
