@@ -136,6 +136,7 @@ public class VisitService {
         log.info(msg);
       } else {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
         message.setSubject(
             "Contraindication Suspected Visits (" + messages.size() + ")");
         message.setText(Ruby.Array.of(messages).join("\n"));
