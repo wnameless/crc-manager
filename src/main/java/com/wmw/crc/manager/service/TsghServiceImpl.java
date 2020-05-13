@@ -43,6 +43,7 @@ import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
 import com.wmw.crc.manager.service.tsgh.api.TsghResponse;
+import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
@@ -163,6 +164,11 @@ public class TsghServiceImpl implements TsghService {
             .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         pc.setEndDate(LocalDate.parse(c.getExpectedEndDate())
             .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+
+        pc.setPiName(
+            JsonNodeUtils.findFirstAsString(c.getFormData().get("PI"), "name"));
+        pc.setPiPhone(JsonNodeUtils.findFirstAsString(c.getFormData().get("PI"),
+            "phone"));
 
         if (bundles.containsKey(s.getContraindicationBundle())) {
           RubyArray<Contraindication> cds =
