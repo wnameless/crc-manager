@@ -18,15 +18,11 @@ package com.wmw.crc.manager.controller;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.io.Resources;
+import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -54,7 +50,6 @@ import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
 import lombok.extern.slf4j.Slf4j;
-import net.sf.rubycollect4j.Ruby;
 
 @Slf4j
 @Controller
@@ -67,13 +62,13 @@ public class SubjectController {
   SubjectRepository subjectRepo;
 
   @Autowired
+  SubjectService subjectService;
+
+  @Autowired
   ExcelSubjectUploadService uploadService;
 
   @Autowired
   TsghService tsghService;
-
-  @Autowired
-  SubjectService subjectService;
 
   @Autowired
   I18nService i18n;
@@ -119,12 +114,11 @@ public class SubjectController {
       @RequestBody JsonNode formData, Locale locale) {
     CaseStudy c = caseRepo.findById(caseId).get();
 
-    Subject s = new Subject();
-    s.setFormData(formData);
-    s = subjectService.createSubject(c, s);
+    Subject s = new Subject(formData);
+    AdvOpt<Subject> sOpt = subjectService.createSubject(c, s);
 
-    if (s == null) {
-      model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
+    if (sOpt.isAbsent() && sOpt.hasMessage()) {
+      model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
@@ -155,22 +149,13 @@ public class SubjectController {
       @PathVariable("id") Long id, @RequestBody JsonNode formData,
       Locale locale) {
     CaseStudy c = caseRepo.findById(caseId).get();
-
     Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
 
-    boolean dropoutSafe = subjectService.secureDropoutDate(subject, formData);
-    if (!dropoutSafe) {
-      model.addAttribute("message", i18n.subjectDropoutDateCannotClear(locale));
+    AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
+
+    if (sOpt.isAbsent() && sOpt.hasMessage()) {
+      model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-
-    if (subject != null && dropoutSafe) {
-      subject = subjectService.updateSubject(c, subject, formData);
-
-      if (subject == null) {
-        model.addAttribute("message", i18n.subjectNationalIDExisted(locale));
-      }
-    }
-
     model.addAttribute("case", c);
     model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
     model.addAttribute("jsfItems", subjectRepo.findAllByCaseStudy(c));
@@ -224,8 +209,10 @@ public class SubjectController {
     CaseStudy c = caseRepo.findById(caseId).get();
     Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
 
-    subject.setStatus(Subject.Status.fromString(status));
-    subjectRepo.save(subject);
+    if (subject != null) {
+      subject.setStatus(Subject.Status.fromString(status));
+      subjectRepo.save(subject);
+    }
 
     return "redirect:/cases/" + caseId + "/subjects/index";
   }
@@ -236,9 +223,8 @@ public class SubjectController {
       @PathVariable("id") Long id,
       @PathVariable("bundleNumber") Integer bundleNumber) {
     CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
 
-    Subject subject = Ruby.Array.of(subjects).find(s -> s.getId().equals(id));
     if (subject != null) {
       subject.setContraindicationBundle(bundleNumber);
       subjectRepo.save(subject);
@@ -312,18 +298,7 @@ public class SubjectController {
   @ResponseBody
   HttpEntity<byte[]> downloadExample(Model model, @PathVariable("id") Long id)
       throws IOException {
-    URL exampleUrl = Resources.getResource("examples/三總受試者名單範本.xlsx");
-
-    byte[] dataByteArray = Resources.toByteArray(exampleUrl);
-
-    HttpHeaders header = new HttpHeaders();
-    header.setContentType(MediaType.valueOf(
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-    header.set(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=" + URLEncoder.encode("三總受試者名單範本.xlsx", "UTF-8"));
-    header.setContentLength(dataByteArray.length);
-
-    return new HttpEntity<byte[]>(dataByteArray, header);
+    return subjectService.createDownloadableUploadExample();
   }
 
 }

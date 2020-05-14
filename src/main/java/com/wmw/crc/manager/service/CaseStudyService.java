@@ -15,17 +15,24 @@
  */
 package com.wmw.crc.manager.service;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,21 +44,31 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.CaseStudy.Status;
-import com.wmw.crc.manager.model.QSubject;
+import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Subject;
+import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.ContraindicationRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 
 import net.sf.rubycollect4j.Ruby;
+import net.sf.rubycollect4j.RubyArray;
 
 @Service
-public class CrcManagerService {
+public class CaseStudyService {
 
   @Autowired
   CaseStudyRepository caseRepo;
+
+  @Autowired
+  SubjectRepository subjectRepo;
+
+  @Autowired
+  ContraindicationRepository contraindicationRepo;
+
+  @Autowired
+  JsonDataExportService dataExport;
 
   @PersistenceContext
   EntityManager em;
@@ -120,30 +137,91 @@ public class CrcManagerService {
     return getCasesBySession(auth, session, pageable);
   }
 
-  public AdvOpt<List<Subject>> findExecSubjects(String nationalId) {
-    JPAQuery<Subject> query = new JPAQuery<>(em);
-    QSubject qSubject = QSubject.subject;
-
-    BooleanExpression isCaseStudyExec =
-        qSubject.caseStudy.status.eq(Status.EXEC);
-    BooleanExpression eqNationalId = qSubject.nationalId.eq(nationalId);
-
-    return AdvOpt.ofNullable(
-        query.from(qSubject).where(isCaseStudyExec.and(eqNationalId)).fetch(),
-        "No such active subject.");
+  public List<Contraindication> getSortedContraindications(CaseStudy cs) {
+    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
+    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
+    return cds;
   }
 
-  public AdvOpt<List<Subject>> findNewSubjects(String nationalId) {
-    JPAQuery<Subject> query = new JPAQuery<>(em);
-    QSubject qSubject = QSubject.subject;
+  public AdvOpt<Contraindication> addContraindication(CaseStudy cs,
+      Integer bundle, String phrase, List<String> takekinds, String memo) {
+    if (!isNullOrEmpty(phrase)) {
+      Contraindication cd = new Contraindication();
+      cd.setCaseStudy(cs);
+      cd.setBundle(bundle);
+      cd.setPhrase(phrase);
+      cd.setTakekinds(takekinds);
+      cd.setMemo(memo);
+      contraindicationRepo.save(cd);
 
-    BooleanExpression isCaseStudyExec =
-        qSubject.caseStudy.status.eq(Status.NEW);
-    BooleanExpression eqNationalId = qSubject.nationalId.eq(nationalId);
+      return AdvOpt.of(cd);
+    } else {
+      return AdvOpt.ofNullable(null);
+    }
+  }
 
-    return AdvOpt.ofNullable(
-        query.from(qSubject).where(isCaseStudyExec.and(eqNationalId)).fetch(),
-        "No such active subject.");
+  public AdvOpt<Contraindication> removeContraindication(CaseStudy cs,
+      Long cdId) {
+    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
+    Contraindication target =
+        Ruby.Array.of(cds).find(cd -> Objects.equals(cdId, cd.getId()));
+
+    if (target != null) {
+      contraindicationRepo.delete(target);
+      return AdvOpt.of(target);
+    } else {
+      return AdvOpt.ofNullable(null);
+    }
+  }
+
+  public List<CaseStudy> searchCaseStudies(Authentication auth,
+      List<Criterion> criteria) {
+    RubyArray<CaseStudy> targets = null;
+
+    RubyArray<Criterion> caseCriterion = Ruby.Array.of(criteria)
+        .select(c -> Objects.equals(c.getType(), "CaseStudy"));
+    RubyArray<Criterion> subjectCriterion = caseCriterion = Ruby.Array
+        .of(criteria).select(c -> Objects.equals(c.getType(), "Subject"));
+
+    if (caseCriterion.isEmpty() && !subjectCriterion.isEmpty()) {
+      Iterable<CaseStudy> readableCases = caseRepo.findAllByUser(auth);
+      Iterable<Subject> casesBySubjects = subjectRepo
+          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
+
+      targets = Ruby.Enumerator.of(casesBySubjects).map(Subject::getCaseStudy);
+    } else {
+      List<CaseStudy> readableCases =
+          caseRepo.findByUserAndCriteria(auth, caseCriterion);
+      Iterable<Subject> casesBySubjects = subjectRepo
+          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
+
+      targets = Ruby.Enumerator.of(casesBySubjects).map(Subject::getCaseStudy);
+      targets.addAll(readableCases);
+    }
+
+    return targets.uniqǃ().toList();
+  }
+
+  public HttpEntity<byte[]> createDownloadableExcelCaseStudy(Long id,
+      Locale locale) throws IOException {
+    CaseStudy kase = caseRepo.findById(id).get();
+
+    Workbook wb = dataExport.toExcel(kase, locale);
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    wb.write(bos);
+    wb.close();
+
+    byte[] documentBody = bos.toByteArray();
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    header.set(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + kase.getIrbNumber() + ".xlsx");
+    header.setContentLength(documentBody.length);
+
+    return new HttpEntity<byte[]>(documentBody, header);
   }
 
 }

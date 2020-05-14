@@ -48,7 +48,10 @@ public class VisitService {
   Environment env;
 
   @Autowired
-  CrcManagerService crcManagerService;
+  CaseStudyService crcManagerService;
+
+  @Autowired
+  SubjectService subjectService;
 
   @Autowired
   CaseStudyRepository caseStudyRepo;
@@ -65,12 +68,12 @@ public class VisitService {
   @Autowired
   JavaMailSender emailSender;
 
-  // @Value("${contraindication.manager.mail}")
-  // String contraindicationManagerMail;
+  @Autowired
+  I18nService i18n;
 
   public void addVisit(NewVisit newVisit) {
     List<Subject> subjects =
-        crcManagerService.findExecSubjects(newVisit.getNationalId()).get();
+        subjectService.findExecSubjects(newVisit.getNationalId()).get();
 
     for (Subject s : subjects) {
       Visit visit = new Visit();
@@ -103,21 +106,19 @@ public class VisitService {
     message.setText( //
         "•姓名: " + s.getName() + "\n" //
             + "•醫院病歷號: " + s.getPatientId() + "\n" //
-            // + "Date: " + visit.getDate() + "\n" //
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
             + "/subjects/" + s.getId() + "/visits" //
-            + "•開立禁忌用藥: "
-            + Ruby.Array.of(contraindications)
+            + "•開立禁忌用藥: " + Ruby.Array.of(contraindications)
+                // 符合用藥組別
                 .select(cd -> Objects.equals(cd.getBundle(),
                     s.getContraindicationBundle()))
-                .map(cd -> cd.getPhrase() + cd.getTakekinds()).join(", ")
-            + "\n"
-            // + "Room: " + visit.getRoom() + "\n" //
-            // + "ContraindicationSuspected: "
-            // + visit.isContraindicationSuspected() + "\n" //
-            + "------------------------------" //
+                // 將藥物用法代號轉文字
+                .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
+                    .map(tk -> i18n.takeKind(tk)))
+                .join(", ")
+            + "\n" + "------------------------------" //
     );
 
     return message;
@@ -156,7 +157,7 @@ public class VisitService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
         message.setSubject("CRC Manager 【看診通知】");
-        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getCaseNumber() + "』的受試者\n\n";
         message.setText(prefix + Ruby.Array.of(messages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 

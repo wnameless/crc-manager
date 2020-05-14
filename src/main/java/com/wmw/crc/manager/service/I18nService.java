@@ -30,6 +30,39 @@ public class I18nService {
   @Autowired
   MessageSource messageSource;
 
+  public String msg(String code, Locale locale) {
+    return messageSource.getMessage(code, new Object[] {}, locale);
+  }
+
+  public String takeKind(String code) {
+    Locale locale = LocaleContextHolder.getLocale();
+    switch (code) {
+      case "11":
+        return messageSource.getMessage("takekinds.11", new Object[] {},
+            locale);
+      case "12":
+        return messageSource.getMessage("takekinds.12", new Object[] {},
+            locale);
+      case "13":
+        return messageSource.getMessage("takekinds.13", new Object[] {},
+            locale);
+      case "21":
+        return messageSource.getMessage("takekinds.21", new Object[] {},
+            locale);
+      case "31":
+        return messageSource.getMessage("takekinds.31", new Object[] {},
+            locale);
+      case "41":
+        return messageSource.getMessage("takekinds.41", new Object[] {},
+            locale);
+      case "51":
+        return messageSource.getMessage("takekinds.51", new Object[] {},
+            locale);
+      default:
+        return code;
+    }
+  }
+
   public String str(Status status) {
     Locale locale = LocaleContextHolder.getLocale();
     switch (status) {
@@ -88,16 +121,6 @@ public class I18nService {
   public String caseViewerRemoved(Locale locale, Object... args) {
     return messageSource
         .getMessage("ctrl.case.operation.message.viewer-removed", args, locale);
-  }
-
-  public String subjectNationalIDExisted(Locale locale, Object... args) {
-    return messageSource.getMessage("ctrl.subject.message.nationalid-existed",
-        new Object[] {}, locale);
-  }
-
-  public String subjectDropoutDateCannotClear(Locale locale, Object... args) {
-    return messageSource.getMessage("ctrl.subject.message.dropout-cannot-clear",
-        new Object[] {}, locale);
   }
 
   public String subjectDateUnselect(Locale locale, Object... args) {

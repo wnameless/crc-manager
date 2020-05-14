@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.service.CrcManagerService;
+import com.wmw.crc.manager.service.CaseStudyService;
 
 @Controller
 public class CaseStudyController {
@@ -55,7 +55,7 @@ public class CaseStudyController {
   CaseStudyRepository caseRepo;
 
   @Autowired
-  CrcManagerService crcManagerService;
+  CaseStudyService caseStudyService;
 
   @PreAuthorize("@perm.isUser()")
   @RequestMapping(path = "/cases", method = { GET, PUT })
@@ -63,7 +63,7 @@ public class CaseStudyController {
       Model model, @PageableDefault(sort = "trialName") Pageable pageable,
       @RequestParam(required = false) String search) {
     Page<CaseStudy> page =
-        crcManagerService.getCasesBySession(auth, session, search, pageable);
+        caseStudyService.getCasesBySession(auth, session, search, pageable);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("pageable", pageable);
@@ -77,7 +77,7 @@ public class CaseStudyController {
   String show(@PathVariable("id") Long id, Model model) {
     CaseStudy c = caseRepo.findById(id).get();
     Map<String, Entry<String, Boolean>> files =
-        crcManagerService.getFilesFromCaseStudy(c);
+        caseStudyService.getFilesFromCaseStudy(c);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
@@ -90,7 +90,7 @@ public class CaseStudyController {
   String showIndex(@PathVariable("id") Long id, Model model) {
     CaseStudy c = caseRepo.findById(id).get();
     Map<String, Entry<String, Boolean>> files =
-        crcManagerService.getFilesFromCaseStudy(c);
+        caseStudyService.getFilesFromCaseStudy(c);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("jsfItem", c);
@@ -104,7 +104,7 @@ public class CaseStudyController {
     CaseStudy c = caseRepo.findById(id).get();
 
     Map<String, Entry<String, Boolean>> files =
-        crcManagerService.getFilesFromCaseStudy(c);
+        caseStudyService.getFilesFromCaseStudy(c);
 
     model.addAttribute("jsfPath", "/cases/" + id);
     model.addAttribute("jsfItem", c);
@@ -119,7 +119,7 @@ public class CaseStudyController {
       @PathVariable("fileId") String fileId) {
     CaseStudy c = caseRepo.findById(id).get();
 
-    return crcManagerService.getDownloadableFile(c, fileId);
+    return caseStudyService.getDownloadableFile(c, fileId);
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
@@ -133,7 +133,7 @@ public class CaseStudyController {
     caseRepo.save(c);
 
     Page<CaseStudy> page =
-        crcManagerService.getCasesBySession(auth, session, pageable);
+        caseStudyService.getCasesBySession(auth, session, pageable);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("pageable", pageable);
@@ -150,7 +150,7 @@ public class CaseStudyController {
     caseRepo.delete(c);
 
     Page<CaseStudy> page =
-        crcManagerService.getCasesBySession(auth, session, pageable);
+        caseStudyService.getCasesBySession(auth, session, pageable);
 
     model.addAttribute("jsfPath", "/cases");
     model.addAttribute("pageable", pageable);

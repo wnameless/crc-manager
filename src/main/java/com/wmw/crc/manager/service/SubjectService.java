@@ -15,16 +15,30 @@
  */
 package com.wmw.crc.manager.service;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.wnameless.advancedoptional.AdvOpt;
+import com.google.common.io.Resources;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.QSubject;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Subject.Status;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -39,11 +53,27 @@ public class SubjectService {
   @Autowired
   SubjectRepository subjectRepo;
 
+  @PersistenceContext
+  EntityManager em;
+
+  public AdvOpt<List<Subject>> findExecSubjects(String nationalId) {
+    JPAQuery<Subject> query = new JPAQuery<>(em);
+    QSubject qSubject = QSubject.subject;
+
+    BooleanExpression isCaseStudyExec =
+        qSubject.caseStudy.status.eq(CaseStudy.Status.EXEC);
+    BooleanExpression eqNationalId = qSubject.nationalId.eq(nationalId);
+
+    return AdvOpt.ofNullable(
+        query.from(qSubject).where(isCaseStudyExec.and(eqNationalId)).fetch(),
+        "No such active subject.");
+  }
+
   public void batchCreate(CaseStudy c, ExcelSubjects es) {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
 
-    List<String> nationalIds =
-        Ruby.Array.of(subjects).map(Subject::getNationalId).toList();
+    RubyArray<String> nationalIds =
+        Ruby.Array.of(subjects).map(Subject::getNationalId);
 
     Map<Boolean, RubyArray<Subject>> existOrNot =
         Ruby.Array.of(es.getSubjects())
@@ -67,7 +97,7 @@ public class SubjectService {
     }
   }
 
-  public Subject updateOrCreateSubject(CaseStudy cs, Subject subject) {
+  private Subject updateOrCreateSubject(CaseStudy cs, Subject subject) {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(cs);
 
     Optional<Subject> opt = subjects.stream().filter(s -> {
@@ -91,7 +121,7 @@ public class SubjectService {
     }
   }
 
-  public Subject createSubject(CaseStudy cs, Subject subject) {
+  public AdvOpt<Subject> createSubject(CaseStudy cs, Subject subject) {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(cs);
 
     Optional<Subject> opt = subjects.stream().filter(s -> {
@@ -103,45 +133,44 @@ public class SubjectService {
       subject.setCaseStudy(cs);
       subjectRepo.save(subject);
 
-      return subject;
+      return AdvOpt.of(subject);
     }
 
-    return null;
+    return AdvOpt.ofNullable(null, "ctrl.subject.message.nationalid-existed");
   }
 
-  public Subject updateSubject(CaseStudy cs, Subject subject,
-      JsonNode formData) {
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(cs);
-
-    String nationalId = subject.getNationalId();
-
-    JsonNode oldFormData = subject.getFormData();
-    subject.setFormData(formData);
-
-    if (Objects.equals(nationalId, subject.getNationalId())) {
-      subjectRepo.save(subject);
-
-      return subject;
+  public AdvOpt<Subject> updateSubject(Subject subject, JsonNode formData) {
+    if (subject == null) {
+      return AdvOpt.ofNullable(null, "ctrl.subject.message.subject-not-found");
     }
 
-    int count = Ruby.Array.of(subjects).count(s -> {
-      return Objects.equals(s.getNationalId(), subject.getNationalId())
-          && s.getStatus() != Status.DROPPED;
-    });
+    boolean dropoutSafe = secureDropoutDate(subject, formData);
+    if (!dropoutSafe) {
+      return AdvOpt.ofNullable(null,
+          "ctrl.subject.message.dropout-cannot-clear");
+    }
 
+    String oldNationalId = subject.getNationalId();
+    JsonNode oldFormData = subject.getFormData();
+
+    subject.setFormData(formData);
+    if (Objects.equals(oldNationalId, subject.getNationalId())) {
+      return AdvOpt.of(subjectRepo.save(subject));
+    }
+
+    long count = subjectRepo.findAllByCaseStudy(subject.getCaseStudy()).stream()
+        .filter(s -> Objects.equals(s.getNationalId(), subject.getNationalId())
+            && s.getStatus() != Status.DROPPED)
+        .count();
     if (count == 0) {
-      subjectRepo.save(subject);
-
-      return subject;
+      return AdvOpt.of(subjectRepo.save(subject));
     }
 
     subject.setFormData(oldFormData);
-    return null;
+    return AdvOpt.ofNullable(null, "ctrl.subject.message.nationalid-existed");
   }
 
-  public boolean secureDropoutDate(Subject subject, JsonNode formData) {
-    if (subject == null) return true;
-
+  private boolean secureDropoutDate(Subject subject, JsonNode formData) {
     JsonNode oldDropoutDate = subject.getFormData().get("dropoutDate");
     JsonNode newDropoutDate = formData.get("dropoutDate");
 
@@ -154,6 +183,22 @@ public class SubjectService {
         return true;
       }
     }
+  }
+
+  public HttpEntity<byte[]> createDownloadableUploadExample()
+      throws IOException {
+    URL exampleUrl = Resources.getResource("examples/三總受試者名單範本.xlsx");
+
+    byte[] dataByteArray = Resources.toByteArray(exampleUrl);
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    header.set(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + URLEncoder.encode("三總受試者名單範本.xlsx", "UTF-8"));
+    header.setContentLength(dataByteArray.length);
+
+    return new HttpEntity<byte[]>(dataByteArray, header);
   }
 
 }

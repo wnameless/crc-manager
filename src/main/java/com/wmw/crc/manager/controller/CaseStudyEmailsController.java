@@ -34,7 +34,7 @@ import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.service.CrcManagerService;
+import com.wmw.crc.manager.service.CaseStudyService;
 
 @Controller
 public class CaseStudyEmailsController {
@@ -43,7 +43,7 @@ public class CaseStudyEmailsController {
   CaseStudyRepository caseRepo;
 
   @Autowired
-  CrcManagerService crcManagerService;
+  CaseStudyService caseStudyService;
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/cases/{id}/emails")
@@ -72,7 +72,7 @@ public class CaseStudyEmailsController {
       @RequestBody JsonNode formData) {
     CaseStudy c = caseRepo.findById(id).get();
     Map<String, Entry<String, Boolean>> files =
-        crcManagerService.getFilesFromCaseStudy(c);
+        caseStudyService.getFilesFromCaseStudy(c);
 
     c.getEmails().clear();
     JsonNode listOfEmails = formData.get("listOfEmails");

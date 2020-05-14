@@ -15,10 +15,6 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.util.Locale;
 import java.util.Map;
 
@@ -26,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wmw.crc.manager.model.CaseStudy;
@@ -50,7 +48,7 @@ public class CaseStudyOperationController {
   I18nService i18n;
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/status/{status}", method = GET)
+  @GetMapping("/cases/{id}/status/{status}")
   String alterStatus(@PathVariable("id") Long id,
       @PathVariable("status") String status) {
     CaseStudy c = caseRepo.findById(id).get();
@@ -62,7 +60,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canAssign()")
-  @RequestMapping(path = "/cases/{id}/assignment", method = GET)
+  @GetMapping("/cases/{id}/assignment")
   String assignment(Model model, @PathVariable("id") Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
     model.addAttribute("case", caseRepo.findById(id).get());
@@ -70,7 +68,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canAssign()")
-  @RequestMapping(path = "/cases/{id}/assignment", method = POST)
+  @PostMapping("/cases/{id}/assignment")
   String assign(@PathVariable("id") Long id,
       @RequestParam("username") String username) {
     CaseStudy cs = caseRepo.findById(id).get();
@@ -82,7 +80,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission", method = GET)
+  @GetMapping("/cases/{id}/permission")
   String permission(Model model, @PathVariable("id") Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
     model.addAttribute("case", caseRepo.findById(id).get());
@@ -90,7 +88,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/managers", method = POST)
+  @PostMapping("/cases/{id}/permission/managers")
   String addManager(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
     CaseStudy cs = caseRepo.findById(id).get();
@@ -104,7 +102,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/managers", method = DELETE)
+  @DeleteMapping("/cases/{id}/permission/managers")
   String removeManager(Model model, @PathVariable("id") Long id,
       @RequestParam("manager") String manager, Locale locale) {
     CaseStudy kase = caseRepo.findById(id).get();
@@ -117,7 +115,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/editors", method = POST)
+  @PostMapping("/cases/{id}/permission/editors")
   String addEditor(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
     CaseStudy kase = caseRepo.findById(id).get();
@@ -131,7 +129,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/editors", method = DELETE)
+  @DeleteMapping("/cases/{id}/permission/editors")
   String removeEditor(Model model, @PathVariable("id") Long id,
       @RequestParam("editor") String editor, Locale locale) {
     CaseStudy kase = caseRepo.findById(id).get();
@@ -144,7 +142,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/viewers", method = POST)
+  @PostMapping("/cases/{id}/permission/viewers")
   String addViewer(Model model, @PathVariable("id") Long id,
       @RequestBody Map<String, Object> body, Locale locale) {
     CaseStudy cs = caseRepo.findById(id).get();
@@ -158,7 +156,7 @@ public class CaseStudyOperationController {
   }
 
   @PreAuthorize("@perm.canManage(#id)")
-  @RequestMapping(path = "/cases/{id}/permission/viewers", method = DELETE)
+  @DeleteMapping("/cases/{id}/permission/viewers")
   String removeViewer(Model model, @PathVariable("id") Long id,
       @RequestParam("viewer") String viewer, Locale locale) {
     CaseStudy cs = caseRepo.findById(id).get();

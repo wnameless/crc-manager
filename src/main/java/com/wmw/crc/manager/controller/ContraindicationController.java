@@ -1,9 +1,6 @@
 package com.wmw.crc.manager.controller;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,33 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.repository.ContraindicationRepository;
-import com.wmw.crc.manager.repository.MedicineRepository;
-import com.wmw.crc.manager.repository.SubjectRepository;
-
-import net.sf.rubycollect4j.Ruby;
+import com.wmw.crc.manager.service.CaseStudyService;
 
 @Controller
 public class ContraindicationController {
 
   @Autowired
+  CaseStudyService caseStudyService;
+
+  @Autowired
   CaseStudyRepository caseRepo;
-
-  @Autowired
-  SubjectRepository subjectRepo;
-
-  @Autowired
-  MedicineRepository medicineRepo;
-
-  @Autowired
-  ContraindicationRepository contraindicationRepo;
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}/contraindications")
   String index(Model model, @PathVariable("id") Long id) {
     CaseStudy cs = caseRepo.findById(id).get();
-    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
-    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
+
+    List<Contraindication> cds =
+        caseStudyService.getSortedContraindications(cs);
 
     model.addAttribute("case", cs);
     model.addAttribute("contraindications", cds);
@@ -59,22 +47,9 @@ public class ContraindicationController {
       @RequestParam("memo") String memo) {
     CaseStudy cs = caseRepo.findById(id).get();
 
-    if (!isNullOrEmpty(phrase)) {
-      Contraindication cd = new Contraindication();
-      cd.setCaseStudy(cs);
-      cd.setBundle(bundle);
-      cd.setPhrase(phrase);
-      cd.setTakekinds(takekinds);
-      cd.setMemo(memo);
-      contraindicationRepo.save(cd);
-    }
+    caseStudyService.addContraindication(cs, bundle, phrase, takekinds, memo);
 
-    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
-    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
-
-    model.addAttribute("case", cs);
-    model.addAttribute("contraindications", cds);
-    return "contraindication/index";
+    return "redirect:/cases/" + id + "/contraindications";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
@@ -82,22 +57,10 @@ public class ContraindicationController {
   String remove(Model model, @PathVariable("id") Long id,
       @PathVariable("cdId") Long cdId) {
     CaseStudy cs = caseRepo.findById(id).get();
-    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
-    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
 
-    Contraindication target =
-        Ruby.Array.of(cds).find(cd -> Objects.equals(cdId, cd.getId()));
+    caseStudyService.removeContraindication(cs, cdId);
 
-    if (target != null) {
-      contraindicationRepo.delete(target);
-    }
-
-    cds = contraindicationRepo.findAllByCaseStudy(cs);
-    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
-
-    model.addAttribute("case", cs);
-    model.addAttribute("contraindications", cds);
-    return "contraindication/index";
+    return "redirect:/cases/" + id + "/contraindications";
   }
 
 }
