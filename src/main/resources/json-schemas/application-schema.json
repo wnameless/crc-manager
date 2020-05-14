@@ -28,7 +28,8 @@
     },
     "2-1.IRB核准日期": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+	  "title": "2-1.IRB核准日期"
     },
     "irbApprovedNum": {
       "type": "string",
@@ -36,7 +37,7 @@
     },
     "dohFlg": {
       "type": "boolean",
-      "title": "2-3.",
+      "title": "2-3.是否需送衛福部審核",
       "enumNames": [
         "本試驗已通過衛福部審核",
         "本試驗不需送衛福部審核"
@@ -44,7 +45,8 @@
     },
     "2-4.衛福部核准日期": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+	  "title": "2-4.衛福部核准日期"
     },
     "dohApprovedNum": {
       "type": "string",
@@ -56,7 +58,7 @@
     },
     "PI": {
       "type": "array",
-      "title": "3-1. 試驗主持人",
+      "title": "3-1.試驗主持人",
       "items": {
         "type": "object",
         "properties": {
@@ -89,7 +91,7 @@
     },
     "LAIs": {
       "type": "array",
-      "title": "3-2. 共同主持人",
+      "title": "3-2.共同主持人",
       "items": {
         "type": "object",
         "properties": {
@@ -122,7 +124,7 @@
     },
     "AIs": {
       "type": "array",
-      "title": "3-3. 協同主持人",
+      "title": "3-3.協同主持人",
       "items": {
         "type": "object",
         "properties": {
@@ -162,7 +164,7 @@
       ]
     },
     "trialCategory": {
-      "title": " ",
+      "title": "4-1.試驗類別",
       "type": "string",
       "enum": [
         "tech",
@@ -178,7 +180,7 @@
       ]
     },
     "drugOptions": {
-      "title": " ",
+      "title": "4-3.藥品類型",
       "type": "string",
       "enum": [
         "component",
@@ -192,7 +194,7 @@
       ]
     },
     "efficiencyOptions": {
-      "title": " ",
+      "title": "4-3.藥品療效",
       "type": "string",
       "enum": [
         "newIndications",
@@ -212,7 +214,7 @@
       ]
     },
     "phase": {
-      "title": " ",
+      "title": "4-4.藥品試驗階段",
       "type": "string",
       "enum": [
         "Phase0",
@@ -234,7 +236,7 @@
       ]
     },
     "studyType": {
-      "title": "5-1. 計畫型態",
+      "title": "5-1.計畫型態",
       "type": "string",
       "enum": [
         "world",
@@ -248,7 +250,7 @@
       ]
     },
     "locationType": {
-      "title": "5-2.",
+      "title": "5-2.計畫執行地點型態",
       "type": "string",
       "enum": [
         "multiCountry",
@@ -294,16 +296,16 @@
     "proposedStartDate": {
       "type": "string",
       "format": "date",
-      "title": "7.試驗預計開始執行時間"
+      "title": "7-1.試驗預計開始執行時間"
     },
     "proposedEndDate": {
       "type": "string",
       "format": "date",
-      "title": "7.試驗預計結束時間"
+      "title": "7-2.試驗預計結束時間"
     },
     "locations": {
       "type": "array",
-      "title": "8. 執行試驗場所(可複選)",
+      "title": "8.執行試驗場所(可複選)",
       "items": {
         "type": "string",
         "enum": [
@@ -317,7 +319,7 @@
     },
     "funds": {
       "type": "array",
-      "title": "9. 試驗經費來源",
+      "title": "9.試驗經費來源",
       "items": {
         "type": "string",
         "enum": [
@@ -331,27 +333,27 @@
     },
     "sponsorName": {
       "type": "string",
-      "title": "10. 試驗委託藥廠/贊助研究單位名稱",
+      "title": "10.試驗委託藥廠/贊助研究單位名稱",
       "description": "名稱"
     },
     "sponsorAddress": {
       "type": "string",
-      "title": "11. 試驗委託藥廠/贊助研究單位地址",
+      "title": "11-1.試驗委託藥廠/贊助研究單位地址",
       "description": "地址"
     },
     "croName": {
       "type": "string",
-      "title": "11. 試驗委託CRO公司名稱",
+      "title": "11-2.試驗委託CRO公司名稱",
       "description": "名稱"
     },
     "croAddress": {
       "type": "string",
-      "title": "12. 試驗委託CRO公司地址",
+      "title": "12.試驗委託CRO公司地址",
       "description": "地址"
     },
     "insuranceFlg": {
       "type": "string",
-      "title": "13. 試驗有無保險",
+      "title": "13.試驗有無保險",
       "enum": [
         "有",
         "無"
@@ -367,7 +369,7 @@
     },
     "nihFlg": {
       "type": "string",
-      "title": "14. 試驗是否至美國NIH網站登入",
+      "title": "14.試驗是否至美國NIH網站登入",
       "enum": [
         "是",
         "否"
@@ -379,7 +381,7 @@
     },
     "contractFlg": {
       "type": "string",
-      "title": "15. 是否需要簽合約",
+      "title": "15.是否需要簽合約",
       "enum": [
         "是",
         "否"
@@ -406,67 +408,67 @@
         "applicationForm": {
           "type": "string",
           "format": "data-url",
-          "title": "1. 三軍總醫院臨床研究申請表"
+          "title": "1.三軍總醫院臨床研究申請表"
         },
         "approvedLetter": {
           "type": "string",
           "format": "data-url",
-          "title": "2. 三軍總醫院IRB審議會同意函"
+          "title": "2.三軍總醫院IRB審議會同意函"
         },
         "icf": {
           "type": "string",
           "format": "data-url",
-          "title": "3. 受試者同意書 (經IRB核准蓋章之影本)"
+          "title": "3.受試者同意書 (經IRB核准蓋章之影本)"
         },
         "protocolFile": {
           "type": "string",
           "format": "data-url",
-          "title": "4. 三軍總醫院人體試驗主持人試驗計畫申請書"
+          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
         },
         "dohLetter": {
           "type": "string",
           "format": "data-url",
-          "title": "5. 衛福部人體試驗同意函（如須衛福部審查通過案）"
+          "title": "5.衛福部人體試驗同意函（如須衛福部審查通過案）"
         },
         "protocolInfoFile": {
           "type": "string",
           "format": "data-url",
-          "title": "6. 試驗計畫書"
+          "title": "6.試驗計畫書"
         },
         "caseReport": {
           "type": "string",
           "format": "data-url",
-          "title": "7. 個案報告書"
+          "title": "7.個案報告書"
         },
         "insuranceFile": {
           "type": "string",
           "format": "data-url",
-          "title": "8. 保險資料"
+          "title": "8.保險資料"
         },
         "contractFile": {
           "type": "string",
           "format": "data-url",
-          "title": "9. 臨床試驗合約書"
+          "title": "9.臨床試驗合約書"
         },
         "funding": {
           "type": "string",
           "format": "data-url",
-          "title": "10. 臨床試驗經費明細表"
+          "title": "10.臨床試驗經費明細表"
         },
         "fee": {
           "type": "string",
           "format": "data-url",
-          "title": "11. 臨床試驗中心服務費收費表 (健康受試者/病人受試者)"
+          "title": "11.臨床試驗中心服務費收費表 (健康受試者/病人受試者)"
         },
         "otherFile": {
           "type": "string",
           "format": "data-url",
-          "title": "12. 其他重要補充資料"
+          "title": "12.其他重要補充資料"
         }
       }
     },
     "preview": {
-      "title": "3. 預覽並送出至執行案件區",
+      "title": "3.預覽並送出至執行案件區",
       "type": "object",
       "properties": {
         "piAccountFlg": {
