@@ -38,15 +38,13 @@ import net.sf.rubycollect4j.RubyArray;
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
-  default List<Subject> findByCaseStudiesAndCriteria(Iterable<CaseStudy> cases,
-      List<Criterion> criteria) {
+  default List<Subject> findAllByCaseStudyInAndCriteria(
+      Iterable<CaseStudy> cases, List<Criterion> criteria) {
     List<Subject> subjects = findAllByCaseStudyIn(cases);
-
     ListMultimap<String, Object> groupedCriteria = groupedCriteria(criteria);
 
-    return Ruby.Array.copyOf(subjects)
-        .keepIf(
-            subject -> isCriteriaMatch(subject.getFormData(), groupedCriteria))
+    return Ruby.Array.of(subjects)
+        .keepIf(s -> isCriteriaMatch(s.getFormData(), groupedCriteria))
         .toList();
   }
 

@@ -178,28 +178,27 @@ public class CaseStudyService {
       List<Criterion> criteria) {
     RubyArray<CaseStudy> targets = null;
 
-    RubyArray<Criterion> caseCriterion = Ruby.Array.of(criteria)
+    List<Criterion> caseCriteria = Ruby.Array.of(criteria)
         .select(c -> Objects.equals(c.getType(), "CaseStudy"));
-    RubyArray<Criterion> subjectCriterion = caseCriterion = Ruby.Array
-        .of(criteria).select(c -> Objects.equals(c.getType(), "Subject"));
+    List<Criterion> subjectCriteria = Ruby.Array.of(criteria)
+        .select(c -> Objects.equals(c.getType(), "Subject"));
 
-    if (caseCriterion.isEmpty() && !subjectCriterion.isEmpty()) {
-      Iterable<CaseStudy> readableCases = caseRepo.findAllByUser(auth);
-      Iterable<Subject> casesBySubjects = subjectRepo
-          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
-
-      targets = Ruby.Enumerator.of(casesBySubjects).map(Subject::getCaseStudy);
+    Iterable<CaseStudy> readableCases;
+    if (caseCriteria.isEmpty()) {
+      readableCases = caseRepo.findAllByUser(auth);
     } else {
-      List<CaseStudy> readableCases =
-          caseRepo.findByUserAndCriteria(auth, caseCriterion);
-      Iterable<Subject> casesBySubjects = subjectRepo
-          .findByCaseStudiesAndCriteria(readableCases, subjectCriterion);
-
-      targets = Ruby.Enumerator.of(casesBySubjects).map(Subject::getCaseStudy);
-      targets.addAll(readableCases);
+      readableCases = caseRepo.findByUserAndCriteria(auth, caseCriteria);
     }
 
-    return targets.uniq().toList();
+    if (subjectCriteria.isEmpty()) {
+      targets = Ruby.Enumerator.of(readableCases).toA();
+    } else {
+      targets = Ruby.Array.of(subjectRepo
+          .findAllByCaseStudyInAndCriteria(readableCases, subjectCriteria))
+          .map(Subject::getCaseStudy).uniq();
+    }
+
+    return targets.toList();
   }
 
   public HttpEntity<byte[]> createDownloadableExcelCaseStudy(Long id,

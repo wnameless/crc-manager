@@ -109,7 +109,7 @@ public class VisitService {
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
-            + "/subjects/" + s.getId() + "/visits" //
+            + "/subjects/" + s.getId() + "/visits" + "\n" //
             + "•開立禁忌用藥: " + Ruby.Array.of(contraindications)
                 // 符合用藥組別
                 .select(cd -> Objects.equals(cd.getBundle(),
@@ -132,7 +132,7 @@ public class VisitService {
       List<String> messages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
-        String msg = "No email list on CaseStudy[" + c.getCaseNumber() + "]";
+        String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
         results.add(msg);
         log.info(msg);
         continue;
@@ -150,14 +150,14 @@ public class VisitService {
 
       if (messages.isEmpty()) {
         String msg =
-            "No unreviewed visits on CaseStudy[" + c.getCaseNumber() + "]";
+            "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
         results.add(msg);
         log.info(msg);
       } else {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
         message.setSubject("CRC Manager 【看診通知】");
-        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getCaseNumber() + "』的受試者\n\n";
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getIrbNumber() + "』的受試者\n\n";
         message.setText(prefix + Ruby.Array.of(messages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 
@@ -165,12 +165,12 @@ public class VisitService {
           emailSender.send(message);
           String msg = "Email of " + messages.size()
               + " visits has been sent to following addresses: " + c.getEmails()
-              + " on CaseStudy[" + c.getCaseNumber() + "]";
+              + " on CaseStudy[" + c.getIrbNumber() + "]";
           results.add(msg);
           log.info(msg);
         } catch (Exception e) {
           String msg = "Failed to send visit email to following addresses: "
-              + c.getEmails() + " on CaseStudy[" + c.getCaseNumber() + "]";
+              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
           results.add(msg);
           log.error(msg, e);
         }

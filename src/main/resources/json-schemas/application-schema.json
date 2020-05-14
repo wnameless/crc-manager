@@ -29,7 +29,7 @@
     "2-1.IRB核准日期": {
       "type": "string",
       "format": "date",
-	  "title": "2-1.IRB核准日期"
+      "title": "2-1.IRB核准日期"
     },
     "irbApprovedNum": {
       "type": "string",
@@ -46,7 +46,7 @@
     "2-4.衛福部核准日期": {
       "type": "string",
       "format": "date",
-	  "title": "2-4.衛福部核准日期"
+      "title": "2-4.衛福部核准日期"
     },
     "dohApprovedNum": {
       "type": "string",
@@ -180,7 +180,7 @@
       ]
     },
     "drugOptions": {
-      "title": "4-3.藥品類型",
+      "title": "4-2.藥品類型",
       "type": "string",
       "enum": [
         "component",
@@ -361,11 +361,13 @@
     },
     "insuranceInst": {
       "type": "string",
-      "description": "承保公司"
+      "description": "承保公司",
+      "title": "13-1.承保公司"
     },
     "insuranceAmount": {
       "type": "string",
-      "description": "保險金額"
+      "description": "保險金額",
+      "title": "13-2.保險金額"
     },
     "nihFlg": {
       "type": "string",
