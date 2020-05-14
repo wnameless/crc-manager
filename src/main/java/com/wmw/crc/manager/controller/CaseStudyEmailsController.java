@@ -37,7 +37,7 @@ import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
 
 @Controller
-public class CaseStudyEmailController {
+public class CaseStudyEmailsController {
 
   @Autowired
   CaseStudyRepository caseRepo;
