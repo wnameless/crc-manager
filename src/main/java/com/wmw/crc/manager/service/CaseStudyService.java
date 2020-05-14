@@ -199,7 +199,7 @@ public class CaseStudyService {
       targets.addAll(readableCases);
     }
 
-    return targets.uniqǃ().toList();
+    return targets.uniq().toList();
   }
 
   public HttpEntity<byte[]> createDownloadableExcelCaseStudy(Long id,
