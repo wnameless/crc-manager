@@ -15,6 +15,9 @@
  */
 package com.wmw.crc.manager.service;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,10 +27,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.google.common.io.Resources;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -176,6 +183,22 @@ public class SubjectService {
         return true;
       }
     }
+  }
+
+  public HttpEntity<byte[]> createDownloadableUploadExample()
+      throws IOException {
+    URL exampleUrl = Resources.getResource("examples/三總受試者名單範本.xlsx");
+
+    byte[] dataByteArray = Resources.toByteArray(exampleUrl);
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    header.set(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + URLEncoder.encode("三總受試者名單範本.xlsx", "UTF-8"));
+    header.setContentLength(dataByteArray.length);
+
+    return new HttpEntity<byte[]>(dataByteArray, header);
   }
 
 }
