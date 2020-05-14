@@ -144,6 +144,10 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
   public Subject() {}
 
+  public Subject(JsonNode jsonNode) {
+    setFormData(jsonNode);
+  }
+
   @Override
   public void setFormData(JsonNode formData) {
     this.formData = formData;

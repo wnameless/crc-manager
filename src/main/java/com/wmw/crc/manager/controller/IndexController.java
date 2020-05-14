@@ -15,8 +15,6 @@
  */
 package com.wmw.crc.manager.controller;
 
-import java.io.IOException;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController {
 
   @RequestMapping(path = { "/" })
-  String index(Model model) throws IOException {
+  String index(Model model) {
     return "redirect:/cases";
   }
 
