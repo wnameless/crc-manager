@@ -126,7 +126,8 @@ public class VisitService {
 
     List<CaseStudy> cases = caseStudyRepo.findByStatus(Status.EXEC);
     for (CaseStudy c : cases) {
-      List<String> messages = new ArrayList<>();
+      List<String> visitMessages = new ArrayList<>();
+      List<String> contraindicationMessages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
@@ -141,35 +142,67 @@ public class VisitService {
 
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
           SimpleMailMessage message = createVisitEmail(v);
-          messages.add(message.getText());
+          if (v.isContraindicationSuspected()) {
+            contraindicationMessages.add(message.getText());
+          } else {
+            visitMessages.add(message.getText());
+          }
         });
       }
 
-      if (messages.isEmpty()) {
+      if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
         String msg =
             "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
         results.add(msg);
         log.info(msg);
       } else {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager 【看診通知】【禁忌用藥開立通知】");
-        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
-        message.setText(prefix + Ruby.Array.of(messages).join("\n"));
-        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+        if (!visitMessages.isEmpty()) {
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+          message.setSubject("CRC Manager【看診通知】");
+          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+          message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
+          message
+              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 
-        try {
-          emailSender.send(message);
-          String msg = "Email of " + messages.size()
-              + " visits has been sent to following addresses: " + c.getEmails()
-              + " on CaseStudy[" + c.getIrbNumber() + "]";
-          results.add(msg);
-          log.info(msg);
-        } catch (Exception e) {
-          String msg = "Failed to send visit email to following addresses: "
-              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-          results.add(msg);
-          log.error(msg, e);
+          try {
+            emailSender.send(message);
+            String msg = "Email of " + visitMessages.size()
+                + " visits has been sent to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.info(msg);
+          } catch (Exception e) {
+            String msg = "Failed to send visit email to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.error(msg, e);
+          }
+        }
+        if (!contraindicationMessages.isEmpty()) {
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+          message.setSubject("CRC Manager【禁忌用藥開立通知】");
+          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+          message.setText(
+              prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
+          message
+              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+          try {
+            emailSender.send(message);
+            String msg = "Email of " + contraindicationMessages.size()
+                + " contraindications has been sent to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.info(msg);
+          } catch (Exception e) {
+            String msg =
+                "Failed to send contraindication email to following addresses: "
+                    + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.error(msg, e);
+          }
         }
       }
     }
