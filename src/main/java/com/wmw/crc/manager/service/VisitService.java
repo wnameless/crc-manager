@@ -17,7 +17,6 @@ package com.wmw.crc.manager.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.wmw.crc.manager.controller.api.NewVisit;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
-import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -73,7 +71,7 @@ public class VisitService {
 
   public void addVisit(NewVisit newVisit) {
     List<Subject> subjects =
-        subjectService.findExecSubjects(newVisit.getNationalId()).get();
+        subjectService.findOngoingExecSubjects(newVisit.getNationalId()).get();
 
     for (Subject s : subjects) {
       Visit visit = new Visit();
@@ -100,8 +98,6 @@ public class VisitService {
 
     Subject s = visit.getSubject();
     CaseStudy c = s.getCaseStudy();
-    List<Contraindication> contraindications =
-        contraindicationRepo.findAllByCaseStudy(c);
     message.setSubject("Contraindication Suspected Visit");
     message.setText( //
         "•姓名: " + s.getName() + "\n" //
@@ -110,14 +106,15 @@ public class VisitService {
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
             + "/subjects/" + s.getId() + "/visits" + "\n" //
-            + "•開立禁忌用藥: " + Ruby.Array.of(contraindications)
-                // 符合用藥組別
-                .select(cd -> Objects.equals(cd.getBundle(),
-                    s.getContraindicationBundle()))
-                // 將藥物用法代號轉文字
-                .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
-                    .map(tk -> i18n.takeKind(tk)))
-                .join(", ")
+            + "•開立禁忌用藥: " + (visit.isContraindicationSuspected() ? "是" : "否") //
+            // + Ruby.Array.of(contraindicationRepo.findAllByCaseStudy(c))
+            // // 符合用藥組別
+            // .select(cd -> Objects.equals(cd.getBundle(),
+            // s.getContraindicationBundle()))
+            // // 將藥物用法代號轉文字
+            // .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
+            // .map(tk -> i18n.takeKind(tk)))
+            // .join(", ")
             + "\n" + "------------------------------" //
     );
 
@@ -156,8 +153,8 @@ public class VisitService {
       } else {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager 【看診通知】");
-        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getIrbNumber() + "』的受試者\n\n";
+        message.setSubject("CRC Manager 【看診通知】【禁忌用藥開立通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
         message.setText(prefix + Ruby.Array.of(messages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 

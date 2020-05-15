@@ -8,6 +8,7 @@
 	<table id="jsfTable" class="display">
 		<thead>
 			<tr>
+				<th th:text="#{ui.subject.visit.creationDate}"></th>
 				<th th:text="#{ui.subject.visit.division}"></th>
 				<th th:text="#{ui.subject.visit.doctor}"></th>
 				<th th:text="#{ui.subject.visit.room}"></th>
@@ -18,6 +19,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="v : ${visits}">
+				<td th:text="${#temporals.format(v.creationDate, 'dd-MM-yy HH:mm')}"></td>
 				<td th:text="${v.division}"></td>
 				<td th:text="${v.doctor}"></td>
 				<td th:text="${v.room}"></td>
@@ -30,7 +32,6 @@
 			</tr>
 		</tbody>
 	</table>
-
 
 	<script th:replace="fragments/notify :: notify"></script>
 	<script th:inline="javascript">
@@ -45,7 +46,7 @@
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
 			$('#jsfTable').DataTable({
 				order: [
-					[3, "asc"]
+					[4, "asc"]
 				],
 				columnDefs: [{
 					width: '36px',
