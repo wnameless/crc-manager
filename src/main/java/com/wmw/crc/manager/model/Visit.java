@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Visit {
+public class Visit extends Auditable<String> {
 
   @Id
   @GeneratedValue

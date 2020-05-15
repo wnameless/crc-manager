@@ -38,9 +38,10 @@
         <thead>
             <tr>
                 <th></th>
-                <th th:text="#{ui.subject.table.status}"></th>
+				<th th:text="#{ui.subject.table.status}"></th>
+				<th th:text="#{ui.subject.table.subjectNo}"></th>
                 <th th:text="#{ui.subject.table.bundle}"></th>
-                <th th:text="#{ui.subject.table.name}"></th>
+				<th th:text="#{ui.subject.table.name}"></th>
 				<th th:text="#{ui.subject.table.nationalid}"></th>
 				<th th:text="#{ui.subject.table.unreviewed-visits}"></th>
                 <th th:text="#{ui.subject.table.action}"></th>
@@ -53,7 +54,8 @@
                         <input type="checkbox" class="form-check-input" th:value="${subject.id}" onchange="checkboxEvent()">
                     </div>
                 </td>
-                <td th:text="${@i18n.str(subject.status)}"></td>
+				<td th:text="${@i18n.str(subject.status)}"></td>
+				<td th:text="${subject.subjectNo}"></td>
                 <td>
                     <label th:unless="${@perm.canWrite(case)}" th:text="${subject.contraindicationBundle}"></label>
 
@@ -192,7 +194,7 @@
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
 			$('#jsfTable').DataTable({
 				order: [
-					[4, "asc"]
+					[5, "asc"]
 				],
 				columnDefs: [{
 					width: '36px',

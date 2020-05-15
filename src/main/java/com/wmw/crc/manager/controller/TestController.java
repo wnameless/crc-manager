@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wmw.crc.manager.controller.api.NewVisit;
 import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.VisitService;
 
@@ -56,6 +58,25 @@ public class TestController {
   @ResponseBody
   List<String> sendVisitEmails() {
     return visitService.sendVisitEmails();
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping(path = "test/visits/add")
+  @ResponseBody
+  String addFakeVisit() {
+    NewVisit newVisit = new NewVisit();
+
+    newVisit.setIrbNumber("123456789");
+    newVisit.setRoom("F");
+    newVisit.setNationalId("A111222333");
+    newVisit.setDoctor("Faker");
+    newVisit.setDivision("Fake");
+    newVisit.setContraindicationSuspected(false);
+    newVisit.setDate(LocalDate.now());
+
+    visitService.addVisit(newVisit);
+
+    return "Visit added";
   }
 
 }

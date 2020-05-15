@@ -125,7 +125,13 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
   @JsonPopulatedKey("mrn")
   String patientId;
 
+  @JsonPopulatedKey("subjectNo")
+  String subjectNo;
+
   Integer contraindicationBundle = 1;
+
+  @JsonPopulatedKey("dropoutDate")
+  String dropoutDate;
 
   @ManyToOne
   @JoinTable(name = "case_subject",

@@ -56,16 +56,19 @@ public class SubjectService {
   @PersistenceContext
   EntityManager em;
 
-  public AdvOpt<List<Subject>> findExecSubjects(String nationalId) {
+  public AdvOpt<List<Subject>> findOngoingExecSubjects(String nationalId) {
     JPAQuery<Subject> query = new JPAQuery<>(em);
     QSubject qSubject = QSubject.subject;
 
     BooleanExpression isCaseStudyExec =
         qSubject.caseStudy.status.eq(CaseStudy.Status.EXEC);
     BooleanExpression eqNationalId = qSubject.nationalId.eq(nationalId);
+    BooleanExpression emptyDropoutDate = qSubject.dropoutDate.isEmpty();
+    BooleanExpression nullDropoutDate = qSubject.dropoutDate.isNull();
+    BooleanExpression blankDropoutDate = emptyDropoutDate.or(nullDropoutDate);
 
-    return AdvOpt.ofNullable(
-        query.from(qSubject).where(isCaseStudyExec.and(eqNationalId)).fetch(),
+    return AdvOpt.ofNullable(query.from(qSubject)
+        .where(isCaseStudyExec.and(eqNationalId).and(blankDropoutDate)).fetch(),
         "No such active subject.");
   }
 
@@ -122,21 +125,17 @@ public class SubjectService {
   }
 
   public AdvOpt<Subject> createSubject(CaseStudy cs, Subject subject) {
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(cs);
+    boolean isExist = subjectRepo.existsByCaseStudyAndNationalIdAndDropoutDate(
+        cs, subject.getNationalId(), null);
 
-    Optional<Subject> opt = subjects.stream().filter(s -> {
-      return Objects.equals(s.getNationalId(), subject.getNationalId())
-          && s.getStatus() != Status.DROPPED;
-    }).findAny();
-
-    if (!opt.isPresent()) {
+    if (isExist) {
+      return AdvOpt.ofNullable(null, "ctrl.subject.message.nationalid-existed");
+    } else {
       subject.setCaseStudy(cs);
       subjectRepo.save(subject);
 
       return AdvOpt.of(subject);
     }
-
-    return AdvOpt.ofNullable(null, "ctrl.subject.message.nationalid-existed");
   }
 
   public AdvOpt<Subject> updateSubject(Subject subject, JsonNode formData) {
