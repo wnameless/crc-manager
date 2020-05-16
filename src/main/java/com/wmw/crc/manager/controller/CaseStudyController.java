@@ -16,13 +16,11 @@
 package com.wmw.crc.manager.controller;
 
 import static com.wmw.crc.manager.CrcManagerConfig.CASES_STATUS;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -109,7 +106,7 @@ public class CaseStudyController {
     model.addAttribute("pageable", pageable);
     session.setAttribute("pageable", pageable);
 
-    if (search == null) {
+    if (!allRequestParams.containsKey("search")) {
       if (session.getAttribute("search") != null) {
         search = (String) session.getAttribute("search");
       }
@@ -122,27 +119,33 @@ public class CaseStudyController {
   }
 
   @PreAuthorize("@perm.isUser()")
-  @RequestMapping(path = "/cases", method = { GET, PUT })
-  String index(HttpServletRequest req, Model model) {
-    return req.getMethod().equals("GET") ? "cases/index" : "cases/list :: list";
+  @GetMapping(path = "/cases")
+  String index(Model model) {
+    return "cases/index";
+  }
+
+  @PreAuthorize("@perm.isUser()")
+  @GetMapping(path = "/cases", produces = APPLICATION_JSON_VALUE)
+  String indexJS(Model model, @RequestParam(required = false) String search) {
+    return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/cases/{id}")
   String show(@PathVariable("id") Long id, Model model) {
-    return "cases/show :: show";
+    return "cases/show :: complete";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
-  @GetMapping("/cases/{id}/index")
-  String showIndex(@PathVariable("id") Long id, Model model) {
-    return "cases/show :: index";
+  @GetMapping(path = "/cases/{id}", produces = APPLICATION_JSON_VALUE)
+  String showJS(@PathVariable("id") Long id, Model model) {
+    return "cases/show :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @GetMapping("/cases/{id}/edit")
-  String edit(Model model, @PathVariable("id") Long id) {
-    return "cases/edit :: edit";
+  @GetMapping(path = "/cases/{id}/edit", produces = APPLICATION_JSON_VALUE)
+  String editJS(Model model, @PathVariable("id") Long id) {
+    return "cases/edit :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
@@ -156,12 +159,12 @@ public class CaseStudyController {
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/cases/{id}")
-  String save(Model model, @PathVariable("id") Long id,
+  String saveJS(Model model, @PathVariable("id") Long id,
       @RequestBody JsonNode formData) {
     CaseStudy c = (CaseStudy) model.getAttribute("jsfItem");
     c.setFormData(formData);
     caseRepo.save(c);
-    return "cases/list :: list";
+    return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canDelete()")

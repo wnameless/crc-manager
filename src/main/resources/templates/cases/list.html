@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="list">
+<div th:fragment="partial">
     <div class="row">
         <div class="col-sm-4">
             <div class="btn-group dropdown" sd:page-size-selector="dropdown">
@@ -172,7 +172,7 @@
         };
 
         var searchEvent = (q) => {
-            axios.put('/cases', {}, {
+            axios.get('/cases', {
                 params: {
                     search: q
                 }

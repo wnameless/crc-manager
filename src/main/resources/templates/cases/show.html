@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="show">
+<div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl='/cases')"></h3>
 
@@ -48,7 +48,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.put( /*[[${jsfPath}]]*/ null)
+                axios.get( /*[[${jsfPath}]]*/ null)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -68,7 +68,7 @@
 
 </html>
 
-<html th:fragment="index" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+<html th:fragment="complete" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
 <section layout:fragment="content">
     <div class="container">
