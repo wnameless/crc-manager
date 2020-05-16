@@ -43,7 +43,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.post( /*[[${jsfPath}]]*/ null, f.formData).then((response) => {
+                axios.post( /*[[${jsfItemPath}]]*/ null, f.formData).then((response) => {
                     $('#jsf').html(response.data);
                 });
             };

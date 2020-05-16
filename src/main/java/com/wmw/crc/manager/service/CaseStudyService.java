@@ -16,10 +16,11 @@
 package com.wmw.crc.manager.service;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.wmw.crc.manager.CrcManagerConfig.CASES_STATUS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -107,8 +108,7 @@ public class CaseStudyService {
       if (requiredFiles != null) {
         requiredFile = requiredFiles.get(fileId);
       }
-      files.put(fileId,
-          new AbstractMap.SimpleEntry<>(fileTitle, requiredFile != null));
+      files.put(fileId, new SimpleEntry<>(fileTitle, requiredFile != null));
     }
 
     return files;
@@ -117,20 +117,20 @@ public class CaseStudyService {
   public Iterable<CaseStudy> getCasesBySession(Authentication auth,
       HttpSession session) {
     return caseRepo.findByUserAndStatus(auth,
-        (CaseStudy.Status) session.getAttribute("CASES_STATUS"));
+        (CaseStudy.Status) session.getAttribute(CASES_STATUS));
   }
 
   public Page<CaseStudy> getCasesBySession(Authentication auth,
       HttpSession session, Pageable pageable) {
     return caseRepo.findByUserAndStatus(auth,
-        (CaseStudy.Status) session.getAttribute("CASES_STATUS"), pageable);
+        (CaseStudy.Status) session.getAttribute(CASES_STATUS), pageable);
   }
 
   public Page<CaseStudy> getCasesBySession(Authentication auth,
       HttpSession session, String search, Pageable pageable) {
     if (search != null && !search.isEmpty()) {
       return caseRepo.findByUserAndStatus(auth,
-          (CaseStudy.Status) session.getAttribute("CASES_STATUS"), search,
+          (CaseStudy.Status) session.getAttribute(CASES_STATUS), search,
           pageable);
     }
 

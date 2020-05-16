@@ -32,6 +32,8 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 @Configuration
 public class CrcManagerConfig {
 
+  public static final String CASES_STATUS = "CASES_STATUS";
+
   @SuppressWarnings("deprecation")
   @Primary
   @Bean
