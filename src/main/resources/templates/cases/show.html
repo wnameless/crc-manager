@@ -2,7 +2,7 @@
 
 <div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl='/cases')"></h3>
+        <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl=${jsfItem.indexPath})"></h3>
 
         <hr>
 
@@ -73,7 +73,7 @@
 <section layout:fragment="content">
     <div class="container">
         <div id="jsf">
-            <div th:replace="cases/show :: show"></div>
+            <div th:replace="cases/show :: partial"></div>
         </div>
     </div>
 </section>

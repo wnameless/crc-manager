@@ -67,7 +67,8 @@ import lombok.EqualsAndHashCode;
     @Index(columnList = "expectedStartDate", unique = false),
     @Index(columnList = "expectedEndDate", unique = false) })
 @Entity
-public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
+public class CaseStudy
+    implements JsonPopulatable, ReactJsonSchemaForm, RestfulResource<Long> {
 
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
@@ -232,5 +233,10 @@ public class CaseStudy implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
+
+  @Override
+  public String getResourceName() {
+    return "cases";
+  }
 
 }

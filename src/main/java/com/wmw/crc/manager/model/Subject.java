@@ -55,7 +55,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
+public class Subject
+    implements JsonPopulatable, ReactJsonSchemaForm, RestfulResource<Long> {
 
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
@@ -181,5 +182,10 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
+
+  @Override
+  public String getResourceName() {
+    return "subjects";
+  }
 
 }

@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Visit extends Auditable<String> {
+public class Visit extends Auditable<String> implements RestfulResource<Long> {
 
   @Id
   @GeneratedValue
@@ -54,5 +54,10 @@ public class Visit extends Auditable<String> {
   String irbNumber;
 
   boolean reviewed;
+
+  @Override
+  public String getResourceName() {
+    return "visits";
+  }
 
 }

@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Contraindication {
+public class Contraindication implements RestfulResource<Long> {
 
   @Id
   @GeneratedValue
@@ -53,5 +53,10 @@ public class Contraindication {
       joinColumns = { @JoinColumn(name = "contraindication_id") },
       inverseJoinColumns = { @JoinColumn(name = "case_id") })
   CaseStudy caseStudy;
+
+  @Override
+  public String getResourceName() {
+    return "contraindications";
+  }
 
 }

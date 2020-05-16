@@ -121,7 +121,7 @@ public class CaseStudyController {
   @PreAuthorize("@perm.isUser()")
   @GetMapping(path = "/cases")
   String index(Model model) {
-    return "cases/index";
+    return "cases/list :: complete";
   }
 
   @PreAuthorize("@perm.isUser()")

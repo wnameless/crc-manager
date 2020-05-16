@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Medicine {
+public class Medicine implements RestfulResource<Long> {
 
   @Id
   @GeneratedValue
@@ -48,5 +48,10 @@ public class Medicine {
   String atcCode4;
 
   String takekind;
+
+  @Override
+  public String getResourceName() {
+    return "medicines";
+  }
 
 }
