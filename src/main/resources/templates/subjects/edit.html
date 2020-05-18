@@ -2,7 +2,7 @@
 <div th:fragment="edit">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3
-            th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/' + ${case.id} + '/subjects/index')">
+            th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/' + ${case.id} + '/subjects')">
         </h3>
         <hr>
         <div id="jsfForm"></div>

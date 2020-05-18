@@ -16,6 +16,7 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
 import java.util.List;
@@ -74,7 +75,7 @@ public class SubjectController {
   I18nService i18n;
 
   @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/index")
+  @GetMapping("/cases/{caseId}/subjects")
   String index(Model model, @PathVariable("caseId") Long caseId) {
     CaseStudy c = caseRepo.findById(caseId).get();
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
@@ -86,7 +87,8 @@ public class SubjectController {
   }
 
   @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects")
+  @GetMapping(path = "/cases/{caseId}/subjects",
+      produces = APPLICATION_JSON_VALUE)
   String list(Model model, @PathVariable("caseId") Long caseId) {
     CaseStudy c = caseRepo.findById(caseId).get();
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
@@ -127,7 +129,7 @@ public class SubjectController {
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
-  @PostMapping(path = "/cases/{caseId}/subjects/index")
+  @PostMapping(path = "/cases/{caseId}/subjects/batch")
   String batchCreate(RedirectAttributes redirAttrs,
       @PathVariable("caseId") Long caseId,
       @RequestParam("subjectFile") MultipartFile file) {
@@ -140,7 +142,7 @@ public class SubjectController {
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
@@ -199,7 +201,7 @@ public class SubjectController {
       subjectRepo.delete(subject);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
@@ -214,7 +216,7 @@ public class SubjectController {
       subjectRepo.save(subject);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
@@ -230,7 +232,7 @@ public class SubjectController {
       subjectRepo.save(subject);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")
@@ -273,7 +275,7 @@ public class SubjectController {
       });
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:/cases/" + caseId + "/subjects";
   }
 
   @PreAuthorize("@perm.canWrite(#caseId)")

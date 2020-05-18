@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="list">
 	<h3
-		th:replace="fragments/form :: title(text=${subject.name + '(' + subject.nationalId + ')' }, backUrl=${'/cases/' + case.id + '/subjects/index'})">
+		th:replace="fragments/form :: title(text=${subject.name + '(' + subject.nationalId + ')' }, backUrl=${'/cases/' + case.id + '/subjects'})">
 	</h3>
 	<hr>
 
