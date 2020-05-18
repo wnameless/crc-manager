@@ -37,5 +37,4 @@ public class Protocol {
 
   Set<String> viewers;
 
-  String aa;
 }
