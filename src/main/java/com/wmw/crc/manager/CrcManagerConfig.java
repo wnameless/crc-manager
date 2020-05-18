@@ -25,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.github.wnameless.spring.common.PageUtils;
 
 @EnableJpaAuditing
 @EnableScheduling
@@ -32,10 +33,12 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 @Configuration
 public class CrcManagerConfig {
 
+  public static final String CASES_STATUS = "CASES_STATUS";
+
   @SuppressWarnings("deprecation")
   @Primary
   @Bean
-  public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+  Jackson2ObjectMapperBuilder objectMapperBuilder() {
     Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
     // For CSIS API compatibility
     builder.featuresToEnable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
@@ -43,8 +46,13 @@ public class CrcManagerConfig {
   }
 
   @Bean
-  public SpringDataDialect springDataDialect() {
+  SpringDataDialect springDataDialect() {
     return new SpringDataDialect();
+  }
+
+  @Bean
+  PageUtils pageUtils() {
+    return new PageUtils();
   }
 
 }

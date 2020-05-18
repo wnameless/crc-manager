@@ -13,16 +13,16 @@
         <div id="navbarCollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-                    <a href="/cases?new" th:text="#{ui.navbar.case.new}"></a>
+                    <a href="/cases?status=new" th:text="#{ui.navbar.case.new}"></a>
                 </li>
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/cases?exec" th:text="#{ui.navbar.case.exec}"></a>
+                    <a href="/cases?status=exec" th:text="#{ui.navbar.case.exec}"></a>
                 </li>
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/cases?end" th:text="#{ui.navbar.case.end}"></a>
+                    <a href="/cases?status=end" th:text="#{ui.navbar.case.end}"></a>
                 </li>
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-                    <a href="/cases?none" th:text="#{ui.navbar.case.none}"></a>
+                    <a href="/cases?status=none" th:text="#{ui.navbar.case.none}"></a>
                 </li>
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
                     <a href="/search/index" th:text="#{ui.navbar.case.export}"></a>

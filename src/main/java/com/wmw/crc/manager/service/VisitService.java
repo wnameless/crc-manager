@@ -124,7 +124,7 @@ public class VisitService {
   public List<String> sendVisitEmails() {
     List<String> results = new ArrayList<>();
 
-    List<CaseStudy> cases = caseStudyRepo.findByStatus(Status.EXEC);
+    List<CaseStudy> cases = caseStudyRepo.findAllByStatus(Status.EXEC);
     for (CaseStudy c : cases) {
       List<String> visitMessages = new ArrayList<>();
       List<String> contraindicationMessages = new ArrayList<>();

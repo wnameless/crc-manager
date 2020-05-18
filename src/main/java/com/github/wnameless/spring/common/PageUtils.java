@@ -13,19 +13,24 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.util;
+package com.github.wnameless.spring.common;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 
-@Component("pageUtils")
 public class PageUtils {
 
-  public String toQueryString(Pageable pageable) {
+  public static String toQueryString(Pageable pageable) {
     if (pageable == null) return "";
 
     URIBuilder b = new URIBuilder();
@@ -45,7 +50,7 @@ public class PageUtils {
     return uri.getQuery();
   }
 
-  public String toQueryStringWithoutPage(Pageable pageable) {
+  public static String toQueryStringWithoutPage(Pageable pageable) {
     if (pageable == null) return "";
 
     URIBuilder b = new URIBuilder();
@@ -62,6 +67,35 @@ public class PageUtils {
       throw new RuntimeException(e);
     }
     return uri.getQuery();
+  }
+
+  public static String sortToParam(Sort sort) {
+    return sort.stream().map(o -> o.getProperty() + "," + o.getDirection())
+        .collect(Collectors.joining("&"));
+  }
+
+  public static Sort paramToSort(String param) {
+    if (param == null || param.isEmpty()) return Sort.unsorted();
+
+    List<Order> orderList = new ArrayList<>();
+
+    String[] orders = param.split(Pattern.quote("&"));
+    for (String order : orders) {
+      String[] propAndDerct = order.split(",");
+      if (propAndDerct.length == 1) {
+        orderList.add(Order.by(propAndDerct[0]));
+      } else if (propAndDerct.length == 2) {
+        Direction direction = Direction.fromString(propAndDerct[1]);
+        if (direction == Direction.ASC) {
+          orderList.add(Order.asc(propAndDerct[0]));
+        }
+        if (direction == Direction.DESC) {
+          orderList.add(Order.desc(propAndDerct[0]));
+        }
+      }
+    }
+
+    return Sort.by(orderList);
   }
 
 }

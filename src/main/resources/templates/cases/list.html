@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="list">
+<div th:fragment="partial">
     <div class="row">
         <div class="col-sm-4">
             <div class="btn-group dropdown" sd:page-size-selector="dropdown">
@@ -51,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="case : ${page.content}">
+            <tr th:each="case : ${slice}">
                 <td>
                     <div class="dropdown">
                         <button type="button" class="btn btn-default dropdown-toggle" id="dropdownMenu1"
@@ -61,39 +61,39 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                             <li
                                 th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/assignment'}"
+                                <a th:href="@{${case.joinPath('assignment')}}"
                                     th:text="#{ui.case.table.action.assign}"></a>
                             </li>
                             <li th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
+                                <a th:href="@{${case.joinPath('status', 'exec')}}"
                                     th:text="#{ui.case.table.action.dispatch}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/status/none'}"
+                                <a th:href="@{${case.joinPath('status', 'none')}}"
                                     th:text="#{ui.case.table.action.none}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/permission'}"
+                                <a th:href="@{${case.joinPath('permission')}}"
                                     th:text="#{ui.case.table.action.permission}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/status/end'}"
+                                <a th:href="@{${case.joinPath('status', 'end')}}"
                                     th:text="#{ui.case.table.action.close}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/status/exec'}"
+                                <a th:href="@{${case.joinPath('status', 'exec')}}"
                                     th:text="#{ui.case.table.action.reopen}"></a>
                             </li>
                             <li th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
-                                <a th:href="@{'/cases/' + ${case.id} + '/status/new'}"
+                                <a th:href="@{${case.joinPath('status', 'new')}}"
                                     th:text="#{ui.case.table.action.renew}"></a>
                             </li>
                         </ul>
                     </div>
                 </td>
                 <td>
-                    <a href="#" th:if="${@perm.canWrite(case)}"
-                        th:attr="data-edit-path=${jsfPath + '/' + case.id + '/edit'}" onclick="editFormEvent(this)">
+                    <a href="#" th:if="${@perm.canWrite(case)}" th:attr="data-edit-path=${case.editPath}"
+                        onclick="editFormEvent(this)">
                         <span>
                             <i class="fa fa-edit"></i>
                         </span>
@@ -101,7 +101,7 @@
                     <span th:if="${!@perm.canWrite(case)}">
                         <i class="fa fa-edit"></i>
                     </span>
-                    <a th:if="${@perm.canDelete()}" th:href="@{'/cases/' + ${case.id} + '/delete'}">
+                    <a th:if="${@perm.canDelete()}" th:href="@{${case.joinPath('delete')}}">
                         <span>
                             <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
                         </span>
@@ -109,12 +109,12 @@
                 </td>
                 <td>
                     <a th:unless="${@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + case.id}"
+                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${case.showPath}"
                         onclick="showFormEvent(this)" th:inline="text">[[${case.irbNumber}]]</a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
                 <td class="text-center">
-                    <a th:if="${@perm.canRead(case)}" th:href="${ jsfPath + '/' + case.id + '/contraindications'}">
+                    <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('contraindications')}">
                         <span>
                             <i class="fa fa-medkit"></i>
                         </span>
@@ -124,7 +124,7 @@
                     </span>
                 </td>
                 <td class="text-center">
-                    <a th:if="${@perm.canRead(case)}" th:href="${jsfPath + '/' + case.id + '/subjects/index'}">
+                    <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('subjects', 'index')}">
                         <span>
                             <i class="fa fa-user-plus"></i>
                         </span>
@@ -147,7 +147,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{'/cases?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
+                    sd:pagination-url="@{${resourceName} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
@@ -172,7 +172,7 @@
         };
 
         var searchEvent = (q) => {
-            axios.put('/cases', {}, {
+            axios.get(/*[[${resourceName}]]*/ null, {
                 params: {
                     search: q
                 }
@@ -186,5 +186,18 @@
         });
     </script>
 </div>
+
+</html>
+
+
+<html th:fragment="complete" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+
+<section layout:fragment="content">
+    <div class="container">
+        <div id="jsf">
+            <div th:replace="cases/list :: partial"></div>
+        </div>
+    </div>
+</section>
 
 </html>

@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="show">
+<div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${jsfItem.trialName}, backUrl='/cases')"></h3>
+        <h3 th:replace="fragments/form :: title(text=${resourceItem.trialName}, backUrl=${resourceItem.indexPath})"></h3>
 
         <hr>
 
@@ -24,7 +24,7 @@
                                     class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
                             </a>
                             <a th:if="${file.value.value}"
-                                th:href="@{/cases/{id}/files/{fileId}(id=${jsfItem.id}, fileId=${file.key})}"
+                                th:href="@{/cases/{id}/files/{fileId}(id=${resourceItem.id}, fileId=${file.key})}"
                                 class="list-group-item list-group-item-action">
                                 [[${file.value.key}]]
                                 <label th:if="${file.value.value}"
@@ -36,9 +36,9 @@
             </div>
         </div>
 
-        <hr th:if="${@perm.canWrite(jsfItem)}">
+        <hr th:if="${@perm.canWrite(resourceItem)}">
 
-        <a th:if="${@perm.canWrite(jsfItem)}" th:href="@{/cases/{id}/emails(id=${jsfItem.id})}" th:text="#{ui.case.emails}"></a>
+        <a th:if="${@perm.canWrite(resourceItem)}" th:href="@{/cases/{id}/emails(id=${resourceItem.id})}" th:text="#{ui.case.emails}"></a>
 
         <hr>
 
@@ -48,7 +48,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.put( /*[[${jsfPath}]]*/ null)
+                axios.get( /*[[${resourceName}]]*/ null)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -58,7 +58,7 @@
                 btnText: /*[[#{rjsf.back}]]*/'返回',
                 onSubmit: onSubmit,
                 disabled: true
-            }, /*[[${jsfItem.toRjsfMap()}]]*/ {});
+            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
@@ -68,12 +68,12 @@
 
 </html>
 
-<html th:fragment="index" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+<html th:fragment="complete" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
 
 <section layout:fragment="content">
     <div class="container">
         <div id="jsf">
-            <div th:replace="cases/show :: show"></div>
+            <div th:replace="cases/show :: partial"></div>
         </div>
     </div>
 </section>

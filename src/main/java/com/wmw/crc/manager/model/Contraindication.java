@@ -27,13 +27,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
+import com.github.wnameless.spring.common.RestfulItem;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Contraindication {
+public class Contraindication implements RestfulItem<Long> {
 
   @Id
   @GeneratedValue
@@ -53,5 +55,10 @@ public class Contraindication {
       joinColumns = { @JoinColumn(name = "contraindication_id") },
       inverseJoinColumns = { @JoinColumn(name = "case_id") })
   CaseStudy caseStudy;
+
+  @Override
+  public String getResourceName() {
+    return "contraindications";
+  }
 
 }

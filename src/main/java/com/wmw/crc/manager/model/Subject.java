@@ -44,6 +44,7 @@ import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
 import com.github.wnameless.json.JsonPopulatedValue;
+import com.github.wnameless.spring.common.RestfulItem;
 import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
@@ -55,7 +56,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
+public class Subject
+    implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
@@ -181,5 +183,10 @@ public class Subject implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
+
+  @Override
+  public String getResourceName() {
+    return "subjects";
+  }
 
 }
