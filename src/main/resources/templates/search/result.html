@@ -19,7 +19,9 @@
 						<span class="fa fa-download"></span>
 					</a></td>
 				<td th:inline="text">[[${case.irbNumber}]]</td>
-				<td th:text="${case.trialName}"></td>
+				<td>
+					<a th:href="${case.showPath}" th:text="${case.trialName}"></a>
+				</td>
 				<td th:text="${case.piName}"></td>
 				<td th:text="${case.expectedStartDate}"></td>
 				<td th:text="${case.expectedEndDate}"></td>
