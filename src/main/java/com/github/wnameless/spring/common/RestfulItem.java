@@ -13,13 +13,13 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model;
+package com.github.wnameless.spring.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public interface RestfulResource<ID> {
+public interface RestfulItem<ID> {
 
   String getResourceName();
 

@@ -19,13 +19,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.github.wnameless.spring.common.RestfulItem;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Medicine implements RestfulResource<Long> {
+public class Medicine implements RestfulItem<Long> {
 
   @Id
   @GeneratedValue

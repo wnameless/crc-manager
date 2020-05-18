@@ -51,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="case : ${page.content}">
+            <tr th:each="case : ${slice}">
                 <td>
                     <div class="dropdown">
                         <button type="button" class="btn btn-default dropdown-toggle" id="dropdownMenu1"
@@ -147,7 +147,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{jsfPath + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
+                    sd:pagination-url="@{${resourceName} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
@@ -172,7 +172,7 @@
         };
 
         var searchEvent = (q) => {
-            axios.get(/*[[${jsfPath}]]*/ null, {
+            axios.get(/*[[${resourceName}]]*/ null, {
                 params: {
                     search: q
                 }

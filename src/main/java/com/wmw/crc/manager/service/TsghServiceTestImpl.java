@@ -96,7 +96,7 @@ public class TsghServiceTestImpl implements TsghService {
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
     ContraindicationRefreshResult crr = new ContraindicationRefreshResult();
 
-    List<CaseStudy> cases = caseRepo.findByStatus(Status.EXEC);
+    List<CaseStudy> cases = caseRepo.findAllByStatus(Status.EXEC);
     for (CaseStudy c : cases) {
       List<Contraindication> contraindications =
           contraindicationRepo.findAllByCaseStudy(c);

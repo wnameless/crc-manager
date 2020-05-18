@@ -27,13 +27,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
+import com.github.wnameless.spring.common.RestfulItem;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
-public class Contraindication implements RestfulResource<Long> {
+public class Contraindication implements RestfulItem<Long> {
 
   @Id
   @GeneratedValue

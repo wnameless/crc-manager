@@ -47,7 +47,7 @@ import net.sf.rubycollect4j.RubyArray;
 public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     QuerydslPredicateExecutor<CaseStudy> {
 
-  default List<CaseStudy> findByUserAndCriteria(Authentication auth,
+  default List<CaseStudy> findAllByUserAndCriteria(Authentication auth,
       List<Criterion> criteria) {
     Iterable<CaseStudy> cases = findAllByUser(auth);
 
@@ -108,20 +108,23 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
   }
 
   default Iterable<CaseStudy> findAllByUser(Authentication auth) {
+    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
+      return findAll();
+    }
+
     String username = auth.getName();
-
-    if (username.equals("super") || username.equals("admin")) return findAll();
-
-    return findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+    return findAllByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
         username, username, username, username);
   }
 
-  default Iterable<CaseStudy> findByUserAndStatus(Authentication auth,
+  default Iterable<CaseStudy> findAllByUserAndStatus(Authentication auth,
       CaseStudy.Status status) {
     Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
     if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
         || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
-      return findByStatus(status);
+      return findAllByStatus(status);
     }
 
     String username = auth.getName();
@@ -135,12 +138,12 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         isStatus.and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)));
   }
 
-  default Page<CaseStudy> findByUserAndStatus(Authentication auth,
+  default Page<CaseStudy> findAllByUserAndStatus(Authentication auth,
       CaseStudy.Status status, Pageable pageable) {
     Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
     if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
         || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
-      return findByStatus(status, pageable);
+      return findAllByStatus(status, pageable);
     }
 
     String username = auth.getName();
@@ -155,8 +158,8 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         pageable);
   }
 
-  default Page<CaseStudy> findByUserAndStatus(Authentication auth,
-      CaseStudy.Status status, String search, Pageable pageable) {
+  default Page<CaseStudy> findAllByUserAndStatus(Authentication auth,
+      CaseStudy.Status status, Pageable pageable, String search) {
     Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
 
     String username = auth.getName();
@@ -185,7 +188,7 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
         .and(isOwner.or(hasManager).or(hasEditor).or(hasViewer)), pageable);
   }
 
-  default Iterable<CaseStudy> findByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
+  default Iterable<CaseStudy> findAllByOwnerEqualsOrManagersContainsOrEditorsContainsOrViewersContains(
       String username1, String username2, String username3, String username4) {
     QCaseStudy qCase = QCaseStudy.caseStudy;
     BooleanExpression isOwner = qCase.owner.eq(username1);
@@ -195,9 +198,9 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     return findAll(isOwner.or(hasManager).or(hasEditor).or(hasViewer));
   }
 
-  List<CaseStudy> findByStatus(CaseStudy.Status status);
+  List<CaseStudy> findAllByStatus(CaseStudy.Status status);
 
-  Page<CaseStudy> findByStatus(CaseStudy.Status status, Pageable pageable);
+  Page<CaseStudy> findAllByStatus(CaseStudy.Status status, Pageable pageable);
 
   CaseStudy findByIrbNumber(String irbNumber);
 

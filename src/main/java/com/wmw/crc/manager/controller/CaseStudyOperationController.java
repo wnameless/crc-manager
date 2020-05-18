@@ -53,7 +53,7 @@ public class CaseStudyOperationController {
       @PathVariable("status") String status) {
     CaseStudy c = caseRepo.findById(id).get();
     String currentStatus = c.getStatus().toString().toLowerCase();
-    c.setStatus(CaseStudy.Status.fromString(status));
+    c.setStatus(CaseStudy.Status.fromString(status, CaseStudy.Status.NEW));
     caseRepo.save(c);
 
     return "redirect:/cases?" + currentStatus;

@@ -16,6 +16,7 @@
 package com.wmw.crc.manager.model;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 
@@ -42,6 +43,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,6 +53,7 @@ import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.JsonPopulatable;
 import com.github.wnameless.json.JsonPopulatedKey;
+import com.github.wnameless.spring.common.RestfulItem;
 import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
@@ -68,7 +71,7 @@ import lombok.EqualsAndHashCode;
     @Index(columnList = "expectedEndDate", unique = false) })
 @Entity
 public class CaseStudy
-    implements JsonPopulatable, ReactJsonSchemaForm, RestfulResource<Long> {
+    implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
@@ -95,32 +98,15 @@ public class CaseStudy
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
       .getObjectMapperFactory().get().createObjectNode();
 
-  // @Convert(converter = JsonNodeConverter.class)
-  // @Column(columnDefinition = "text")
-  // protected JsonNode schema = FlattenedJsonTypeConfigurer.INSTANCE
-  // .getObjectMapperFactory().get().createObjectNode();
-  //
-  // @Convert(converter = JsonNodeConverter.class)
-  // @Column(columnDefinition = "text")
-  // protected JsonNode uiSchema = FlattenedJsonTypeConfigurer.INSTANCE
-  // .getObjectMapperFactory().get().createObjectNode();
-
   public enum Status {
     NEW, EXEC, END, NONE;
 
     public static Status fromString(String status) {
-      switch (status.toUpperCase()) {
-        case "NEW":
-          return NEW;
-        case "EXEC":
-          return EXEC;
-        case "END":
-          return END;
-        case "NONE":
-          return NONE;
-        default:
-          return NEW;
-      }
+      return EnumUtils.getEnumIgnoreCase(Status.class, status);
+    }
+
+    public static Status fromString(String status, Status defaultVal) {
+      return firstNonNull(fromString(status), defaultVal);
     }
   }
 

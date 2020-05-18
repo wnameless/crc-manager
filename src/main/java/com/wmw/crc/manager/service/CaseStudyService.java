@@ -16,7 +16,6 @@
 package com.wmw.crc.manager.service;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.wmw.crc.manager.CrcManagerConfig.CASES_STATUS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -114,27 +112,23 @@ public class CaseStudyService {
     return files;
   }
 
-  public Iterable<CaseStudy> getCasesBySession(Authentication auth,
-      HttpSession session) {
-    return caseRepo.findByUserAndStatus(auth,
-        (CaseStudy.Status) session.getAttribute(CASES_STATUS));
+  public Iterable<CaseStudy> getCasesByStatus(Authentication auth,
+      CaseStudy.Status status) {
+    return caseRepo.findAllByUserAndStatus(auth, status);
   }
 
-  public Page<CaseStudy> getCasesBySession(Authentication auth,
-      HttpSession session, Pageable pageable) {
-    return caseRepo.findByUserAndStatus(auth,
-        (CaseStudy.Status) session.getAttribute(CASES_STATUS), pageable);
+  public Page<CaseStudy> getCasesByStatus(Authentication auth,
+      CaseStudy.Status status, Pageable pageable) {
+    return caseRepo.findAllByUserAndStatus(auth, status, pageable);
   }
 
-  public Page<CaseStudy> getCasesBySession(Authentication auth,
-      HttpSession session, String search, Pageable pageable) {
+  public Page<CaseStudy> getCasesByStatus(Authentication auth,
+      CaseStudy.Status status, Pageable pageable, String search) {
     if (search != null && !search.isEmpty()) {
-      return caseRepo.findByUserAndStatus(auth,
-          (CaseStudy.Status) session.getAttribute(CASES_STATUS), search,
-          pageable);
+      return caseRepo.findAllByUserAndStatus(auth, status, pageable, search);
     }
 
-    return getCasesBySession(auth, session, pageable);
+    return getCasesByStatus(auth, status, pageable);
   }
 
   public List<Contraindication> getSortedContraindications(CaseStudy cs) {
@@ -187,7 +181,7 @@ public class CaseStudyService {
     if (caseCriteria.isEmpty()) {
       readableCases = caseRepo.findAllByUser(auth);
     } else {
-      readableCases = caseRepo.findByUserAndCriteria(auth, caseCriteria);
+      readableCases = caseRepo.findAllByUserAndCriteria(auth, caseCriteria);
     }
 
     if (subjectCriteria.isEmpty()) {
