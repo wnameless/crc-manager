@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -85,7 +87,13 @@ public class PtmsApiController {
   String updateCase(@RequestBody Protocol protocol,
       @PathVariable("irbNumber") String irbNumber) {
     CaseStudy c = caseRepo.findByIrbNumber(irbNumber);
-    c.setFormData(protocol.getJsonData().get(0));
+
+    ObjectNode objNode = new ObjectMapper().createObjectNode();
+    objNode.setAll((ObjectNode) c.getFormData());
+    objNode.setAll((ObjectNode) protocol.getJsonData().get(0));
+    c.setFormData(objNode);
+
+    // c.setFormData(protocol.getJsonData().get(0));
     caseRepo.save(c);
 
     return "Update ok";
