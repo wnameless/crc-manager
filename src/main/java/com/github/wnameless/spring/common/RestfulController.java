@@ -16,6 +16,7 @@
 package com.github.wnameless.spring.common;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -25,13 +26,30 @@ public interface RestfulController<I, ID, R extends CrudRepository<I, ID>, T ext
 
   R getRepository();
 
-  @ModelAttribute("resourceName")
-  default String getResourceName() {
-    return ((RestfulResource) getRestfulResource()).getResourceName();
+  default String getResourceNameKey() {
+    return "resourceName";
   }
 
-  @ModelAttribute("resourceItem")
-  default I getResourceItem(@PathVariable(required = false) ID id) {
+  default String getResourceItemKey() {
+    return "resourceItem";
+  }
+
+  @ModelAttribute
+  default void setResourceName(Model model) {
+    model.addAttribute(getResourceNameKey(),
+        ((RestfulResource) getRestfulResource()).getResourceName());
+  }
+
+  @ModelAttribute
+  default void setResourceItem(Model model,
+      @PathVariable(required = false) ID id) {
+    if (id != null) {
+      model.addAttribute(getResourceItemKey(),
+          getRepository().findById(id).get());
+    }
+  }
+
+  default I getResourceItem(ID id) {
     if (id != null) {
       return getRepository().findById(id).get();
     }

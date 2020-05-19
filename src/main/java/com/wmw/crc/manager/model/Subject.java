@@ -59,6 +59,11 @@ import lombok.EqualsAndHashCode;
 public class Subject
     implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
+  @Override
+  public String getResourcePath() {
+    return "/" + RestfulModel.Names.SUBJECT;
+  }
+
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
   static {
@@ -183,10 +188,5 @@ public class Subject
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
-
-  @Override
-  public String getResourceName() {
-    return "subjects";
-  }
 
 }

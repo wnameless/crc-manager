@@ -21,36 +21,36 @@ import java.util.List;
 
 public interface RestfulItem<ID> {
 
-  String getResourceName();
+  String getResourcePath();
 
   ID getId();
 
   default String getIndexPath() {
-    return "/" + getResourceName();
+    return getResourcePath();
   }
 
   default String getCreatePath() {
-    return "/" + getResourceName();
+    return getResourcePath();
   }
 
   default String getNewPath() {
-    return "/" + getResourceName() + "/new";
+    return getResourcePath() + "/new";
   }
 
   default String getEditPath() {
-    return "/" + getResourceName() + "/" + getId() + "/edit";
+    return getResourcePath() + "/" + getId() + "/edit";
   }
 
   default String getShowPath() {
-    return "/" + getResourceName() + "/" + getId();
+    return getResourcePath() + "/" + getId();
   }
 
   default String getUpdatePath() {
-    return "/" + getResourceName() + "/" + getId();
+    return getResourcePath() + "/" + getId();
   }
 
   default String getDestroyPath() {
-    return "/" + getResourceName() + "/" + getId();
+    return getResourcePath() + "/" + getId();
   }
 
   default String joinPath(String... paths) {
@@ -75,6 +75,44 @@ public interface RestfulItem<ID> {
       sb.append(path);
     });
     return sb.toString();
+  }
+
+  default RestfulItem<ID> withParent(RestfulItem<?> parent) {
+    String resourcePath = parent.getShowPath() + getResourcePath();
+    ID id = getId();
+
+    return new RestfulItem<ID>() {
+
+      @Override
+      public String getResourcePath() {
+        return resourcePath;
+      }
+
+      @Override
+      public ID getId() {
+        return id;
+      }
+
+    };
+  }
+
+  default <CID> RestfulItem<CID> withChild(RestfulItem<CID> child) {
+    String resourcePath = getShowPath() + child.getResourcePath();
+    CID id = child.getId();
+
+    return new RestfulItem<CID>() {
+
+      @Override
+      public String getResourcePath() {
+        return resourcePath;
+      }
+
+      @Override
+      public CID getId() {
+        return id;
+      }
+
+    };
   }
 
 }
