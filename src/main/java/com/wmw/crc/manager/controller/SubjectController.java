@@ -145,7 +145,7 @@ public class SubjectController implements
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:/cases/" + parentId + "/subjects";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
