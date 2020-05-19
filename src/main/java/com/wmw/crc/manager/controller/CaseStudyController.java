@@ -144,9 +144,14 @@ public class CaseStudyController implements
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/{id}")
   String updateJS(Model model, @PathVariable Long id,
-      @RequestBody JsonNode formData) {
+      @RequestBody JsonNode formData, Authentication auth) {
     c.setFormData(formData);
     caseRepo.save(c);
+
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status,
+            (Pageable) model.getAttribute("pageable"),
+            (String) model.getAttribute("search")));
     return "cases/list :: partial";
   }
 
