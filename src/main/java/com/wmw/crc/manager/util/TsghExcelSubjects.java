@@ -41,7 +41,7 @@ import net.sf.rubycollect4j.Ruby;
 public class TsghExcelSubjects implements ExcelSubjects {
 
   private static final List<String> titles =
-      Ruby.Array.of("一般病例號", "姓名", "病歷號碼", "篩選號碼", "受試號碼", "生日", "電話號碼", "ID",
+      Ruby.Array.of("醫院病歷號", "姓名", "試驗病歷號", "篩選號碼", "受試號碼", "生日", "電話號碼", "ID",
           "地址", "簽ICF日期", "體檢日期", "嚴重不良事件數").freeze();
 
   private Workbook wb;
