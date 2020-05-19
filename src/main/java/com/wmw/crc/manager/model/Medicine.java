@@ -52,7 +52,7 @@ public class Medicine implements RestfulItem<Long> {
   String takekind;
 
   @Override
-  public String getResourceName() {
+  public String getResourcePath() {
     return "medicines";
   }
 

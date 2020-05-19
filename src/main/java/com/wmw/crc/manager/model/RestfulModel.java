@@ -19,7 +19,8 @@ import com.github.wnameless.spring.common.RestfulResource;
 
 public enum RestfulModel implements RestfulResource {
 
-  CASE_STUDY(Names.CASE_STUDY, CaseStudy.class);
+  CASE_STUDY(Names.CASE_STUDY, CaseStudy.class),
+  SUBJECT(Names.SUBJECT, Subject.class);
 
   private String resourceName;
 
@@ -43,6 +44,8 @@ public enum RestfulModel implements RestfulResource {
   public static class Names {
 
     public static final String CASE_STUDY = "cases";
+
+    public static final String SUBJECT = "subjects";
 
   }
 

@@ -16,10 +16,12 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiPredicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -27,9 +29,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +42,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.github.wnameless.spring.common.NestedRestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -52,14 +58,31 @@ import com.wmw.crc.manager.util.ExcelSubjects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequestMapping("/" + RestfulModel.Names.CASE_STUDY + "/{parentId}/"
+    + RestfulModel.Names.SUBJECT)
 @Controller
-public class SubjectController {
+public class SubjectController implements
+    NestedRestfulController<CaseStudy, Long, CaseStudyRepository, RestfulModel, Subject, Long, SubjectRepository, RestfulModel> {
 
   @Autowired
   CaseStudyRepository caseRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
+
+  CaseStudy c;
+
+  Iterable<Subject> ss;
+
+  Subject s;
+
+  @ModelAttribute
+  void init(@PathVariable(required = false) Long parentId,
+      @PathVariable(required = false) Long id) {
+    c = this.getParentResourceItem(parentId);
+    ss = this.getResourceItems(c);
+    s = this.getResourceItem(parentId, id);
+  }
 
   @Autowired
   SubjectService subjectService;
@@ -73,66 +96,48 @@ public class SubjectController {
   @Autowired
   I18nService i18n;
 
-  @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/index")
-  String index(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-
+  @PreAuthorize("@perm.canRead(#parentId)")
+  @GetMapping
+  String index(Model model, @PathVariable Long parentId) {
     model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", subjects);
+    model.addAttribute("jsfPath", "/cases/" + parentId + "/subjects");
+    model.addAttribute("jsfItems", ss);
     return "subjects/index";
   }
 
-  @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects")
-  String list(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", subjects);
-    return "subjects/list :: list";
+  @PreAuthorize("@perm.canRead(#parentId)")
+  @GetMapping(path = "/{parentId}/subjects", produces = APPLICATION_JSON_VALUE)
+  String indexJS(Model model, @PathVariable Long parentId) {
+    return "subjects/list :: partial";
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/new")
-  String newItem(Model model, @PathVariable("caseId") Long caseId) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItem", new Subject());
-    return "subjects/new :: new";
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/new")
+  String newJS(Model model, @PathVariable Long parentId) {
+    model.addAttribute(getResourceItemKey(), new Subject());
+    return "subjects/new :: partial";
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @PostMapping("/cases/{caseId}/subjects")
-  String create(Model model, @PathVariable("caseId") Long caseId,
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @PostMapping
+  String createJS(Model model, @PathVariable Long parentId,
       @RequestBody JsonNode formData, Locale locale) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-
-    Subject s = new Subject(formData);
+    s = new Subject(formData);
     AdvOpt<Subject> sOpt = subjectService.createSubject(c, s);
 
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", subjectRepo.findAllByCaseStudy(c));
-    return "subjects/list :: list";
+
+    model.addAttribute(getResourceItemsKey(),
+        subjectRepo.findAllByCaseStudy(c));
+    return "subjects/list :: partial";
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @PostMapping(path = "/cases/{caseId}/subjects/index")
-  String batchCreate(RedirectAttributes redirAttrs,
-      @PathVariable("caseId") Long caseId,
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @PostMapping("/batch")
+  String batchCreate(RedirectAttributes redirAttrs, @PathVariable Long parentId,
       @RequestParam("subjectFile") MultipartFile file) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-
     ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {
       subjectService.batchCreate(c, es);
@@ -140,112 +145,82 @@ public class SubjectController {
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @PostMapping("/cases/{caseId}/subjects/{id}")
-  String update(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id, @RequestBody JsonNode formData,
-      Locale locale) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @PostMapping("/{id}")
+  String updateJS(Model model, @PathVariable Long parentId,
+      @PathVariable Long id, @RequestBody JsonNode formData, Locale locale) {
+    AdvOpt<Subject> sOpt = subjectService.updateSubject(s, formData);
 
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItems", subjectRepo.findAllByCaseStudy(c));
-    return "subjects/list :: list";
+    model.addAttribute(getResourceItemsKey(),
+        subjectRepo.findAllByCaseStudy(c));
+    return "subjects/list :: partial";
   }
 
-  @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{id}")
-  String show(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects");
-    model.addAttribute("jsfItem", subject);
-    return "subjects/show :: show";
+  @PreAuthorize("@perm.canRead(#parentId)")
+  @GetMapping("/{id}")
+  String showJS(Model model, @PathVariable Long parentId,
+      @PathVariable Long id) {
+    return "subjects/show :: partial";
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{id}/edit")
-  String edit(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + caseId + "/subjects/" + id);
-    model.addAttribute("jsfItem", subject);
-    return "subjects/edit :: edit";
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/{id}/edit")
+  String editJS(Model model, @PathVariable Long parentId,
+      @PathVariable Long id) {
+    return "subjects/edit :: partial";
   }
 
-  @PreAuthorize("@perm.canDeleteSubject(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{id}/delete")
-  String delete(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    if (subject != null) {
-      subjectRepo.delete(subject);
+  @PreAuthorize("@perm.canDeleteSubject(#parentId)")
+  @GetMapping("/{id}/delete")
+  String delete(Model model, @PathVariable Long parentId,
+      @PathVariable Long id) {
+    if (s != null) {
+      subjectRepo.delete(s);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{id}/status/{status}")
-  String alterStatus(@PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id, @PathVariable("status") String status) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    if (subject != null) {
-      subject.setStatus(Subject.Status.fromString(status));
-      subjectRepo.save(subject);
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/{id}/status/{status}")
+  String alterStatus(@PathVariable Long parentId, @PathVariable Long id,
+      @PathVariable String status) {
+    if (s != null) {
+      s.setStatus(Subject.Status.fromString(status));
+      subjectRepo.save(s);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("cases/{caseId}/subjects/{id}/bundle/{bundleNumber}")
-  String alterBundle(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id,
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/{id}/bundle/{bundleNumber}")
+  String alterBundle(Model model, @PathVariable Long parentId,
+      @PathVariable Long id,
       @PathVariable("bundleNumber") Integer bundleNumber) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    Subject subject = subjectRepo.findByIdAndCaseStudy(id, c);
-
-    if (subject != null) {
-      subject.setContraindicationBundle(bundleNumber);
-      subjectRepo.save(subject);
+    if (s != null) {
+      s.setContraindicationBundle(bundleNumber);
+      subjectRepo.save(s);
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @PostMapping("/cases/{caseId}/subjects/batchdating")
-  String batchDating(RedirectAttributes redirAttrs,
-      @PathVariable("caseId") Long caseId,
-      @RequestParam("subjectDateType") String subjectDateType,
-      @RequestParam(name = "subjectDate", required = false) String subjectDate,
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @PostMapping("/batchdating")
+  String batchDating(RedirectAttributes redirAttrs, @PathVariable Long parentId,
+      @RequestParam String subjectDateType,
+      @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
       @RequestParam(name = "bundleNumber") Integer bundleNumber,
       Locale locale) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
@@ -254,7 +229,7 @@ public class SubjectController {
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null
         && !subjectDateType.equals("bundleNumber")) {
-      subjects.forEach(s -> {
+      ss.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
           ObjectNode jsonData = (ObjectNode) s.getFormData();
           jsonData.put(subjectDateType, subjectDate);
@@ -265,7 +240,7 @@ public class SubjectController {
     }
 
     if (subjectDateType.equals("bundleNumber") && subjectIds != null) {
-      subjects.forEach(s -> {
+      ss.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
           s.setContraindicationBundle(bundleNumber);
           subjectRepo.save(s);
@@ -273,14 +248,14 @@ public class SubjectController {
       });
     }
 
-    return "redirect:/cases/" + caseId + "/subjects/index";
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/query/{nationalId}")
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/subjects/query/{nationalId}")
   @ResponseBody
-  Patient searchPatient(@PathVariable("caseId") Long caseId,
-      @PathVariable("nationalId") String nationalId) {
+  Patient searchPatient(@PathVariable Long parentId,
+      @PathVariable String nationalId) {
     Patient patient;
     try {
       patient = tsghService.findPatientById(nationalId);
@@ -293,12 +268,43 @@ public class SubjectController {
     return patient;
   }
 
-  @PreAuthorize("@perm.canWrite(#id)")
-  @GetMapping("/cases/{id}/subjects/uploadexample")
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @GetMapping("/subjects/uploadexample")
   @ResponseBody
-  HttpEntity<byte[]> downloadExample(Model model, @PathVariable("id") Long id)
+  HttpEntity<byte[]> downloadExample(Model model, @PathVariable Long parentId)
       throws IOException {
     return subjectService.createDownloadableUploadExample();
+  }
+
+  @Override
+  public RestfulModel getParentRestfulResource() {
+    return RestfulModel.CASE_STUDY;
+  }
+
+  @Override
+  public CaseStudyRepository getParentRepository() {
+    return caseRepo;
+  }
+
+  @Override
+  public RestfulModel getRestfulResource() {
+    return RestfulModel.SUBJECT;
+  }
+
+  @Override
+  public SubjectRepository getRepository() {
+    return subjectRepo;
+  }
+
+  @Override
+  public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
+    return (p, c) -> getRepository().findAllByCaseStudy(p).contains(c);
+
+  }
+
+  @Override
+  public Iterable<Subject> getResourceItems(CaseStudy parent) {
+    return getRepository().findAllByCaseStudy(parent);
   }
 
 }

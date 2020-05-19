@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="list">
-	<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases')"></h3>
+<div th:fragment="partial">
+	<h3 th:replace="fragments/form :: title(text=${parentResourceItem.trialName}, backUrl=${parentResourceItem.indexPath})"></h3>
 	<hr>
-	<form th:if="${@perm.canWrite(case)}" id="batchDating" th:action="@{${jsfPath} + '/batchdating'}" method="POST">
+	<form th:if="${@perm.canWrite(parentResourceItem)}" id="batchDating" th:action="${parentResourceItem.joinPath(resourceName, '/batchdating')}" method="POST">
 		<div class="form-row">
 			<div class="form-group col-md-1"></div>
 			<div class="form-group col-md-5">
@@ -30,7 +30,7 @@
         </div>
     </form>
 
-    <div th:if="${@perm.canWrite(case)}" class="col-md-12">
+    <div th:if="${@perm.canWrite(parentResourceItem)}" class="col-md-12">
         <hr>
     </div>
 
@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="subject : ${jsfItems}">
+            <tr th:each="subject : ${resourceItems}">
                 <td>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" th:value="${subject.id}" onchange="checkboxEvent()">
@@ -57,36 +57,36 @@
 				<td th:text="${@i18n.str(subject.status)}"></td>
 				<td th:text="${subject.subjectNo}"></td>
                 <td>
-                    <label th:unless="${@perm.canWrite(case)}" th:text="${subject.contraindicationBundle}"></label>
+                    <label th:unless="${@perm.canWrite(parentResourceItem)}" th:text="${subject.contraindicationBundle}"></label>
 
-                    <select th:if="${@perm.canWrite(case)}" class="form-control selectpicker" onchange="location = this.value;">
-                        <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} + '/bundle/' + ${i}}"
+                    <select th:if="${@perm.canWrite(parentResourceItem)}" class="form-control selectpicker" onchange="location = this.value;">
+                        <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${parentResourceItem.joinPath(subject.showPath, 'bundle', i)}"
                             th:text="${i}" th:selected="${i == subject.contraindicationBundle}">
                         </option>
                     </select>
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${jsfPath + '/' + subject.id}"
+                    <a th:if="${@perm.canRead(parentResourceItem)}" href="#" th:attr="data-show-path=${parentResourceItem.withChild(subject).showPath}"
                         onclick="showFormEvent(this)" th:text="${subject.nationalId}">
                     </a>
-                    <a th:unless="${@perm.canRead(case)}" th:text="${subject.nationalId}"></a>
+                    <a th:unless="${@perm.canRead(parentResourceItem)}" th:text="${subject.nationalId}"></a>
 				</td>
 				<td>
-					<a th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/visits' }" th:text="${subject.unreviewedVisits()}"></a>
+					<a th:href="${parentResourceItem.joinPath(subject.showPath, 'visits')}" th:text="${subject.unreviewedVisits()}"></a>
 				</td>
                 <td>
-                    <a th:if="${@perm.canWrite(case)}" href="#" th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}"
+                    <a th:if="${@perm.canWrite(parentResourceItem)}" href="#" th:attr="data-edit-path=${parentResourceItem.withChild(subject).editPath}"
                         onclick="editFormEvent(this)">
                         <span>
                             <i class="fa fa-edit"></i>
                         </span>
                     </a>
-                    <span th:unless="${@perm.canWrite(case)}">
+                    <span th:unless="${@perm.canWrite(parentResourceItem)}">
                         <i class="fa fa-edit"></i>
                     </span>
-                    <a th:if="${@perm.canDeleteSubject(case)}" th:href="@{'/cases/' + ${case.id} + '/subjects/' + ${subject.id} +'/delete' }"
-                        th:attr="data-edit-path=${jsfPath + '/' + subject.id + '/edit'}" onclick="editFormEvent(this)">
+                    <a th:if="${@perm.canDeleteSubject(parentResourceItem)}" th:href="${parentResourceItem.withChild(subject).joinPath('delete')}"
+                        th:attr="data-edit-path=${parentResourceItem.withChild(subject).editPath}" onclick="editFormEvent(this)">
                         <span>
                             <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
                         </span>
@@ -96,8 +96,8 @@
         </tbody>
     </table>
 
-    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${jsfPath + '/new'}" onclick="editFormEvent(this)"
+    <div th:if="${@perm.canWrite(parentResourceItem)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${parentResourceItem.joinPath(resourceName, 'new')}" onclick="editFormEvent(this)"
             th:inline="text">
             <span>
                 <i class="fa fa-plus text-success"></i>
@@ -106,8 +106,8 @@
         </button>
     </div>
 
-    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <form method="POST" th:action="@{${jsfPath} + '/index'}" enctype="multipart/form-data">
+    <div th:if="${@perm.canWrite(parentResourceItem)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <form method="POST" th:action="${parentResourceItem.joinPath(resourceName, 'batch')}" enctype="multipart/form-data">
             <!-- COMPONENT START -->
             <div class="form-group">
                 <div class="input-group input-file" name="subjectFile">
@@ -125,8 +125,8 @@
         </form>
     </div>
 
-    <div th:if="${@perm.canWrite(case)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <a th:href="@{${jsfPath} + '/uploadexample'}">範例檔案下載</a>
+    <div th:if="${@perm.canWrite(parentResourceItem)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <a th:href="${parentResourceItem.joinPath(resourceName, 'uploadexample')}">範例檔案下載</a>
     </div>
 
 

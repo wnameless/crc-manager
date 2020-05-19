@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="new">
+<div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3
-            th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/' + ${case.id} + '/subjects/index')">
+            th:replace="fragments/form :: title(text=${parentResourceItem.trialName}, backUrl=${parentResourceItem.withChild(resourceItem).indexPath})">
         </h3>
         <hr>
         <div class="row">
@@ -21,7 +21,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.post( /*[[${jsfPath}]]*/ null, f.formData)
+                axios.post( /*[[${parentResourceItem.withChild(resourceItem).createPath}]]*/ null, f.formData)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -30,7 +30,7 @@
             let rjsfOpt = Object.assign({
                 btnText: /*[[#{rjsf.submit}]]*/'送出',
                 onSubmit: onSubmit
-            }, /*[[${jsfItem.toRjsfMap()}]]*/ {});
+            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
@@ -46,7 +46,7 @@
                     return;
                 }
 
-                let caseId = /*[[${case.id}]]*/ '';
+                let caseId = /*[[${parentResourceItem.id}]]*/ '';
                 axios.get('/cases/' + caseId + '/subjects/query/' + $('#nationalId').val())
                     .then((response) => {
                         let patient = response.data;

@@ -5,6 +5,7 @@
 			<tr>
 				<th th:text="#{ui.search.table.action}"></th>
 				<th th:text="#{ui.search.table.irbnumber}"></th>
+				<th th:text="#{ui.search.table.subject}" class="text-center" style="width: 60px;"></th>
 				<th th:text="#{ui.search.table.name.case}"></th>
 				<th th:text="#{ui.search.table.name.pi}"></th>
 				<th th:text="#{ui.search.table.time.start}"></th>
@@ -19,7 +20,16 @@
 						<span class="fa fa-download"></span>
 					</a></td>
 				<td th:inline="text">[[${case.irbNumber}]]</td>
-				<td th:text="${case.trialName}"></td>
+				<td class="text-center">
+					<a th:href="${case.joinPath('subjects')}">
+						<span>
+							<i class="fa fa-users"></i>
+						</span>
+					</a>
+				</td>
+				<td>
+					<a th:href="${case.showPath}" th:text="${case.trialName}"></a>
+				</td>
 				<td th:text="${case.piName}"></td>
 				<td th:text="${case.expectedStartDate}"></td>
 				<td th:text="${case.expectedEndDate}"></td>

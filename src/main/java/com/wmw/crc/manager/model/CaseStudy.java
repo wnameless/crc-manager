@@ -73,6 +73,11 @@ import lombok.EqualsAndHashCode;
 public class CaseStudy
     implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
+  @Override
+  public String getResourcePath() {
+    return "/" + RestfulModel.Names.CASE_STUDY;
+  }
+
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
   static {
@@ -219,10 +224,5 @@ public class CaseStudy
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
-
-  @Override
-  public String getResourceName() {
-    return "cases";
-  }
 
 }

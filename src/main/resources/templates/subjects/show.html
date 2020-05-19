@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="show">
+<div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3
-            th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases/' + ${case.id} + '/subjects/index')">
+            th:replace="fragments/form :: title(text=${parentResourceItem.trialName}, backUrl=${parentResourceItem.withChild(resourceItem).indexPath})">
         </h3>
         <hr>
         <div id="jsfForm"></div>
@@ -11,7 +11,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.get( /*[[${jsfPath}]]*/ null)
+                axios.get( /*[[${parentResourceItem.withChild(resourceItem).indexPath}]]*/ null)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -21,7 +21,7 @@
                 btnText: /*[[#{rjsf.back}]]*/'返回',
                 onSubmit: onSubmit,
                 disabled: true
-            }, /*[[${jsfItem.toRjsfMap()}]]*/ {});
+            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
