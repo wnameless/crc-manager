@@ -266,7 +266,7 @@ public class SubjectController implements
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @GetMapping("/subjects/uploadexample")
+  @GetMapping("/uploadexample")
   @ResponseBody
   HttpEntity<byte[]> downloadExample(Model model, @PathVariable Long parentId)
       throws IOException {
