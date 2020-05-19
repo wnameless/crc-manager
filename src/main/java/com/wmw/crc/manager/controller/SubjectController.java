@@ -99,9 +99,6 @@ public class SubjectController implements
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping
   String index(Model model, @PathVariable Long parentId) {
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + parentId + "/subjects");
-    model.addAttribute("jsfItems", ss);
     return "subjects/index";
   }
 
@@ -145,7 +142,7 @@ public class SubjectController implements
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + c.withChild(new Subject()).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -184,7 +181,7 @@ public class SubjectController implements
       subjectRepo.delete(s);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + c.withChild(new Subject()).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -196,7 +193,7 @@ public class SubjectController implements
       subjectRepo.save(s);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + c.withChild(new Subject()).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -209,7 +206,7 @@ public class SubjectController implements
       subjectRepo.save(s);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + c.withChild(new Subject()).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -248,7 +245,7 @@ public class SubjectController implements
       });
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + c.withChild(new Subject()).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")

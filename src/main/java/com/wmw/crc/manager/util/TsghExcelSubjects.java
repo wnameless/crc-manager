@@ -112,7 +112,9 @@ public class TsghExcelSubjects implements ExcelSubjects {
 
       subjects.addAll(list);
     } else {
-      errorMessage = "Excel表頭不齊全";
+      List<String> missingHeader = wr.getHeader();
+      missingHeader.removeAll(titles);
+      errorMessage = "Excel表頭缺失: " + missingHeader;
     }
   }
 
