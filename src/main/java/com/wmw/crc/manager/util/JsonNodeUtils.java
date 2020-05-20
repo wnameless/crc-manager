@@ -32,10 +32,10 @@ public class JsonNodeUtils {
 
     if (jn.isObject()) {
       if (jn.has(key)) {
-        if (jn.get("name").isTextual()) {
-          return jn.get("name").textValue();
+        if (jn.get(key).isTextual()) {
+          return jn.get(key).textValue();
         } else {
-          return jn.get("name").asText();
+          return jn.get(key).asText();
         }
       }
     } else if (jn.isArray()) {
@@ -44,10 +44,10 @@ public class JsonNodeUtils {
         JsonNode v = elements.next();
         if (v.isObject()) {
           if (v.has(key)) {
-            if (v.get("name").isTextual()) {
-              return v.get("name").textValue();
+            if (v.get(key).isTextual()) {
+              return v.get(key).textValue();
             } else {
-              return v.get("name").asText();
+              return v.get(key).asText();
             }
           }
         }
@@ -80,6 +80,10 @@ public class JsonNodeUtils {
 
   public String val2String(JsonNode val) {
     return val.isTextual() ? val.textValue() : val.asText();
+  }
+
+  public static void main(String[] args) {
+
   }
 
 }

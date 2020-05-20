@@ -30,27 +30,27 @@ public interface RestfulItem<ID> {
   }
 
   default String getCreatePath() {
-    return getResourcePath();
+    return getIndexPath();
   }
 
   default String getNewPath() {
-    return getResourcePath() + "/new";
+    return getIndexPath() + "/new";
   }
 
   default String getEditPath() {
-    return getResourcePath() + "/" + getId() + "/edit";
+    return getIndexPath() + "/" + getId() + "/edit";
   }
 
   default String getShowPath() {
-    return getResourcePath() + "/" + getId();
+    return getIndexPath() + "/" + getId();
   }
 
   default String getUpdatePath() {
-    return getResourcePath() + "/" + getId();
+    return getIndexPath() + "/" + getId();
   }
 
   default String getDestroyPath() {
-    return getResourcePath() + "/" + getId();
+    return getIndexPath() + "/" + getId();
   }
 
   default String joinPath(String... paths) {

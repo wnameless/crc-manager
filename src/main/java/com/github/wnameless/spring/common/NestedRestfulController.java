@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface NestedRestfulController< //
-    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends Enum<? extends RestfulResource>, //
-    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends Enum<? extends RestfulResource>> {
+    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends RestfulResource, //
+    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends RestfulResource> {
 
   PRR getParentRestfulResource();
 
@@ -45,7 +45,7 @@ public interface NestedRestfulController< //
   @ModelAttribute
   default void setParentResourcePath(Model model) {
     model.addAttribute(getParentResourcePathKey(),
-        "/" + ((RestfulResource) getParentRestfulResource()).getResourceName());
+        "/" + getParentRestfulResource().getResourceName());
   }
 
   default String getParentResourceItemKey() {
@@ -79,7 +79,7 @@ public interface NestedRestfulController< //
   @ModelAttribute
   default void setResourcePath(Model model) {
     model.addAttribute(getResourcePathKey(),
-        "/" + ((RestfulResource) getRestfulResource()).getResourceName());
+        "/" + getRestfulResource().getResourceName());
   }
 
   default String getResourceItemKey() {
