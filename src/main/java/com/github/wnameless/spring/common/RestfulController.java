@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface RestfulController< //
-    I, ID, R extends CrudRepository<I, ID>, T extends Enum<? extends RestfulResource>> {
+    I extends RestfulItem<ID>, ID, R extends CrudRepository<I, ID>, T extends Enum<? extends RestfulResource>> {
 
   T getRestfulResource();
 
   R getRepository();
 
-  default String getResourceNameKey() {
-    return "resourceName";
+  default String getResourcePathKey() {
+    return "resourcePath";
   }
 
   default String getResourceItemKey() {
@@ -36,9 +36,9 @@ public interface RestfulController< //
   }
 
   @ModelAttribute
-  default void setResourceName(Model model) {
-    model.addAttribute(getResourceNameKey(),
-        ((RestfulResource) getRestfulResource()).getResourceName());
+  default void setResourcePath(Model model) {
+    model.addAttribute(getResourcePathKey(),
+        "/" + ((RestfulResource) getRestfulResource()).getResourceName());
   }
 
   @ModelAttribute

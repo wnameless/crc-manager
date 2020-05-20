@@ -32,7 +32,7 @@
                     <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
                 </th>
                 <th style="width: 100px;">
-                    <a class="sorted" sd:pagination-sort="caseNumber" th:text="#{ui.case.table.casenumber}"></a>
+                    <a class="sorted" sd:pagination-sort="projectNumber" th:text="#{ui.case.table.projectnumber}"></a>
                 </th>
                 <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
                 <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
@@ -112,7 +112,7 @@
                     <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${case.showPath}"
                         onclick="showFormEvent(this)" th:inline="text">[[${case.irbNumber}]]</a>
                 </td>
-                <td>[[${case.caseNumber}]]</td>
+                <td>[[${case.projectNumber}]]</td>
                 <td class="text-center">
                     <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('contraindications')}">
                         <span>
@@ -147,7 +147,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{${resourceName} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
+                    sd:pagination-url="@{${resourcePath} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
@@ -172,7 +172,7 @@
         };
 
         var searchEvent = (q) => {
-            axios.get(/*[[${resourceName}]]*/ null, {
+            axios.get(/*[[${resourcePath}]]*/ null, {
                 params: {
                     search: q
                 }

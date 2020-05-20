@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface NestedRestfulController< //
-    P, PID, PR extends CrudRepository<P, PID>, PRR extends Enum<? extends RestfulResource>, //
-    C, CID, CR extends CrudRepository<C, CID>, CRR extends Enum<? extends RestfulResource>> {
+    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends Enum<? extends RestfulResource>, //
+    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends Enum<? extends RestfulResource>> {
 
   PRR getParentRestfulResource();
 
@@ -38,14 +38,14 @@ public interface NestedRestfulController< //
 
   Iterable<C> getResourceItems(P parent);
 
-  default String getParentResourceNameKey() {
-    return "parentResourceName";
+  default String getParentResourcePathKey() {
+    return "parentResourcePath";
   }
 
   @ModelAttribute
-  default void setParentResourceName(Model model) {
-    model.addAttribute(getParentResourceNameKey(),
-        ((RestfulResource) getParentRestfulResource()).getResourceName());
+  default void setParentResourcePath(Model model) {
+    model.addAttribute(getParentResourcePathKey(),
+        "/" + ((RestfulResource) getParentRestfulResource()).getResourceName());
   }
 
   default String getParentResourceItemKey() {
@@ -72,14 +72,14 @@ public interface NestedRestfulController< //
     return defaultItem;
   }
 
-  default String getResourceNameKey() {
-    return "resourceName";
+  default String getResourcePathKey() {
+    return "resourcePath";
   }
 
   @ModelAttribute
-  default void setResourceName(Model model) {
-    model.addAttribute(getResourceNameKey(),
-        ((RestfulResource) getRestfulResource()).getResourceName());
+  default void setResourcePath(Model model) {
+    model.addAttribute(getResourcePathKey(),
+        "/" + ((RestfulResource) getRestfulResource()).getResourceName());
   }
 
   default String getResourceItemKey() {
