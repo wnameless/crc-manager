@@ -32,7 +32,7 @@
                     <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
                 </th>
                 <th style="width: 100px;">
-                    <a class="sorted" sd:pagination-sort="projectNumber" th:text="#{ui.case.table.crcnumber}"></a>
+                    <a class="sorted" sd:pagination-sort="caseNumber" th:text="#{ui.case.table.casenumber}"></a>
                 </th>
                 <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
                 <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
@@ -112,7 +112,7 @@
                     <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${case.showPath}"
                         onclick="showFormEvent(this)" th:inline="text">[[${case.irbNumber}]]</a>
                 </td>
-                <td>[[${case.projectNumber}]]</td>
+                <td>[[${case.caseNumber}]]</td>
                 <td class="text-center">
                     <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('contraindications')}">
                         <span>

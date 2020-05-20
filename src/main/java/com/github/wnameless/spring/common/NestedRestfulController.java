@@ -62,10 +62,14 @@ public interface NestedRestfulController< //
   }
 
   default P getParentResourceItem(PID parentId) {
+    return getParentResourceItem(parentId, null);
+  }
+
+  default P getParentResourceItem(PID parentId, P defaultItem) {
     if (parentId != null) {
       return getParentRepository().findById(parentId).get();
     }
-    return null;
+    return defaultItem;
   }
 
   default String getResourceNameKey() {
@@ -97,6 +101,10 @@ public interface NestedRestfulController< //
   }
 
   default C getResourceItem(PID parentId, CID id) {
+    return getResourceItem(parentId, id, null);
+  }
+
+  default C getResourceItem(PID parentId, CID id, C defaultItem) {
     if (parentId != null && id != null) {
       P parent = getParentRepository().findById(parentId).get();
       C child = getRepository().findById(id).get();
@@ -105,7 +113,7 @@ public interface NestedRestfulController< //
       }
     }
 
-    return null;
+    return defaultItem;
   }
 
   default String getResourceItemsKey() {

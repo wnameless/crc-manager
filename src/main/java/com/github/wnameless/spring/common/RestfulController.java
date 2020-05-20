@@ -20,7 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
-public interface RestfulController<I, ID, R extends CrudRepository<I, ID>, T extends Enum<? extends RestfulResource>> {
+public interface RestfulController< //
+    I, ID, R extends CrudRepository<I, ID>, T extends Enum<? extends RestfulResource>> {
 
   T getRestfulResource();
 
@@ -50,10 +51,14 @@ public interface RestfulController<I, ID, R extends CrudRepository<I, ID>, T ext
   }
 
   default I getResourceItem(ID id) {
+    return getResourceItem(id, null);
+  }
+
+  default I getResourceItem(ID id, I defaultItem) {
     if (id != null) {
       return getRepository().findById(id).get();
     }
-    return null;
+    return defaultItem;
   }
 
 }

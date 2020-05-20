@@ -61,8 +61,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/" + RestfulModel.Names.CASE_STUDY + "/{parentId}/"
     + RestfulModel.Names.SUBJECT)
 @Controller
-public class SubjectController implements
-    NestedRestfulController<CaseStudy, Long, CaseStudyRepository, RestfulModel, Subject, Long, SubjectRepository, RestfulModel> {
+public class SubjectController implements NestedRestfulController< //
+    CaseStudy, Long, CaseStudyRepository, RestfulModel, //
+    Subject, Long, SubjectRepository, RestfulModel> {
 
   @Autowired
   CaseStudyRepository caseRepo;
@@ -72,16 +73,19 @@ public class SubjectController implements
 
   CaseStudy c;
 
+  Subject s;
+
   Iterable<Subject> ss;
 
-  Subject s;
+  Locale locale;
 
   @ModelAttribute
   void init(@PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id) {
+      @PathVariable(required = false) Long id, Locale locale) {
     c = this.getParentResourceItem(parentId);
     ss = this.getResourceItems(c);
-    s = this.getResourceItem(parentId, id);
+    s = this.getResourceItem(parentId, id, new Subject());
+    this.locale = locale;
   }
 
   @Autowired
@@ -118,7 +122,7 @@ public class SubjectController implements
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping
   String createJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData, Locale locale) {
+      @RequestBody JsonNode formData) {
     s = new Subject(formData);
     AdvOpt<Subject> sOpt = subjectService.createSubject(c, s);
 
@@ -133,8 +137,9 @@ public class SubjectController implements
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/batch")
-  String batchCreate(RedirectAttributes redirAttrs, @PathVariable Long parentId,
-      @RequestParam("subjectFile") MultipartFile file) {
+  String batchCreate(@PathVariable Long parentId,
+      @RequestParam("subjectFile") MultipartFile file,
+      RedirectAttributes redirAttrs) {
     ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {
       subjectService.batchCreate(c, es);
@@ -142,13 +147,13 @@ public class SubjectController implements
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:" + c.withChild(new Subject()).getIndexPath();
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/{id}")
   String updateJS(Model model, @PathVariable Long parentId,
-      @PathVariable Long id, @RequestBody JsonNode formData, Locale locale) {
+      @RequestBody JsonNode formData) {
     AdvOpt<Subject> sOpt = subjectService.updateSubject(s, formData);
 
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
@@ -161,63 +166,58 @@ public class SubjectController implements
 
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping("/{id}")
-  String showJS(Model model, @PathVariable Long parentId,
-      @PathVariable Long id) {
+  String showJS(@PathVariable Long parentId) {
     return "subjects/show :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/edit")
-  String editJS(Model model, @PathVariable Long parentId,
-      @PathVariable Long id) {
+  String editJS(@PathVariable Long parentId) {
     return "subjects/edit :: partial";
   }
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
   @GetMapping("/{id}/delete")
-  String delete(Model model, @PathVariable Long parentId,
-      @PathVariable Long id) {
-    if (s != null) {
+  String delete(Model model, @PathVariable Long parentId) {
+    if (s.getId() != null) {
       subjectRepo.delete(s);
     }
 
-    return "redirect:" + c.withChild(new Subject()).getIndexPath();
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/status/{status}")
-  String alterStatus(@PathVariable Long parentId, @PathVariable Long id,
-      @PathVariable String status) {
-    if (s != null) {
+  String alterStatus(@PathVariable Long parentId, @PathVariable String status) {
+    if (s.getId() != null) {
       s.setStatus(Subject.Status.fromString(status));
       subjectRepo.save(s);
     }
 
-    return "redirect:" + c.withChild(new Subject()).getIndexPath();
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/bundle/{bundleNumber}")
-  String alterBundle(Model model, @PathVariable Long parentId,
-      @PathVariable Long id,
+  String alterBundle(@PathVariable Long parentId,
       @PathVariable("bundleNumber") Integer bundleNumber) {
-    if (s != null) {
+    if (s.getId() != null) {
       s.setContraindicationBundle(bundleNumber);
       subjectRepo.save(s);
     }
 
-    return "redirect:" + c.withChild(new Subject()).getIndexPath();
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/batchdating")
-  String batchDating(RedirectAttributes redirAttrs, @PathVariable Long parentId,
+  String batchDating(@PathVariable Long parentId,
       @RequestParam String subjectDateType,
       @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
       @RequestParam(name = "bundleNumber") Integer bundleNumber,
-      Locale locale) {
+      RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
@@ -245,7 +245,7 @@ public class SubjectController implements
       });
     }
 
-    return "redirect:" + c.withChild(new Subject()).getIndexPath();
+    return "redirect:" + c.withChild(s).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -268,7 +268,7 @@ public class SubjectController implements
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/uploadexample")
   @ResponseBody
-  HttpEntity<byte[]> downloadExample(Model model, @PathVariable Long parentId)
+  HttpEntity<byte[]> downloadExample(@PathVariable Long parentId)
       throws IOException {
     return subjectService.createDownloadableUploadExample();
   }

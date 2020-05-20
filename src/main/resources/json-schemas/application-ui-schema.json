@@ -5,6 +5,9 @@
   "engTitle": {
     "ui:readonly": true
   },
+  "protocolNum": {
+    "ui:emptyValue": ""
+  },
   "protocolVersion": {
     "ui:readonly": true
   },
