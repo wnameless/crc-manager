@@ -11,6 +11,9 @@
   "irbNum": {
     "ui:readonly": true
   },
+   "crcNum": {
+    "ui:emptyValue": ""
+  },
   "2-1.IRB核准日期": {
     "ui:readonly": true
   },

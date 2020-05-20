@@ -77,7 +77,7 @@ public class CaseStudyController implements
 
   @ModelAttribute
   void init(Model model, @PathVariable(required = false) Long id) {
-    c = getResourceItem(id);
+    c = getResourceItem(id, new CaseStudy());
     if (id != null) {
       model.addAttribute("files", caseService.getFilesFromCaseStudy(c));
     }
@@ -94,15 +94,15 @@ public class CaseStudyController implements
   void initPage(Model model, HttpSession session, Authentication auth,
       @RequestParam Map<String, String> requestParams,
       @RequestParam(required = false) String search,
+      @RequestParam(required = false) String page,
       @RequestParam(required = false) String size,
-      @RequestParam(required = false) String sort,
-      @RequestParam(required = false) String page) {
+      @RequestParam(required = false) String sort) {
     search =
         (String) initParam(requestParams, "search", search, model, session);
+    page = (String) initParamWithDefault("page", page, "0", model, session);
     size = (String) initParamWithDefault("size", size, "10", model, session);
     sort = (String) initParamWithDefault("sort", sort, "irbNumber", model,
         session);
-    page = (String) initParamWithDefault("page", page, "0", model, session);
 
     Pageable pageable = initPageable(PageRequest.of(Integer.valueOf(page),
         Integer.valueOf(size), PageUtils.paramToSort(sort)), model, session);
@@ -113,31 +113,31 @@ public class CaseStudyController implements
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping
-  String index(Model model) {
+  String index() {
     return "cases/list :: complete";
   }
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  String indexJS(Model model) {
+  String indexJS() {
     return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/{id}")
-  String show(Model model, @PathVariable Long id) {
+  String show(@PathVariable Long id) {
     return "cases/show :: complete";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String showJS(Model model, @PathVariable Long id) {
+  String showJS(@PathVariable Long id) {
     return "cases/show :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping(path = "/{id}/edit", produces = APPLICATION_JSON_VALUE)
-  String editJS(Model model, @PathVariable Long id) {
+  String editJS(@PathVariable Long id) {
     return "cases/edit :: partial";
   }
 
@@ -157,15 +157,15 @@ public class CaseStudyController implements
 
   @PreAuthorize("@perm.canDelete()")
   @GetMapping("/{id}/delete")
-  String delete(Model model, @PathVariable Long id) {
-    caseRepo.delete(c);
+  String delete(@PathVariable Long id) {
+    if (c.getId() != null) caseRepo.delete(c);
     return "redirect:/cases";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/{id}/files/{fileKey}")
   @ResponseBody
-  HttpEntity<byte[]> downloadFile(Model model, @PathVariable Long id,
+  HttpEntity<byte[]> downloadFile(@PathVariable Long id,
       @PathVariable String fileKey) {
     return caseService.getDownloadableFile(c, fileKey);
   }

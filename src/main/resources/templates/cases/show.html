@@ -48,7 +48,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.get( /*[[${resourceName}]]*/ null)
+                axios.get( /*[[${resourcePath}]]*/ null)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
