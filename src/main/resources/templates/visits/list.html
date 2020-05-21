@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="list">
+<div th:fragment="partial">
 	<h3
-		th:replace="fragments/form :: title(text=${subject.name + '(' + subject.nationalId + ')' }, backUrl=${'/cases/' + case.id + '/subjects'})">
+		th:replace="fragments/form :: title(text=${child.name + '(' + child.nationalId + ')' }, backUrl=${route.indexPath})">
 	</h3>
 	<hr>
 
@@ -36,10 +36,8 @@
 	<script th:replace="fragments/notify :: notify"></script>
 	<script th:inline="javascript">
 		$('.check-reviewed').change(function () {
-			let caseId =/*[[${case.id}]]*/ null;
-			let subjectId = /*[[${subject.id}]]*/ null;
-
-			axios.get('/cases/' + caseId + '/subjects/' + subjectId + '/visits/' + $(this).attr('visitId'));
+			axios.get( /*[[${route.joinPath(child.id, 'visits/')}]]*/ null
+				+ $(this).attr('visitId'));
 		});
 
 		$(function () {

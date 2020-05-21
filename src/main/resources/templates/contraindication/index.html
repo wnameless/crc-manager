@@ -4,7 +4,7 @@
 <section layout:fragment="content">
 	<div class="container">
 		<div class="row col-sm-10 col-sm-offset-1">
-			<h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases')"></h3>
+			<h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
 			<hr>
 			<div style="height: 300px;" class="panel panel-default">
 				<div class="panel-heading">[[#{ui.contraindication}]]</div>
@@ -40,8 +40,8 @@
 							<span>
 								[[${cd.memo}]]
 							</span>
-							<a th:if="${@perm.canWrite(case)}"
-								th:href="${ '/cases/' + case.id + '/contraindications/' + cd.id }">
+							<a th:if="${@perm.canWrite(item)}"
+								th:href="${item.joinPath('contraindications', cd.id)}">
 								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
 									style="color: red; margin-top: 3px;"></i>
 							</a>
@@ -56,7 +56,7 @@
 		</div>
 
 		<div class="row col-sm-10 col-sm-offset-1">
-			<form th:action="@{'/cases/' + ${case.id} + '/contraindications'}" method="POST" class="form-row">
+			<form th:action="@{${item.joinPath('contraindications')}}" method="POST" class="form-row">
 				<div class="form-group col-md-2">
 					<label th:text="#{ui.contraindication.bundle}"></label>
 					<select name="bundle" class="form-control">
@@ -82,9 +82,9 @@
 				</div>
 				<div class="form-group col-sm-1">
 					<label>&nbsp;</label>
-					<button th:if="${@perm.canWrite(case)}" type="submit" class="btn btn-primary"
+					<button th:if="${@perm.canWrite(item)}" type="submit" class="btn btn-primary"
 						th:text="#{ui.contraindication.add}"></button>
-					<button th:unless="${@perm.canWrite(case)}" type="submit" class="btn btn-primary"
+					<button th:unless="${@perm.canWrite(item)}" type="submit" class="btn btn-primary"
 						th:text="#{ui.contraindication.add}" disabled></button>
 				</div>
 			</form>
