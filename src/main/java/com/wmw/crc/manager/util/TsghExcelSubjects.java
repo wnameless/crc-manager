@@ -15,12 +15,14 @@
  */
 package com.wmw.crc.manager.util;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +30,10 @@ import java.util.Map;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.joda.time.DateTime;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.workbookaccessor.WorkbookReader;
-import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.Subject;
 
 import net.sf.rubycollect4j.Ruby;
@@ -63,18 +63,26 @@ public class TsghExcelSubjects implements ExcelSubjects {
 
     WorkbookReader wr = WorkbookReader.open(wb);
     if (wr.getHeader().containsAll(titles)) {
+      int idx = 1;
       for (Map<String, String> row : wr.toMaps()) {
         row = Ruby.Hash.copyOf(row).deleteIf((k, v) -> {
           return !titles.contains(k);
         }).toMap();
 
-        if (!isValidDate(row.get("生日")) || !isValidDate(row.get("簽ICF日期"))
-            || !isValidDate(row.get("體檢日期"))) {
-          errorMessage = "存在不符合格式日期";
+        if (!isValidDate(row.get("生日"))) {
+          errorMessage = "[生日:" + idx + "] 日期不符合格式";
+          return;
+        }
+        if (!isValidDate(row.get("簽ICF日期"))) {
+          errorMessage = "[簽ICF日期:" + idx + "] 日期不符合格式";
+          return;
+        }
+        if (!isValidDate(row.get("體檢日期"))) {
+          errorMessage = "[體檢日期:" + idx + "] 日期不符合格式";
           return;
         }
         if (!isValidInteger(row.get("嚴重不良事件數"))) {
-          errorMessage = "存在不符合格式數字";
+          errorMessage = "[嚴重不良事件數:" + idx + "] 數字不符合格式";
           return;
         }
 
@@ -84,18 +92,23 @@ public class TsghExcelSubjects implements ExcelSubjects {
         initData.put("subjectId", row.get("試驗病歷號"));
         initData.put("screenNo", row.get("篩選號碼"));
         initData.put("subjectNo", row.get("受試號碼"));
-        if (row.get("生日") != null && !row.get("生日").isEmpty()) {
+        if (!isNullOrEmpty(row.get("生日"))) {
           initData.put("birthDate", normalizeDate(row.get("生日")));
         }
-        if (!Strings.isNullOrEmpty(row.get("電話號碼"))) {
+        if (!isNullOrEmpty(row.get("電話號碼"))) {
           initData.put("telephone1", row.get("電話號碼"));
         }
         initData.put("taiwanId", row.get("ID"));
+        if (!isNullOrEmpty(row.get("ID"))
+            && row.get("ID").matches("[A-Z][1-2]\\d{8}")) {
+          if (row.get("ID").charAt(1) == '1') initData.put("gender", "男");
+          if (row.get("ID").charAt(1) == '2') initData.put("gender", "女");
+        }
         initData.put("address", row.get("地址"));
-        if (row.get("簽ICF日期") != null && !row.get("簽ICF日期").isEmpty()) {
+        if (!isNullOrEmpty(row.get("簽ICF日期"))) {
           initData.put("icfDate", normalizeDate(row.get("簽ICF日期")));
         }
-        if (row.get("體檢日期") != null && !row.get("體檢日期").isEmpty()) {
+        if (!isNullOrEmpty(row.get("體檢日期"))) {
           initData.put("examDate", normalizeDate(row.get("體檢日期")));
         }
         initData.put("saeCount", normalizeInteger(row.get("嚴重不良事件數")));
@@ -108,6 +121,8 @@ public class TsghExcelSubjects implements ExcelSubjects {
             && !subject.getNationalId().trim().isEmpty()) {
           list.add(subject);
         }
+
+        idx++;
       }
 
       subjects.addAll(list);
@@ -130,22 +145,25 @@ public class TsghExcelSubjects implements ExcelSubjects {
   private String normalizeDate(String dateStr) {
     if (dateStr == null || dateStr.isEmpty()) return dateStr;
 
-    Date date = null;
+    LocalDate date = null;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/d"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/M/dd"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/M/d")).toFormatter();
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     try {
-      date = sdf.parse(dateStr);
-      if (!dateStr.equals(sdf.format(date))) {
-        date = null;
-      }
-    } catch (ParseException e) {
-      DateTime dt = new DateTime().withDate(1899, 12, 31)
-          .plusDays(Integer.parseInt(dateStr) - 1);
-      date = dt.toDate();
+      date = LocalDate.parse(dateStr, formatter);
+    } catch (DateTimeParseException e) {
+      LocalDate ld =
+          LocalDate.of(1899, 12, 31).plusDays(Integer.parseInt(dateStr) - 1);
+      date = ld;
     }
 
-    sdf = new SimpleDateFormat("yyyy-MM-dd");
-    return sdf.format(date);
+    dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    return dtf.format(date);
   }
 
   private boolean isValidInteger(String value) {
@@ -162,15 +180,17 @@ public class TsghExcelSubjects implements ExcelSubjects {
   private boolean isValidDate(String value) {
     if (value == null || value.isEmpty() || value.matches("\\d+")) return true;
 
-    Date date = null;
+    LocalDate date = null;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/d"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/M/dd"))
+        .appendOptional(DateTimeFormatter.ofPattern("yyyy/M/d")).toFormatter();
+
     try {
-      date = sdf.parse(value);
-      if (!value.equals(sdf.format(date))) {
-        date = null;
-      }
-    } catch (ParseException e) {}
+      date = LocalDate.parse(value, formatter);
+    } catch (DateTimeParseException e) {}
 
     return date != null;
   }

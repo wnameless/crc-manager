@@ -73,7 +73,6 @@ public class SubjectController implements NestedRestfulController< //
   CaseStudyRepository caseRepo;
   @Autowired
   SubjectRepository subjectRepo;
-
   @Autowired
   SubjectService subjectService;
   @Autowired
@@ -100,8 +99,8 @@ public class SubjectController implements NestedRestfulController< //
     this.locale = locale;
 
     caseStudy = this.getParent(parentId);
-    subjects = this.getChildren(caseStudy);
     subject = this.getChild(parentId, id, new Subject());
+    subjects = this.getChildren(caseStudy);
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -133,7 +132,8 @@ public class SubjectController implements NestedRestfulController< //
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
 
-    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(caseStudy));
+    model.addAttribute(getChildrenKey(),
+        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 
@@ -160,7 +160,8 @@ public class SubjectController implements NestedRestfulController< //
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(caseStudy));
+    model.addAttribute(getChildrenKey(),
+        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 

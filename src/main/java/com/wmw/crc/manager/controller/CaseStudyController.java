@@ -56,28 +56,26 @@ public class CaseStudyController implements
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   CaseStudyService caseService;
 
-  CaseStudy c;
+  CaseStudy caseStudy;
+  Pageable pageable;
   CaseStudy.Status status;
+  String search;
 
   Authentication auth;
   Model model;
 
   @ModelAttribute
-  void init(Model model, HttpSession session, Authentication auth,
-      @PathVariable(required = false) Long id,
-      @RequestParam(required = false) String status) {
+  void init(Authentication auth, Model model, HttpSession session,
+      @PathVariable(required = false) Long id) {
     this.auth = auth;
     this.model = model;
-    c = getItem(id, new CaseStudy());
-    if (id != null) {
-      this.model.addAttribute("files", caseService.getFilesFromCaseStudy(c));
-    }
-    this.status = (Status) initParamWithDefault("status",
-        Status.fromString(status), Status.EXEC, this.model, session);
+
+    caseStudy = getItem(id, new CaseStudy());
+    this.model.addAttribute("files",
+        caseService.getFilesFromCaseStudy(caseStudy));
   }
 
   @ModelAttribute
@@ -86,15 +84,18 @@ public class CaseStudyController implements
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String page,
       @RequestParam(required = false) String size,
-      @RequestParam(required = false) String sort) {
-    search =
+      @RequestParam(required = false) String sort,
+      @RequestParam(required = false) String status) {
+    this.status = (Status) initParamWithDefault("status",
+        Status.fromString(status), Status.EXEC, this.model, session);
+    this.search =
         (String) initParam(requestParams, "search", search, model, session);
     sort = (String) initParamWithDefault("sort", sort, "irbNumber", model,
         session);
-    Pageable pageable = initPageable(page, size, sort, model, session);
+    pageable = initPageable(page, size, sort, model, session);
 
     model.addAttribute("slice",
-        caseService.getCasesByStatus(auth, status, pageable, search));
+        caseService.getCasesByStatus(auth, this.status, pageable, this.search));
   }
 
   @PreAuthorize("@perm.isUser()")
@@ -130,21 +131,19 @@ public class CaseStudyController implements
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/{id}")
   String updateJS(@PathVariable Long id, @RequestBody JsonNode formData) {
-    c.setFormData(formData);
-    caseRepo.save(c);
+    caseStudy.setFormData(formData);
+    caseRepo.save(caseStudy);
 
     model.addAttribute("slice",
-        caseService.getCasesByStatus(auth, status,
-            (Pageable) model.getAttribute("pageable"),
-            (String) model.getAttribute("search")));
+        caseService.getCasesByStatus(auth, status, pageable, search));
     return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canDelete()")
   @GetMapping("/{id}/delete")
   String delete(@PathVariable Long id) {
-    if (c.getId() != null) caseRepo.delete(c);
-    return "redirect:" + c.getIndexPath();
+    if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
+    return "redirect:" + caseStudy.getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
@@ -152,7 +151,7 @@ public class CaseStudyController implements
   @ResponseBody
   HttpEntity<byte[]> downloadFile(@PathVariable Long id,
       @PathVariable String fileKey) {
-    return caseService.getDownloadableFile(c, fileKey);
+    return caseService.getDownloadableFile(caseStudy, fileKey);
   }
 
   @Override
