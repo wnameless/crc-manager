@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -69,19 +68,18 @@ public class PageUtils {
     return uri.getQuery();
   }
 
-  public static String sortToParam(Sort sort) {
+  public static List<String> sortToParam(Sort sort) {
     return sort.stream().map(o -> o.getProperty() + "," + o.getDirection())
-        .collect(Collectors.joining("&"));
+        .collect(Collectors.toList());
   }
 
-  public static Sort paramToSort(String param) {
-    if (param == null || param.isEmpty()) return Sort.unsorted();
+  public static Sort paramToSort(String... params) {
+    if (params.length == 0) return Sort.unsorted();
 
     List<Order> orderList = new ArrayList<>();
 
-    String[] orders = param.split(Pattern.quote("&"));
-    for (String order : orders) {
-      String[] propAndDerct = order.split(",");
+    for (String param : params) {
+      String[] propAndDerct = param.split(",");
       if (propAndDerct.length == 1) {
         orderList.add(Order.by(propAndDerct[0]));
       } else if (propAndDerct.length == 2) {
