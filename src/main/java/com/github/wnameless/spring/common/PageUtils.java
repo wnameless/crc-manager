@@ -85,12 +85,17 @@ public class PageUtils {
       if (propAndDerct.length == 1) {
         orderList.add(Order.by(propAndDerct[0]));
       } else if (propAndDerct.length == 2) {
-        Direction direction = Direction.fromString(propAndDerct[1]);
-        if (direction == Direction.ASC) {
-          orderList.add(Order.asc(propAndDerct[0]));
-        }
-        if (direction == Direction.DESC) {
-          orderList.add(Order.desc(propAndDerct[0]));
+        Direction direction;
+        try {
+          direction = Direction.fromString(propAndDerct[1]);
+          if (direction == Direction.ASC) {
+            orderList.add(Order.asc(propAndDerct[0]));
+          }
+          if (direction == Direction.DESC) {
+            orderList.add(Order.desc(propAndDerct[0]));
+          }
+        } catch (Exception e) {
+          orderList.add(Order.by(propAndDerct[0]));
         }
       }
     }

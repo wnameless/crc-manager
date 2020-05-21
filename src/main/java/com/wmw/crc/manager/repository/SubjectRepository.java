@@ -106,4 +106,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
   Subject findByIdAndCaseStudy(Long id, CaseStudy caseStudy);
 
+  boolean existsByIdAndCaseStudy(Long id, CaseStudy caseStudy);
+
 }

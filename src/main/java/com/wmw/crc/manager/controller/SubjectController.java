@@ -29,6 +29,7 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,70 +71,69 @@ public class SubjectController implements NestedRestfulController< //
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
-
-  CaseStudy c;
-
-  Subject s;
-
-  Iterable<Subject> ss;
-
-  Locale locale;
-
-  @ModelAttribute
-  void init(@PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id, Locale locale) {
-    c = this.getParent(parentId);
-    ss = this.getChildren(c);
-    s = this.getChild(parentId, id, new Subject());
-    this.locale = locale;
-  }
-
   @Autowired
   SubjectService subjectService;
-
   @Autowired
   ExcelSubjectUploadService uploadService;
-
   @Autowired
   TsghService tsghService;
-
   @Autowired
   I18nService i18n;
 
+  CaseStudy caseStudy;
+  Subject subject;
+  Iterable<Subject> subjects;
+
+  Authentication auth;
+  Model model;
+  Locale locale;
+
+  @ModelAttribute
+  void init(Authentication auth, Model model,
+      @PathVariable(required = false) Long parentId,
+      @PathVariable(required = false) Long id, Locale locale) {
+    this.auth = auth;
+    this.model = model;
+    this.locale = locale;
+
+    caseStudy = this.getParent(parentId);
+    subject = this.getChild(parentId, id, new Subject());
+    subjects = this.getChildren(caseStudy);
+  }
+
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping
-  String index(Model model, @PathVariable Long parentId) {
+  String index(@PathVariable Long parentId) {
     return "subjects/index";
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  String indexJS(Model model, @PathVariable Long parentId) {
+  String indexJS(@PathVariable Long parentId) {
     return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/new")
-  String newJS(Model model, @PathVariable Long parentId) {
+  String newJS(@PathVariable Long parentId) {
     model.addAttribute(getChildKey(), new Subject());
     return "subjects/new :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping
-  String createJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData) {
-    s = new Subject(formData);
-    AdvOpt<Subject> sOpt = subjectService.createSubject(c, s);
+  String createJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
+    subject = new Subject(formData);
+    AdvOpt<Subject> sOpt = subjectService.createSubject(caseStudy, subject);
 
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
 
-    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(c));
+    model.addAttribute(getChildrenKey(),
+        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 
@@ -144,24 +144,24 @@ public class SubjectController implements NestedRestfulController< //
       RedirectAttributes redirAttrs) {
     ExcelSubjects es = uploadService.fromMultipartFile(file);
     if (es.getErrorMessage() == null) {
-      subjectService.batchCreate(c, es);
+      subjectService.batchCreate(caseStudy, es);
     } else {
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/{id}")
-  String updateJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData) {
-    AdvOpt<Subject> sOpt = subjectService.updateSubject(s, formData);
+  String updateJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
+    AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
 
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(c));
+    model.addAttribute(getChildrenKey(),
+        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 
@@ -179,35 +179,35 @@ public class SubjectController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
   @GetMapping("/{id}/delete")
-  String delete(Model model, @PathVariable Long parentId) {
-    if (s.getId() != null) {
-      subjectRepo.delete(s);
+  String delete(@PathVariable Long parentId) {
+    if (subject.getId() != null) {
+      subjectRepo.delete(subject);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/status/{status}")
   String alterStatus(@PathVariable Long parentId, @PathVariable String status) {
-    if (s.getId() != null) {
-      s.setStatus(Subject.Status.fromString(status));
-      subjectRepo.save(s);
+    if (subject.getId() != null) {
+      subject.setStatus(Subject.Status.fromString(status));
+      subjectRepo.save(subject);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/bundle/{bundleNumber}")
   String alterBundle(@PathVariable Long parentId,
       @PathVariable("bundleNumber") Integer bundleNumber) {
-    if (s.getId() != null) {
-      s.setContraindicationBundle(bundleNumber);
-      subjectRepo.save(s);
+    if (subject.getId() != null) {
+      subject.setContraindicationBundle(bundleNumber);
+      subjectRepo.save(subject);
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -227,7 +227,7 @@ public class SubjectController implements NestedRestfulController< //
 
     if (!isNullOrEmpty(subjectDate) && subjectIds != null
         && !subjectDateType.equals("bundleNumber")) {
-      ss.forEach(s -> {
+      subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
           ObjectNode jsonData = (ObjectNode) s.getFormData();
           jsonData.put(subjectDateType, subjectDate);
@@ -238,7 +238,7 @@ public class SubjectController implements NestedRestfulController< //
     }
 
     if (subjectDateType.equals("bundleNumber") && subjectIds != null) {
-      ss.forEach(s -> {
+      subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {
           s.setContraindicationBundle(bundleNumber);
           subjectRepo.save(s);
@@ -246,7 +246,7 @@ public class SubjectController implements NestedRestfulController< //
       });
     }
 
-    return "redirect:" + c.withChild(s).getIndexPath();
+    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -297,7 +297,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
-    return (p, c) -> getRepository().findAllByCaseStudy(p).contains(c);
+    return (p, c) -> getRepository().existsByIdAndCaseStudy(c.getId(), p);
 
   }
 

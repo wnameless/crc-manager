@@ -28,6 +28,16 @@ public final class ControllerHelpers {
 
   private ControllerHelpers() {}
 
+  public static Pageable initPageable(String page, String size, String sort,
+      Model model, HttpSession session) {
+    page = (String) initParamWithDefault("page", page, "0", model, session);
+    size = (String) initParamWithDefault("size", size, "10", model, session);
+    sort = (String) initParamWithDefault("sort", sort, "", model, session);
+
+    return initPageable(PageRequest.of(Integer.valueOf(page),
+        Integer.valueOf(size), PageUtils.paramToSort(sort)), model, session);
+  }
+
   public static Pageable initPageable(Pageable pageable, Model model) {
     return initPageable(pageable, model, null);
   }
