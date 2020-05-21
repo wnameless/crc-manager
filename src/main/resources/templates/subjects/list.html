@@ -133,36 +133,9 @@
     </div>
 
 
-    <script th:replace="fragments/notify :: notify"></script>
+	<script th:replace="fragments/notify :: partial"></script>
+	<script th:replace="fragments/bs :: input-file"></script>
     <script type="text/javascript" th:inline="javascript">
-		var bs_input_file = function () {
-			$('.input-file').before(
-				function () {
-					if (!$(this).prev().hasClass('input-ghost')) {
-						var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
-						element.attr('name', $(this).attr('name'));
-						element.change(function () {
-							element.next(element).find('input').val((element.val()).split('\\').pop());
-							$('#uploadBtn').removeAttr('disabled');
-						});
-						$(this).find('button.btn-choose').click(function () {
-							element.click();
-						});
-						$(this).find('button.btn-reset').click(function () {
-							element.val(null);
-							$(this).parents('.input-file').find('input').val('');
-						});
-						$(this).find('input').css('cursor', 'pointer');
-						$(this).find('input').mousedown(function () {
-							$(this).parents('.input-file').prev().click();
-							return false;
-						});
-						return element;
-					}
-				}
-			);
-		};
-
 		var checkboxEvent = function () {
 			$('input[name="subjectIds[]"]').remove();
 
@@ -192,9 +165,7 @@
 		$(function () {
 			$('.selectpicker').selectpicker();
 
-			bs_input_file();
-
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').DataTable({
 				order: [
 					[5, "asc"]

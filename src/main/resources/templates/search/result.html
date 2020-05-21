@@ -37,10 +37,10 @@
 		</tbody>
 	</table>
 
-	<script th:replace="fragments/notify :: notify"></script>
+	<script th:replace="fragments/notify :: partial"></script>
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').DataTable({
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'

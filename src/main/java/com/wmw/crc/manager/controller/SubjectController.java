@@ -201,7 +201,7 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/bundle/{bundleNumber}")
   String alterBundle(@PathVariable Long parentId,
-      @PathVariable("bundleNumber") Integer bundleNumber) {
+      @PathVariable Integer bundleNumber) {
     if (subject.getId() != null) {
       subject.setContraindicationBundle(bundleNumber);
       subjectRepo.save(subject);
@@ -217,8 +217,7 @@ public class SubjectController implements NestedRestfulController< //
       @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
-      @RequestParam(name = "bundleNumber") Integer bundleNumber,
-      RedirectAttributes redirAttrs) {
+      @RequestParam Integer bundleNumber, RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {

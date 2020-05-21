@@ -11,7 +11,7 @@
     </li>
   </ul>
 
-  <script th:replace="fragments/notify :: notify"></script>
+  <script th:replace="fragments/notify :: partial"></script>
   <script type="text/javascript" th:inline="javascript">
     $('#addEditor').click(function () {
       if (!$('#editor').val()) return false;

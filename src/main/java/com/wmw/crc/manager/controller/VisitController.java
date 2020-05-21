@@ -17,21 +17,22 @@ package com.wmw.crc.manager.controller;
 
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.wnameless.spring.common.NestedRestfulController;
@@ -64,17 +65,13 @@ public class VisitController implements NestedRestfulController< //
   CaseStudy caseStudy;
   Subject subject;
 
-  Authentication auth;
   Model model;
-  Locale locale;
 
   @ModelAttribute
-  void init(Authentication auth, Model model, Locale locale,
+  void init(Model model, //
       @PathVariable(required = false) Long parentId,
       @PathVariable(required = false) Long id) {
-    this.auth = auth;
     this.model = model;
-    this.locale = locale;
 
     caseStudy = this.getParent(parentId);
     subject = this.getChild(parentId, id, new Subject());
@@ -91,10 +88,10 @@ public class VisitController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @GetMapping("/{id}/visits/{visitId}")
+  @PutMapping(path = "/{id}/visits", produces = APPLICATION_JSON_VALUE)
   @ResponseBody
   Boolean checkReviewed(@PathVariable Long parentId, @PathVariable Long id,
-      @PathVariable Long visitId) {
+      @RequestParam Long visitId) {
     Visit visit =
         Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
     visit.setReviewed(!visit.isReviewed());

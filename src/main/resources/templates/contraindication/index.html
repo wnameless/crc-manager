@@ -110,7 +110,7 @@
 
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('table#medicines').DataTable({
 				ajax: '/data/medicines',
 				serverSide: true,
