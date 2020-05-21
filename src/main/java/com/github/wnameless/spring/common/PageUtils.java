@@ -15,17 +15,15 @@
  */
 package com.github.wnameless.spring.common;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class PageUtils {
 
@@ -58,23 +56,17 @@ public class PageUtils {
       PageableParams pageableParams) {
     if (pageable == null) return "";
 
-    URIBuilder b = new URIBuilder();
-    b.addParameter(pageableParams.pageParameter,
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/");
+    uriBuilder.queryParam(pageableParams.pageParameter,
         String.valueOf(pageable.getPageNumber()));
-    b.addParameter(pageableParams.sizeParameter,
+    uriBuilder.queryParam(pageableParams.sizeParameter,
         String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      b.addParameter(pageableParams.sortParameter,
-          "" + order.getProperty() + "," + order.getDirection());
+      uriBuilder.queryParam(pageableParams.sortParameter,
+          order.getProperty() + "," + order.getDirection());
     });
 
-    URI uri;
-    try {
-      uri = b.build();
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-    return uri.getQuery();
+    return uriBuilder.build().getQuery();
   }
 
   public static String toQueryString(Pageable pageable) {
@@ -85,21 +77,15 @@ public class PageUtils {
       PageableParams pageableParams) {
     if (pageable == null) return "";
 
-    URIBuilder b = new URIBuilder();
-    b.addParameter(pageableParams.sizeParameter,
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/");
+    uriBuilder.queryParam(pageableParams.sizeParameter,
         String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      b.addParameter(pageableParams.sortParameter,
+      uriBuilder.queryParam(pageableParams.sortParameter,
           order.getProperty() + "," + order.getDirection());
     });
 
-    URI uri;
-    try {
-      uri = b.build();
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-    return uri.getQuery();
+    return uriBuilder.build().getQuery();
   }
 
   public static String toQueryStringWithoutPage(Pageable pageable) {
