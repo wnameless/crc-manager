@@ -147,7 +147,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{${resourcePath} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
+                    sd:pagination-url="@{${route.indexPath} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
@@ -172,7 +172,7 @@
         };
 
         var searchEvent = (q) => {
-            axios.get(/*[[${resourcePath}]]*/ null, {
+            axios.get(/*[[${route.indexPath}]]*/ null, {
                 params: {
                     search: q
                 }

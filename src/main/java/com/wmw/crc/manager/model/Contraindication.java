@@ -57,8 +57,8 @@ public class Contraindication implements RestfulItem<Long> {
   CaseStudy caseStudy;
 
   @Override
-  public String getResourcePath() {
-    return "contraindications";
+  public String getIndexPath() {
+    return "/" + "contraindications";
   }
 
 }

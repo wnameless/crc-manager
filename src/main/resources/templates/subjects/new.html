@@ -2,7 +2,7 @@
 <div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3
-            th:replace="fragments/form :: title(text=${parentResourceItem.trialName}, backUrl=${parentResourceItem.withChild(resourceItem).indexPath})">
+            th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
         </h3>
         <hr>
         <div class="row">
@@ -21,7 +21,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.post( /*[[${parentResourceItem.withChild(resourceItem).createPath}]]*/ null, f.formData)
+                axios.post( /*[[${parent.withChild(child).createPath}]]*/ null, f.formData)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -30,7 +30,7 @@
             let rjsfOpt = Object.assign({
                 btnText: /*[[#{rjsf.submit}]]*/'送出',
                 onSubmit: onSubmit
-            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
+            }, /*[[${child.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
@@ -39,15 +39,18 @@
                 min: '1900-01-01',
                 max: '2100-12-31'
             });
-
+        });
+    </script>
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
             $('#queryBtn').click(function () {
                 if (!$('#nationalId').val()) {
                     $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
                     return;
                 }
 
-                let caseId = /*[[${parentResourceItem.id}]]*/ '';
-                axios.get('/cases/' + caseId + '/subjects/query/' + $('#nationalId').val())
+                let subjectQueryPath = /*[[${parent.joinPath(childPath, 'query/')}]]*/ '';
+                axios.get(subjectQueryPath + $('#nationalId').val())
                     .then((response) => {
                         let patient = response.data;
                         let formData = rjsfOpt.formData;
@@ -59,27 +62,21 @@
 
                         if (patient.patientId) {
                             formData.mrn = patient.patientId.join(',');
-                            // $('#root_mrn').val(patient.patientId.join(','));
                         }
                         if (patient.trialId) {
                             formData.subjectId = patient.trialId.join(',');
-                            // $('#root_subjectId').val(patient.trialId.join(','));
                         }
                         if (patient.name) {
                             formData.lastname = patient.name;
-                            // $('#root_lastname').val(patient.name);
                         }
                         if (patient.nationalId) {
                             formData.taiwanId = patient.nationalId;
-                            // $('#root_taiwanId').val(patient.nationalId);
 
                             if (patient.nationalId[1] == '1') {
                                 formData.gender = '男';
-                                // $($('input[type=radio]')[0]).prop('checked', true);
                             }
                             if (patient.nationalId[1] == '2') {
                                 formData.gender = '女';
-                                // $($('input[type=radio]')[1]).prop('checked', true);
                             }
                         }
                         if (patient.birthday) {
@@ -97,15 +94,12 @@
 
                                 formData.birthDate = `${year}-${month}-${day}`;
                             }
-                            // $('#root_birthDate').val(`${year}-${month}-${day}`);
                         }
                         if (patient.phone) {
                             formData.telephone1 = patient.phone;
-                            // $('#root_telephone1').val(patient.phone);
                         }
                         if (patient.address) {
                             formData.address = patient.address;
-                            // $('#root_address').val(patient.address);
                         }
 
                         rjsfOpt = Object.assign(rjsfOpt, {

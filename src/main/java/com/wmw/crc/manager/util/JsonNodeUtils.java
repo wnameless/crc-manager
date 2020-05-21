@@ -82,8 +82,4 @@ public class JsonNodeUtils {
     return val.isTextual() ? val.textValue() : val.asText();
   }
 
-  public static void main(String[] args) {
-
-  }
-
 }

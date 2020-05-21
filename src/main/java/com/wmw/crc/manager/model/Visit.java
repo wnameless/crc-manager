@@ -58,8 +58,8 @@ public class Visit extends Auditable<String> implements RestfulItem<Long> {
   boolean reviewed;
 
   @Override
-  public String getResourcePath() {
-    return "visits";
+  public String getIndexPath() {
+    return "/" + "visits";
   }
 
 }

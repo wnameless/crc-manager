@@ -23,71 +23,58 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface NestedRestfulController< //
-    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends RestfulResource, //
-    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends RestfulResource> {
-
-  PRR getParentRestfulResource();
+    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends RestfulRoute<PID>, //
+    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends RestfulRoute<CID>> {
 
   PR getParentRepository();
-
-  CRR getRestfulResource();
 
   CR getRepository();
 
   BiPredicate<P, C> getPaternityTesting();
 
-  Iterable<C> getResourceItems(P parent);
+  Iterable<C> getChildren(P parent);
 
-  default String getParentResourcePathKey() {
-    return "parentResourcePath";
+  RestfulRoute<CID> getRoute();
+
+  default String getRouteKey() {
+    return "route";
   }
 
   @ModelAttribute
-  default void setParentResourcePath(Model model) {
-    model.addAttribute(getParentResourcePathKey(),
-        "/" + getParentRestfulResource().getResourceName());
+  default void setRoute(Model model) {
+    model.addAttribute(getRouteKey(), getRoute());
   }
 
-  default String getParentResourceItemKey() {
-    return "parentResourceItem";
+  default String getParentKey() {
+    return "parent";
   }
 
   @ModelAttribute
-  default void setParentResourceItem(Model model,
+  default void setParent(Model model,
       @PathVariable(required = false) PID parentId) {
     if (parentId != null) {
       P parent = getParentRepository().findById(parentId).get();
-      model.addAttribute(getParentResourceItemKey(), parent);
+      model.addAttribute(getParentKey(), parent);
     }
   }
 
-  default P getParentResourceItem(PID parentId) {
-    return getParentResourceItem(parentId, null);
+  default P getParent(PID parentId) {
+    return getParent(parentId, null);
   }
 
-  default P getParentResourceItem(PID parentId, P defaultItem) {
+  default P getParent(PID parentId, P defaultItem) {
     if (parentId != null) {
       return getParentRepository().findById(parentId).get();
     }
     return defaultItem;
   }
 
-  default String getResourcePathKey() {
-    return "resourcePath";
+  default String getChildKey() {
+    return "child";
   }
 
   @ModelAttribute
-  default void setResourcePath(Model model) {
-    model.addAttribute(getResourcePathKey(),
-        "/" + getRestfulResource().getResourceName());
-  }
-
-  default String getResourceItemKey() {
-    return "resourceItem";
-  }
-
-  @ModelAttribute
-  default void setResourceItem(Model model,
+  default void setChild(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
     if (parentId != null && id != null) {
@@ -95,16 +82,16 @@ public interface NestedRestfulController< //
       C child = getRepository().findById(id).get();
 
       if (getPaternityTesting().test(parent, child)) {
-        model.addAttribute(getResourceItemKey(), child);
+        model.addAttribute(getChildKey(), child);
       }
     }
   }
 
-  default C getResourceItem(PID parentId, CID id) {
-    return getResourceItem(parentId, id, null);
+  default C getChild(PID parentId, CID id) {
+    return getChild(parentId, id, null);
   }
 
-  default C getResourceItem(PID parentId, CID id, C defaultItem) {
+  default C getChild(PID parentId, CID id, C defaultItem) {
     if (parentId != null && id != null) {
       P parent = getParentRepository().findById(parentId).get();
       C child = getRepository().findById(id).get();
@@ -116,17 +103,17 @@ public interface NestedRestfulController< //
     return defaultItem;
   }
 
-  default String getResourceItemsKey() {
-    return "resourceItems";
+  default String getChildrenKey() {
+    return "children";
   }
 
   @ModelAttribute
-  default void setResourceItems(Model model,
+  default void setChildren(Model model,
       @PathVariable(required = false) PID parentId) {
     if (parentId != null) {
       P parent = getParentRepository().findById(parentId).get();
-      Iterable<C> childs = getResourceItems(parent);
-      model.addAttribute(getResourceItemsKey(), childs);
+      Iterable<C> childs = getChildren(parent);
+      model.addAttribute(getChildrenKey(), childs);
     }
   }
 
