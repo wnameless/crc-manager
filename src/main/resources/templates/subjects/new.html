@@ -35,21 +35,13 @@
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
 
-            $('input[type="date"]').attr({
-                min: '1900-01-01',
-                max: '2100-12-31'
-            });
-        });
-    </script>
-    <script type="text/javascript" th:inline="javascript">
-        $(function () {
             $('#queryBtn').click(function () {
                 if (!$('#nationalId').val()) {
                     $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
                     return;
                 }
 
-                let subjectQueryPath = /*[[${parent.joinPath(childPath, 'query/')}]]*/ '';
+                let subjectQueryPath = /*[[${route.joinPath('query/')}]]*/ '';
                 axios.get(subjectQueryPath + $('#nationalId').val())
                     .then((response) => {
                         let patient = response.data;
@@ -109,6 +101,11 @@
                         ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                             document.getElementById('jsfForm'));
                     });
+            });
+
+            $('input[type="date"]').attr({
+                min: '1900-01-01',
+                max: '2100-12-31'
             });
         });
     </script>

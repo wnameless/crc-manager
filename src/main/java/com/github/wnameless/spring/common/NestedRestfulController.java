@@ -16,6 +16,7 @@
 package com.github.wnameless.spring.common;
 
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
@@ -32,17 +33,19 @@ public interface NestedRestfulController< //
 
   BiPredicate<P, C> getPaternityTesting();
 
-  Iterable<C> getChildren(P parent);
-
-  RestfulRoute<CID> getRoute();
+  Function<P, RestfulRoute<CID>> getRoute();
 
   default String getRouteKey() {
     return "route";
   }
 
   @ModelAttribute
-  default void setRoute(Model model) {
-    model.addAttribute(getRouteKey(), getRoute());
+  default void setRoute(Model model,
+      @PathVariable(required = false) PID parentId) {
+    if (parentId != null) {
+      model.addAttribute(getRouteKey(),
+          getRoute().apply(getParentRepository().findById(parentId).get()));
+    }
   }
 
   default String getParentKey() {
@@ -116,5 +119,7 @@ public interface NestedRestfulController< //
       model.addAttribute(getChildrenKey(), childs);
     }
   }
+
+  Iterable<C> getChildren(P parent);
 
 }

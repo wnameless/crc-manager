@@ -16,12 +16,15 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -59,8 +62,7 @@ import com.wmw.crc.manager.util.ExcelSubjects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequestMapping("/" + RestfulModel.Names.CASE_STUDY + "/{parentId}/"
-    + RestfulModel.Names.SUBJECT)
+@RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT)
 @Controller
 public class SubjectController implements NestedRestfulController< //
     CaseStudy, Long, CaseStudyRepository, RestfulModel, //
@@ -89,11 +91,6 @@ public class SubjectController implements NestedRestfulController< //
     this.locale = locale;
   }
 
-  @ModelAttribute("childPath")
-  String setChildPath() {
-    return "subjects";
-  }
-
   @Autowired
   SubjectService subjectService;
 
@@ -113,7 +110,7 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
-  @GetMapping(path = "/{parentId}/subjects", produces = APPLICATION_JSON_VALUE)
+  @GetMapping(produces = APPLICATION_JSON_VALUE)
   String indexJS(Model model, @PathVariable Long parentId) {
     return "subjects/list :: partial";
   }
@@ -253,14 +250,13 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @GetMapping("/subjects/query/{nationalId}")
+  @GetMapping("/query/{nationalId}")
   @ResponseBody
   Patient searchPatient(@PathVariable Long parentId,
       @PathVariable String nationalId) {
     Patient patient;
     try {
       patient = tsghService.findPatientById(nationalId);
-      patient.setNationalId(nationalId);
     } catch (IOException e) {
       log.error("Patient seaching failed!", e);
       patient = new Patient();
@@ -278,8 +274,15 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @Override
-  public RestfulRoute<Long> getRoute() {
-    return RestfulModel.CASE_STUDY;
+  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
+    return (caseStudy) -> new RestfulRoute<Long>() {
+
+      @Override
+      public String getIndexPath() {
+        return caseStudy.joinPath(SUBJECT);
+      }
+
+    };
   }
 
   @Override
