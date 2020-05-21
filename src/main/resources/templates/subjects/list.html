@@ -5,7 +5,7 @@
 	</h3>
 	<hr>
 	<form th:if="${@perm.canWrite(parent)}" id="batchDating"
-		th:action="${parent.joinPath(childPath, 'batchdating')}" method="POST">
+		th:action="${route.joinPath('batchdating')}" method="POST">
 		<div class="form-row">
 			<div class="form-group col-md-1"></div>
 			<div class="form-group col-md-5">
@@ -100,7 +100,7 @@
     </table>
 
     <div th:if="${@perm.canWrite(parent)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${parent.joinPath(childPath, 'new')}" onclick="editFormEvent(this)"
+        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${route.newPath}" onclick="editFormEvent(this)"
             th:inline="text">
             <span>
                 <i class="fa fa-plus text-success"></i>
@@ -110,7 +110,7 @@
     </div>
 
     <div th:if="${@perm.canWrite(parent)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <form method="POST" th:action="${parent.joinPath(childPath, 'batch')}" enctype="multipart/form-data">
+        <form method="POST" th:action="${route.joinPath('batch')}" enctype="multipart/form-data">
             <!-- COMPONENT START -->
             <div class="form-group">
                 <div class="input-group input-file" name="subjectFile">
@@ -129,7 +129,7 @@
     </div>
 
     <div th:if="${@perm.canWrite(parent)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <a th:href="${parent.joinPath(childPath, 'uploadexample')}" th:text="#{ui.subject.file.example.download}"></a>
+        <a th:href="${route.joinPath('uploadexample')}" th:text="#{ui.subject.file.example.download}"></a>
     </div>
 
 
