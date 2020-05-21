@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.service;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +140,9 @@ public class VisitService {
 
       List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
       for (Subject s : subjects) {
-        if (s.unreviewedVisits() <= 0) continue;
+        if (s.unreviewedVisits() <= 0 || !isNullOrEmpty(s.getDropoutDate())) {
+          continue;
+        }
 
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
           SimpleMailMessage message = createVisitEmail(v);

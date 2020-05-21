@@ -2,7 +2,7 @@
 <div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <h3
-            th:replace="fragments/form :: title(text=${parentResourceItem.trialName}, backUrl=${parentResourceItem.joinPath(resourcePath)})">
+            th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.joinPath(childPath)})">
         </h3>
         <hr>
         <div id="jsfForm"></div>
@@ -11,7 +11,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.post( /*[[${parentResourceItem.withChild(resourceItem).updatePath}]]*/ null, f.formData)
+                axios.post( /*[[${parent.withChild(child).updatePath}]]*/ null, f.formData)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -20,7 +20,7 @@
             let rjsfOpt = Object.assign({
                 btnText: /*[[#{rjsf.submit}]]*/'送出',
                 onSubmit: onSubmit
-            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
+            }, /*[[${child.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));

@@ -60,7 +60,7 @@ public class Subject
     implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
   @Override
-  public String getResourcePath() {
+  public String getIndexPath() {
     return "/" + RestfulModel.Names.SUBJECT;
   }
 

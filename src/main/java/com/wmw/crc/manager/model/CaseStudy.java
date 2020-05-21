@@ -74,7 +74,7 @@ public class CaseStudy
     implements JsonPopulatable, ReactJsonSchemaForm, RestfulItem<Long> {
 
   @Override
-  public String getResourcePath() {
+  public String getIndexPath() {
     return "/" + RestfulModel.Names.CASE_STUDY;
   }
 

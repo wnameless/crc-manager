@@ -17,18 +17,14 @@ package com.wmw.crc.manager.model;
 
 import com.github.wnameless.spring.common.RestfulResource;
 
-public enum RestfulModel implements RestfulResource {
+public enum RestfulModel implements RestfulResource<Long> {
 
-  CASE_STUDY(Names.CASE_STUDY, CaseStudy.class),
-  SUBJECT(Names.SUBJECT, Subject.class);
+  CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT);
 
-  private String resourceName;
+  private final String resourceName;
 
-  private Class<?> klass;
-
-  private RestfulModel(String resourceName, Class<?> klass) {
+  private RestfulModel(String resourceName) {
     this.resourceName = resourceName;
-    this.klass = klass;
   }
 
   @Override
@@ -37,8 +33,8 @@ public enum RestfulModel implements RestfulResource {
   }
 
   @Override
-  public Class<?> getClassName() {
-    return klass;
+  public String getIndexPath() {
+    return "/" + resourceName;
   }
 
   public static class Names {

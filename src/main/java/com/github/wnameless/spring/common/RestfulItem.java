@@ -15,19 +15,16 @@
  */
 package com.github.wnameless.spring.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public interface RestfulItem<ID> extends JoinablePath {
 
-public interface RestfulItem<ID> {
-
-  String getResourcePath();
+  @Override
+  default String getRootPath() {
+    return getShowPath();
+  }
 
   ID getId();
 
-  default String getIndexPath() {
-    return getResourcePath();
-  }
+  String getIndexPath();
 
   default String getCreatePath() {
     return getIndexPath();
@@ -53,39 +50,15 @@ public interface RestfulItem<ID> {
     return getIndexPath() + "/" + getId();
   }
 
-  default String joinPath(String... paths) {
-    String pathSeprator = "/";
-
-    List<String> list = new ArrayList<>(Arrays.asList(paths));
-    list.add(0, getShowPath());
-    for (int i = 1; i < list.size(); i++) {
-      int predecessor = i - 1;
-      while (list.get(predecessor).endsWith(pathSeprator)) {
-        list.set(predecessor, list.get(predecessor).substring(0,
-            list.get(predecessor).length() - 1));
-      }
-      while (list.get(i).startsWith(pathSeprator)) {
-        list.set(i, list.get(i).substring(1));
-      }
-      list.set(i, pathSeprator + list.get(i));
-    }
-
-    StringBuilder sb = new StringBuilder();
-    list.stream().forEach(path -> {
-      sb.append(path);
-    });
-    return sb.toString();
-  }
-
   default RestfulItem<ID> withParent(RestfulItem<?> parent) {
-    String resourcePath = parent.getShowPath() + getResourcePath();
+    String indexPath = parent.getShowPath() + getIndexPath();
     ID id = getId();
 
     return new RestfulItem<ID>() {
 
       @Override
-      public String getResourcePath() {
-        return resourcePath;
+      public String getIndexPath() {
+        return indexPath;
       }
 
       @Override
@@ -97,14 +70,14 @@ public interface RestfulItem<ID> {
   }
 
   default <CID> RestfulItem<CID> withChild(RestfulItem<CID> child) {
-    String resourcePath = getShowPath() + child.getResourcePath();
+    String indexPath = getShowPath() + child.getIndexPath();
     CID id = child.getId();
 
     return new RestfulItem<CID>() {
 
       @Override
-      public String getResourcePath() {
-        return resourcePath;
+      public String getIndexPath() {
+        return indexPath;
       }
 
       @Override

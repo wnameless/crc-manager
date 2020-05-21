@@ -66,7 +66,7 @@ public class CaseStudyController implements
   CaseStudy.Status status;
 
   @Override
-  public RestfulModel getRestfulResource() {
+  public RestfulModel getRoute() {
     return RestfulModel.CASE_STUDY;
   }
 
@@ -77,7 +77,7 @@ public class CaseStudyController implements
 
   @ModelAttribute
   void init(Model model, @PathVariable(required = false) Long id) {
-    c = getResourceItem(id, new CaseStudy());
+    c = getItem(id, new CaseStudy());
     if (id != null) {
       model.addAttribute("files", caseService.getFilesFromCaseStudy(c));
     }
@@ -159,7 +159,7 @@ public class CaseStudyController implements
   @GetMapping("/{id}/delete")
   String delete(@PathVariable Long id) {
     if (c.getId() != null) caseRepo.delete(c);
-    return "redirect:/cases";
+    return "redirect:" + c.getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#id)")

@@ -21,40 +21,37 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface RestfulController< //
-    I extends RestfulItem<ID>, ID, R extends CrudRepository<I, ID>, T extends RestfulResource> {
+    I extends RestfulItem<ID>, ID, R extends CrudRepository<I, ID>, T extends RestfulRoute<ID>> {
 
-  T getRestfulResource();
+  RestfulRoute<ID> getRoute();
+
+  default String getRouteKey() {
+    return "route";
+  }
+
+  @ModelAttribute
+  default void setRoute(Model model) {
+    model.addAttribute(getRouteKey(), getRoute());
+  }
 
   R getRepository();
 
-  default String getResourcePathKey() {
-    return "resourcePath";
-  }
-
-  default String getResourceItemKey() {
-    return "resourceItem";
+  default String getItemKey() {
+    return "item";
   }
 
   @ModelAttribute
-  default void setResourcePath(Model model) {
-    model.addAttribute(getResourcePathKey(),
-        "/" + getRestfulResource().getResourceName());
-  }
-
-  @ModelAttribute
-  default void setResourceItem(Model model,
-      @PathVariable(required = false) ID id) {
+  default void setItem(Model model, @PathVariable(required = false) ID id) {
     if (id != null) {
-      model.addAttribute(getResourceItemKey(),
-          getRepository().findById(id).get());
+      model.addAttribute(getItemKey(), getRepository().findById(id).get());
     }
   }
 
-  default I getResourceItem(ID id) {
-    return getResourceItem(id, null);
+  default I getItem(ID id) {
+    return getItem(id, null);
   }
 
-  default I getResourceItem(ID id, I defaultItem) {
+  default I getItem(ID id, I defaultItem) {
     if (id != null) {
       return getRepository().findById(id).get();
     }

@@ -15,10 +15,8 @@
  */
 package com.github.wnameless.spring.common;
 
-public interface RestfulResource {
+public interface RestfulResource<ID> extends RestfulRoute<ID> {
 
   String getResourceName();
-
-  Class<?> getClassName();
 
 }

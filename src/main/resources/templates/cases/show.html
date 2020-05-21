@@ -2,7 +2,7 @@
 
 <div th:fragment="partial">
     <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${resourceItem.trialName}, backUrl=${resourceItem.indexPath})"></h3>
+        <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
 
         <hr>
 
@@ -23,8 +23,7 @@
                                 <label th:unless="${file.value.value}"
                                     class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
                             </a>
-                            <a th:if="${file.value.value}"
-                                th:href="@{/cases/{id}/files/{fileId}(id=${resourceItem.id}, fileId=${file.key})}"
+                            <a th:if="${file.value.value}" th:href="@{${item.joinPath('files', file.key)}}"
                                 class="list-group-item list-group-item-action">
                                 [[${file.value.key}]]
                                 <label th:if="${file.value.value}"
@@ -36,9 +35,9 @@
             </div>
         </div>
 
-        <hr th:if="${@perm.canWrite(resourceItem)}">
+        <hr th:if="${@perm.canWrite(item)}">
 
-        <a th:if="${@perm.canWrite(resourceItem)}" th:href="@{/cases/{id}/emails(id=${resourceItem.id})}" th:text="#{ui.case.emails}"></a>
+        <a th:if="${@perm.canWrite(item)}" th:href="@{${item.joinPath('emails')}}" th:text="#{ui.case.emails}"></a>
 
         <hr>
 
@@ -48,7 +47,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             let onSubmit = (f) => {
-                axios.get( /*[[${resourcePath}]]*/ null)
+                axios.get( /*[[${route.indexPath}]]*/ null)
                     .then((response) => {
                         $('#jsf').html(response.data);
                     });
@@ -58,7 +57,7 @@
                 btnText: /*[[#{rjsf.back}]]*/'返回',
                 onSubmit: onSubmit,
                 disabled: true
-            }, /*[[${resourceItem.toRjsfMap()}]]*/ {});
+            }, /*[[${item.toRjsfMap()}]]*/ {});
 
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));

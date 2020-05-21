@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.github.wnameless.spring.common.NestedRestfulController;
+import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.model.Subject;
@@ -82,10 +83,15 @@ public class SubjectController implements NestedRestfulController< //
   @ModelAttribute
   void init(@PathVariable(required = false) Long parentId,
       @PathVariable(required = false) Long id, Locale locale) {
-    c = this.getParentResourceItem(parentId);
-    ss = this.getResourceItems(c);
-    s = this.getResourceItem(parentId, id, new Subject());
+    c = this.getParent(parentId);
+    ss = this.getChildren(c);
+    s = this.getChild(parentId, id, new Subject());
     this.locale = locale;
+  }
+
+  @ModelAttribute("childPath")
+  String setChildPath() {
+    return "subjects";
   }
 
   @Autowired
@@ -115,7 +121,7 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/new")
   String newJS(Model model, @PathVariable Long parentId) {
-    model.addAttribute(getResourceItemKey(), new Subject());
+    model.addAttribute(getChildKey(), new Subject());
     return "subjects/new :: partial";
   }
 
@@ -130,8 +136,7 @@ public class SubjectController implements NestedRestfulController< //
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
 
-    model.addAttribute(getResourceItemsKey(),
-        subjectRepo.findAllByCaseStudy(c));
+    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(c));
     return "subjects/list :: partial";
   }
 
@@ -159,8 +164,7 @@ public class SubjectController implements NestedRestfulController< //
     if (sOpt.isAbsent() && sOpt.hasMessage()) {
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
-    model.addAttribute(getResourceItemsKey(),
-        subjectRepo.findAllByCaseStudy(c));
+    model.addAttribute(getChildrenKey(), subjectRepo.findAllByCaseStudy(c));
     return "subjects/list :: partial";
   }
 
@@ -274,18 +278,13 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @Override
-  public RestfulModel getParentRestfulResource() {
+  public RestfulRoute<Long> getRoute() {
     return RestfulModel.CASE_STUDY;
   }
 
   @Override
   public CaseStudyRepository getParentRepository() {
     return caseRepo;
-  }
-
-  @Override
-  public RestfulModel getRestfulResource() {
-    return RestfulModel.SUBJECT;
   }
 
   @Override
@@ -300,7 +299,7 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @Override
-  public Iterable<Subject> getResourceItems(CaseStudy parent) {
+  public Iterable<Subject> getChildren(CaseStudy parent) {
     return getRepository().findAllByCaseStudy(parent);
   }
 

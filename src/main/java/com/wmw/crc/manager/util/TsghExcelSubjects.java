@@ -79,9 +79,9 @@ public class TsghExcelSubjects implements ExcelSubjects {
         }
 
         Map<String, Object> initData = new HashMap<>();
-        initData.put("mrn", row.get("一般病例號"));
+        initData.put("mrn", row.get("醫院病歷號"));
         initData.put("lastname", row.get("姓名"));
-        initData.put("subjectId", row.get("病歷號碼"));
+        initData.put("subjectId", row.get("試驗病歷號"));
         initData.put("screenNo", row.get("篩選號碼"));
         initData.put("subjectNo", row.get("受試號碼"));
         if (row.get("生日") != null && !row.get("生日").isEmpty()) {

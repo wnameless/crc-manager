@@ -52,8 +52,8 @@ public class Medicine implements RestfulItem<Long> {
   String takekind;
 
   @Override
-  public String getResourcePath() {
-    return "medicines";
+  public String getIndexPath() {
+    return "/" + "medicines";
   }
 
 }
