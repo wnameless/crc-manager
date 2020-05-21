@@ -15,77 +15,98 @@
  */
 package com.wmw.crc.manager.controller;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
+import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
+import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
 
+@RequestMapping("/" + CASE_STUDY + "/{id}")
 @Controller
-public class CaseStudyEmailsController {
+public class CaseStudyEmailsController implements
+    RestfulController<CaseStudy, Long, CaseStudyRepository, RestfulModel> {
 
   @Autowired
   CaseStudyRepository caseRepo;
 
   @Autowired
-  CaseStudyService caseStudyService;
+  CaseStudyService caseService;
+
+  CaseStudy caseStudy;
+  Emails emails;
+
+  Model model;
+  Locale locale;
+
+  @ModelAttribute
+  void init(Model model, Locale locale,
+      @PathVariable(required = false) Long id) {
+    this.model = model;
+    this.locale = locale;
+
+    caseStudy = getItem(id, new CaseStudy());
+    this.model.addAttribute("files",
+        caseService.getFilesFromCaseStudy(caseStudy));
+    emails = new Emails();
+    this.model.addAttribute("emails", emails);
+  }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @GetMapping("/cases/{id}/emails")
-  String edit(@PathVariable("id") Long id, Model model) {
-    CaseStudy c = caseRepo.findById(id).get();
-
-    Emails emails = new Emails();
-
+  @GetMapping("/emails")
+  String edit(@PathVariable("id") Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
         .getObjectMapperFactory().get().createObjectNode();
     ArrayNode an = on.putArray("listOfEmails");
-    c.getEmails().stream().forEach(email -> {
+    caseStudy.getEmails().stream().forEach(email -> {
       an.add(email);
     });
     emails.setFormData(on);
 
-    model.addAttribute("case", c);
-    model.addAttribute("jsfPath", "/cases/" + id + "/emails");
-    model.addAttribute("jsfItem", emails);
+    model.addAttribute("emails", emails);
     return "cases/emails/index";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @PostMapping("/cases/{id}/emails")
-  String save(@PathVariable("id") Long id, Model model,
-      @RequestBody JsonNode formData) {
-    CaseStudy c = caseRepo.findById(id).get();
-    Map<String, Entry<String, Boolean>> files =
-        caseStudyService.getFilesFromCaseStudy(c);
-
-    c.getEmails().clear();
+  @PostMapping("/emails")
+  String save(@PathVariable("id") Long id, @RequestBody JsonNode formData) {
+    caseStudy.getEmails().clear();
     JsonNode listOfEmails = formData.get("listOfEmails");
     for (int i = 0; i < listOfEmails.size(); i++) {
-      c.getEmails().add(listOfEmails.get(i).asText());
+      caseStudy.getEmails().add(listOfEmails.get(i).asText());
     }
+    caseRepo.save(caseStudy);
 
-    caseRepo.save(c);
+    return "cases/show :: partial";
+  }
 
-    model.addAttribute("jsfPath", "/cases");
-    model.addAttribute("jsfItem", c);
-    model.addAttribute("files", files);
-    return "cases/show :: show";
+  @Override
+  public RestfulModel getRoute() {
+    return RestfulModel.CASE_STUDY;
+  }
+
+  @Override
+  public CaseStudyRepository getRepository() {
+    return caseRepo;
   }
 
 }

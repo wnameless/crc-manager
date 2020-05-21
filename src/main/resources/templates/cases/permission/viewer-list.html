@@ -1,28 +1,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="viewer-list" id="viewerList">
-	<ul class="list-group"
-		style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-		<li class="list-group-item">
-			<span id="viewer" th:text="#{ui.permission.viewer.select}"></span>
-			<i id="addViewer" class="fa fa-plus pull-right"
-				style="color: green; margin-top: 3px;"></i>
-		</li>
-		<li class="list-group-item" th:each="viewer : ${case.viewers}">
-			<span th:text="${viewer}"></span>
-			<i th:attr="val=${viewer}"
-				class="removeViewer fa fa-times pull-right"
-				style="color: red; margin-top: 3px;"></i>
-		</li>
-	</ul>
+<div th:fragment="partial" id="viewerList">
+  <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+    <li class="list-group-item">
+      <span id="viewer" th:text="#{ui.permission.viewer.select}"></span>
+      <i id="addViewer" class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i>
+    </li>
+    <li class="list-group-item" th:each="viewer : ${item.viewers}">
+      <span th:text="${viewer}"></span>
+      <i th:attr="val=${viewer}" class="removeViewer fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
+    </li>
+  </ul>
 
-	<script th:replace="fragments/notify :: notify"></script>
-	<script type="text/javascript" th:inline="javascript">
-    $('#addViewer').click(function() {
+  <script th:replace="fragments/notify :: notify"></script>
+  <script type="text/javascript" th:inline="javascript">
+    $('#addViewer').click(function () {
       if (!$('#viewer').val()) return false;
 
-      axios.post('/cases/[[${case.id}]]/permission/viewers', {
+      axios.post(/*[[${item.joinPath('permission', 'viewers')}]]*/null, {
         viewer: $('#viewer').val()
-      }).then(function(response) {
+      }).then(function (response) {
         $('#viewerList').html(response.data);
 
         $('#manager').text(/*[[#{ui.permission.manager.select}]]*/null);
@@ -36,12 +32,12 @@
       return false;
     });
 
-    $('.removeViewer').click(function() {
-      axios.delete('/cases/[[${case.id}]]/permission/viewers', {
+    $('.removeViewer').click(function () {
+      axios.delete(/*[[${item.joinPath('permission', 'viewers')}]]*/null, {
         params: {
           viewer: $(this).attr('val')
         }
-      }).then(function(response) {
+      }).then(function (response) {
         $('#viewers').html(response.data);
       });
 
@@ -49,4 +45,5 @@
     });
   </script>
 </div>
+
 </html>

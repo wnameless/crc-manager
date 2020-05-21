@@ -91,9 +91,9 @@ public class SubjectController implements NestedRestfulController< //
   Locale locale;
 
   @ModelAttribute
-  void init(Authentication auth, Model model,
+  void init(Authentication auth, Model model, Locale locale,
       @PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id, Locale locale) {
+      @PathVariable(required = false) Long id) {
     this.auth = auth;
     this.model = model;
     this.locale = locale;

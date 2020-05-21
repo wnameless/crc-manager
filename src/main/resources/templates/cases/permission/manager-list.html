@@ -1,28 +1,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="manager-list" id="managerList">
-	<ul class="list-group"
-		style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-		<li class="list-group-item">
-			<span id="manager" th:text="#{ui.permission.manager.select}"></span>
-			<i id="addManager" class="fa fa-plus pull-right"
-				style="color: green; margin-top: 3px;"></i>
-		</li>
-		<li class="list-group-item" th:each="manager : ${case.managers}">
-			<span th:text="${manager}"></span>
-			<i th:attr="val=${manager}"
-				class="removeManager fa fa-times pull-right"
-				style="color: red; margin-top: 3px;"></i>
-		</li>
-	</ul>
+<div th:fragment="partial" id="managerList">
+  <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+    <li class="list-group-item">
+      <span id="manager" th:text="#{ui.permission.manager.select}"></span>
+      <i id="addManager" class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i>
+    </li>
+    <li class="list-group-item" th:each="manager : ${item.managers}">
+      <span th:text="${manager}"></span>
+      <i th:attr="val=${manager}" class="removeManager fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
+    </li>
+  </ul>
 
-	<script th:replace="fragments/notify :: notify"></script>
-	<script type="text/javascript" th:inline="javascript">
-    $('#addManager').click(function() {
+  <script th:replace="fragments/notify :: notify"></script>
+  <script type="text/javascript" th:inline="javascript">
+    $('#addManager').click(function () {
       if (!$('#manager').val()) return false;
 
-      axios.post('/cases/[[${case.id}]]/permission/managers', {
+      axios.post(/*[[${item.joinPath('permission', 'managers')}]]*/null, {
         manager: $('#manager').val()
-      }).then(function(response) {
+      }).then(function (response) {
         $('#managerList').html(response.data);
 
         $('#manager').text(/*[[#{ui.permission.manager.select}]]*/null);
@@ -36,12 +32,12 @@
       return false;
     });
 
-    $('.removeManager').click(function() {
-      axios.delete('/cases/[[${case.id}]]/permission/managers', {
+    $('.removeManager').click(function () {
+      axios.delete(/*[[${item.joinPath('permission', 'managers')}]]*/null, {
         params: {
           manager: $(this).attr('val')
         }
-      }).then(function(response) {
+      }).then(function (response) {
         $('#managers').html(response.data);
       });
 
@@ -49,4 +45,5 @@
     });
   </script>
 </div>
+
 </html>
