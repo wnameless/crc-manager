@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Contraindication;
@@ -67,6 +68,8 @@ public class TsghServiceTestImpl implements TsghService {
   @Override
   public Patient findPatientById(String nationalId) throws IOException {
     Patient patient = new Patient();
+
+    if (Strings.isNullOrEmpty(nationalId)) return patient;
 
     patient.setNationalId(nationalId);
     patient.setBirthday("19800101");

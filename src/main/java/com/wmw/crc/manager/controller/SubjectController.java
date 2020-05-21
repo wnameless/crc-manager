@@ -257,7 +257,6 @@ public class SubjectController implements NestedRestfulController< //
     Patient patient;
     try {
       patient = tsghService.findPatientById(nationalId);
-      patient.setNationalId(nationalId);
     } catch (IOException e) {
       log.error("Patient seaching failed!", e);
       patient = new Patient();
