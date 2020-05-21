@@ -29,14 +29,42 @@ import org.springframework.data.domain.Sort.Order;
 
 public class PageUtils {
 
-  public static String toQueryString(Pageable pageable) {
+  public static class PageableParams {
+
+    public static PageableParams of(String pageParameter, String sizeParameter,
+        String sortParameter) {
+      return new PageableParams(pageParameter, sizeParameter, sortParameter);
+    }
+
+    public static PageableParams of(String sizeParameter,
+        String sortParameter) {
+      return new PageableParams("page", sizeParameter, sortParameter);
+    }
+
+    private String pageParameter;
+    private String sizeParameter;
+    private String sortParameter;
+
+    private PageableParams(String pageParameter, String sizeParameter,
+        String sortParameter) {
+      this.pageParameter = pageParameter;
+      this.sizeParameter = sizeParameter;
+      this.sortParameter = sortParameter;
+    }
+
+  }
+
+  public static String toQueryString(Pageable pageable,
+      PageableParams pageableParams) {
     if (pageable == null) return "";
 
     URIBuilder b = new URIBuilder();
-    b.addParameter("page", String.valueOf(pageable.getPageNumber()));
-    b.addParameter("size", String.valueOf(pageable.getPageSize()));
+    b.addParameter(pageableParams.pageParameter,
+        String.valueOf(pageable.getPageNumber()));
+    b.addParameter(pageableParams.sizeParameter,
+        String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      b.addParameter("sort",
+      b.addParameter(pageableParams.sortParameter,
           "" + order.getProperty() + "," + order.getDirection());
     });
 
@@ -49,14 +77,20 @@ public class PageUtils {
     return uri.getQuery();
   }
 
-  public static String toQueryStringWithoutPage(Pageable pageable) {
+  public static String toQueryString(Pageable pageable) {
+    return toQueryString(pageable, PageableParams.of("page", "size", "sort"));
+  }
+
+  public static String toQueryStringWithoutPage(Pageable pageable,
+      PageableParams pageableParams) {
     if (pageable == null) return "";
 
     URIBuilder b = new URIBuilder();
-    b.addParameter("size", String.valueOf(pageable.getPageSize()));
+    b.addParameter(pageableParams.sizeParameter,
+        String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      b.addParameter("sort",
-          "" + order.getProperty() + "," + order.getDirection());
+      b.addParameter(pageableParams.sortParameter,
+          order.getProperty() + "," + order.getDirection());
     });
 
     URI uri;
@@ -66,6 +100,11 @@ public class PageUtils {
       throw new RuntimeException(e);
     }
     return uri.getQuery();
+  }
+
+  public static String toQueryStringWithoutPage(Pageable pageable) {
+    return toQueryStringWithoutPage(pageable,
+        PageableParams.of("size", "sort"));
   }
 
   public static List<String> sortToParam(Sort sort) {
