@@ -15,9 +15,9 @@
  */
 package com.wmw.crc.manager.model;
 
-import com.github.wnameless.spring.common.RestfulResource;
+import com.github.wnameless.spring.common.RestfulRoute;
 
-public enum RestfulModel implements RestfulResource<Long> {
+public enum RestfulModel implements RestfulRoute<Long> {
 
   CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT);
 
@@ -25,11 +25,6 @@ public enum RestfulModel implements RestfulResource<Long> {
 
   private RestfulModel(String resourceName) {
     this.resourceName = resourceName;
-  }
-
-  @Override
-  public String getResourceName() {
-    return resourceName;
   }
 
   @Override
