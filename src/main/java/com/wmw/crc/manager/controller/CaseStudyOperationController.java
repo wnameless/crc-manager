@@ -55,15 +55,8 @@ public class CaseStudyOperationController implements
 
   CaseStudy caseStudy;
 
-  Model model;
-  Locale locale;
-
   @ModelAttribute
-  void init(Model model, Locale locale,
-      @PathVariable(required = false) Long id) {
-    this.model = model;
-    this.locale = locale;
-
+  void init(@PathVariable(required = false) Long id) {
     caseStudy = getItem(id, new CaseStudy());
   }
 
@@ -78,7 +71,7 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canAssign()")
   @GetMapping("/assignment")
-  String assignment() {
+  String assignment(Model model) {
     model.addAttribute("users", keycloak.getNormalUsers());
     return "cases/assignment/index";
   }
@@ -95,15 +88,15 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @GetMapping("/permission")
-  String permission(@PathVariable Long id) {
+  String permission(Model model, @PathVariable Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
     return "cases/permission/index";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/managers")
-  String addManager(@PathVariable Long id,
-      @RequestBody Map<String, Object> body) {
+  String addManager(Model model, @PathVariable Long id,
+      @RequestBody Map<String, Object> body, Locale locale) {
     String manager = body.get("manager").toString();
     caseStudy.getManagers().add(manager);
     caseRepo.save(caseStudy);
@@ -115,8 +108,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @DeleteMapping("/permission/managers")
-  String removeManager(@PathVariable Long id,
-      @RequestParam("manager") String manager) {
+  String removeManager(Model model, @PathVariable Long id,
+      @RequestParam("manager") String manager, Locale locale) {
     caseStudy.getManagers().remove(manager);
     caseRepo.save(caseStudy);
 
@@ -127,8 +120,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/editors")
-  String addEditor(@PathVariable Long id,
-      @RequestBody Map<String, Object> body) {
+  String addEditor(Model model, @PathVariable Long id,
+      @RequestBody Map<String, Object> body, Locale locale) {
     String editor = body.get("editor").toString();
     caseStudy.getEditors().add(editor);
     caseRepo.save(caseStudy);
@@ -140,8 +133,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @DeleteMapping("/permission/editors")
-  String removeEditor(@PathVariable("id") Long id,
-      @RequestParam("editor") String editor) {
+  String removeEditor(Model model, @PathVariable("id") Long id,
+      @RequestParam("editor") String editor, Locale locale) {
     caseStudy.getEditors().remove(editor);
     caseRepo.save(caseStudy);
 
@@ -152,8 +145,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/viewers")
-  String addViewer(@PathVariable Long id,
-      @RequestBody Map<String, Object> body) {
+  String addViewer(Model model, @PathVariable Long id,
+      @RequestBody Map<String, Object> body, Locale locale) {
     String viewer = body.get("viewer").toString();
     caseStudy.getViewers().add(viewer);
     caseRepo.save(caseStudy);
@@ -165,8 +158,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @DeleteMapping("/permission/viewers")
-  String removeViewer(@PathVariable Long id,
-      @RequestParam("viewer") String viewer) {
+  String removeViewer(Model model, @PathVariable Long id,
+      @RequestParam("viewer") String viewer, Locale locale) {
     caseStudy.getViewers().remove(viewer);
     caseRepo.save(caseStudy);
 

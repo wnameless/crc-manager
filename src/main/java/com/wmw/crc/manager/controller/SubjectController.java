@@ -30,7 +30,6 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -88,18 +87,9 @@ public class SubjectController implements NestedRestfulController< //
   Subject subject;
   Iterable<Subject> subjects;
 
-  Authentication auth;
-  Model model;
-  Locale locale;
-
   @ModelAttribute
-  void init(Authentication auth, Model model, Locale locale,
-      @PathVariable(required = false) Long parentId,
+  void init(@PathVariable(required = false) Long parentId,
       @PathVariable(required = false) Long id) {
-    this.auth = auth;
-    this.model = model;
-    this.locale = locale;
-
     caseStudy = this.getParent(parentId);
     subject = this.getChild(parentId, id, new Subject());
     subjects = this.getChildren(caseStudy);
@@ -125,7 +115,8 @@ public class SubjectController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping
-  String createJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
+  String createJS(Model model, @PathVariable Long parentId,
+      @RequestBody JsonNode formData, Locale locale) {
     subject = new Subject(formData);
     AdvOpt<Subject> sOpt = subjectService.createSubject(caseStudy, subject);
 
@@ -153,7 +144,8 @@ public class SubjectController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/{id}")
-  String updateJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
+  String updateJS(Model model, @PathVariable Long parentId,
+      @RequestBody JsonNode formData, Locale locale) {
     AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
 
     if (sOpt.isAbsent()) {
@@ -190,7 +182,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
   @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String deleteJS(@PathVariable Long parentId) {
+  String deleteJS(Model model, @PathVariable Long parentId) {
     if (subject.getId() != null) {
       subjectRepo.delete(subject);
 
@@ -230,7 +222,8 @@ public class SubjectController implements NestedRestfulController< //
       @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
-      @RequestParam Integer bundleNumber, RedirectAttributes redirAttrs) {
+      @RequestParam Integer bundleNumber, Locale locale,
+      RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {

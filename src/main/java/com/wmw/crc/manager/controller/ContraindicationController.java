@@ -45,12 +45,8 @@ public class ContraindicationController implements NestedRestfulController< //
 
   CaseStudy caseStudy;
 
-  Model model;
-
   @ModelAttribute
-  void init(Model model, @PathVariable Long parentId) {
-    this.model = model;
-
+  void init(@PathVariable Long parentId) {
     caseStudy = getParent(parentId);
   }
 
@@ -62,7 +58,7 @@ public class ContraindicationController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping
-  String create(@PathVariable Long parentId,
+  String create(Model model, @PathVariable Long parentId,
       @RequestParam("bundle") Integer bundle,
       @RequestParam("phrase") String phrase,
       @RequestParam("takekinds") List<String> takekinds,
@@ -76,7 +72,8 @@ public class ContraindicationController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String destroyJS(@PathVariable Long parentId, @PathVariable Long id) {
+  String destroyJS(Model model, @PathVariable Long parentId,
+      @PathVariable Long id) {
     caseStudyService.removeContraindication(caseStudy, id);
 
     updateChildren(model, caseStudy);
