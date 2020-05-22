@@ -78,26 +78,23 @@ public class CaseStudyController
         Status.fromString(status), Status.EXEC, model, session);
     this.search =
         (String) initParam(requestParams, "search", search, model, session);
-  }
-
-  @ModelAttribute
-  void initPageSlice(Authentication auth, Model model, HttpSession session,
-      @RequestParam Map<String, String> requestParams) {
     pageable = initPageableWithDefault(requestParams, model, session,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
-    model.addAttribute("slice",
-        caseService.getCasesByStatus(auth, status, pageable, search));
   }
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping
-  String index() {
+  String index(Authentication auth, Model model) {
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status, pageable, search));
     return "cases/list :: complete";
   }
 
   @PreAuthorize("@perm.isUser()")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  String indexJS() {
+  String indexJS(Authentication auth, Model model) {
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status, pageable, search));
     return "cases/list :: partial";
   }
 
