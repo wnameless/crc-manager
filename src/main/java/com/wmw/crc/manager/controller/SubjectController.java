@@ -50,7 +50,6 @@ import com.github.wnameless.advancedoptional.AdvOpt;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -67,8 +66,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT)
 @Controller
 public class SubjectController implements NestedRestfulController< //
-    CaseStudy, Long, CaseStudyRepository, RestfulModel, //
-    Subject, Long, SubjectRepository, RestfulModel> {
+    CaseStudy, Long, CaseStudyRepository, //
+    Subject, Long, SubjectRepository> {
 
   @Autowired
   CaseStudyRepository caseRepo;

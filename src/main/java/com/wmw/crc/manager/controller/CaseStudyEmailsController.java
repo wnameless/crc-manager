@@ -43,8 +43,8 @@ import com.wmw.crc.manager.service.CaseStudyService;
 
 @RequestMapping("/" + CASE_STUDY + "/{id}")
 @Controller
-public class CaseStudyEmailsController implements
-    RestfulController<CaseStudy, Long, CaseStudyRepository, RestfulModel> {
+public class CaseStudyEmailsController
+    implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
   CaseStudyRepository caseRepo;

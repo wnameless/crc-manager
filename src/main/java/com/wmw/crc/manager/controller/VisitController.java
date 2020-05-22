@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -50,8 +49,8 @@ import net.sf.rubycollect4j.Ruby;
 @RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT)
 @Controller
 public class VisitController implements NestedRestfulController< //
-    CaseStudy, Long, CaseStudyRepository, RestfulModel, //
-    Subject, Long, SubjectRepository, RestfulModel> {
+    CaseStudy, Long, CaseStudyRepository, //
+    Subject, Long, SubjectRepository> {
 
   @Autowired
   CaseStudyRepository caseRepo;

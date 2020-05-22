@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface NestedRestfulController< //
-    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, PRR extends RestfulRoute<PID>, //
-    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>, CRR extends RestfulRoute<CID>> {
+    P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, //
+    C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>> {
 
   PR getParentRepository();
 
