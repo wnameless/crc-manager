@@ -56,7 +56,22 @@ public class SubjectService {
   @PersistenceContext
   EntityManager em;
 
-  public AdvOpt<List<Subject>> findOngoingExecSubjects(String nationalId) {
+  public List<Subject> findOngoingSubjects(CaseStudy caseStudy) {
+    JPAQuery<Subject> query = new JPAQuery<>(em);
+    QSubject qSubject = QSubject.subject;
+
+    BooleanExpression isCaseStudyExec =
+        qSubject.caseStudy.status.eq(CaseStudy.Status.EXEC);
+    BooleanExpression eqCaseStudy = qSubject.caseStudy.eq(caseStudy);
+    BooleanExpression emptyDropoutDate = qSubject.dropoutDate.isEmpty();
+    BooleanExpression nullDropoutDate = qSubject.dropoutDate.isNull();
+    BooleanExpression blankDropoutDate = emptyDropoutDate.or(nullDropoutDate);
+
+    return query.from(qSubject)
+        .where(isCaseStudyExec.and(eqCaseStudy).and(blankDropoutDate)).fetch();
+  }
+
+  public List<Subject> findOngoingSubjects(String nationalId) {
     JPAQuery<Subject> query = new JPAQuery<>(em);
     QSubject qSubject = QSubject.subject;
 
@@ -67,9 +82,8 @@ public class SubjectService {
     BooleanExpression nullDropoutDate = qSubject.dropoutDate.isNull();
     BooleanExpression blankDropoutDate = emptyDropoutDate.or(nullDropoutDate);
 
-    return AdvOpt.ofNullable(query.from(qSubject)
-        .where(isCaseStudyExec.and(eqNationalId).and(blankDropoutDate)).fetch(),
-        "No such active subject.");
+    return query.from(qSubject)
+        .where(isCaseStudyExec.and(eqNationalId).and(blankDropoutDate)).fetch();
   }
 
   public void batchCreate(CaseStudy c, ExcelSubjects es) {

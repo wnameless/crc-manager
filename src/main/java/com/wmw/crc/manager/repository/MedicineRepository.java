@@ -17,7 +17,6 @@ package com.wmw.crc.manager.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +26,6 @@ import com.wmw.crc.manager.model.Medicine;
 @Repository
 public interface MedicineRepository
     extends DataTablesRepository<Medicine, Long> {
-
-  List<Medicine> findByNameContainsOrEngNameContainsAllIgnoreCase(String name,
-      String engName, Pageable pageRequest);
 
   List<Medicine> findByNameContainsOrEngNameContainsOrScientificNameContainsAllIgnoreCase(
       String name, String engName, String scientificName);
