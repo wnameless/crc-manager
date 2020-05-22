@@ -4,7 +4,7 @@
 <section layout:fragment="content">
     <div class="container">
         <div style="height: 400px;" class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-            <h3 th:replace="fragments/form :: title(text=${case.trialName}, backUrl='/cases')"></h3>
+            <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
             <hr>
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -20,13 +20,13 @@
 
             <div class="tab-content">
                 <div id="managers" class="tab-pane fade in active">
-                    <div th:replace="cases/permission/manager-list :: manager-list" id="managerList"></div>
+                    <div th:replace="cases/permission/manager-list :: partial" id="managerList"></div>
                 </div>
                 <div id="editors" class="tab-pane fade">
-                    <div th:replace="cases/permission/editor-list :: editor-list" id="editorList"></div>
+                    <div th:replace="cases/permission/editor-list :: partial" id="editorList"></div>
                 </div>
                 <div id="viewers" class="tab-pane fade">
-                    <div th:replace="cases/permission/viewer-list :: viewer-list" id="viewerList"></div>
+                    <div th:replace="cases/permission/viewer-list :: partial" id="viewerList"></div>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                 return false;
             });
 
-            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
             $('#userTable').DataTable({
                 language: {
                     url: '/i18n/datatables-' + i18nLocale + '.json'

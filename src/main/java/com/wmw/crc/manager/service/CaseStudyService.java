@@ -35,6 +35,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -132,9 +133,7 @@ public class CaseStudyService {
   }
 
   public List<Contraindication> getSortedContraindications(CaseStudy cs) {
-    List<Contraindication> cds = contraindicationRepo.findAllByCaseStudy(cs);
-    Ruby.Array.of(cds).sortByǃ(cd -> cd.getBundle());
-    return cds;
+    return contraindicationRepo.findAllByCaseStudy(cs, Sort.by("bundle"));
   }
 
   public AdvOpt<Contraindication> addContraindication(CaseStudy cs,

@@ -15,7 +15,7 @@
 		<tbody>
 			<tr th:each="case : ${jsfItems}">
 				<td><a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm"
-						th:href="@{'/download/case/' + ${case.id}}" th:inline="text">
+						th:href="@{'/download/cases/' + ${case.id}}" th:inline="text">
 						[[#{ui.search.export}]]
 						<span class="fa fa-download"></span>
 					</a></td>
@@ -37,10 +37,10 @@
 		</tbody>
 	</table>
 
-	<script th:replace="fragments/notify :: notify"></script>
+	<script th:replace="fragments/notify :: partial"></script>
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').DataTable({
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'

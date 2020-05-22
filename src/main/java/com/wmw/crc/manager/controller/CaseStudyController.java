@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.ControllerHelpers.initPageable;
+import static com.github.wnameless.spring.common.ControllerHelpers.initPageableWithDefault;
 import static com.github.wnameless.spring.common.ControllerHelpers.initParam;
 import static com.github.wnameless.spring.common.ControllerHelpers.initParamWithDefault;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
@@ -26,12 +26,15 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,33 +72,29 @@ public class CaseStudyController implements
 
   @ModelAttribute
   void init(Authentication auth, Model model, HttpSession session,
-      @PathVariable(required = false) Long id) {
+      @RequestParam Map<String, String> requestParams,
+      @PathVariable(required = false) Long id,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status) {
     this.auth = auth;
     this.model = model;
 
     caseStudy = getItem(id, new CaseStudy());
     this.model.addAttribute("files",
         caseService.getFilesFromCaseStudy(caseStudy));
-  }
-
-  @ModelAttribute
-  void initPageSlice(HttpSession session,
-      @RequestParam Map<String, String> requestParams,
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String page,
-      @RequestParam(required = false) String size,
-      @RequestParam(required = false) String sort,
-      @RequestParam(required = false) String status) {
     this.status = (Status) initParamWithDefault("status",
         Status.fromString(status), Status.EXEC, this.model, session);
     this.search =
         (String) initParam(requestParams, "search", search, model, session);
-    sort = (String) initParamWithDefault("sort", sort, "irbNumber", model,
-        session);
-    pageable = initPageable(page, size, sort, model, session);
+  }
 
+  @ModelAttribute
+  void initPageSlice(HttpSession session,
+      @RequestParam Map<String, String> requestParams) {
+    pageable = initPageableWithDefault(requestParams, model, session,
+        PageRequest.of(0, 10, Sort.by("irbNumber")));
     model.addAttribute("slice",
-        caseService.getCasesByStatus(auth, this.status, pageable, this.search));
+        caseService.getCasesByStatus(auth, status, pageable, search));
   }
 
   @PreAuthorize("@perm.isUser()")
@@ -129,7 +128,7 @@ public class CaseStudyController implements
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @PostMapping("/{id}")
+  @PostMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
   String updateJS(@PathVariable Long id, @RequestBody JsonNode formData) {
     caseStudy.setFormData(formData);
     caseRepo.save(caseStudy);
@@ -140,10 +139,20 @@ public class CaseStudyController implements
   }
 
   @PreAuthorize("@perm.canDelete()")
-  @GetMapping("/{id}/delete")
+  @DeleteMapping("/{id}")
   String delete(@PathVariable Long id) {
     if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
     return "redirect:" + caseStudy.getIndexPath();
+  }
+
+  @PreAuthorize("@perm.canDelete()")
+  @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
+  String deleteJS(@PathVariable Long id) {
+    if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
+
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status, pageable, search));
+    return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")

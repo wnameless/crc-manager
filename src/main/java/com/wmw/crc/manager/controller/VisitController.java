@@ -15,17 +15,30 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.wnameless.spring.common.NestedRestfulController;
+import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -34,48 +47,88 @@ import com.wmw.crc.manager.repository.VisitRepository;
 
 import net.sf.rubycollect4j.Ruby;
 
+@RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT)
 @Controller
-public class VisitController {
+public class VisitController implements NestedRestfulController< //
+    CaseStudy, Long, CaseStudyRepository, RestfulModel, //
+    Subject, Long, SubjectRepository, RestfulModel> {
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
-
   @Autowired
   VisitRepository visitRepo;
 
-  @PreAuthorize("@perm.canRead(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{id}/visits")
-  String index(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+  CaseStudy caseStudy;
+  Subject subject;
+
+  Model model;
+
+  @ModelAttribute
+  void init(Model model, //
+      @PathVariable(required = false) Long parentId,
+      @PathVariable(required = false) Long id) {
+    this.model = model;
+
+    caseStudy = this.getParent(parentId);
+    subject = this.getChild(parentId, id, new Subject());
+  }
+
+  @PreAuthorize("@perm.canRead(#parentId)")
+  @GetMapping("/{id}/visits")
+  String index(@PathVariable Long parentId, @PathVariable Long id) {
+    List<Subject> subjects = subjectRepo.findAllByCaseStudy(caseStudy);
     Subject subject = Ruby.Array.of(subjects).find(s -> s.getId().equals(id));
 
-    model.addAttribute("case", c);
-    model.addAttribute("subject", subject);
     model.addAttribute("visits", subject.getVisits());
     return "visits/index";
   }
 
-  @PreAuthorize("@perm.canWrite(#caseId)")
-  @GetMapping("/cases/{caseId}/subjects/{subjectId}/visits/{id}")
+  @PreAuthorize("@perm.canWrite(#parentId)")
+  @PutMapping(path = "/{id}/visits", produces = APPLICATION_JSON_VALUE)
   @ResponseBody
-  Boolean checkReviewed(Model model, @PathVariable("caseId") Long caseId,
-      @PathVariable("subjectId") Long subjectId, @PathVariable("id") Long id) {
-    CaseStudy c = caseRepo.findById(caseId).get();
-    List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
-    Subject subject =
-        Ruby.Array.of(subjects).find(s -> s.getId().equals(subjectId));
-
+  Boolean checkReviewed(@PathVariable Long parentId, @PathVariable Long id,
+      @RequestParam Long visitId) {
     Visit visit =
-        Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(id));
+        Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
     visit.setReviewed(!visit.isReviewed());
     visitRepo.save(visit);
 
     return visit.isReviewed();
+  }
+
+  @Override
+  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
+    return (caseStudy) -> new RestfulRoute<Long>() {
+
+      @Override
+      public String getIndexPath() {
+        return caseStudy.joinPath(SUBJECT);
+      }
+
+    };
+  }
+
+  @Override
+  public CaseStudyRepository getParentRepository() {
+    return caseRepo;
+  }
+
+  @Override
+  public SubjectRepository getRepository() {
+    return subjectRepo;
+  }
+
+  @Override
+  public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
+    return (p, c) -> getRepository().existsByIdAndCaseStudy(c.getId(), p);
+
+  }
+
+  @Override
+  public Iterable<Subject> getChildren(CaseStudy parent) {
+    return getRepository().findAllByCaseStudy(parent);
   }
 
 }

@@ -15,21 +15,17 @@
  */
 package com.wmw.crc.manager.model;
 
-import com.github.wnameless.spring.common.RestfulResource;
+import com.github.wnameless.spring.common.RestfulRoute;
 
-public enum RestfulModel implements RestfulResource<Long> {
+public enum RestfulModel implements RestfulRoute<Long> {
 
-  CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT);
+  CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT),
+  CONTRAINDICATION(Names.CONTRAINDICATION);
 
   private final String resourceName;
 
   private RestfulModel(String resourceName) {
     this.resourceName = resourceName;
-  }
-
-  @Override
-  public String getResourceName() {
-    return resourceName;
   }
 
   @Override
@@ -42,6 +38,8 @@ public enum RestfulModel implements RestfulResource<Long> {
     public static final String CASE_STUDY = "cases";
 
     public static final String SUBJECT = "subjects";
+
+    public static final String CONTRAINDICATION = "contraindications";
 
   }
 

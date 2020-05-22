@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<script th:fragment="simple-ajax-actions(tag)" type="text/javascript" th:inline="javascript">
+	var axiosGet = function (url) {
+		axios.get(url).then((response) => {
+			$(/*[[${tag}]]*/ null).html(response.data);
+		});
+	};
+
+	var axiosPost = function (url) {
+		axios.post(url).then((response) => {
+			$(/*[[${tag}]]*/ null).html(response.data);
+		});
+	};
+
+	var axiosPut = function (url) {
+		axios.put(url).then((response) => {
+			$(/*[[${tag}]]*/ null).html(response.data);
+		});
+	};
+
+	var axiosPatch = function (url) {
+		axios.patch(url).then((response) => {
+			$(/*[[${tag}]]*/ null).html(response.data);
+		});
+	};
+
+	var axiosDelete = function (url) {
+		axios.delete(url).then((response) => {
+			$(/*[[${tag}]]*/ null).html(response.data);
+		});
+	};
+</script>
+
+</html>

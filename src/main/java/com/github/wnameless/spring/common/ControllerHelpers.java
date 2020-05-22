@@ -28,11 +28,30 @@ public final class ControllerHelpers {
 
   private ControllerHelpers() {}
 
-  public static Pageable initPageable(String page, String size, String sort,
+  public static Pageable initPageable(Map<String, String> requestParams,
       Model model, HttpSession session) {
-    page = (String) initParamWithDefault("page", page, "0", model, session);
-    size = (String) initParamWithDefault("size", size, "10", model, session);
-    sort = (String) initParamWithDefault("sort", sort, "", model, session);
+    String page = (String) initParamWithDefault("page",
+        requestParams.get("page"), "0", model, session);
+    String size = (String) initParamWithDefault("size",
+        requestParams.get("size"), "10", model, session);
+    String sort = (String) initParamWithDefault("sort",
+        requestParams.get("sort"), "", model, session);
+
+    return initPageable(PageRequest.of(Integer.valueOf(page),
+        Integer.valueOf(size), PageUtils.paramToSort(sort)), model, session);
+  }
+
+  public static Pageable initPageableWithDefault(Map<String, String> requestParams,
+      Model model, HttpSession session, Pageable pageable) {
+    String page =
+        (String) initParamWithDefault("page", requestParams.get("page"),
+            Integer.toString(pageable.getPageNumber()), model, session);
+    String size =
+        (String) initParamWithDefault("size", requestParams.get("size"),
+            Integer.toString(pageable.getPageSize()), model, session);
+    String sort =
+        (String) initParamWithDefault("sort", requestParams.get("sort"),
+            PageUtils.sortToParam(pageable.getSort()).get(0), model, session);
 
     return initPageable(PageRequest.of(Integer.valueOf(page),
         Integer.valueOf(size), PageUtils.paramToSort(sort)), model, session);

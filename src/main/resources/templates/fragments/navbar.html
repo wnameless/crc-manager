@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<nav th:fragment="navbar-login" class="navbar navbar-default">
+<nav th:fragment="login" class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
@@ -25,7 +25,7 @@
                     <a href="/cases?status=none" th:text="#{ui.navbar.case.none}"></a>
                 </li>
                 <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/search/index" th:text="#{ui.navbar.case.export}"></a>
+                    <a href="/search" th:text="#{ui.navbar.case.export}"></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -41,7 +41,7 @@
     </div>
 </nav>
 
-<nav th:fragment="navbar-logout" class="navbar navbar-default">
+<nav th:fragment="logout" class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="/index">CRC Manager</a>

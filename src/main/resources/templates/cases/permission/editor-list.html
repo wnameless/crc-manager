@@ -1,28 +1,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="editor-list" id="editorList">
-	<ul class="list-group"
-		style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
-		<li class="list-group-item">
-			<span id="editor" th:text="#{ui.permission.editor.select}"></span>
-			<i id="addEditor" class="fa fa-plus pull-right"
-				style="color: green; margin-top: 3px;"></i>
-		</li>
-		<li class="list-group-item" th:each="editor : ${case.editors}">
-			<span th:text="${editor}"></span>
-			<i th:attr="val=${editor}"
-				class="removeEditor fa fa-times pull-right"
-				style="color: red; margin-top: 3px;"></i>
-		</li>
-	</ul>
+<div th:fragment="partial" id="editorList">
+  <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
+    <li class="list-group-item">
+      <span id="editor" th:text="#{ui.permission.editor.select}"></span>
+      <i id="addEditor" class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i>
+    </li>
+    <li class="list-group-item" th:each="editor : ${item.editors}">
+      <span th:text="${editor}"></span>
+      <i th:attr="val=${editor}" class="removeEditor fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
+    </li>
+  </ul>
 
-	<script th:replace="fragments/notify :: notify"></script>
-	<script type="text/javascript" th:inline="javascript">
-    $('#addEditor').click(function() {
+  <script th:replace="fragments/notify :: partial"></script>
+  <script type="text/javascript" th:inline="javascript">
+    $('#addEditor').click(function () {
       if (!$('#editor').val()) return false;
 
-      axios.post('/cases/[[${case.id}]]/permission/editors', {
+      axios.post(/*[[${item.joinPath('permission', 'editors')}]]*/null, {
         editor: $('#editor').val()
-      }).then(function(response) {
+      }).then(function (response) {
         $('#editorList').html(response.data);
 
         $('#manager').text(/*[[#{ui.permission.manager.select}]]*/null);
@@ -36,12 +32,12 @@
       return false;
     });
 
-    $('.removeEditor').click(function() {
-      axios.delete('/cases/[[${case.id}]]/permission/editors', {
+    $('.removeEditor').click(function () {
+      axios.delete(/*[[${item.joinPath('permission', 'editors')}]]*/null, {
         params: {
           editor: $(this).attr('val')
         }
-      }).then(function(response) {
+      }).then(function (response) {
         $('#editors').html(response.data);
       });
 
@@ -49,4 +45,5 @@
     });
   </script>
 </div>
+
 </html>

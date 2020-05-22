@@ -23,9 +23,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
 import com.wmw.crc.manager.controller.api.NewVisit;
+import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.TsghService;
 import com.wmw.crc.manager.service.VisitService;
 
@@ -34,8 +38,9 @@ import com.wmw.crc.manager.service.VisitService;
 public class TestController {
 
   @Autowired
+  CaseStudyRepository caseRepository;
+  @Autowired
   TsghService tsghService;
-
   @Autowired
   VisitService visitService;
 
@@ -77,6 +82,20 @@ public class TestController {
     visitService.addVisit(newVisit);
 
     return "Visit added";
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("/json/cases/{id}")
+  @ResponseBody
+  SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
+    CaseStudy cs = caseRepository.findById(id).get();
+    SimpleReactJsonSchemaForm rsjf = new SimpleReactJsonSchemaForm();
+
+    rsjf.setFormData(cs.getFormData());
+    rsjf.setSchema(cs.getSchema());
+    rsjf.setUiSchema(cs.getUiSchema());
+
+    return rsjf;
   }
 
 }

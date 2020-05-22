@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface RestfulController< //
-    I extends RestfulItem<ID>, ID, R extends CrudRepository<I, ID>, T extends RestfulRoute<ID>> {
+    I extends RestfulItem<ID>, ID, R extends CrudRepository<I, ID>, RR extends RestfulRoute<ID>> {
 
   RestfulRoute<ID> getRoute();
 
@@ -56,6 +56,11 @@ public interface RestfulController< //
       return getRepository().findById(id).get();
     }
     return defaultItem;
+  }
+
+  default I updateItem(Model model, I item) {
+    model.addAttribute(getItemKey(), item);
+    return null;
   }
 
 }

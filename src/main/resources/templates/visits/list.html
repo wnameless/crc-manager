@@ -1,19 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="list">
+<div th:fragment="partial">
 	<h3
-		th:replace="fragments/form :: title(text=${subject.name + '(' + subject.nationalId + ')' }, backUrl=${'/cases/' + case.id + '/subjects'})">
+		th:replace="fragments/form :: title(text=${child.name + '(' + child.nationalId + ')' }, backUrl=${route.indexPath})">
 	</h3>
 	<hr>
 
 	<table id="jsfTable" class="display">
 		<thead>
 			<tr>
-				<th th:text="#{ui.subject.visit.creationDate}"></th>
+				<th th:text="#{ui.subject.visit.creation_date}"></th>
 				<th th:text="#{ui.subject.visit.division}"></th>
 				<th th:text="#{ui.subject.visit.doctor}"></th>
 				<th th:text="#{ui.subject.visit.room}"></th>
 				<th th:text="#{ui.subject.visit.date}"></th>
-				<th th:text="#{ui.subject.visit.contraindicationSuspected}"></th>
+				<th th:text="#{ui.subject.visit.contraindication-suspected}"></th>
 				<th th:text="#{ui.subject.visit.reviewed}"></th>
 			</tr>
 		</thead>
@@ -33,17 +33,18 @@
 		</tbody>
 	</table>
 
-	<script th:replace="fragments/notify :: notify"></script>
+	<script th:replace="fragments/notify :: partial"></script>
 	<script th:inline="javascript">
 		$('.check-reviewed').change(function () {
-			let caseId =/*[[${case.id}]]*/ null;
-			let subjectId = /*[[${subject.id}]]*/ null;
-
-			axios.get('/cases/' + caseId + '/subjects/' + subjectId + '/visits/' + $(this).attr('visitId'));
+			axios.put( /*[[${route.joinPath(child.id, 'visits')}]]*/ null, {}, {
+				params: {
+					visitId: $(this).attr('visitId')
+				}
+			});
 		});
 
 		$(function () {
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ null;
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').DataTable({
 				order: [
 					[4, "asc"]

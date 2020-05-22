@@ -23,6 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -32,6 +33,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,9 +93,9 @@ public class SubjectController implements NestedRestfulController< //
   Locale locale;
 
   @ModelAttribute
-  void init(Authentication auth, Model model,
+  void init(Authentication auth, Model model, Locale locale,
       @PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id, Locale locale) {
+      @PathVariable(required = false) Long id) {
     this.auth = auth;
     this.model = model;
     this.locale = locale;
@@ -118,7 +120,6 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/new")
   String newJS(@PathVariable Long parentId) {
-    model.addAttribute(getChildKey(), new Subject());
     return "subjects/new :: partial";
   }
 
@@ -132,17 +133,15 @@ public class SubjectController implements NestedRestfulController< //
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
 
-    model.addAttribute(getChildrenKey(),
-        subjectRepo.findAllByCaseStudy(caseStudy));
+    updateChildren(model, caseStudy);
     return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/batch")
   String batchCreate(@PathVariable Long parentId,
-      @RequestParam("subjectFile") MultipartFile file,
-      RedirectAttributes redirAttrs) {
-    ExcelSubjects es = uploadService.fromMultipartFile(file);
+      @RequestParam MultipartFile subjectFile, RedirectAttributes redirAttrs) {
+    ExcelSubjects es = uploadService.fromMultipartFile(subjectFile);
     if (es.getErrorMessage() == null) {
       subjectService.batchCreate(caseStudy, es);
     } else {
@@ -157,11 +156,13 @@ public class SubjectController implements NestedRestfulController< //
   String updateJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
     AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
 
-    if (sOpt.isAbsent() && sOpt.hasMessage()) {
-      model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+    if (sOpt.isAbsent()) {
+      if (sOpt.hasMessage()) {
+        model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+      }
+    } else {
+      updateChildren(model, caseStudy);
     }
-    model.addAttribute(getChildrenKey(),
-        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 
@@ -178,13 +179,25 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
-  @GetMapping("/{id}/delete")
+  @DeleteMapping("/{id}")
   String delete(@PathVariable Long parentId) {
     if (subject.getId() != null) {
       subjectRepo.delete(subject);
     }
 
     return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+  }
+
+  @PreAuthorize("@perm.canDeleteSubject(#parentId)")
+  @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
+  String deleteJS(@PathVariable Long parentId) {
+    if (subject.getId() != null) {
+      subjectRepo.delete(subject);
+
+      updateChildren(model, caseStudy);
+    }
+
+    return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -201,7 +214,7 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/{id}/bundle/{bundleNumber}")
   String alterBundle(@PathVariable Long parentId,
-      @PathVariable("bundleNumber") Integer bundleNumber) {
+      @PathVariable Integer bundleNumber) {
     if (subject.getId() != null) {
       subject.setContraindicationBundle(bundleNumber);
       subjectRepo.save(subject);
@@ -217,8 +230,7 @@ public class SubjectController implements NestedRestfulController< //
       @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "subjectIds[]",
           required = false) List<Long> subjectIds,
-      @RequestParam(name = "bundleNumber") Integer bundleNumber,
-      RedirectAttributes redirAttrs) {
+      @RequestParam Integer bundleNumber, RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
@@ -297,7 +309,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
-    return (p, c) -> getRepository().existsByIdAndCaseStudy(c.getId(), p);
+    return (p, c) -> Objects.equals(p, c.getCaseStudy());
 
   }
 
