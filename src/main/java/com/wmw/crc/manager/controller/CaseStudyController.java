@@ -63,22 +63,21 @@ public class CaseStudyController
   CaseStudyService caseService;
 
   CaseStudy caseStudy;
-  Pageable pageable;
   CaseStudy.Status status;
   String search;
+  Pageable pageable;
 
   @ModelAttribute
-  void init(Authentication auth, Model model, HttpSession session,
+  void init(Model model, HttpSession session,
       @RequestParam Map<String, String> requestParams,
       @PathVariable(required = false) Long id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-
     caseStudy = getItem(id, new CaseStudy());
-    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     this.status = (Status) initParamWithDefault("status",
         Status.fromString(status), Status.EXEC, model, session);
-    initParam(requestParams, "search", search, model, session);
+    this.search =
+        (String) initParam(requestParams, "search", search, model, session);
   }
 
   @ModelAttribute
@@ -104,19 +103,22 @@ public class CaseStudyController
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping("/{id}")
-  String show(@PathVariable Long id) {
+  String show(Model model, @PathVariable Long id) {
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/show :: complete";
   }
 
   @PreAuthorize("@perm.canRead(#id)")
   @GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String showJS(@PathVariable Long id) {
+  String showJS(Model model, @PathVariable Long id) {
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/show :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping(path = "/{id}/edit", produces = APPLICATION_JSON_VALUE)
-  String editJS(@PathVariable Long id) {
+  String editJS(Model model, @PathVariable Long id) {
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/edit :: partial";
   }
 
