@@ -43,8 +43,8 @@ import com.wmw.crc.manager.service.KeycloakService;
 
 @RequestMapping("/" + CASE_STUDY + "/{id}")
 @Controller
-public class CaseStudyOperationController implements
-    RestfulController<CaseStudy, Long, CaseStudyRepository, RestfulModel> {
+public class CaseStudyOperationController
+    implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
   CaseStudyRepository caseRepo;

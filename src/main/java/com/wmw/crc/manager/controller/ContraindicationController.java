@@ -25,7 +25,6 @@ import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
@@ -33,8 +32,8 @@ import com.wmw.crc.manager.service.CaseStudyService;
 @RequestMapping("/" + CASE_STUDY + "/{parentId}/" + CONTRAINDICATION)
 @Controller
 public class ContraindicationController implements NestedRestfulController< //
-    CaseStudy, Long, CaseStudyRepository, RestfulModel, //
-    Contraindication, Long, ContraindicationRepository, RestfulModel> {
+    CaseStudy, Long, CaseStudyRepository, //
+    Contraindication, Long, ContraindicationRepository> {
 
   @Autowired
   CaseStudyRepository caseRepo;
