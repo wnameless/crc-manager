@@ -92,8 +92,7 @@
                     </div>
                 </td>
                 <td>
-                    <a href="#" th:if="${@perm.canWrite(case)}" th:attr="data-edit-path=${case.editPath}"
-                        onclick="editFormEvent(this)">
+                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
                         <span>
                             <i class="fa fa-edit"></i>
                         </span>
@@ -101,7 +100,7 @@
                     <span th:if="${!@perm.canWrite(case)}">
                         <i class="fa fa-edit"></i>
                     </span>
-                    <a th:if="${@perm.canDelete()}" th:href="@{${case.joinPath('delete')}}">
+                    <a th:if="${@perm.canDelete()}" href="#" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
                         <span>
                             <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
                         </span>
@@ -109,8 +108,8 @@
                 </td>
                 <td>
                     <a th:unless="${@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:attr="data-show-path=${case.showPath}"
-                        onclick="showFormEvent(this)" th:inline="text">[[${case.irbNumber}]]</a>
+                    <a th:if="${@perm.canRead(case)}" href="#" th:inline="text"
+                        th:onclick="axiosGet( [[${case.showPath}]] )">[[${case.irbNumber}]]</a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
                 <td class="text-center">
@@ -158,19 +157,8 @@
     </div>
 
     <script th:replace="fragments/notify :: partial" type="text/javascript"></script>
+    <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script type="text/javascript" th:inline="javascript">
-        var showFormEvent = (node) => {
-            axios.get($(node).attr('data-show-path')).then(function (response) {
-                $('#jsf').html(response.data);
-            });
-        };
-
-        var editFormEvent = (node) => {
-            axios.get($(node).attr('data-edit-path')).then(function (response) {
-                $('#jsf').html(response.data);
-            });
-        };
-
         var searchEvent = (q) => {
             axios.get(/*[[${route.indexPath}]]*/ null, {
                 params: {

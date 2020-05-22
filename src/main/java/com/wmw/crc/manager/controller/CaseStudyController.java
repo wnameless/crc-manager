@@ -34,6 +34,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -127,7 +128,7 @@ public class CaseStudyController implements
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @PostMapping("/{id}")
+  @PostMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
   String updateJS(@PathVariable Long id, @RequestBody JsonNode formData) {
     caseStudy.setFormData(formData);
     caseRepo.save(caseStudy);
@@ -138,10 +139,20 @@ public class CaseStudyController implements
   }
 
   @PreAuthorize("@perm.canDelete()")
-  @GetMapping("/{id}/delete")
+  @DeleteMapping("/{id}")
   String delete(@PathVariable Long id) {
     if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
     return "redirect:" + caseStudy.getIndexPath();
+  }
+
+  @PreAuthorize("@perm.canDelete()")
+  @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
+  String deleteJS(@PathVariable Long id) {
+    if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
+
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status, pageable, search));
+    return "cases/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")

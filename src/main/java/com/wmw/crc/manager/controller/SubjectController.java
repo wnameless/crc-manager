@@ -32,6 +32,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -157,11 +158,14 @@ public class SubjectController implements NestedRestfulController< //
   String updateJS(@PathVariable Long parentId, @RequestBody JsonNode formData) {
     AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
 
-    if (sOpt.isAbsent() && sOpt.hasMessage()) {
-      model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+    if (sOpt.isAbsent()) {
+      if (sOpt.hasMessage()) {
+        model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+      }
+    } else {
+      model.addAttribute(getChildrenKey(),
+          subjectRepo.findAllByCaseStudy(caseStudy));
     }
-    model.addAttribute(getChildrenKey(),
-        subjectRepo.findAllByCaseStudy(caseStudy));
     return "subjects/list :: partial";
   }
 
@@ -178,13 +182,26 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
-  @GetMapping("/{id}/delete")
+  @DeleteMapping("/{id}")
   String delete(@PathVariable Long parentId) {
     if (subject.getId() != null) {
       subjectRepo.delete(subject);
     }
 
     return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+  }
+
+  @PreAuthorize("@perm.canDeleteSubject(#parentId)")
+  @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
+  String deleteJS(@PathVariable Long parentId) {
+    if (subject.getId() != null) {
+      subjectRepo.delete(subject);
+
+      model.addAttribute(getChildrenKey(),
+          subjectRepo.findAllByCaseStudy(caseStudy));
+    }
+
+    return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")

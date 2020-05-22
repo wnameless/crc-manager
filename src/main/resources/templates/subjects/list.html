@@ -1,11 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="partial">
-	<h3
-		th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.indexPath})">
+	<h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.indexPath})">
 	</h3>
 	<hr>
-	<form th:if="${@perm.canWrite(parent)}" id="batchDating"
-		th:action="${route.joinPath('batchdating')}" method="POST">
+	<form th:if="${@perm.canWrite(parent)}" id="batchDating" th:action="${route.joinPath('batchdating')}" method="POST">
 		<div class="form-row">
 			<div class="form-group col-md-1"></div>
 			<div class="form-group col-md-5">
@@ -70,8 +68,8 @@
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-                    <a th:if="${@perm.canRead(parent)}" href="#" th:attr="data-show-path=${parent.withChild(subject).showPath}"
-                        onclick="showFormEvent(this)" th:text="${subject.nationalId}">
+					<a th:if="${@perm.canRead(parent)}" href="#" th:text="${subject.nationalId}"
+						th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
                     </a>
                     <a th:unless="${@perm.canRead(parent)}" th:text="${subject.nationalId}"></a>
 				</td>
@@ -79,8 +77,8 @@
 					<a th:href="${parent.joinPath(subject.showPath, 'visits')}" th:text="${subject.unreviewedVisits()}"></a>
 				</td>
                 <td>
-                    <a th:if="${@perm.canWrite(parent)}" href="#" th:attr="data-edit-path=${parent.withChild(subject).editPath}"
-                        onclick="editFormEvent(this)">
+                    <a th:if="${@perm.canWrite(parent)}" href="#"
+                        th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
                         <span>
                             <i class="fa fa-edit"></i>
                         </span>
@@ -88,8 +86,7 @@
                     <span th:unless="${@perm.canWrite(parent)}">
                         <i class="fa fa-edit"></i>
                     </span>
-                    <a th:if="${@perm.canDeleteSubject(parent)}" th:href="${parent.withChild(subject).joinPath('delete')}"
-                        th:attr="data-edit-path=${parent.withChild(subject).editPath}" onclick="editFormEvent(this)">
+					<a th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
                         <span>
                             <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
                         </span>
@@ -100,7 +97,7 @@
     </table>
 
     <div th:if="${@perm.canWrite(parent)}" class="row col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-        <button id="addSubject" class="btn btn-block btn-default" th:attr="data-edit-path=${route.newPath}" onclick="editFormEvent(this)"
+        <button id="addSubject" class="btn btn-block btn-default" th:onclick="axiosGet( [[${route.newPath}]] )"
             th:inline="text">
             <span>
                 <i class="fa fa-plus text-success"></i>
@@ -135,6 +132,7 @@
 
 	<script th:replace="fragments/notify :: partial"></script>
 	<script th:replace="fragments/bs :: input-file"></script>
+	<script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script type="text/javascript" th:inline="javascript">
 		var checkboxEvent = function () {
 			$('input[name="subjectIds[]"]').remove();
@@ -148,19 +146,6 @@
 			});
 		};
 
-		var showFormEvent = function (node) {
-			axios.get($(node).attr('data-show-path'))
-				.then((response) => {
-					$('#jsf').html(response.data);
-				});
-		};
-
-		var editFormEvent = function (node) {
-			axios.get($(node).attr('data-edit-path'))
-				.then((response) => {
-					$('#jsf').html(response.data);
-				});
-		};
 
 		$(function () {
 			$('.selectpicker').selectpicker();
