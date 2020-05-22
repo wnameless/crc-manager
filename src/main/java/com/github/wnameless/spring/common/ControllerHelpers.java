@@ -24,9 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public final class ControllerHelpers {
 
   private ControllerHelpers() {}
@@ -78,18 +75,12 @@ public final class ControllerHelpers {
 
   public static Object initParamWithDefault(String key, Object value,
       Object defaultVal, Model model, HttpSession session) {
-    log.info("key: " + key);
-    log.info("value: " + value);
-    log.info("defaultVal: " + defaultVal);
-    log.info("model: " + model);
-    log.info("session: " + session);
-
     if (value == null && session != null) {
       value = session.getAttribute(key);
     }
     if (value == null) value = defaultVal;
 
-    if (model != null && key != null) model.addAttribute(key, value);
+    model.addAttribute(key, value);
     if (session != null) session.setAttribute(key, value);
 
     return value;
@@ -107,8 +98,10 @@ public final class ControllerHelpers {
         value = session.getAttribute(key);
       }
     }
+
     model.addAttribute(key, value);
     if (session != null) session.setAttribute(key, value);
+
     return value;
   }
 
