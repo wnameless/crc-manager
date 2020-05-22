@@ -15,8 +15,6 @@
  */
 package com.wmw.crc.manager.service;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +31,6 @@ import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.repository.ContraindicationRepository;
-import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,34 +42,24 @@ public class VisitService {
 
   @Autowired
   Environment env;
-
   @Autowired
-  CaseStudyService crcManagerService;
-
-  @Autowired
-  SubjectService subjectService;
+  JavaMailSender emailSender;
 
   @Autowired
   CaseStudyRepository caseStudyRepo;
-
-  @Autowired
-  SubjectRepository subjectRepo;
-
   @Autowired
   VisitRepository visitRepo;
 
   @Autowired
-  ContraindicationRepository contraindicationRepo;
-
+  CaseStudyService caseService;
   @Autowired
-  JavaMailSender emailSender;
-
+  SubjectService subjectService;
   @Autowired
   I18nService i18n;
 
   public void addVisit(NewVisit newVisit) {
     List<Subject> subjects =
-        subjectService.findOngoingExecSubjects(newVisit.getNationalId()).get();
+        subjectService.findOngoingSubjects(newVisit.getNationalId());
 
     for (Subject s : subjects) {
       Visit visit = new Visit();
@@ -138,11 +124,9 @@ public class VisitService {
         continue;
       }
 
-      List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+      List<Subject> subjects = subjectService.findOngoingSubjects(c);
       for (Subject s : subjects) {
-        if (s.unreviewedVisits() <= 0 || !isNullOrEmpty(s.getDropoutDate())) {
-          continue;
-        }
+        if (s.unreviewedVisits() <= 0) continue;
 
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
           SimpleMailMessage message = createVisitEmail(v);

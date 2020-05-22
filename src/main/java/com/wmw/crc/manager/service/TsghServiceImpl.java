@@ -36,7 +36,6 @@ import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
-import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
 import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
@@ -69,15 +68,13 @@ public class TsghServiceImpl implements TsghService {
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   MedicineRepository medicineRepo;
-
   @Autowired
   ContraindicationRepository contraindicationRepo;
 
   @Autowired
-  SubjectRepository subjectRepo;
+  SubjectService subjectService;
 
   @PostConstruct
   void postConstruct() {
@@ -153,7 +150,7 @@ public class TsghServiceImpl implements TsghService {
       RubyHash<Integer, RubyArray<Contraindication>> bundles =
           Ruby.Array.of(contraindications).groupBy(Contraindication::getBundle);
 
-      List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
+      List<Subject> subjects = subjectService.findOngoingSubjects(c);
       for (Subject s : subjects) {
         PatientContraindication pc = new PatientContraindication();
         pc.setNationalId(s.getNationalId());

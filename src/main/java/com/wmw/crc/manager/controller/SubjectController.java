@@ -85,14 +85,12 @@ public class SubjectController implements NestedRestfulController< //
 
   CaseStudy caseStudy;
   Subject subject;
-  Iterable<Subject> subjects;
 
   @ModelAttribute
   void init(@PathVariable(required = false) Long parentId,
       @PathVariable(required = false) Long id) {
-    caseStudy = this.getParent(parentId);
-    subject = this.getChild(parentId, id, new Subject());
-    subjects = this.getChildren(caseStudy);
+    caseStudy = getParent(parentId);
+    subject = getChild(parentId, id, new Subject());
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -230,6 +228,7 @@ public class SubjectController implements NestedRestfulController< //
       redirAttrs.addFlashAttribute("message", i18n.subjectUnselect(locale));
     }
 
+    Iterable<Subject> subjects = getChildren(caseStudy);
     if (!isNullOrEmpty(subjectDate) && subjectIds != null
         && !subjectDateType.equals("bundleNumber")) {
       subjects.forEach(s -> {
