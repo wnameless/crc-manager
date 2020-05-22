@@ -33,6 +33,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
@@ -156,6 +157,11 @@ public class Subject
   }
 
   public Subject() {}
+
+  @PostLoad
+  void init() throws JsonProcessingException {
+    name = "INIT";
+  }
 
   public Subject(JsonNode jsonNode) {
     setFormData(jsonNode);

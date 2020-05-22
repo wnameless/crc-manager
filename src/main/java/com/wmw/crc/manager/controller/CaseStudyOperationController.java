@@ -67,14 +67,14 @@ public class CaseStudyOperationController implements
     caseStudy = getItem(id, new CaseStudy());
   }
 
-  @PreAuthorize("@perm.canManage(#id)")
-  @GetMapping("/status/{status}")
-  String alterStatus(@PathVariable Long id, @PathVariable String status) {
-    caseStudy.setStatus(Status.fromString(status, Status.NEW));
-    caseRepo.save(caseStudy);
-
-    return "redirect:" + getRoute().getIndexPath();
-  }
+  // @PreAuthorize("@perm.canManage(#id)")
+  // @GetMapping("/status/{status}")
+  // String alterStatus(@PathVariable Long id, @PathVariable String status) {
+  // caseStudy.setStatus(Status.fromString(status, Status.NEW));
+  // caseRepo.save(caseStudy);
+  //
+  // return "redirect:" + getRoute().getIndexPath();
+  // }
 
   @PreAuthorize("@perm.canAssign()")
   @GetMapping("/assignment")
