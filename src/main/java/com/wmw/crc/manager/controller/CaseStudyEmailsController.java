@@ -55,25 +55,18 @@ public class CaseStudyEmailsController implements
   CaseStudy caseStudy;
   Emails emails;
 
-  Model model;
-  Locale locale;
-
   @ModelAttribute
   void init(Model model, Locale locale,
       @PathVariable(required = false) Long id) {
-    this.model = model;
-    this.locale = locale;
-
     caseStudy = getItem(id, new CaseStudy());
-    this.model.addAttribute("files",
-        caseService.getFilesFromCaseStudy(caseStudy));
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     emails = new Emails();
-    this.model.addAttribute("emails", emails);
+    model.addAttribute("emails", emails);
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/emails")
-  String edit(@PathVariable Long id) {
+  String edit(Model model, @PathVariable Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
         .getObjectMapperFactory().get().createObjectNode();
     ArrayNode an = on.putArray("listOfEmails");

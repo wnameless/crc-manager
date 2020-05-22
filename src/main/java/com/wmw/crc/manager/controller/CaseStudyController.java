@@ -67,29 +67,22 @@ public class CaseStudyController implements
   CaseStudy.Status status;
   String search;
 
-  Authentication auth;
-  Model model;
-
   @ModelAttribute
   void init(Authentication auth, Model model, HttpSession session,
       @RequestParam Map<String, String> requestParams,
       @PathVariable(required = false) Long id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-    this.auth = auth;
-    this.model = model;
 
     caseStudy = getItem(id, new CaseStudy());
-    this.model.addAttribute("files",
-        caseService.getFilesFromCaseStudy(caseStudy));
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     this.status = (Status) initParamWithDefault("status",
-        Status.fromString(status), Status.EXEC, this.model, session);
-    this.search = (String) initParam(requestParams, "search", search,
-        this.model, session);
+        Status.fromString(status), Status.EXEC, model, session);
+    initParam(requestParams, "search", search, model, session);
   }
 
   @ModelAttribute
-  void initPageSlice(HttpSession session,
+  void initPageSlice(Authentication auth, Model model, HttpSession session,
       @RequestParam Map<String, String> requestParams) {
     pageable = initPageableWithDefault(requestParams, model, session,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
@@ -129,7 +122,8 @@ public class CaseStudyController implements
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String updateJS(@PathVariable Long id, @RequestBody JsonNode formData) {
+  String updateJS(Authentication auth, Model model, @PathVariable Long id,
+      @RequestBody JsonNode formData) {
     caseStudy.setFormData(formData);
     caseRepo.save(caseStudy);
 
@@ -147,7 +141,7 @@ public class CaseStudyController implements
 
   @PreAuthorize("@perm.canDelete()")
   @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-  String deleteJS(@PathVariable Long id) {
+  String deleteJS(Authentication auth, Model model, @PathVariable Long id) {
     if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
 
     model.addAttribute("slice",

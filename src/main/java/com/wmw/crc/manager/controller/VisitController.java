@@ -63,21 +63,17 @@ public class VisitController implements NestedRestfulController< //
   CaseStudy caseStudy;
   Subject subject;
 
-  Model model;
-
   @ModelAttribute
-  void init(Model model, //
-      @PathVariable(required = false) Long parentId,
+  void init(@PathVariable(required = false) Long parentId,
       @PathVariable(required = false) Long id) {
-    this.model = model;
-
     caseStudy = this.getParent(parentId);
     subject = this.getChild(parentId, id, new Subject());
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping("/{id}/visits")
-  String index(@PathVariable Long parentId, @PathVariable Long id) {
+  String index(Model model, @PathVariable Long parentId,
+      @PathVariable Long id) {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(caseStudy);
     Subject subject = Ruby.Array.of(subjects).find(s -> s.getId().equals(id));
 
