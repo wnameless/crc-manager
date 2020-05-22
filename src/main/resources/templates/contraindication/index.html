@@ -3,92 +3,15 @@
 
 <section layout:fragment="content">
 	<div class="container">
-		<div class="row col-sm-10 col-sm-offset-1">
-			<h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
-			<hr>
-			<div style="height: 300px;" class="panel panel-default">
-				<div class="panel-heading">[[#{ui.contraindication}]]</div>
-				<div class="panel-body" style="padding: 1px;">
-					<ul id="contraindicationList" class="list-group"
-						style="overflow-y: scroll; max-height: 240px; padding: 10px 10px;">
-						<li class="list-group-item" th:each="cd : ${contraindications}">
-							<span class="text-primary">
-								[[#{ui.contraindication.bundle} + ': ']]
-							</span>
-							<span>
-								[[${cd.bundle}]]
-							</span>
-							,
-							<span class="text-danger">
-								[[#{ui.contraindication.keyword} + ': ']]
-							</span>
-							<span>
-								[[${cd.phrase}]]
-							</span>
-							<span class="text-success">
-								[[#{ui.contraindication.medicine.usage} + ': ']]
-							</span>
-							<span>
-								<th:block th:each="tk : ${cd.takekinds}">
-									[[#{'takekinds.' + ${tk}}]]
-									<span></span>
-								</th:block>
-							</span>
-							<span class="text-warning">
-								[[#{ui.contraindication.memo} + ': ']]
-							</span>
-							<span>
-								[[${cd.memo}]]
-							</span>
-							<a th:if="${@perm.canWrite(item)}"
-								th:href="${item.joinPath('contraindications', cd.id)}">
-								<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
-									style="color: red; margin-top: 3px;"></i>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+		<div id="list">
+			<div th:replace="contraindication/list :: partial"></div>
 		</div>
 
 		<div class="row col-sm-10 col-sm-offset-1">
 			<hr>
 		</div>
 
-		<div class="row col-sm-10 col-sm-offset-1">
-			<form th:action="@{${item.joinPath('contraindications')}}" method="POST" class="form-row">
-				<div class="form-group col-md-2">
-					<label th:text="#{ui.contraindication.bundle}"></label>
-					<select name="bundle" class="form-control">
-						<option selected>1</option>
-						<option>2</option>
-						<option>3</option>
-						<option>4</option>
-						<option>5</option>
-						<option>6</option>
-						<option>7</option>
-						<option>8</option>
-						<option>9</option>
-					</select>
-				</div>
-				<div class="form-group col-sm-8">
-					<label>[[#{ui.contraindication.medicine.keyword_and_usage}]]</label>
-					<input name="phrase" type="text" class="form-control"
-						th:placeholder="#{ui.contraindication.medicine.keyword}">
-					<input id="takekinds" name="takekinds">
-					<hr>
-					<label>備註</label>
-					<textarea name="memo" class="form-control"></textarea>
-				</div>
-				<div class="form-group col-sm-1">
-					<label>&nbsp;</label>
-					<button th:if="${@perm.canWrite(item)}" type="submit" class="btn btn-primary"
-						th:text="#{ui.contraindication.add}"></button>
-					<button th:unless="${@perm.canWrite(item)}" type="submit" class="btn btn-primary"
-						th:text="#{ui.contraindication.add}" disabled></button>
-				</div>
-			</form>
-		</div>
+		<div th:replace="contraindication/panel :: adder"></div>
 
 		<div class="row col-sm-10 col-sm-offset-1">
 			<hr>
@@ -108,6 +31,7 @@
 		</div>
 	</div>
 
+	<script th:replace="fragments/axios :: simple-ajax-actions('#list')"></script>
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';

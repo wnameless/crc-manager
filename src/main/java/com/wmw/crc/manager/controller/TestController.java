@@ -39,10 +39,8 @@ public class TestController {
 
   @Autowired
   CaseStudyRepository caseRepository;
-
   @Autowired
   TsghService tsghService;
-
   @Autowired
   VisitService visitService;
 
@@ -89,7 +87,7 @@ public class TestController {
   @PreAuthorize("@perm.isAdmin()")
   @GetMapping("/json/cases/{id}")
   @ResponseBody
-  SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable("id") Long id) {
+  SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
     CaseStudy cs = caseRepository.findById(id).get();
     SimpleReactJsonSchemaForm rsjf = new SimpleReactJsonSchemaForm();
 

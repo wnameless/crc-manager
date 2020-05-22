@@ -55,10 +55,8 @@ public class VisitController implements NestedRestfulController< //
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
-
   @Autowired
   VisitRepository visitRepo;
 

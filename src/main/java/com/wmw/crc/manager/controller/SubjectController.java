@@ -23,6 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -119,7 +120,6 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/new")
   String newJS(@PathVariable Long parentId) {
-    model.addAttribute(getChildKey(), new Subject());
     return "subjects/new :: partial";
   }
 
@@ -133,17 +133,15 @@ public class SubjectController implements NestedRestfulController< //
       model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
     }
 
-    model.addAttribute(getChildrenKey(),
-        subjectRepo.findAllByCaseStudy(caseStudy));
+    updateChildren(model, caseStudy);
     return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/batch")
   String batchCreate(@PathVariable Long parentId,
-      @RequestParam("subjectFile") MultipartFile file,
-      RedirectAttributes redirAttrs) {
-    ExcelSubjects es = uploadService.fromMultipartFile(file);
+      @RequestParam MultipartFile subjectFile, RedirectAttributes redirAttrs) {
+    ExcelSubjects es = uploadService.fromMultipartFile(subjectFile);
     if (es.getErrorMessage() == null) {
       subjectService.batchCreate(caseStudy, es);
     } else {
@@ -163,8 +161,7 @@ public class SubjectController implements NestedRestfulController< //
         model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
       }
     } else {
-      model.addAttribute(getChildrenKey(),
-          subjectRepo.findAllByCaseStudy(caseStudy));
+      updateChildren(model, caseStudy);
     }
     return "subjects/list :: partial";
   }
@@ -197,8 +194,7 @@ public class SubjectController implements NestedRestfulController< //
     if (subject.getId() != null) {
       subjectRepo.delete(subject);
 
-      model.addAttribute(getChildrenKey(),
-          subjectRepo.findAllByCaseStudy(caseStudy));
+      updateChildren(model, caseStudy);
     }
 
     return "subjects/list :: partial";
@@ -313,7 +309,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
-    return (p, c) -> getRepository().existsByIdAndCaseStudy(c.getId(), p);
+    return (p, c) -> Objects.equals(p, c.getCaseStudy());
 
   }
 

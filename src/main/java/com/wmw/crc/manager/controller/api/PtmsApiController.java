@@ -85,7 +85,7 @@ public class PtmsApiController {
 
   @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
   String updateCase(@RequestBody Protocol protocol,
-      @PathVariable("irbNumber") String irbNumber) {
+      @PathVariable String irbNumber) {
     CaseStudy c = caseRepo.findByIrbNumber(irbNumber);
 
     ObjectNode objNode = new ObjectMapper().createObjectNode();

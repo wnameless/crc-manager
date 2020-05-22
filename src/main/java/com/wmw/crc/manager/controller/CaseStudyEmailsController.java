@@ -73,7 +73,7 @@ public class CaseStudyEmailsController implements
 
   @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping("/emails")
-  String edit(@PathVariable("id") Long id) {
+  String edit(@PathVariable Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
         .getObjectMapperFactory().get().createObjectNode();
     ArrayNode an = on.putArray("listOfEmails");
@@ -88,7 +88,7 @@ public class CaseStudyEmailsController implements
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/emails")
-  String save(@PathVariable("id") Long id, @RequestBody JsonNode formData) {
+  String save(@PathVariable Long id, @RequestBody JsonNode formData) {
     caseStudy.getEmails().clear();
     JsonNode listOfEmails = formData.get("listOfEmails");
     for (int i = 0; i < listOfEmails.size(); i++) {

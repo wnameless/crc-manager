@@ -43,8 +43,7 @@ public interface NestedRestfulController< //
   default void setRoute(Model model,
       @PathVariable(required = false) PID parentId) {
     if (parentId != null) {
-      model.addAttribute(getRouteKey(),
-          getRoute().apply(getParentRepository().findById(parentId).get()));
+      model.addAttribute(getRouteKey(), getRoute().apply(getParent(parentId)));
     }
   }
 
@@ -70,6 +69,11 @@ public interface NestedRestfulController< //
       return getParentRepository().findById(parentId).get();
     }
     return defaultItem;
+  }
+
+  default P updateParent(Model model, P parent) {
+    model.addAttribute(getParentKey(), parent);
+    return parent;
   }
 
   default String getChildKey() {
@@ -106,6 +110,11 @@ public interface NestedRestfulController< //
     return defaultItem;
   }
 
+  default C updateChild(Model model, C child) {
+    model.addAttribute(getChildKey(), child);
+    return child;
+  }
+
   default String getChildrenKey() {
     return "children";
   }
@@ -121,5 +130,16 @@ public interface NestedRestfulController< //
   }
 
   Iterable<C> getChildren(P parent);
+
+  default Iterable<C> updateChildren(Model model, P parent) {
+    Iterable<C> children = getChildren(parent);
+    model.addAttribute(getChildrenKey(), children);
+    return children;
+  }
+
+  default Iterable<C> updateChildren(Model model, Iterable<C> children) {
+    model.addAttribute(getChildrenKey(), children);
+    return children;
+  }
 
 }

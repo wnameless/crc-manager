@@ -30,10 +30,10 @@ import com.wmw.crc.manager.repository.MedicineRepository;
 public class MedicineController {
 
   @Autowired
-  private MedicineRepository medcineRepo;
+  MedicineRepository medcineRepo;
 
   @GetMapping("/data/medicines")
-  public DataTablesOutput<Medicine> getMedicines(@Valid DataTablesInput input) {
+  DataTablesOutput<Medicine> getMedicines(@Valid DataTablesInput input) {
     return medcineRepo.findAll(input);
   }
 

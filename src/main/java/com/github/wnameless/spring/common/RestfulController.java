@@ -58,4 +58,9 @@ public interface RestfulController< //
     return defaultItem;
   }
 
+  default I updateItem(Model model, I item) {
+    model.addAttribute(getItemKey(), item);
+    return null;
+  }
+
 }

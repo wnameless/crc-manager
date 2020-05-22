@@ -69,10 +69,8 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @GetMapping("/status/{status}")
-  String alterStatus(@PathVariable("id") Long id,
-      @PathVariable("status") String status) {
-    caseStudy
-        .setStatus(CaseStudy.Status.fromString(status, CaseStudy.Status.NEW));
+  String alterStatus(@PathVariable Long id, @PathVariable String status) {
+    caseStudy.setStatus(Status.fromString(status, Status.NEW));
     caseRepo.save(caseStudy);
 
     return "redirect:" + getRoute().getIndexPath();
@@ -80,15 +78,14 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canAssign()")
   @GetMapping("/assignment")
-  String assignment(Model model, @PathVariable("id") Long id) {
+  String assignment() {
     model.addAttribute("users", keycloak.getNormalUsers());
     return "cases/assignment/index";
   }
 
   @PreAuthorize("@perm.canAssign()")
   @PostMapping("/assignment")
-  String assign(@PathVariable("id") Long id,
-      @RequestParam("username") String username) {
+  String assign(@RequestParam String username) {
     caseStudy.setOwner(username);
     caseStudy.setStatus(Status.EXEC);
     caseRepo.save(caseStudy);
@@ -98,46 +95,46 @@ public class CaseStudyOperationController implements
 
   @PreAuthorize("@perm.canManage(#id)")
   @GetMapping("/permission")
-  String permission(@PathVariable("id") Long id) {
+  String permission(@PathVariable Long id) {
     model.addAttribute("users", keycloak.getNormalUsers());
     return "cases/permission/index";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/managers")
-  String addManager(@PathVariable("id") Long id,
+  String addManager(@PathVariable Long id,
       @RequestBody Map<String, Object> body) {
     String manager = body.get("manager").toString();
     caseStudy.getManagers().add(manager);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseManagerAdded(locale, manager));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/manager-list :: partial";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @DeleteMapping("/permission/managers")
-  String removeManager(@PathVariable("id") Long id,
+  String removeManager(@PathVariable Long id,
       @RequestParam("manager") String manager) {
     caseStudy.getManagers().remove(manager);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseManagerRemoved(locale, manager));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/manager-list :: partial";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/editors")
-  String addEditor(@PathVariable("id") Long id,
+  String addEditor(@PathVariable Long id,
       @RequestBody Map<String, Object> body) {
     String editor = body.get("editor").toString();
     caseStudy.getEditors().add(editor);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseEditorAdded(locale, editor));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/editor-list :: partial";
   }
 
@@ -148,33 +145,33 @@ public class CaseStudyOperationController implements
     caseStudy.getEditors().remove(editor);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseEditorRemoved(locale, editor));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/editor-list :: partial";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @PostMapping("/permission/viewers")
-  String addViewer(@PathVariable("id") Long id,
+  String addViewer(@PathVariable Long id,
       @RequestBody Map<String, Object> body) {
     String viewer = body.get("viewer").toString();
     caseStudy.getViewers().add(viewer);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseViewerAdded(locale, viewer));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/viewer-list :: partial";
   }
 
   @PreAuthorize("@perm.canManage(#id)")
   @DeleteMapping("/permission/viewers")
-  String removeViewer(@PathVariable("id") Long id,
+  String removeViewer(@PathVariable Long id,
       @RequestParam("viewer") String viewer) {
     caseStudy.getViewers().remove(viewer);
     caseRepo.save(caseStudy);
 
+    updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseViewerRemoved(locale, viewer));
-    model.addAttribute(getItemKey(), caseStudy);
     return "cases/permission/viewer-list :: partial";
   }
 

@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -43,16 +45,14 @@ import com.wmw.crc.manager.service.CaseStudyService;
 public class SearchController {
 
   @Autowired
-  CaseStudyService caseStudyService;
-
-  @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
+  @Autowired
+  CaseStudyService caseStudyService;
 
   @PreAuthorize("@perm.isUser()")
-  @GetMapping("/search/index")
+  @GetMapping("/search")
   String index(Model model) {
     model.addAttribute("casePropertyTitles",
         ReactJsonSchemaFormUtils.propertyTitles(new CaseStudy()));
@@ -62,8 +62,8 @@ public class SearchController {
   }
 
   @PreAuthorize("@perm.isUser()")
-  @PostMapping("/search")
-  String search(Model model, Authentication auth,
+  @PostMapping(path = "/search", produces = APPLICATION_JSON_VALUE)
+  String searchJS(Model model, Authentication auth,
       @RequestBody List<Criterion> criteria) {
     List<CaseStudy> targets =
         caseStudyService.searchCaseStudies(auth, criteria);
@@ -74,9 +74,9 @@ public class SearchController {
   }
 
   @PreAuthorize("@perm.canRead(#id)")
-  @GetMapping("/download/case/{id}")
+  @GetMapping("/download/cases/{id}")
   @ResponseBody
-  HttpEntity<byte[]> download(@PathVariable("id") Long id, Locale locale)
+  HttpEntity<byte[]> download(@PathVariable Long id, Locale locale)
       throws IOException {
     HttpEntity<byte[]> excel =
         caseStudyService.createDownloadableExcelCaseStudy(id, locale);

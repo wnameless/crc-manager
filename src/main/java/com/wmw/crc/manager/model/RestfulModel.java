@@ -19,7 +19,8 @@ import com.github.wnameless.spring.common.RestfulRoute;
 
 public enum RestfulModel implements RestfulRoute<Long> {
 
-  CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT);
+  CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT),
+  CONTRAINDICATION(Names.CONTRAINDICATION);
 
   private final String resourceName;
 
@@ -37,6 +38,8 @@ public enum RestfulModel implements RestfulRoute<Long> {
     public static final String CASE_STUDY = "cases";
 
     public static final String SUBJECT = "subjects";
+
+    public static final String CONTRAINDICATION = "contraindications";
 
   }
 
