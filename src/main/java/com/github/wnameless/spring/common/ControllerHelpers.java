@@ -78,18 +78,19 @@ public final class ControllerHelpers {
 
   public static Object initParamWithDefault(String key, Object value,
       Object defaultVal, Model model, HttpSession session) {
-    log.info("key", key);
-    log.info("value", value);
-    log.info("defaultVal", defaultVal);
-    log.info("model", model);
-    log.info("session", session);
+    log.info("key: " + key);
+    log.info("value: " + value);
+    log.info("defaultVal: " + defaultVal);
+    log.info("model: " + model);
+    log.info("session: " + session);
 
     if (value == null && session != null) {
       value = session.getAttribute(key);
     }
     if (value == null) value = defaultVal;
-    model.addAttribute(key, value);
-    session.setAttribute(key, value);
+
+    if (model != null && key != null) model.addAttribute(key, value);
+    if (session != null) session.setAttribute(key, value);
 
     return value;
   }
