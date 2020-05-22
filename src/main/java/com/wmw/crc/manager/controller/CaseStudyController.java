@@ -18,10 +18,12 @@ package com.wmw.crc.manager.controller;
 import static com.github.wnameless.spring.common.ControllerHelpers.initPageableWithDefault;
 import static com.github.wnameless.spring.common.ControllerHelpers.initParam;
 import static com.github.wnameless.spring.common.ControllerHelpers.initParamWithDefault;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpSession;
 
@@ -67,13 +69,18 @@ public class CaseStudyController
   String search;
   Pageable pageable;
 
+  @Override
+  public Consumer<CaseStudy> afterInitItem() {
+    return (item) -> {
+      caseStudy = firstNonNull(item, new CaseStudy());
+    };
+  }
+
   @ModelAttribute
   void init(Model model, HttpSession session,
       @RequestParam Map<String, String> requestParams,
-      @PathVariable(required = false) Long id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-    caseStudy = getItem(id, new CaseStudy());
     this.status = (Status) initParamWithDefault("status",
         Status.fromString(status), Status.EXEC, model, session);
     this.search =

@@ -15,9 +15,11 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,11 +57,16 @@ public class CaseStudyEmailsController
   CaseStudy caseStudy;
   Emails emails;
 
+  @Override
+  public Consumer<CaseStudy> afterInitItem() {
+    return (item) -> {
+      caseStudy = firstNonNull(item, new CaseStudy());
+    };
+  }
+
   @ModelAttribute
   void init(Model model, Locale locale,
       @PathVariable(required = false) Long id) {
-    caseStudy = getItem(id, new CaseStudy());
-    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     emails = new Emails();
     model.addAttribute("emails", emails);
   }
@@ -81,7 +88,8 @@ public class CaseStudyEmailsController
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/emails")
-  String save(@PathVariable Long id, @RequestBody JsonNode formData) {
+  String save(Model model, @PathVariable Long id,
+      @RequestBody JsonNode formData) {
     caseStudy.getEmails().clear();
     JsonNode listOfEmails = formData.get("listOfEmails");
     for (int i = 0; i < listOfEmails.size(); i++) {
@@ -89,6 +97,7 @@ public class CaseStudyEmailsController
     }
     caseRepo.save(caseStudy);
 
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/show :: partial";
   }
 

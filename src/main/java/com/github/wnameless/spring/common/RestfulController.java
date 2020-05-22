@@ -15,6 +15,8 @@
  */
 package com.github.wnameless.spring.common;
 
+import java.util.function.Consumer;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,8 +27,22 @@ public interface RestfulController< //
 
   RestfulRoute<ID> getRoute();
 
-  default String getRouteKey() {
-    return "route";
+  R getRepository();
+
+  Consumer<I> afterInitItem();
+
+  @ModelAttribute
+  default void setItem(Model model, @PathVariable(required = false) ID id) {
+    I item = null;
+
+    if (id != null) {
+      item = getRepository().findById(id).get();
+      model.addAttribute(getItemKey(), item);
+    }
+
+    if (afterInitItem() != null) {
+      afterInitItem().accept(item);
+    }
   }
 
   @ModelAttribute
@@ -34,17 +50,12 @@ public interface RestfulController< //
     model.addAttribute(getRouteKey(), getRoute());
   }
 
-  R getRepository();
+  default String getRouteKey() {
+    return "route";
+  }
 
   default String getItemKey() {
     return "item";
-  }
-
-  @ModelAttribute
-  default void setItem(Model model, @PathVariable(required = false) ID id) {
-    if (id != null) {
-      model.addAttribute(getItemKey(), getRepository().findById(id).get());
-    }
   }
 
   default I getItem(ID id) {

@@ -15,11 +15,13 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -28,7 +30,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,11 +63,12 @@ public class VisitController implements NestedRestfulController< //
   CaseStudy caseStudy;
   Subject subject;
 
-  @ModelAttribute
-  void init(@PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id) {
-    caseStudy = this.getParent(parentId);
-    subject = this.getChild(parentId, id, new Subject());
+  @Override
+  public BiConsumer<CaseStudy, Subject> afterInitParentAndChild() {
+    return (p, c) -> {
+      caseStudy = p;
+      subject = firstNonNull(c, new Subject());
+    };
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

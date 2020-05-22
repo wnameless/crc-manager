@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,9 +44,11 @@ public class ContraindicationController implements NestedRestfulController< //
 
   CaseStudy caseStudy;
 
-  @ModelAttribute
-  void init(@PathVariable Long parentId) {
-    caseStudy = getParent(parentId);
+  @Override
+  public BiConsumer<CaseStudy, Contraindication> afterInitParentAndChild() {
+    return (p, c) -> {
+      caseStudy = p;
+    };
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -65,7 +67,7 @@ public class ContraindicationController implements NestedRestfulController< //
     caseStudyService.addContraindication(caseStudy, bundle, phrase, takekinds,
         memo);
 
-    updateChildren(model, caseStudy);
+    updateChildrenByParent(model, caseStudy);
     return "redirect:" + caseStudy.joinPath("contraindications");
   }
 
@@ -75,7 +77,7 @@ public class ContraindicationController implements NestedRestfulController< //
       @PathVariable Long id) {
     caseStudyService.removeContraindication(caseStudy, id);
 
-    updateChildren(model, caseStudy);
+    updateChildrenByParent(model, caseStudy);
     return "contraindication/list :: partial";
   }
 

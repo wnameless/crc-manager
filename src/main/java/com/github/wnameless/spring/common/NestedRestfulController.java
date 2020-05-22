@@ -15,7 +15,9 @@
  */
 package com.github.wnameless.spring.common;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.springframework.data.repository.CrudRepository;
@@ -27,16 +29,64 @@ public interface NestedRestfulController< //
     P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, //
     C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>> {
 
+  Function<P, RestfulRoute<CID>> getRoute();
+
   PR getParentRepository();
 
   CR getRepository();
 
   BiPredicate<P, C> getPaternityTesting();
 
-  Function<P, RestfulRoute<CID>> getRoute();
+  Iterable<C> getChildren(P parent);
 
-  default String getRouteKey() {
-    return "route";
+  BiConsumer<P, C> afterInitParentAndChild();
+
+  @ModelAttribute
+  default void setParentAndChild(Model model,
+      @PathVariable(required = false) PID parentId,
+      @PathVariable(required = false) CID id) {
+    P parent = null;
+    C child = null;
+
+    if (parentId != null) {
+      parent = getParentRepository().findById(parentId).get();
+      model.addAttribute(getParentKey(), parent);
+
+      if (id != null) {
+        child = getRepository().findById(id).get();
+
+        if (getPaternityTesting().test(parent, child)) {
+          model.addAttribute(getChildKey(), child);
+        } else {
+          child = null;
+        }
+      }
+    }
+
+    if (afterInitParentAndChild() != null) {
+      afterInitParentAndChild().accept(parent, child);
+    }
+  }
+
+  @ModelAttribute
+  default void setChildren(Model model,
+      @PathVariable(required = false) PID parentId,
+      @PathVariable(required = false) CID id) {
+    Iterable<C> children = null;
+
+    if (parentId != null && id == null) {
+      P parent = getParentRepository().findById(parentId).get();
+      children = getChildren(parent);
+      model.addAttribute(getChildrenKey(), children);
+    }
+
+    if (afterInitChildren() != null) {
+      afterInitChildren().accept(children);
+    }
+  }
+
+  default Consumer<? super Iterable<C>> afterInitChildren() {
+    return null;
   }
 
   @ModelAttribute
@@ -47,17 +97,12 @@ public interface NestedRestfulController< //
     }
   }
 
-  default String getParentKey() {
-    return "parent";
+  default String getRouteKey() {
+    return "route";
   }
 
-  @ModelAttribute
-  default void setParent(Model model,
-      @PathVariable(required = false) PID parentId) {
-    if (parentId != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      model.addAttribute(getParentKey(), parent);
-    }
+  default String getParentKey() {
+    return "parent";
   }
 
   default P getParent(PID parentId) {
@@ -78,20 +123,6 @@ public interface NestedRestfulController< //
 
   default String getChildKey() {
     return "child";
-  }
-
-  @ModelAttribute
-  default void setChild(Model model,
-      @PathVariable(required = false) PID parentId,
-      @PathVariable(required = false) CID id) {
-    if (parentId != null && id != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      C child = getRepository().findById(id).get();
-
-      if (getPaternityTesting().test(parent, child)) {
-        model.addAttribute(getChildKey(), child);
-      }
-    }
   }
 
   default C getChild(PID parentId, CID id) {
@@ -119,25 +150,13 @@ public interface NestedRestfulController< //
     return "children";
   }
 
-  @ModelAttribute
-  default void setChildren(Model model,
-      @PathVariable(required = false) PID parentId) {
-    if (parentId != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      Iterable<C> childs = getChildren(parent);
-      model.addAttribute(getChildrenKey(), childs);
-    }
-  }
-
-  Iterable<C> getChildren(P parent);
-
-  default Iterable<C> updateChildren(Model model, P parent) {
-    Iterable<C> children = getChildren(parent);
+  default Iterable<C> updateChildren(Model model, Iterable<C> children) {
     model.addAttribute(getChildrenKey(), children);
     return children;
   }
 
-  default Iterable<C> updateChildren(Model model, Iterable<C> children) {
+  default Iterable<C> updateChildrenByParent(Model model, P parent) {
+    Iterable<C> children = getChildren(parent);
     model.addAttribute(getChildrenKey(), children);
     return children;
   }
