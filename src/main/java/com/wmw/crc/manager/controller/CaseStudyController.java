@@ -84,8 +84,8 @@ public class CaseStudyController implements
         caseService.getFilesFromCaseStudy(caseStudy));
     this.status = (Status) initParamWithDefault("status",
         Status.fromString(status), Status.EXEC, this.model, session);
-    this.search =
-        (String) initParam(requestParams, "search", search, model, session);
+    this.search = (String) initParam(requestParams, "search", search,
+        this.model, session);
   }
 
   @ModelAttribute

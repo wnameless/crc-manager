@@ -148,7 +148,7 @@ public class SubjectController implements NestedRestfulController< //
       redirAttrs.addFlashAttribute("message", es.getErrorMessage());
     }
 
-    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -185,7 +185,7 @@ public class SubjectController implements NestedRestfulController< //
       subjectRepo.delete(subject);
     }
 
-    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
   }
 
   @PreAuthorize("@perm.canDeleteSubject(#parentId)")
@@ -208,7 +208,7 @@ public class SubjectController implements NestedRestfulController< //
       subjectRepo.save(subject);
     }
 
-    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -220,7 +220,7 @@ public class SubjectController implements NestedRestfulController< //
       subjectRepo.save(subject);
     }
 
-    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -258,7 +258,7 @@ public class SubjectController implements NestedRestfulController< //
       });
     }
 
-    return "redirect:" + caseStudy.withChild(subject).getIndexPath();
+    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")

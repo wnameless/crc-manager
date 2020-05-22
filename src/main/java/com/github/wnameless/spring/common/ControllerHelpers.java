@@ -24,6 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public final class ControllerHelpers {
 
   private ControllerHelpers() {}
@@ -41,8 +44,9 @@ public final class ControllerHelpers {
         Integer.valueOf(size), PageUtils.paramToSort(sort)), model, session);
   }
 
-  public static Pageable initPageableWithDefault(Map<String, String> requestParams,
-      Model model, HttpSession session, Pageable pageable) {
+  public static Pageable initPageableWithDefault(
+      Map<String, String> requestParams, Model model, HttpSession session,
+      Pageable pageable) {
     String page =
         (String) initParamWithDefault("page", requestParams.get("page"),
             Integer.toString(pageable.getPageNumber()), model, session);
@@ -74,13 +78,16 @@ public final class ControllerHelpers {
 
   public static Object initParamWithDefault(String key, Object value,
       Object defaultVal, Model model, HttpSession session) {
-    if (value == null) {
-      if (session != null && session.getAttribute(key) != null) {
-        value = session.getAttribute(key);
-      } else {
-        value = defaultVal;
-      }
+    log.info("key", key);
+    log.info("value", value);
+    log.info("defaultVal", defaultVal);
+    log.info("model", model);
+    log.info("session", session);
+
+    if (value == null && session != null) {
+      value = session.getAttribute(key);
     }
+    if (value == null) value = defaultVal;
     model.addAttribute(key, value);
     session.setAttribute(key, value);
 
