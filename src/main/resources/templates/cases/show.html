@@ -1,47 +1,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="partial">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
 
-        <hr>
+            <hr>
 
-        <div class="panel-group">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#fileList">
-                            <i class="fas fa-file"></i>
-                            [[#{ui.case.files.title}]]</a>
-                    </h4>
-                </div>
-                <div id="fileList" class="panel-collapse collapse">
-                    <div class="list-group">
-                        <th:block th:each="file : ${files}">
-                            <a th:unless="${file.value.value}" class="list-group-item list-group-item-action">
-                                [[${file.value.key}]]
-                                <label th:unless="${file.value.value}"
-                                    class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
-                            </a>
-                            <a th:if="${file.value.value}" th:href="@{${item.joinPath('files', file.key)}}"
-                                class="list-group-item list-group-item-action">
-                                [[${file.value.key}]]
-                                <label th:if="${file.value.value}"
-                                    class="pull-right">[[#{ui.case.files.download}]]</label>
-                            </a>
-                        </th:block>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#fileList">
+                                <i class="fas fa-file"></i>
+                                [[#{ui.case.files.title}]]</a>
+                        </h4>
+                    </div>
+                    <div id="fileList" class="panel-collapse collapse">
+                        <div class="list-group">
+                            <th:block th:each="file : ${files}">
+                                <a th:unless="${file.value.value}" class="list-group-item list-group-item-action">
+                                    [[${file.value.key}]]
+                                    <label th:unless="${file.value.value}"
+                                        class="pull-right">[[#{ui.case.files.unuploaded}]]</label>
+                                </a>
+                                <a th:if="${file.value.value}" th:href="@{${item.joinPath('files', file.key)}}"
+                                    class="list-group-item list-group-item-action">
+                                    [[${file.value.key}]]
+                                    <label th:if="${file.value.value}"
+                                        class="pull-right">[[#{ui.case.files.download}]]</label>
+                                </a>
+                            </th:block>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <hr th:if="${@perm.canWrite(item)}">
+
+            <a th:if="${@perm.canWrite(item)}" th:href="@{${item.joinPath('emails')}}" th:text="#{ui.case.emails}"></a>
+
+            <hr>
+
+            <div id="jsfForm"></div>
         </div>
-
-        <hr th:if="${@perm.canWrite(item)}">
-
-        <a th:if="${@perm.canWrite(item)}" th:href="@{${item.joinPath('emails')}}" th:text="#{ui.case.emails}"></a>
-
-        <hr>
-
-        <div id="jsfForm"></div>
     </div>
 
     <script type="text/javascript" th:inline="javascript">

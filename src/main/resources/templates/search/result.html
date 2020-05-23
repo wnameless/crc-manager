@@ -41,7 +41,9 @@
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
-			$('#jsfTable').DataTable({
+			$('#jsfTable').on('init.dt', function () {
+				$(this).reflowTable();
+			}).DataTable({
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
 				},
@@ -49,8 +51,6 @@
 					$('#jsfTable').reflowTable('update');
 				}
 			});
-
-			$('#jsfTable').reflowTable();
 		});
 	</script>
 </div>

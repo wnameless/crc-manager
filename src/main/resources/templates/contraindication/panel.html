@@ -1,8 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="list" class="row col-sm-10 col-sm-offset-1">
+<div th:fragment="list">
 	<h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.indexPath})"></h3>
+
 	<hr>
+
 	<div style="height: 300px;" class="panel panel-default">
 		<div class="panel-heading">[[#{ui.contraindication}]]</div>
 		<div class="panel-body" style="padding: 1px;">
@@ -48,7 +50,7 @@
 	</div>
 </div>
 
-<div th:fragment="adder" class="row col-sm-10 col-sm-offset-1">
+<div th:fragment="adder">
 	<form th:action="${route.createPath}" method="POST" class="form-row">
 		<div class="form-group col-md-2">
 			<label th:text="#{ui.contraindication.bundle}"></label>

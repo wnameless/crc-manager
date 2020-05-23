@@ -3,31 +3,37 @@
 
 <section layout:fragment="content">
 	<div class="container">
-		<div id="list">
-			<div th:replace="contraindication/list :: partial"></div>
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div id="list">
+					<div th:replace="contraindication/list :: partial"></div>
+				</div>
+			</div>
 		</div>
 
-		<div class="row col-sm-10 col-sm-offset-1">
-			<hr>
+		<hr>
+
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div th:replace="contraindication/panel :: adder"></div>
+			</div>
 		</div>
 
-		<div th:replace="contraindication/panel :: adder"></div>
+		<hr>
 
-		<div class="row col-sm-10 col-sm-offset-1">
-			<hr>
-		</div>
-
-		<div class="row col-sm-10 col-sm-offset-1">
-			<table id="medicines" class="display">
-				<thead>
-					<tr>
-						<th>[[#{ui.contraindication.table.name}]]</th>
-						<th>[[#{ui.contraindication.table.name.english}]]</th>
-						<th>[[#{ui.contraindication.table.name.scientific}]]</th>
-						<th>ATC codes</th>
-					</tr>
-				</thead>
-			</table>
+		<div class="row">
+			<div class=" col-sm-10 col-sm-offset-1">
+				<table id="medicines" class="display">
+					<thead>
+						<tr>
+							<th>[[#{ui.contraindication.table.name}]]</th>
+							<th>[[#{ui.contraindication.table.name.english}]]</th>
+							<th>[[#{ui.contraindication.table.name.scientific}]]</th>
+							<th>ATC codes</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
 

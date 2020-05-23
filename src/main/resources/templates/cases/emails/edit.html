@@ -1,32 +1,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="partial">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.showPath})">
-        </h3>
-        <hr>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.showPath})"></h3>
 
-        <div id="jsfForm"></div>
+            <hr>
+
+            <div id="jsfForm"></div>
+
+
+            <script type="text/javascript" th:inline="javascript">
+                $(function () {
+                    let onSubmit = (f) => {
+                        axios.post( /*[[${item.joinPath('emails')}]]*/ null, f.formData)
+                            .then((response) => {
+                                $('#jsf').html(response.data);
+                            });
+                    };
+
+                    let rjsfOpt = Object.assign({
+                        btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
+                        onSubmit: onSubmit
+                    }, /*[[${emails.toRjsfMap()}]]*/ {});
+
+                    ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
+                        document.getElementById('jsfForm'));
+                });
+            </script>
+        </div>
     </div>
-
-    <script type="text/javascript" th:inline="javascript">
-        $(function () {
-            let onSubmit = (f) => {
-                axios.post( /*[[${item.joinPath('emails')}]]*/ null, f.formData)
-                    .then((response) => {
-                        $('#jsf').html(response.data);
-                    });
-            };
-
-            let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
-                onSubmit: onSubmit
-            }, /*[[${emails.toRjsfMap()}]]*/ {});
-
-            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                document.getElementById('jsfForm'));
-        });
-    </script>
 </div>
 
 </html>

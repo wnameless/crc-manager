@@ -1,21 +1,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="partial">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3
-            th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
-        </h3>
-        <hr>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-6">
-                <input id="nationalId" type="text" class="form-control" th:placeholder="#{ui.subject.nationalid}">
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3
+                th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
+            </h3>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-6">
+                    <input id="nationalId" type="text" class="form-control" th:placeholder="#{ui.subject.nationalid}">
+                </div>
+                <div class="col-sm-4">
+                    <button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
-            </div>
+            <hr>
+            <div id="jsfForm"></div>
         </div>
-        <hr>
-        <div id="jsfForm"></div>
     </div>
 
     <script type="text/javascript" th:inline="javascript">

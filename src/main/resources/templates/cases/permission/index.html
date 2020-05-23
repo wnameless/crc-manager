@@ -3,55 +3,60 @@
 
 <section layout:fragment="content">
     <div class="container">
-        <div style="height: 400px;" class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-            <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
-            <hr>
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a data-toggle="tab" href="#managers" th:text="#{ui.permission.manager}"></a>
-                </li>
-                <li>
-                    <a data-toggle="tab" href="#editors" th:text="#{ui.permission.editor}"></a>
-                </li>
-                <li>
-                    <a data-toggle="tab" href="#viewers" th:text="#{ui.permission.viewer}"></a>
-                </li>
-            </ul>
+        <div class="row">
+            <div style="height: 400px;" class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${item.indexPath})"></h3>
+                <hr>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#managers" th:text="#{ui.permission.manager}"></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#editors" th:text="#{ui.permission.editor}"></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#viewers" th:text="#{ui.permission.viewer}"></a>
+                    </li>
+                </ul>
 
-            <div class="tab-content">
-                <div id="managers" class="tab-pane fade in active">
-                    <div th:replace="cases/permission/manager-list :: partial" id="managerList"></div>
-                </div>
-                <div id="editors" class="tab-pane fade">
-                    <div th:replace="cases/permission/editor-list :: partial" id="editorList"></div>
-                </div>
-                <div id="viewers" class="tab-pane fade">
-                    <div th:replace="cases/permission/viewer-list :: partial" id="viewerList"></div>
+                <div class="tab-content">
+                    <div id="managers" class="tab-pane fade in active">
+                        <div th:replace="cases/permission/manager-list :: partial" id="managerList"></div>
+                    </div>
+                    <div id="editors" class="tab-pane fade">
+                        <div th:replace="cases/permission/editor-list :: partial" id="editorList"></div>
+                    </div>
+                    <div id="viewers" class="tab-pane fade">
+                        <div th:replace="cases/permission/viewer-list :: partial" id="viewerList"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-            <table id="userTable" class="display">
-                <thead>
-                    <tr>
-                        <th th:text="#{ui.username}"></th>
-                        <th>Email</th>
-                        <th th:text="#{ui.lastname}"></th>
-                        <th th:text="#{ui.firstname}"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="user : ${users}">
-                        <td>
-                            <a class="usernameSelect" href="#" th:text="${user.username}"></a>
-                        </td>
-                        <td th:text="${user.email}"></td>
-                        <td th:text="${user.lastName}"></td>
-                        <td th:text="${user.firstName}"></td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <table id="userTable" class="display">
+                    <thead>
+                        <tr>
+                            <th th:text="#{ui.username}"></th>
+                            <th>Email</th>
+                            <th th:text="#{ui.lastname}"></th>
+                            <th th:text="#{ui.firstname}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td>
+                                <a class="usernameSelect" href="#" th:text="${user.username}"></a>
+                            </td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.lastName}"></td>
+                            <td th:text="${user.firstName}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -69,7 +74,9 @@
             });
 
             let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
-            $('#userTable').DataTable({
+            $('#userTable').on('init.dt', function () {
+                $(this).reflowTable();
+            }).DataTable({
                 language: {
                     url: '/i18n/datatables-' + i18nLocale + '.json'
                 },
@@ -77,8 +84,6 @@
                     $('#userTable').reflowTable('update');
                 }
             });
-
-            $('#userTable').reflowTable();
         });
     </script>
 </section>
