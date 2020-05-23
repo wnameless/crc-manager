@@ -19,7 +19,7 @@
                 </select>
             </div>
             <div id="batchDateDiv" class="form-group col-md-4">
-                <input type="date" class="form-control" id="subjectDate" name="subjectDate" min="1900-01-01"
+                <input id="subjectDate" name="subjectDate" type="date" class="form-control" min="1900-01-01"
                     max="2100-12-31">
             </div>
             <div id="bundleNumberDiv" class="form-group col-md-4 hidden">
@@ -63,7 +63,7 @@
                     <label th:unless="${@perm.canWrite(parent)}" th:text="${subject.contraindicationBundle}"></label>
 
                     <select th:if="${@perm.canWrite(parent)}" class="form-control selectpicker"
-                        th:attr="data-update-path=${parent.withChild(subject).updatePath}" onchange="alterBundle(this)">
+                        th:onchange="axiosPut( [[${parent.withChild(subject).updatePath}]], params({bundle: this.value}), {}, false )">
                         <option th:each="i: ${#numbers.sequence(1, 9)}" th:text="${i}" th:selected="${i == subject.contraindicationBundle}"></option>
                     </select>
                 </td>
@@ -135,14 +135,6 @@
 	<script th:replace="fragments/bs :: input-file"></script>
 	<script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script type="text/javascript" th:inline="javascript">
-        var alterBundle = function (opt) {
-            axios.put($(opt).data('update-path'), {}, {
-                params: {
-                    bundle: opt.value
-                }
-            });
-        };
-
         var checkboxEvent = function () {
             $('input[name="subjectIds[]"]').remove();
 
