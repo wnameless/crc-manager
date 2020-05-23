@@ -5,7 +5,9 @@
             <h3
                 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
             </h3>
+
             <hr>
+
             <div class="row">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-6">
@@ -15,7 +17,9 @@
                     <button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
                 </div>
             </div>
+
             <hr>
+
             <div id="jsfForm"></div>
         </div>
     </div>

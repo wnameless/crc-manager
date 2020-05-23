@@ -2,9 +2,10 @@
 <div th:fragment="partial">
     <div class="row">
         <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-            <h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${route.indexPath})">
-            </h3>
+            <h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${route.indexPath})"></h3>
+
             <hr>
+
             <div id="jsfForm"></div>
         </div>
     </div>
