@@ -34,6 +34,7 @@
 	<script th:replace="fragments/axios :: simple-ajax-actions('#list')"></script>
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('table#medicines').on('init.dt', function () {
 				$(this).reflowTable();
 			}).on('draw.dt', function () {
@@ -41,7 +42,7 @@
 			}).DataTable({
 				ajax: '/data/medicines',
 				serverSide: true,
-				language: { url: '/i18n/datatables-' + /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW' + '.json' },
+				language: { url: '/i18n/datatables-' + i18nLocale + '.json' },
 				columns: [
 					{ data: 'name' },
 					{ data: 'engName' },

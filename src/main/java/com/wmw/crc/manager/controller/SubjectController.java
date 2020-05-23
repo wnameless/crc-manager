@@ -212,8 +212,7 @@ public class SubjectController implements NestedRestfulController< //
   String batchDating(@PathVariable Long parentId,
       @RequestParam String subjectDateType,
       @RequestParam(required = false) String subjectDate,
-      @RequestParam(name = "subjectIds[]",
-          required = false) List<Long> subjectIds,
+      @RequestParam(name = "oofValues", required = false) List<Long> subjectIds,
       @RequestParam Integer bundleNumber, Locale locale,
       RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
