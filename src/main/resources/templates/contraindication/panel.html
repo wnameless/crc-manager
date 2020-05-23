@@ -81,6 +81,23 @@
 				th:text="#{ui.contraindication.add}" disabled></button>
 		</div>
 	</form>
+
+	<script type="text/javascript" th:inline="javascript">
+		$(function () {
+			let elt = $('#takekinds');
+			elt.tagsinput({
+				itemValue: 'value',
+				itemText: 'text'
+			});
+			elt.tagsinput('add', { value: 11, text: /*[[#{takekinds.11}]]*/ '內用藥水劑' });
+			elt.tagsinput('add', { value: 12, text: /*[[#{takekinds.12}]]*/ '內用藥錠劑' });
+			elt.tagsinput('add', { value: 13, text: /*[[#{takekinds.13}]]*/ '內用藥粉劑' });
+			elt.tagsinput('add', { value: 21, text: /*[[#{takekinds.21}]]*/ '注射藥' });
+			elt.tagsinput('add', { value: 31, text: /*[[#{takekinds.31}]]*/ '點滴' });
+			elt.tagsinput('add', { value: 41, text: /*[[#{takekinds.41}]]*/ '外用藥' });
+			elt.tagsinput('add', { value: 51, text: /*[[#{takekinds.51}]]*/ '中藥' });
+		});
+	</script>
 </div>
 
 </html>

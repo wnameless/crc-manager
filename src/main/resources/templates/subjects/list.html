@@ -159,24 +159,19 @@
 
 
         $(function () {
-            let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
-            $('#jsfTable').DataTable({
+            $('#jsfTable').on('init.dt', function () {
+                $(this).reflowTable();
+            }).on('draw.dt', function () {
+                $(this).reflowTable('update');
+            }).DataTable({
                 order: [
                     [5, "asc"]
                 ],
-                columnDefs: [{
-                    width: '36px',
-                    targets: 0
-                }],
-                language: {
-                    url: '/i18n/datatables-' + i18nLocale + '.json'
-                },
-                drawCallback: (settings) => {
-                    $('#jsfTable').reflowTable('update');
-                }
+                columnDefs: [
+                    { targets: 0, width: '36px' }
+                ],
+                language: { url: '/i18n/datatables-' + /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW' + '.json' }
             });
-
-            $('#jsfTable').reflowTable();
         });
     </script>
 </div>

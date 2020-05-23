@@ -18,7 +18,7 @@
 		</div>
 
 		<div class="row col-sm-10 col-sm-offset-1">
-			<table id="medicines">
+			<table id="medicines" class="display">
 				<thead>
 					<tr>
 						<th>[[#{ui.contraindication.table.name}]]</th>
@@ -34,62 +34,31 @@
 	<script th:replace="fragments/axios :: simple-ajax-actions('#list')"></script>
 	<script type="text/javascript" th:inline="javascript">
 		$(function () {
-			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
-			$('table#medicines').DataTable({
+			$('table#medicines').on('init.dt', function () {
+				$(this).reflowTable();
+			}).on('draw.dt', function () {
+				$(this).reflowTable('update');
+			}).DataTable({
 				ajax: '/data/medicines',
 				serverSide: true,
-				language: {
-					url: '/i18n/datatables-' + i18nLocale + '.json'
-				},
-				columns: [{
-					data: 'name'
-				},
-				{
-					data: 'engName'
-				},
-				{
-					data: 'scientificName'
-				},
-				{
-					data: 'atcCode1',
-					render: function (data, type, row, meta) {
-						return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
-							return el != null;
-						}).join(', ');
-					}
-				},
-				{
-					data: 'atcCode2',
-					visible: false
-				},
-				{
-					data: 'atcCode3',
-					visible: false
-				},
-				{
-					data: 'atcCode4',
-					visible: false
-				}
-				],
-				drawCallback: function (settings) {
-					$('table#medicines').reflowTable('update');
-				}
+				language: { url: '/i18n/datatables-' + /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW' + '.json' },
+				columns: [
+					{ data: 'name' },
+					{ data: 'engName' },
+					{ data: 'scientificName' },
+					{
+						data: 'atcCode1',
+						render: function (data, type, row, meta) {
+							return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
+								return el != null;
+							}).join(', ');
+						}
+					},
+					{ data: 'atcCode2', visible: false },
+					{ data: 'atcCode3', visible: false },
+					{ data: 'atcCode4', visible: false }
+				]
 			});
-
-			$('table#medicines').reflowTable();
-
-			var elt = $('#takekinds');
-			elt.tagsinput({
-				itemValue: 'value',
-				itemText: 'text'
-			});
-			elt.tagsinput('add', { "value": 11, "text": "內用藥水劑" });
-			elt.tagsinput('add', { "value": 12, "text": "內用藥錠劑" });
-			elt.tagsinput('add', { "value": 13, "text": "內用藥粉劑" });
-			elt.tagsinput('add', { "value": 21, "text": "注射藥" });
-			elt.tagsinput('add', { "value": 31, "text": "點滴" });
-			elt.tagsinput('add', { "value": 41, "text": "外用藥" });
-			elt.tagsinput('add', { "value": 51, "text": "中藥" });
 		});
 	</script>
 </section>
