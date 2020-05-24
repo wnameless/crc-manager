@@ -12,11 +12,13 @@
             <div class="input-group">
                 <input id="search" type="text" class="form-control" placeholder="Search for..." th:value="${search}">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="searchEvent($('#search').val())"><span
+                    <button class="btn btn-default" type="button"
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: $('#search').val()}} )"><span
                             class="fas fa-search"></span></button>
                 </span>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="searchEvent('')"><span
+                    <button class="btn btn-default" type="button"
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: ''}} )"><span
                             class="fas fa-eraser"></span></button>
                 </span>
             </div>
@@ -159,16 +161,6 @@
     <script th:replace="fragments/notify :: partial" type="text/javascript"></script>
     <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script type="text/javascript" th:inline="javascript">
-        var searchEvent = (q) => {
-            axios.get(/*[[${route.indexPath}]]*/ null, {
-                params: {
-                    search: q
-                }
-            }).then((response) => {
-                $('#jsf').html(response.data);
-            });
-        };
-
         $(function () {
             $('#jsfTable').reflowTable();
         });
