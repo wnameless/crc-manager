@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.wnameless.spring.common.InitOption;
+import com.github.wnameless.spring.common.ModelOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -70,9 +70,9 @@ public class CaseStudyController
   Pageable pageable;
 
   @Override
-  public void configureInitOption(InitOption<CaseStudy> initOption) {
+  public void configure(ModelOption<CaseStudy> initOption) {
     initOption
-        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
+        .afterInitAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute

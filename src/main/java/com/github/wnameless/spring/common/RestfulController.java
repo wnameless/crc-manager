@@ -27,17 +27,17 @@ public interface RestfulController< //
 
   R getRepository();
 
-  void configureInitOption(InitOption<I> initOption);
+  void configure(ModelOption<I> option);
 
-  default InitOption<I> getInitOption() {
-    InitOption<I> initOption = new InitOption<I>();
-    configureInitOption(initOption);
-    return initOption;
+  default ModelOption<I> getOption() {
+    ModelOption<I> option = new ModelOption<I>();
+    configure(option);
+    return option;
   }
 
   @ModelAttribute
   default void setItem(Model model, @PathVariable(required = false) ID id) {
-    if (!getInitOption().isInit()) return;
+    if (!getOption().isInit()) return;
 
     I item = null;
 
@@ -45,11 +45,12 @@ public interface RestfulController< //
       item = getRepository().findById(id).get();
     }
 
-    if (getInitOption().getAfterAction() != null) {
-      item = getInitOption().getAfterAction().apply(item);
+    if (getOption().getAfterInitAction() != null) {
+      item = getOption().getAfterInitAction().apply(item);
     }
 
-    model.addAttribute(getItemKey(), item);
+    model.addAttribute(getItemKey(), getOption().getPreSetAction() == null
+        ? item : getOption().getPreSetAction().apply(item));
   }
 
   @ModelAttribute

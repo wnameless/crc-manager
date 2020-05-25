@@ -48,7 +48,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.github.wnameless.spring.common.InitOption;
+import com.github.wnameless.spring.common.ModelOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -87,11 +87,11 @@ public class SubjectController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
-      InitOption<Subject> childInitOption,
-      InitOption<? extends Iterable<Subject>> childrenInitOption) {
-    parentInitOption.afterAction(p -> caseStudy = p);
-    childInitOption.afterAction(c -> subject = firstNonNull(c, new Subject()));
+  public void configure(ModelOption<CaseStudy> parentInitOption,
+      ModelOption<Subject> childInitOption,
+      ModelOption<? extends Iterable<Subject>> childrenInitOption) {
+    parentInitOption.afterInitAction(p -> caseStudy = p);
+    childInitOption.afterInitAction(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

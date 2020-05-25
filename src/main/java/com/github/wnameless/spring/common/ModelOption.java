@@ -17,24 +17,31 @@ package com.github.wnameless.spring.common;
 
 import java.util.function.Function;
 
-public class InitOption<I> {
+public class ModelOption<I> {
 
   private boolean init = true;
 
-  private Function<I, I> afterAction;
+  private Function<I, I> afterInitAction;
 
-  public InitOption<I> enable() {
+  private Function<I, I> preSetAction;
+
+  public ModelOption<I> enable() {
     init = true;
     return this;
   }
 
-  public InitOption<I> disable() {
+  public ModelOption<I> disable() {
     init = false;
     return this;
   }
 
-  public InitOption<I> afterAction(Function<I, I> itemConsumer) {
-    this.afterAction = itemConsumer;
+  public ModelOption<I> afterInitAction(Function<I, I> afterInitAction) {
+    this.afterInitAction = afterInitAction;
+    return this;
+  }
+
+  public ModelOption<I> preSetAction(Function<I, I> preSetAction) {
+    this.preSetAction = preSetAction;
     return this;
   }
 
@@ -42,8 +49,12 @@ public class InitOption<I> {
     return init;
   }
 
-  Function<I, I> getAfterAction() {
-    return afterAction;
+  Function<I, I> getAfterInitAction() {
+    return afterInitAction;
+  }
+
+  Function<I, I> getPreSetAction() {
+    return preSetAction;
   }
 
 }

@@ -33,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.google.common.io.Resources;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -146,6 +147,18 @@ public class SubjectService {
       return AdvOpt.ofNullable(null, "ctrl.subject.message.nationalid-existed");
     } else {
       subject.setCaseStudy(cs);
+
+      String nationalId = subject.getNationalId();
+      if (nationalId != null && nationalId.matches("[A-Z][1-2][\\d]{8}")) {
+        ObjectNode formData = (ObjectNode) subject.getFormData();
+        if (nationalId.charAt(1) == '1') {
+          formData.put("gender", "男");
+        } else {
+          formData.put("gender", "女");
+        }
+        subject.setFormData(formData);
+      }
+
       subjectRepo.save(subject);
 
       return AdvOpt.of(subject);
