@@ -8,7 +8,7 @@
     "datatables.net-bs": "^1.10.19",
     "datatables.net-dt": "^1.10.19",
     "datatables.net-jqui": "^1.10.19",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-reflow-table": "^1.0.3",
     "less": "^3.11.1",
     "react": "^16.9.0",
