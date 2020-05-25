@@ -53,6 +53,7 @@ import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+//@EntityListeners(SubjectEntityListener.class)
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
@@ -62,58 +63,6 @@ public class Subject
   @Override
   public String getIndexPath() {
     return "/" + RestfulModel.Names.SUBJECT;
-  }
-
-  public static final JsonNode SCHEMA;
-  public static final JsonNode UI_SCHEMA;
-  static {
-    URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
-    JsonNode jsonNode = null;
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    SCHEMA = jsonNode;
-    url = Resources.getResource(JsonSchemaPath.subjectUISchema);
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    UI_SCHEMA = jsonNode;
-  }
-
-  @Convert(converter = JsonNodeConverter.class)
-  @Column(columnDefinition = "text")
-  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
-      .getObjectMapperFactory().get().createObjectNode();
-
-  public enum Status {
-
-    PRESCREENING, SCREENING, UNQUALIFIED, ONGOING, DROPPED, FOLLOWUP, CLOSED;
-
-    public static Status fromString(String status) {
-      switch (status.toUpperCase()) {
-        case "PRESCREENING":
-          return PRESCREENING;
-        case "SCREENING":
-          return SCREENING;
-        case "UNQUALIFIED":
-          return UNQUALIFIED;
-        case "ONGOING":
-          return ONGOING;
-        case "DROPPED":
-          return DROPPED;
-        case "FOLLOWUP":
-          return FOLLOWUP;
-        case "CLOSED":
-          return CLOSED;
-        default:
-          return PRESCREENING;
-      }
-    }
-
   }
 
   @Id
@@ -151,14 +100,14 @@ public class Subject
       orphanRemoval = true, fetch = FetchType.EAGER)
   List<Visit> visits = new ArrayList<>();
 
-  public long unreviewedVisits() {
-    return visits.stream().filter(v -> !v.isReviewed()).count();
-  }
-
   public Subject() {}
 
   public Subject(JsonNode jsonNode) {
     setFormData(jsonNode);
+  }
+
+  public long unreviewedVisits() {
+    return visits.stream().filter(v -> !v.isReviewed()).count();
   }
 
   @Override
@@ -174,6 +123,7 @@ public class Subject
     setPopulatedJson(json);
   }
 
+  @Override
   public JsonNode getSchema() {
     return SCHEMA;
   }
@@ -188,5 +138,56 @@ public class Subject
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
+
+  public static final JsonNode SCHEMA;
+  public static final JsonNode UI_SCHEMA;
+  static {
+    URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
+    JsonNode jsonNode = null;
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    SCHEMA = jsonNode;
+    url = Resources.getResource(JsonSchemaPath.subjectUISchema);
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    UI_SCHEMA = jsonNode;
+  }
+  @Convert(converter = JsonNodeConverter.class)
+  @Column(columnDefinition = "text")
+  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  public enum Status {
+
+    PRESCREENING, SCREENING, UNQUALIFIED, ONGOING, DROPPED, FOLLOWUP, CLOSED;
+
+    public static Status fromString(String status) {
+      switch (status.toUpperCase()) {
+        case "PRESCREENING":
+          return PRESCREENING;
+        case "SCREENING":
+          return SCREENING;
+        case "UNQUALIFIED":
+          return UNQUALIFIED;
+        case "ONGOING":
+          return ONGOING;
+        case "DROPPED":
+          return DROPPED;
+        case "FOLLOWUP":
+          return FOLLOWUP;
+        case "CLOSED":
+          return CLOSED;
+        default:
+          return PRESCREENING;
+      }
+    }
+
+  }
 
 }

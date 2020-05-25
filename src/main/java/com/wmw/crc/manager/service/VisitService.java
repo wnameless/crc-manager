@@ -81,7 +81,7 @@ public class VisitService {
     }
   }
 
-  public SimpleMailMessage createVisitEmail(Visit visit) {
+  public SimpleMailMessage createVisitEmail(Visit visit, boolean includeCD) {
     SimpleMailMessage message = new SimpleMailMessage();
 
     Subject s = visit.getSubject();
@@ -94,7 +94,10 @@ public class VisitService {
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
             + "/subjects/" + s.getId() + "/visits" + "\n" //
-            + "•開立禁忌用藥: " + (visit.isContraindicationSuspected() ? "是" : "否") //
+            + (includeCD
+                ? "•開立禁忌用藥: "
+                    + (visit.isContraindicationSuspected() ? "是" : "否") + "\n"
+                : "") //
             // + Ruby.Array.of(contraindicationRepo.findAllByCaseStudy(c))
             // // 符合用藥組別
             // .select(cd -> Objects.equals(cd.getBundle(),
@@ -103,7 +106,7 @@ public class VisitService {
             // .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
             // .map(tk -> i18n.takeKind(tk)))
             // .join(", ")
-            + "\n" + "------------------------------" //
+            + "------------------------------" //
     );
 
     return message;
@@ -129,10 +132,12 @@ public class VisitService {
         if (s.unreviewedVisits() <= 0) continue;
 
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          SimpleMailMessage message = createVisitEmail(v);
+          SimpleMailMessage message;
           if (v.isContraindicationSuspected()) {
+            message = createVisitEmail(v, true);
             contraindicationMessages.add(message.getText());
           } else {
+            message = createVisitEmail(v, false);
             visitMessages.add(message.getText());
           }
         });
