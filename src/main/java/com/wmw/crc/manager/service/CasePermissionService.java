@@ -30,7 +30,7 @@ import net.sf.rubycollect4j.Ruby;
 public class CasePermissionService {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
 
   public boolean isUser() {
     Authentication auth =
@@ -48,7 +48,7 @@ public class CasePermissionService {
   }
 
   public boolean canManage(Long caseId) {
-    CaseStudy kase = caseRepo.findById(caseId).get();
+    CaseStudy kase = caseStudyRepo.findById(caseId).get();
     return canManage(kase);
   }
 
@@ -65,7 +65,7 @@ public class CasePermissionService {
   }
 
   public boolean canRead(Long caseId) {
-    CaseStudy kase = caseRepo.findById(caseId).get();
+    CaseStudy kase = caseStudyRepo.findById(caseId).get();
     return canRead(kase);
   }
 
@@ -83,7 +83,7 @@ public class CasePermissionService {
   }
 
   public boolean canWrite(Long caseId) {
-    CaseStudy kase = caseRepo.findById(caseId).get();
+    CaseStudy kase = caseStudyRepo.findById(caseId).get();
     return canWrite(kase);
   }
 
@@ -118,7 +118,7 @@ public class CasePermissionService {
   }
 
   public boolean canDeleteSubject(Long caseId) {
-    CaseStudy kase = caseRepo.findById(caseId).get();
+    CaseStudy kase = caseStudyRepo.findById(caseId).get();
     return canDeleteSubject(kase);
   }
 

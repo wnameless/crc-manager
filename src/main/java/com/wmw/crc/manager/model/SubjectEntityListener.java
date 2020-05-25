@@ -22,6 +22,8 @@ import javax.persistence.PostUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.service.SubjectService;
 import com.wmw.crc.manager.util.AutowireHelper;
 
 public class SubjectEntityListener {
@@ -29,25 +31,25 @@ public class SubjectEntityListener {
   @Autowired
   CaseStudyRepository caseStudyRepo;
 
+  @Autowired
+  SubjectRepository subjectRepo;
+
+  @Autowired
+  SubjectService subjectService;
+
   @PostPersist
   public void postPersist(Subject target) {
     AutowireHelper.autowire(this, caseStudyRepo);
-
-    System.out.println(caseStudyRepo);
   }
 
   @PostUpdate
   public void postUpdate(Subject target) {
     AutowireHelper.autowire(this, caseStudyRepo);
-
-    System.out.println(caseStudyRepo);
   }
 
   @PostRemove
   public void postDelete(Subject target) {
     AutowireHelper.autowire(this, caseStudyRepo);
-
-    System.out.println(caseStudyRepo);
   }
 
 }

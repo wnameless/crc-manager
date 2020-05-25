@@ -38,7 +38,7 @@ import com.wmw.crc.manager.service.VisitService;
 public class TestController {
 
   @Autowired
-  CaseStudyRepository caseRepository;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   TsghService tsghService;
   @Autowired
@@ -88,7 +88,7 @@ public class TestController {
   @GetMapping("/json/cases/{id}")
   @ResponseBody
   SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
-    CaseStudy cs = caseRepository.findById(id).get();
+    CaseStudy cs = caseStudyRepo.findById(id).get();
     SimpleReactJsonSchemaForm rsjf = new SimpleReactJsonSchemaForm();
 
     rsjf.setFormData(cs.getFormData());

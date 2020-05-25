@@ -45,7 +45,7 @@ import com.wmw.crc.manager.service.CaseStudyService;
 public class SearchController {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   SubjectRepository subjectRepo;
   @Autowired

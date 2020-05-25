@@ -42,33 +42,30 @@ import com.wmw.crc.manager.repository.VisitRepository;
 public class TestDatabaseInitializer {
 
   @Autowired
-  CaseStudyRepository caseRepo;
-
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   SubjectRepository subjectRepo;
-
   @Autowired
   VisitRepository visitRepo;
-
   @Autowired
   MedicineRepository medicineRepo;
 
   @PostConstruct
   void init() throws IOException {
-    if (caseRepo.count() == 0) {
+    if (caseStudyRepo.count() == 0) {
       CaseStudy c = new CaseStudy();
       URL url = Resources.getResource("json-schemas/test-data/4.json");
       JsonNode bjsf =
           new ObjectMapper().readTree(Resources.toString(url, Charsets.UTF_8));
       c.setFormData(bjsf.get("formData"));
-      caseRepo.save(c);
+      caseStudyRepo.save(c);
 
       c = new CaseStudy();
       url = Resources.getResource("json-schemas/test-data/5.json");
       bjsf =
           new ObjectMapper().readTree(Resources.toString(url, Charsets.UTF_8));
       c.setFormData(bjsf.get("formData"));
-      caseRepo.save(c);
+      caseStudyRepo.save(c);
 
       for (int i = 0; i <= 20; i++) {
         c = new CaseStudy();
@@ -76,7 +73,7 @@ public class TestDatabaseInitializer {
         bjsf = new ObjectMapper()
             .readTree(Resources.toString(url, Charsets.UTF_8));
         c.setFormData(bjsf.get("formData"));
-        caseRepo.save(c);
+        caseStudyRepo.save(c);
       }
 
       Subject s = new Subject();

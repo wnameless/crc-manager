@@ -60,7 +60,7 @@ public class CaseStudyController
     implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   CaseStudyService caseService;
 
@@ -130,7 +130,7 @@ public class CaseStudyController
   String updateJS(Authentication auth, Model model, @PathVariable Long id,
       @RequestBody JsonNode formData) {
     caseStudy.setFormData(formData);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     model.addAttribute("slice",
         caseService.getCasesByStatus(auth, status, pageable, search));
@@ -140,14 +140,14 @@ public class CaseStudyController
   @PreAuthorize("@perm.canDelete()")
   @DeleteMapping("/{id}")
   String delete(@PathVariable Long id) {
-    if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
+    if (caseStudy.getId() != null) caseStudyRepo.delete(caseStudy);
     return "redirect:" + caseStudy.getIndexPath();
   }
 
   @PreAuthorize("@perm.canDelete()")
   @DeleteMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
   String deleteJS(Authentication auth, Model model, @PathVariable Long id) {
-    if (caseStudy.getId() != null) caseRepo.delete(caseStudy);
+    if (caseStudy.getId() != null) caseStudyRepo.delete(caseStudy);
 
     model.addAttribute("slice",
         caseService.getCasesByStatus(auth, status, pageable, search));
@@ -169,7 +169,7 @@ public class CaseStudyController
 
   @Override
   public CaseStudyRepository getRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
 }

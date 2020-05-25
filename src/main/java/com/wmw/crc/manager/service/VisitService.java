@@ -76,9 +76,31 @@ public class VisitService {
           BeanUtils.copyProperties(newVisit, visit);
           visit.setSubject(s);
           visitRepo.save(visit);
+
+          CaseStudy cs = s.getCaseStudy();
+          cs.setUnreviewedOngoingVisits(cs.getUnreviewedOngoingVisits() + 1);
+          caseStudyRepo.save(cs);
         }
       }
     }
+  }
+
+  public boolean reviewVisit(CaseStudy caseStudy, Subject subject,
+      Long visitId) {
+    Visit visit =
+        Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
+    visit.setReviewed(!visit.isReviewed());
+    visitRepo.save(visit);
+
+    long count = visit.isReviewed() ? -1 : 1;
+    long unreviewedOngoingVisits =
+        caseStudy.getUnreviewedOngoingVisits() + count;
+    unreviewedOngoingVisits =
+        unreviewedOngoingVisits < 0 ? 0 : unreviewedOngoingVisits;
+    caseStudy.setUnreviewedOngoingVisits(unreviewedOngoingVisits);
+    caseStudyRepo.save(caseStudy);
+
+    return visit.isReviewed();
   }
 
   public SimpleMailMessage createVisitEmail(Visit visit, boolean includeCD) {

@@ -59,7 +59,7 @@ import net.sf.rubycollect4j.RubyArray;
 public class CaseStudyService {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
 
   @Autowired
   SubjectRepository subjectRepo;
@@ -115,18 +115,18 @@ public class CaseStudyService {
 
   public Iterable<CaseStudy> getCasesByStatus(Authentication auth,
       CaseStudy.Status status) {
-    return caseRepo.findAllByUserAndStatus(auth, status);
+    return caseStudyRepo.findAllByUserAndStatus(auth, status);
   }
 
   public Page<CaseStudy> getCasesByStatus(Authentication auth,
       CaseStudy.Status status, Pageable pageable) {
-    return caseRepo.findAllByUserAndStatus(auth, status, pageable);
+    return caseStudyRepo.findAllByUserAndStatus(auth, status, pageable);
   }
 
   public Page<CaseStudy> getCasesByStatus(Authentication auth,
       CaseStudy.Status status, Pageable pageable, String search) {
     if (search != null && !search.isEmpty()) {
-      return caseRepo.findAllByUserAndStatus(auth, status, pageable, search);
+      return caseStudyRepo.findAllByUserAndStatus(auth, status, pageable, search);
     }
 
     return getCasesByStatus(auth, status, pageable);
@@ -178,9 +178,9 @@ public class CaseStudyService {
 
     Iterable<CaseStudy> readableCases;
     if (caseCriteria.isEmpty()) {
-      readableCases = caseRepo.findAllByUser(auth);
+      readableCases = caseStudyRepo.findAllByUser(auth);
     } else {
-      readableCases = caseRepo.findAllByUserAndCriteria(auth, caseCriteria);
+      readableCases = caseStudyRepo.findAllByUserAndCriteria(auth, caseCriteria);
     }
 
     if (subjectCriteria.isEmpty()) {
@@ -196,7 +196,7 @@ public class CaseStudyService {
 
   public HttpEntity<byte[]> createDownloadableExcelCaseStudy(Long id,
       Locale locale) throws IOException {
-    CaseStudy kase = caseRepo.findById(id).get();
+    CaseStudy kase = caseStudyRepo.findById(id).get();
 
     Workbook wb = dataExport.toExcel(kase, locale);
 

@@ -71,7 +71,7 @@ public class SubjectController implements NestedRestfulController< //
     Subject, Long, SubjectRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   SubjectRepository subjectRepo;
   @Autowired
@@ -91,7 +91,8 @@ public class SubjectController implements NestedRestfulController< //
       ModelOption<Subject> childInitOption,
       ModelOption<? extends Iterable<Subject>> childrenInitOption) {
     parentInitOption.afterInitAction(p -> caseStudy = p);
-    childInitOption.afterInitAction(c -> subject = firstNonNull(c, new Subject()));
+    childInitOption
+        .afterInitAction(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -276,7 +277,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public CaseStudyRepository getParentRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
   @Override

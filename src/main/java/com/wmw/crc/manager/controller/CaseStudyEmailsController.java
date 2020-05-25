@@ -49,7 +49,7 @@ public class CaseStudyEmailsController
     implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
 
   @Autowired
   CaseStudyService caseService;
@@ -59,8 +59,8 @@ public class CaseStudyEmailsController
 
   @Override
   public void configure(ModelOption<CaseStudy> initOption) {
-    initOption
-        .afterInitAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
+    initOption.afterInitAction(
+        item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute
@@ -94,7 +94,7 @@ public class CaseStudyEmailsController
     for (int i = 0; i < listOfEmails.size(); i++) {
       caseStudy.getEmails().add(listOfEmails.get(i).asText());
     }
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/show :: partial";
@@ -107,7 +107,7 @@ public class CaseStudyEmailsController
 
   @Override
   public CaseStudyRepository getRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
 }

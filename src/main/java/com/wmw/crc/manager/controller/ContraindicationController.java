@@ -36,7 +36,7 @@ public class ContraindicationController implements NestedRestfulController< //
     Contraindication, Long, ContraindicationRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   ContraindicationRepository cdRepository;
   @Autowired
@@ -88,7 +88,7 @@ public class ContraindicationController implements NestedRestfulController< //
 
   @Override
   public CaseStudyRepository getParentRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
   @Override
