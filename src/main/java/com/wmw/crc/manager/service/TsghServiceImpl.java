@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -37,10 +39,10 @@ import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
-import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 import com.wmw.crc.manager.service.tsgh.api.TsghApi;
+import com.wmw.crc.manager.service.tsgh.api.TsghPatient;
 import com.wmw.crc.manager.service.tsgh.api.TsghResponse;
 import com.wmw.crc.manager.util.JsonNodeUtils;
 
@@ -63,7 +65,6 @@ public class TsghServiceImpl implements TsghService {
 
   @Value("${api.tsgh.baseurl}")
   String baseUrl;
-
   TsghApi tsghApi;
 
   @Autowired
@@ -88,11 +89,71 @@ public class TsghServiceImpl implements TsghService {
     tsghApi = retrofit.create(TsghApi.class);
   }
 
-  public Patient findPatientById(String nationalId) throws IOException {
-    Call<TsghResponse<Patient>> call = tsghApi.searchPatient(nationalId);
-    Response<TsghResponse<Patient>> res = call.execute();
-    TsghResponse<Patient> body = res.body();
-    return body == null ? null : body.getData();
+  public Subject queryPatientById(String nationalId) throws IOException {
+    Call<TsghResponse<TsghPatient>> call = tsghApi.searchPatient(nationalId);
+    Response<TsghResponse<TsghPatient>> res = call.execute();
+    TsghResponse<TsghPatient> body = res.body();
+
+    TsghPatient patient = body == null ? null : body.getData();
+
+    Subject subject = new Subject();
+    ObjectMapper mapper = new ObjectMapper();
+    ObjectNode node = mapper.createObjectNode();
+
+    if (patient.getNationalId() != null) {
+      node.put("taiwanId", patient.getNationalId());
+      if (patient.getNationalId().length() >= 2
+          && patient.getNationalId().charAt(1) == '1') {
+        node.put("gender", "男");
+        // formData.gender = '男';
+      }
+      if (patient.getNationalId().length() >= 2
+          && patient.getNationalId().charAt(1) == '2') {
+        node.put("gender", "女");
+        // formData.gender = '女';
+      }
+    }
+    if (patient.getPatientId() != null) {
+      node.put("mrn", Ruby.Array.of(patient.getPatientId()).join(","));
+      // formData.mrn = patient.patientId.join(',');
+    }
+    if (patient.getTrialId() != null) {
+      node.put("subjectId", Ruby.Array.of(patient.getTrialId()).join(","));
+      // formData.subjectId = patient.trialId.join(',');
+    }
+    if (patient.getName() != null) {
+      node.put("lastname", patient.getName());
+      // formData.lastname = patient.name;
+    }
+    if (patient.getBirthday() != null) {
+      if (patient.getBirthday().length() == 7) {
+        String year = patient.getBirthday().substring(0, 3);
+        String month = patient.getBirthday().substring(3, 2);
+        String day = patient.getBirthday().substring(5, 2);
+
+        node.put("birthDate",
+            "" + (Integer.parseInt(year) + 1911) + "-" + month + "-" + day);
+        // formData.birthDate = `${year}-${month}-${day}`;
+      } else if (patient.getBirthday().length() == 8) {
+        String year = patient.getBirthday().substring(0, 4);
+        String month = patient.getBirthday().substring(4, 2);
+        String day = patient.getBirthday().substring(6, 2);
+
+        node.put("birthDate", "" + year + "-" + month + "-" + day);
+        // formData.birthDate = `${year}-${month}-${day}`;
+      }
+    }
+    if (patient.getPhone() != null && !patient.getPhone().isEmpty()) {
+      node.put("telephone1", patient.getPhone());
+      // formData.telephone1 = patient.phone;
+    }
+    if (patient.getAddress() != null) {
+      node.put("address", patient.getAddress());
+      // formData.address = patient.address;
+    }
+
+    subject.setFormData(node);
+    return subject;
   }
 
   public List<Drug> getDrugs() throws IOException {

@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 
 import java.util.Locale;
@@ -26,13 +27,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -55,19 +56,11 @@ public class CaseStudyOperationController
 
   CaseStudy caseStudy;
 
-  @ModelAttribute
-  void init(@PathVariable(required = false) Long id) {
-    caseStudy = getItem(id, new CaseStudy());
+  @Override
+  public void configureInitOption(InitOption<CaseStudy> initOption) {
+    initOption
+        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
-
-  // @PreAuthorize("@perm.canManage(#id)")
-  // @GetMapping("/status/{status}")
-  // String alterStatus(@PathVariable Long id, @PathVariable String status) {
-  // caseStudy.setStatus(Status.fromString(status, Status.NEW));
-  // caseRepo.save(caseStudy);
-  //
-  // return "redirect:" + getRoute().getIndexPath();
-  // }
 
   @PreAuthorize("@perm.canAssign()")
   @GetMapping("/assignment")

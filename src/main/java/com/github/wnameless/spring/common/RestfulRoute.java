@@ -17,6 +17,17 @@ package com.github.wnameless.spring.common;
 
 public interface RestfulRoute<ID> extends JoinablePath {
 
+  public static <ID> RestfulRoute<ID> of(String indexPath) {
+    return new RestfulRoute<ID>() {
+
+      @Override
+      public String getIndexPath() {
+        return indexPath;
+      }
+
+    };
+  }
+
   @Override
   default String getRootPath() {
     return getIndexPath();

@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
@@ -34,9 +35,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +48,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -57,7 +59,6 @@ import com.wmw.crc.manager.service.ExcelSubjectUploadService;
 import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.SubjectService;
 import com.wmw.crc.manager.service.TsghService;
-import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -85,11 +86,12 @@ public class SubjectController implements NestedRestfulController< //
   CaseStudy caseStudy;
   Subject subject;
 
-  @ModelAttribute
-  void init(@PathVariable(required = false) Long parentId,
-      @PathVariable(required = false) Long id) {
-    caseStudy = getParent(parentId);
-    subject = getChild(parentId, id, new Subject());
+  @Override
+  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
+      InitOption<Subject> childInitOption,
+      InitOption<? extends Iterable<Subject>> childrenInitOption) {
+    parentInitOption.afterAction(p -> caseStudy = p);
+    childInitOption.afterAction(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -111,21 +113,6 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @PostMapping
-  String createJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData, Locale locale) {
-    subject = new Subject(formData);
-    AdvOpt<Subject> sOpt = subjectService.createSubject(caseStudy, subject);
-
-    if (sOpt.isAbsent() && sOpt.hasMessage()) {
-      model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
-    }
-
-    updateChildren(model, caseStudy);
-    return "subjects/list :: partial";
-  }
-
-  @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/batch")
   String batchCreate(@PathVariable Long parentId,
       @RequestParam MultipartFile subjectFile, RedirectAttributes redirAttrs) {
@@ -140,6 +127,23 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
+  @PostMapping
+  String createJS(Model model, @PathVariable Long parentId,
+      @RequestBody JsonNode formData, Locale locale) {
+    subject = new Subject(formData);
+    AdvOpt<Subject> sOpt = subjectService.createSubject(caseStudy, subject);
+
+    if (sOpt.isAbsent()) {
+      if (sOpt.hasMessage()) {
+        model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+      }
+    } else {
+      updateChildrenByParent(model, caseStudy);
+    }
+    return "subjects/list :: partial";
+  }
+
+  @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/{id}")
   String updateJS(Model model, @PathVariable Long parentId,
       @RequestBody JsonNode formData, Locale locale) {
@@ -150,7 +154,7 @@ public class SubjectController implements NestedRestfulController< //
         model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
       }
     } else {
-      updateChildren(model, caseStudy);
+      updateChildrenByParent(model, caseStudy);
     }
     return "subjects/list :: partial";
   }
@@ -183,33 +187,23 @@ public class SubjectController implements NestedRestfulController< //
     if (subject.getId() != null) {
       subjectRepo.delete(subject);
 
-      updateChildren(model, caseStudy);
+      updateChildrenByParent(model, caseStudy);
     }
 
     return "subjects/list :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @GetMapping("/{id}/status/{status}")
-  String alterStatus(@PathVariable Long parentId, @PathVariable String status) {
+  @PutMapping("/{id}")
+  @ResponseBody
+  Integer alterBundle(@PathVariable Long parentId,
+      @RequestParam Integer bundle) {
     if (subject.getId() != null) {
-      subject.setStatus(Subject.Status.fromString(status));
+      subject.setContraindicationBundle(bundle);
       subjectRepo.save(subject);
     }
 
-    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
-  }
-
-  @PreAuthorize("@perm.canWrite(#parentId)")
-  @GetMapping("/{id}/bundle/{bundleNumber}")
-  String alterBundle(@PathVariable Long parentId,
-      @PathVariable Integer bundleNumber) {
-    if (subject.getId() != null) {
-      subject.setContraindicationBundle(bundleNumber);
-      subjectRepo.save(subject);
-    }
-
-    return "redirect:" + getRoute().apply(caseStudy).getIndexPath();
+    return subject.getContraindicationBundle();
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -217,8 +211,7 @@ public class SubjectController implements NestedRestfulController< //
   String batchDating(@PathVariable Long parentId,
       @RequestParam String subjectDateType,
       @RequestParam(required = false) String subjectDate,
-      @RequestParam(name = "subjectIds[]",
-          required = false) List<Long> subjectIds,
+      @RequestParam(name = "oofValues", required = false) List<Long> subjectIds,
       @RequestParam Integer bundleNumber, Locale locale,
       RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
@@ -255,17 +248,17 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/query/{nationalId}")
   @ResponseBody
-  Patient searchPatient(@PathVariable Long parentId,
+  Subject searchPatient(@PathVariable Long parentId,
       @PathVariable String nationalId) {
-    Patient patient;
+    Subject subject;
     try {
-      patient = tsghService.findPatientById(nationalId);
+      subject = tsghService.queryPatientById(nationalId);
     } catch (IOException e) {
       log.error("Patient seaching failed!", e);
-      patient = new Patient();
+      subject = new Subject();
     }
 
-    return patient;
+    return subject;
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -278,14 +271,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
-    return (caseStudy) -> new RestfulRoute<Long>() {
-
-      @Override
-      public String getIndexPath() {
-        return caseStudy.joinPath(SUBJECT);
-      }
-
-    };
+    return (caseStudy) -> RestfulRoute.of(caseStudy.joinPath(SUBJECT));
   }
 
   @Override
@@ -294,7 +280,7 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @Override
-  public SubjectRepository getRepository() {
+  public SubjectRepository getChildRepository() {
     return subjectRepo;
   }
 
@@ -306,7 +292,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public Iterable<Subject> getChildren(CaseStudy parent) {
-    return getRepository().findAllByCaseStudy(parent);
+    return getChildRepository().findAllByCaseStudy(parent);
   }
 
 }

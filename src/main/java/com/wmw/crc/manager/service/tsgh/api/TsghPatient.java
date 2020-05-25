@@ -20,7 +20,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Patient {
+public class TsghPatient {
   List<String> patientId;
 
   List<String> trialId;

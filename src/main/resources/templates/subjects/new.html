@@ -1,21 +1,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="partial">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3
-            th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
-        </h3>
-        <hr>
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-6">
-                <input id="nationalId" type="text" class="form-control" th:placeholder="#{ui.subject.nationalid}">
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3
+                th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.withChild(child).indexPath})">
+            </h3>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-6">
+                    <input id="nationalId" type="text" class="form-control" th:placeholder="#{ui.subject.nationalid}">
+                </div>
+                <div class="col-sm-4">
+                    <button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <button id="queryBtn" class="btn btn-primary" th:text="#{ui.subject.search}"></button>
-            </div>
+
+            <hr>
+
+            <div id="jsfForm"></div>
         </div>
-        <hr>
-        <div id="jsfForm"></div>
     </div>
 
     <script type="text/javascript" th:inline="javascript">
@@ -26,78 +32,29 @@
                         $('#jsf').html(response.data);
                     });
             };
-
             let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.submit}]]*/'送出',
+                btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
                 onSubmit: onSubmit
             }, /*[[${child.toRjsfMap()}]]*/ {});
-
             ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                 document.getElementById('jsfForm'));
 
             $('#queryBtn').click(function () {
-                if (!$('#nationalId').val()) {
-                    $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
-                    return;
-                }
+                if (!$('#nationalId').val()) return;
 
                 let subjectQueryPath = /*[[${route.joinPath('query/')}]]*/ '';
                 axios.get(subjectQueryPath + $('#nationalId').val())
                     .then((response) => {
-                        let patient = response.data;
-                        let formData = rjsfOpt.formData;
+                        let formData = response.data.formData;
 
-                        if (!patient.nationalId) {
+                        if (!formData.taiwanId) {
                             $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
                             return;
-                        }
-
-                        if (patient.patientId) {
-                            formData.mrn = patient.patientId.join(',');
-                        }
-                        if (patient.trialId) {
-                            formData.subjectId = patient.trialId.join(',');
-                        }
-                        if (patient.name) {
-                            formData.lastname = patient.name;
-                        }
-                        if (patient.nationalId) {
-                            formData.taiwanId = patient.nationalId;
-
-                            if (patient.nationalId[1] == '1') {
-                                formData.gender = '男';
-                            }
-                            if (patient.nationalId[1] == '2') {
-                                formData.gender = '女';
-                            }
-                        }
-                        if (patient.birthday) {
-                            if (patient.birthday.length == 7) {
-                                let year = patient.birthday.substr(0, 3);
-                                year = parseInt(year) + 1911;
-                                let month = patient.birthday.substr(3, 2);
-                                let day = patient.birthday.substr(5, 2);
-
-                                formData.birthDate = `${year}-${month}-${day}`;
-                            } else if (patient.birthday.length == 8) {
-                                let year = patient.birthday.substr(0, 4);
-                                let month = patient.birthday.substr(4, 2);
-                                let day = patient.birthday.substr(6, 2);
-
-                                formData.birthDate = `${year}-${month}-${day}`;
-                            }
-                        }
-                        if (patient.phone) {
-                            formData.telephone1 = patient.phone;
-                        }
-                        if (patient.address) {
-                            formData.address = patient.address;
                         }
 
                         rjsfOpt = Object.assign(rjsfOpt, {
                             formData: formData
                         });
-
                         ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
                             document.getElementById('jsfForm'));
                     });

@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 
 import java.util.Locale;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
@@ -55,11 +57,15 @@ public class CaseStudyEmailsController
   CaseStudy caseStudy;
   Emails emails;
 
+  @Override
+  public void configureInitOption(InitOption<CaseStudy> initOption) {
+    initOption
+        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
+  }
+
   @ModelAttribute
   void init(Model model, Locale locale,
       @PathVariable(required = false) Long id) {
-    caseStudy = getItem(id, new CaseStudy());
-    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     emails = new Emails();
     model.addAttribute("emails", emails);
   }
@@ -81,7 +87,8 @@ public class CaseStudyEmailsController
 
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping("/emails")
-  String save(@PathVariable Long id, @RequestBody JsonNode formData) {
+  String save(Model model, @PathVariable Long id,
+      @RequestBody JsonNode formData) {
     caseStudy.getEmails().clear();
     JsonNode listOfEmails = formData.get("listOfEmails");
     for (int i = 0; i < listOfEmails.size(); i++) {
@@ -89,6 +96,7 @@ public class CaseStudyEmailsController
     }
     caseRepo.save(caseStudy);
 
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
     return "cases/show :: partial";
   }
 

@@ -1,33 +1,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <script th:fragment="simple-ajax-actions(tag)" type="text/javascript" th:inline="javascript">
-	var axiosGet = function (url) {
-		axios.get(url).then((response) => {
-			$(/*[[${tag}]]*/ null).html(response.data);
+	var params = function (p) {
+		return new URLSearchParams(p);
+	};
+
+	var axiosGet = function (url, config = {}, ajax = true) {
+		axios.get(url, config).then((response) => {
+			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});
 	};
 
-	var axiosPost = function (url) {
-		axios.post(url).then((response) => {
-			$(/*[[${tag}]]*/ null).html(response.data);
+	var axiosDelete = function (url, config = {}, ajax = true) {
+		axios.delete(url, config).then((response) => {
+			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});
 	};
 
-	var axiosPut = function (url) {
-		axios.put(url).then((response) => {
-			$(/*[[${tag}]]*/ null).html(response.data);
+	var axiosPost = function (url, data = {}, config = {}, ajax = true) {
+		axios.post(url, data, config).then((response) => {
+			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});
 	};
 
-	var axiosPatch = function (url) {
-		axios.patch(url).then((response) => {
-			$(/*[[${tag}]]*/ null).html(response.data);
+	var axiosPut = function (url, data = {}, config = {}, ajax = true) {
+		axios.put(url, data, config).then((response) => {
+			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});
 	};
 
-	var axiosDelete = function (url) {
-		axios.delete(url).then((response) => {
-			$(/*[[${tag}]]*/ null).html(response.data);
+	var axiosPatch = function (url, data = {}, config = {}, ajax = true) {
+		axios.patch(url, data, config).then((response) => {
+			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});
 	};
 </script>

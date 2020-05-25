@@ -25,8 +25,31 @@ public interface RestfulController< //
 
   RestfulRoute<ID> getRoute();
 
-  default String getRouteKey() {
-    return "route";
+  R getRepository();
+
+  void configureInitOption(InitOption<I> initOption);
+
+  default InitOption<I> getInitOption() {
+    InitOption<I> initOption = new InitOption<I>();
+    configureInitOption(initOption);
+    return initOption;
+  }
+
+  @ModelAttribute
+  default void setItem(Model model, @PathVariable(required = false) ID id) {
+    if (!getInitOption().isInit()) return;
+
+    I item = null;
+
+    if (id != null) {
+      item = getRepository().findById(id).get();
+    }
+
+    if (getInitOption().getAfterAction() != null) {
+      item = getInitOption().getAfterAction().apply(item);
+    }
+
+    model.addAttribute(getItemKey(), item);
   }
 
   @ModelAttribute
@@ -34,17 +57,12 @@ public interface RestfulController< //
     model.addAttribute(getRouteKey(), getRoute());
   }
 
-  R getRepository();
+  default String getRouteKey() {
+    return "route";
+  }
 
   default String getItemKey() {
     return "item";
-  }
-
-  @ModelAttribute
-  default void setItem(Model model, @PathVariable(required = false) ID id) {
-    if (id != null) {
-      model.addAttribute(getItemKey(), getRepository().findById(id).get());
-    }
   }
 
   default I getItem(ID id) {

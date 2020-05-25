@@ -1,11 +1,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="partial">
-    <div class="row col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-        <h3
-            th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${route.indexPath})">
-        </h3>
-        <hr>
-        <div id="jsfForm"></div>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${route.indexPath})"></h3>
+
+            <hr>
+
+            <div id="jsfForm"></div>
+        </div>
     </div>
 
     <script type="text/javascript" th:inline="javascript">
@@ -18,7 +20,7 @@
             };
 
             let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.submit}]]*/'送出',
+                btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
                 onSubmit: onSubmit
             }, /*[[${child.toRjsfMap()}]]*/ {});
 

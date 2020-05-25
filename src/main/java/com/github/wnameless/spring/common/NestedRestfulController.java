@@ -27,16 +27,90 @@ public interface NestedRestfulController< //
     P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, //
     C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>> {
 
+  Function<P, RestfulRoute<CID>> getRoute();
+
   PR getParentRepository();
 
-  CR getRepository();
+  CR getChildRepository();
 
   BiPredicate<P, C> getPaternityTesting();
 
-  Function<P, RestfulRoute<CID>> getRoute();
+  Iterable<C> getChildren(P parent);
 
-  default String getRouteKey() {
-    return "route";
+  void configureInitOptions(InitOption<P> parentInitOption,
+      InitOption<C> childInitOption,
+      InitOption<? extends Iterable<C>> childrenInitOption);
+
+  default InitOption<P> getParentInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return parentOption;
+  }
+
+  default InitOption<C> getChildInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return childOption;
+  }
+
+  default InitOption<Iterable<C>> getChildrenInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return childrenOption;
+  }
+
+  @ModelAttribute
+  default void setParentAndChild(Model model,
+      @PathVariable(required = false) PID parentId,
+      @PathVariable(required = false) CID id) {
+    if (!getParentInitOption().isInit()) return;
+
+    P parent = null;
+    if (parentId != null) {
+      parent = getParentRepository().findById(parentId).get();
+    }
+    if (getParentInitOption().getAfterAction() != null) {
+      parent = getParentInitOption().getAfterAction().apply(parent);
+    }
+    model.addAttribute(getParentKey(), parent);
+
+    if (!getChildInitOption().isInit()) return;
+
+    C child = null;
+    if (parent != null && id != null) {
+      child = getChildRepository().findById(id).get();
+      child = getPaternityTesting().test(parent, child) ? child : null;
+    }
+    if (getChildInitOption().getAfterAction() != null) {
+      child = getChildInitOption().getAfterAction().apply(child);
+    }
+    model.addAttribute(getChildKey(), child);
+  }
+
+  @ModelAttribute
+  default void setChildren(Model model,
+      @PathVariable(required = false) PID parentId,
+      @PathVariable(required = false) CID id) {
+    if (!getChildrenInitOption().isInit()) return;
+
+    Iterable<C> children = null;
+
+    if (parentId != null && id == null) {
+      P parent = getParentRepository().findById(parentId).get();
+      children = getChildren(parent);
+    }
+
+    if (getChildrenInitOption().getAfterAction() != null) {
+      children = getChildrenInitOption().getAfterAction().apply(children);
+    }
+
+    model.addAttribute(getChildrenKey(), children);
   }
 
   @ModelAttribute
@@ -47,17 +121,12 @@ public interface NestedRestfulController< //
     }
   }
 
-  default String getParentKey() {
-    return "parent";
+  default String getRouteKey() {
+    return "route";
   }
 
-  @ModelAttribute
-  default void setParent(Model model,
-      @PathVariable(required = false) PID parentId) {
-    if (parentId != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      model.addAttribute(getParentKey(), parent);
-    }
+  default String getParentKey() {
+    return "parent";
   }
 
   default P getParent(PID parentId) {
@@ -80,20 +149,6 @@ public interface NestedRestfulController< //
     return "child";
   }
 
-  @ModelAttribute
-  default void setChild(Model model,
-      @PathVariable(required = false) PID parentId,
-      @PathVariable(required = false) CID id) {
-    if (parentId != null && id != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      C child = getRepository().findById(id).get();
-
-      if (getPaternityTesting().test(parent, child)) {
-        model.addAttribute(getChildKey(), child);
-      }
-    }
-  }
-
   default C getChild(PID parentId, CID id) {
     return getChild(parentId, id, null);
   }
@@ -101,7 +156,7 @@ public interface NestedRestfulController< //
   default C getChild(PID parentId, CID id, C defaultItem) {
     if (parentId != null && id != null) {
       P parent = getParentRepository().findById(parentId).get();
-      C child = getRepository().findById(id).get();
+      C child = getChildRepository().findById(id).get();
       if (getPaternityTesting().test(parent, child)) {
         return child;
       }
@@ -119,25 +174,13 @@ public interface NestedRestfulController< //
     return "children";
   }
 
-  @ModelAttribute
-  default void setChildren(Model model,
-      @PathVariable(required = false) PID parentId) {
-    if (parentId != null) {
-      P parent = getParentRepository().findById(parentId).get();
-      Iterable<C> childs = getChildren(parent);
-      model.addAttribute(getChildrenKey(), childs);
-    }
-  }
-
-  Iterable<C> getChildren(P parent);
-
-  default Iterable<C> updateChildren(Model model, P parent) {
-    Iterable<C> children = getChildren(parent);
+  default Iterable<C> updateChildren(Model model, Iterable<C> children) {
     model.addAttribute(getChildrenKey(), children);
     return children;
   }
 
-  default Iterable<C> updateChildren(Model model, Iterable<C> children) {
+  default Iterable<C> updateChildrenByParent(Model model, P parent) {
+    Iterable<C> children = getChildren(parent);
     model.addAttribute(getChildrenKey(), children);
     return children;
   }

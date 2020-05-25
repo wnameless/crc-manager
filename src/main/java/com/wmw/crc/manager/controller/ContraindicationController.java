@@ -15,12 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -44,9 +44,11 @@ public class ContraindicationController implements NestedRestfulController< //
 
   CaseStudy caseStudy;
 
-  @ModelAttribute
-  void init(@PathVariable Long parentId) {
-    caseStudy = getParent(parentId);
+  @Override
+  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
+      InitOption<Contraindication> childInitOption,
+      InitOption<? extends Iterable<Contraindication>> childrenInitOption) {
+    parentInitOption.afterAction(p -> caseStudy = p);
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -65,7 +67,7 @@ public class ContraindicationController implements NestedRestfulController< //
     caseStudyService.addContraindication(caseStudy, bundle, phrase, takekinds,
         memo);
 
-    updateChildren(model, caseStudy);
+    updateChildrenByParent(model, caseStudy);
     return "redirect:" + caseStudy.joinPath("contraindications");
   }
 
@@ -75,8 +77,13 @@ public class ContraindicationController implements NestedRestfulController< //
       @PathVariable Long id) {
     caseStudyService.removeContraindication(caseStudy, id);
 
-    updateChildren(model, caseStudy);
+    updateChildrenByParent(model, caseStudy);
     return "contraindication/list :: partial";
+  }
+
+  @Override
+  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
+    return (caseStudy) -> RestfulRoute.of(caseStudy.joinPath(CONTRAINDICATION));
   }
 
   @Override
@@ -85,25 +92,13 @@ public class ContraindicationController implements NestedRestfulController< //
   }
 
   @Override
-  public ContraindicationRepository getRepository() {
+  public ContraindicationRepository getChildRepository() {
     return cdRepository;
   }
 
   @Override
   public BiPredicate<CaseStudy, Contraindication> getPaternityTesting() {
     return (p, c) -> Objects.equals(p, c.getCaseStudy());
-  }
-
-  @Override
-  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
-    return (caseStudy) -> new RestfulRoute<Long>() {
-
-      @Override
-      public String getIndexPath() {
-        return caseStudy.joinPath(CONTRAINDICATION);
-      }
-
-    };
   }
 
   @Override
