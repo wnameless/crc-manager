@@ -20,7 +20,6 @@ import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -57,10 +57,9 @@ public class CaseStudyOperationController
   CaseStudy caseStudy;
 
   @Override
-  public Consumer<CaseStudy> afterInitItem() {
-    return (item) -> {
-      caseStudy = firstNonNull(item, new CaseStudy());
-    };
+  public void configureInitOption(InitOption<CaseStudy> initOption) {
+    initOption
+        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @PreAuthorize("@perm.canAssign()")

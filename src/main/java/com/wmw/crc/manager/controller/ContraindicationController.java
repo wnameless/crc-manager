@@ -6,7 +6,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -45,10 +45,10 @@ public class ContraindicationController implements NestedRestfulController< //
   CaseStudy caseStudy;
 
   @Override
-  public BiConsumer<CaseStudy, Contraindication> afterInitParentAndChild() {
-    return (p, c) -> {
-      caseStudy = p;
-    };
+  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
+      InitOption<Contraindication> childInitOption,
+      InitOption<? extends Iterable<Contraindication>> childrenInitOption) {
+    parentInitOption.afterAction(p -> caseStudy = p);
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -82,30 +82,23 @@ public class ContraindicationController implements NestedRestfulController< //
   }
 
   @Override
+  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
+    return (caseStudy) -> RestfulRoute.of(caseStudy.joinPath(CONTRAINDICATION));
+  }
+
+  @Override
   public CaseStudyRepository getParentRepository() {
     return caseRepo;
   }
 
   @Override
-  public ContraindicationRepository getRepository() {
+  public ContraindicationRepository getChildRepository() {
     return cdRepository;
   }
 
   @Override
   public BiPredicate<CaseStudy, Contraindication> getPaternityTesting() {
     return (p, c) -> Objects.equals(p, c.getCaseStudy());
-  }
-
-  @Override
-  public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
-    return (caseStudy) -> new RestfulRoute<Long>() {
-
-      @Override
-      public String getIndexPath() {
-        return caseStudy.joinPath(CONTRAINDICATION);
-      }
-
-    };
   }
 
   @Override

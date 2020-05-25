@@ -19,7 +19,6 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 
 import java.util.Locale;
-import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
@@ -58,10 +58,9 @@ public class CaseStudyEmailsController
   Emails emails;
 
   @Override
-  public Consumer<CaseStudy> afterInitItem() {
-    return (item) -> {
-      caseStudy = firstNonNull(item, new CaseStudy());
-    };
+  public void configureInitOption(InitOption<CaseStudy> initOption) {
+    initOption
+        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute

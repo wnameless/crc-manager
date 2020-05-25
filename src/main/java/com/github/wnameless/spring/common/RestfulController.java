@@ -15,8 +15,6 @@
  */
 package com.github.wnameless.spring.common;
 
-import java.util.function.Consumer;
-
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,20 +27,29 @@ public interface RestfulController< //
 
   R getRepository();
 
-  Consumer<I> afterInitItem();
+  void configureInitOption(InitOption<I> initOption);
+
+  default InitOption<I> getInitOption() {
+    InitOption<I> initOption = new InitOption<I>();
+    configureInitOption(initOption);
+    return initOption;
+  }
 
   @ModelAttribute
   default void setItem(Model model, @PathVariable(required = false) ID id) {
+    if (!getInitOption().isInit()) return;
+
     I item = null;
 
     if (id != null) {
       item = getRepository().findById(id).get();
-      model.addAttribute(getItemKey(), item);
     }
 
-    if (afterInitItem() != null) {
-      afterInitItem().accept(item);
+    if (getInitOption().getAfterAction() != null) {
+      item = getInitOption().getAfterAction().apply(item);
     }
+
+    model.addAttribute(getItemKey(), item);
   }
 
   @ModelAttribute

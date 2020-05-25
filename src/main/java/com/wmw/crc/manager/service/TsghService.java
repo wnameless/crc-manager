@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.List;
 
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
-import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 
 import lombok.Data;
@@ -29,7 +29,7 @@ import retrofit2.Response;
 
 public interface TsghService {
 
-  public Patient findPatientById(String nationalId) throws IOException;
+  public Subject queryPatientById(String nationalId) throws IOException;
 
   public List<Drug> getDrugs() throws IOException;
 

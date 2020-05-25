@@ -21,7 +21,6 @@ import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -64,11 +64,12 @@ public class VisitController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public BiConsumer<CaseStudy, Subject> afterInitParentAndChild() {
-    return (p, c) -> {
-      caseStudy = p;
-      subject = firstNonNull(c, new Subject());
-    };
+  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
+      InitOption<Subject> childInitOption,
+      InitOption<? extends Iterable<Subject>> childrenInitOption) {
+    parentInitOption.afterAction(p -> caseStudy = p);
+    childInitOption.afterAction(c -> subject = firstNonNull(c, new Subject()));
+    childrenInitOption.disable();
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -97,14 +98,7 @@ public class VisitController implements NestedRestfulController< //
 
   @Override
   public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
-    return (caseStudy) -> new RestfulRoute<Long>() {
-
-      @Override
-      public String getIndexPath() {
-        return caseStudy.joinPath(SUBJECT);
-      }
-
-    };
+    return (caseStudy) -> RestfulRoute.of(caseStudy.joinPath(SUBJECT));
   }
 
   @Override
@@ -113,19 +107,19 @@ public class VisitController implements NestedRestfulController< //
   }
 
   @Override
-  public SubjectRepository getRepository() {
+  public SubjectRepository getChildRepository() {
     return subjectRepo;
   }
 
   @Override
   public BiPredicate<CaseStudy, Subject> getPaternityTesting() {
-    return (p, c) -> getRepository().existsByIdAndCaseStudy(c.getId(), p);
+    return (p, c) -> getChildRepository().existsByIdAndCaseStudy(c.getId(), p);
 
   }
 
   @Override
   public Iterable<Subject> getChildren(CaseStudy parent) {
-    return getRepository().findAllByCaseStudy(parent);
+    return getChildRepository().findAllByCaseStudy(parent);
   }
 
 }

@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -37,7 +39,6 @@ import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.tsgh.api.Drug;
-import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
 import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 
@@ -55,26 +56,37 @@ public class TsghServiceTestImpl implements TsghService {
 
   @Autowired
   CaseStudyRepository caseRepo;
-
   @Autowired
   MedicineRepository medicineRepo;
-
   @Autowired
   ContraindicationRepository contraindicationRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
 
   @Override
-  public Patient findPatientById(String nationalId) throws IOException {
-    Patient patient = new Patient();
+  public Subject queryPatientById(String nationalId) throws IOException {
+    Subject subject = new Subject();
 
-    if (Strings.isNullOrEmpty(nationalId)) return patient;
+    if (Strings.isNullOrEmpty(nationalId)) return subject;
 
-    patient.setNationalId(nationalId);
-    patient.setBirthday("19800101");
+    ObjectMapper mapper = new ObjectMapper();
+    ObjectNode node = mapper.createObjectNode();
 
-    return patient;
+    node.put("taiwanId", nationalId);
+    node.put("birthDate", "1980-01-01");
+    if (nationalId.length() >= 2 && nationalId.charAt(1) == '1') {
+      node.put("gender", "男");
+      // formData.gender = '男';
+    }
+    if (nationalId.length() >= 2 && nationalId.charAt(1) == '2') {
+      node.put("gender", "女");
+      // formData.gender = '女';
+    }
+
+    subject.setFormData(node);
+    // subject.setNationalId(nationalId);
+    // subject.("19800101");
+    return subject;
   }
 
   @Override

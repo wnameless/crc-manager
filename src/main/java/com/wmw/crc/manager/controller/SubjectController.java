@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -49,6 +48,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -59,7 +59,6 @@ import com.wmw.crc.manager.service.ExcelSubjectUploadService;
 import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.SubjectService;
 import com.wmw.crc.manager.service.TsghService;
-import com.wmw.crc.manager.service.tsgh.api.Patient;
 import com.wmw.crc.manager.util.ExcelSubjects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -88,11 +87,11 @@ public class SubjectController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public BiConsumer<CaseStudy, Subject> afterInitParentAndChild() {
-    return (p, c) -> {
-      caseStudy = p;
-      subject = firstNonNull(c, new Subject());
-    };
+  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
+      InitOption<Subject> childInitOption,
+      InitOption<? extends Iterable<Subject>> childrenInitOption) {
+    parentInitOption.afterAction(p -> caseStudy = p);
+    childInitOption.afterAction(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
@@ -212,8 +211,7 @@ public class SubjectController implements NestedRestfulController< //
   String batchDating(@PathVariable Long parentId,
       @RequestParam String subjectDateType,
       @RequestParam(required = false) String subjectDate,
-      @RequestParam(name = "oofValues",
-          required = false) List<Long> subjectIds,
+      @RequestParam(name = "oofValues", required = false) List<Long> subjectIds,
       @RequestParam Integer bundleNumber, Locale locale,
       RedirectAttributes redirAttrs) {
     if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
@@ -250,17 +248,17 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/query/{nationalId}")
   @ResponseBody
-  Patient searchPatient(@PathVariable Long parentId,
+  Subject searchPatient(@PathVariable Long parentId,
       @PathVariable String nationalId) {
-    Patient patient;
+    Subject subject;
     try {
-      patient = tsghService.findPatientById(nationalId);
+      subject = tsghService.queryPatientById(nationalId);
     } catch (IOException e) {
       log.error("Patient seaching failed!", e);
-      patient = new Patient();
+      subject = new Subject();
     }
 
-    return patient;
+    return subject;
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -273,14 +271,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public Function<CaseStudy, RestfulRoute<Long>> getRoute() {
-    return (caseStudy) -> new RestfulRoute<Long>() {
-
-      @Override
-      public String getIndexPath() {
-        return caseStudy.joinPath(SUBJECT);
-      }
-
-    };
+    return (caseStudy) -> RestfulRoute.of(caseStudy.joinPath(SUBJECT));
   }
 
   @Override
@@ -289,7 +280,7 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @Override
-  public SubjectRepository getRepository() {
+  public SubjectRepository getChildRepository() {
     return subjectRepo;
   }
 
@@ -301,7 +292,7 @@ public class SubjectController implements NestedRestfulController< //
 
   @Override
   public Iterable<Subject> getChildren(CaseStudy parent) {
-    return getRepository().findAllByCaseStudy(parent);
+    return getChildRepository().findAllByCaseStudy(parent);
   }
 
 }

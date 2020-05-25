@@ -23,7 +23,6 @@ import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.servlet.http.HttpSession;
 
@@ -47,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.wnameless.spring.common.InitOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -70,10 +70,9 @@ public class CaseStudyController
   Pageable pageable;
 
   @Override
-  public Consumer<CaseStudy> afterInitItem() {
-    return (item) -> {
-      caseStudy = firstNonNull(item, new CaseStudy());
-    };
+  public void configureInitOption(InitOption<CaseStudy> initOption) {
+    initOption
+        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute

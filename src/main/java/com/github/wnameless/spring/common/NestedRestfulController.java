@@ -15,9 +15,7 @@
  */
 package com.github.wnameless.spring.common;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.springframework.data.repository.CrudRepository;
@@ -33,60 +31,86 @@ public interface NestedRestfulController< //
 
   PR getParentRepository();
 
-  CR getRepository();
+  CR getChildRepository();
 
   BiPredicate<P, C> getPaternityTesting();
 
   Iterable<C> getChildren(P parent);
 
-  BiConsumer<P, C> afterInitParentAndChild();
+  void configureInitOptions(InitOption<P> parentInitOption,
+      InitOption<C> childInitOption,
+      InitOption<? extends Iterable<C>> childrenInitOption);
+
+  default InitOption<P> getParentInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return parentOption;
+  }
+
+  default InitOption<C> getChildInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return childOption;
+  }
+
+  default InitOption<Iterable<C>> getChildrenInitOption() {
+    InitOption<P> parentOption = new InitOption<>();
+    InitOption<C> childOption = new InitOption<>();
+    InitOption<Iterable<C>> childrenOption = new InitOption<>();
+    configureInitOptions(parentOption, childOption, childrenOption);
+    return childrenOption;
+  }
 
   @ModelAttribute
   default void setParentAndChild(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
-    P parent = null;
-    C child = null;
+    if (!getParentInitOption().isInit()) return;
 
+    P parent = null;
     if (parentId != null) {
       parent = getParentRepository().findById(parentId).get();
-      model.addAttribute(getParentKey(), parent);
-
-      if (id != null) {
-        child = getRepository().findById(id).get();
-
-        if (getPaternityTesting().test(parent, child)) {
-          model.addAttribute(getChildKey(), child);
-        } else {
-          child = null;
-        }
-      }
     }
-
-    if (afterInitParentAndChild() != null) {
-      afterInitParentAndChild().accept(parent, child);
+    if (getParentInitOption().getAfterAction() != null) {
+      parent = getParentInitOption().getAfterAction().apply(parent);
     }
+    model.addAttribute(getParentKey(), parent);
+
+    if (!getChildInitOption().isInit()) return;
+
+    C child = null;
+    if (parent != null && id != null) {
+      child = getChildRepository().findById(id).get();
+      child = getPaternityTesting().test(parent, child) ? child : null;
+    }
+    if (getChildInitOption().getAfterAction() != null) {
+      child = getChildInitOption().getAfterAction().apply(child);
+    }
+    model.addAttribute(getChildKey(), child);
   }
 
   @ModelAttribute
   default void setChildren(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
+    if (!getChildrenInitOption().isInit()) return;
+
     Iterable<C> children = null;
 
     if (parentId != null && id == null) {
       P parent = getParentRepository().findById(parentId).get();
       children = getChildren(parent);
-      model.addAttribute(getChildrenKey(), children);
     }
 
-    if (afterInitChildren() != null) {
-      afterInitChildren().accept(children);
+    if (getChildrenInitOption().getAfterAction() != null) {
+      children = getChildrenInitOption().getAfterAction().apply(children);
     }
-  }
 
-  default Consumer<? super Iterable<C>> afterInitChildren() {
-    return null;
+    model.addAttribute(getChildrenKey(), children);
   }
 
   @ModelAttribute
@@ -132,7 +156,7 @@ public interface NestedRestfulController< //
   default C getChild(PID parentId, CID id, C defaultItem) {
     if (parentId != null && id != null) {
       P parent = getParentRepository().findById(parentId).get();
-      C child = getRepository().findById(id).get();
+      C child = getChildRepository().findById(id).get();
       if (getPaternityTesting().test(parent, child)) {
         return child;
       }
