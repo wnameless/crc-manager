@@ -24,21 +24,10 @@
         </div>
     </div>
 
+    <script
+        th:replace="fragments/rjsf :: new( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).createPath}, '#jsf' )"></script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {
-            let onSubmit = (f) => {
-                axios.post( /*[[${parent.withChild(child).createPath}]]*/ null, f.formData)
-                    .then((response) => {
-                        $('#jsf').html(response.data);
-                    });
-            };
-            let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
-                onSubmit: onSubmit
-            }, /*[[${child.toRjsfMap()}]]*/ {});
-            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                document.getElementById('jsfForm'));
-
             $('#queryBtn').click(function () {
                 if (!$('#nationalId').val()) return;
 

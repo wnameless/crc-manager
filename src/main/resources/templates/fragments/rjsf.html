@@ -1,0 +1,62 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<script th:fragment="new(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
+	$(function () {
+		console.log(/*[[${rjsf}]]*/ null);
+
+		let onSubmit = (f) => {
+			axios.post( /*[[${path}]]*/ null, f.formData).then((response) => {
+				$( /*[[${respondId}]]*/ null).html(response.data);
+			});
+		};
+
+		let rjsfOpt = Object.assign({
+			btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
+			onSubmit: onSubmit
+		}, /*[[${rjsf}]]*/ {});
+
+		ReactDOM.render(React.createElement(ReactJSF, rjsfOpt), $(/*[[${formId}]]*/ null)[0]);
+	});
+</script>
+
+<script th:fragment="edit(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
+	$(function () {
+		console.log(/*[[${rjsf}]]*/ null);
+
+		let onSubmit = (f) => {
+			axios.post( /*[[${path}]]*/ null, f.formData).then((response) => {
+				$( /*[[${respondId}]]*/ null).html(response.data);
+			});
+		};
+
+		let rjsfOpt = Object.assign({
+			btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
+			onSubmit: onSubmit
+		}, /*[[${rjsf}]]*/ {});
+
+		ReactDOM.render(React.createElement(ReactJSF, rjsfOpt), $(/*[[${formId}]]*/ null)[0]);
+	});
+</script>
+
+<script th:fragment="show(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
+	$(function () {
+		console.log(/*[[${rjsf}]]*/ null);
+
+		let onSubmit = (f) => {
+			axios.get( /*[[${path}]]*/ null)
+				.then((response) => {
+					$( /*[[${respondId}]]*/ null).html(response.data);
+				});
+		};
+
+		let rjsfOpt = Object.assign({
+			btnText: /*[[#{rjsf.back}]]*/ 'Back',
+			onSubmit: onSubmit,
+			disabled: true
+		}, /*[[${rjsf}]]*/ {});
+
+		ReactDOM.render(React.createElement(ReactJSF, rjsfOpt), $(/*[[${formId}]]*/ null)[0]);
+	});
+</script>
+
+</html>
