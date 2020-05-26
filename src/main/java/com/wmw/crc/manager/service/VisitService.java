@@ -231,4 +231,17 @@ public class VisitService {
     return results;
   }
 
+  public void reCountCaseStudyURVs() {
+    for (CaseStudy caseStudy : caseStudyRepo.findAll()) {
+      long urvCount = 0L;
+
+      for (Subject subject : subjectRepo.findAllByCaseStudy(caseStudy)) {
+        urvCount += subject.unreviewedVisits();
+      }
+
+      caseStudy.setUnreviewedOngoingVisits(urvCount);
+      caseStudyRepo.save(caseStudy);
+    }
+  }
+
 }

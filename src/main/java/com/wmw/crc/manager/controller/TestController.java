@@ -85,6 +85,15 @@ public class TestController {
   }
 
   @PreAuthorize("@perm.isAdmin()")
+  @GetMapping(path = "test/visits/recount")
+  @ResponseBody
+  String reCountCaseStudyURVs() {
+    visitService.reCountCaseStudyURVs();
+
+    return "CaseStudy URVs recounted";
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
   @GetMapping("/json/cases/{id}")
   @ResponseBody
   SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
