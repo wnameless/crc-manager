@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 
 @RequestMapping("/api/1.0/tsgh")
@@ -31,7 +32,7 @@ public class TsghApiController {
   VisitService visitService;
 
   @RequestMapping(path = "/visits", method = RequestMethod.POST)
-  String addVisit(@RequestBody TsghNewVisit newVisit) {
+  String addVisit(@RequestBody NewVisit newVisit) {
     visitService.addVisit(newVisit);
 
     return "Visit added";

@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller.api;
+package com.wmw.crc.manager.service;
 
 import java.time.LocalDate;
 
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
-public class TsghNewVisit {
+public class NewVisit {
 
   String nationalId;
 

@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
-import com.wmw.crc.manager.controller.api.TsghNewVisit;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 import com.wmw.crc.manager.service.tsgh.TsghService;
 
@@ -69,7 +69,7 @@ public class TestController {
   @GetMapping(path = "test/visits/add")
   @ResponseBody
   String addFakeVisit() {
-    TsghNewVisit newVisit = new TsghNewVisit();
+    NewVisit newVisit = new NewVisit();
 
     newVisit.setIrbNumber("123456789");
     newVisit.setRoom("F");
