@@ -35,15 +35,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.spring.common.InitOption;
+import com.github.wnameless.spring.common.ModelOption;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
-import com.wmw.crc.manager.repository.VisitRepository;
+import com.wmw.crc.manager.service.VisitService;
 
 import net.sf.rubycollect4j.Ruby;
 
@@ -54,21 +53,22 @@ public class VisitController implements NestedRestfulController< //
     Subject, Long, SubjectRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   SubjectRepository subjectRepo;
   @Autowired
-  VisitRepository visitRepo;
+  VisitService visitService;
 
   CaseStudy caseStudy;
   Subject subject;
 
   @Override
-  public void configureInitOptions(InitOption<CaseStudy> parentInitOption,
-      InitOption<Subject> childInitOption,
-      InitOption<? extends Iterable<Subject>> childrenInitOption) {
-    parentInitOption.afterAction(p -> caseStudy = p);
-    childInitOption.afterAction(c -> subject = firstNonNull(c, new Subject()));
+  public void configure(ModelOption<CaseStudy> parentInitOption,
+      ModelOption<Subject> childInitOption,
+      ModelOption<? extends Iterable<Subject>> childrenInitOption) {
+    parentInitOption.afterInitAction(p -> caseStudy = p);
+    childInitOption
+        .afterInitAction(c -> subject = firstNonNull(c, new Subject()));
     childrenInitOption.disable();
   }
 
@@ -88,12 +88,7 @@ public class VisitController implements NestedRestfulController< //
   @ResponseBody
   Boolean checkReviewed(@PathVariable Long parentId, @PathVariable Long id,
       @RequestParam Long visitId) {
-    Visit visit =
-        Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
-    visit.setReviewed(!visit.isReviewed());
-    visitRepo.save(visit);
-
-    return visit.isReviewed();
+    return visitService.reviewVisit(subject, visitId);
   }
 
   @Override
@@ -103,7 +98,7 @@ public class VisitController implements NestedRestfulController< //
 
   @Override
   public CaseStudyRepository getParentRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
   @Override

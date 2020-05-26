@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.github.wnameless.spring.common.InitOption;
+import com.github.wnameless.spring.common.ModelOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -48,7 +48,7 @@ public class CaseStudyOperationController
     implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   KeycloakService keycloak;
   @Autowired
@@ -57,9 +57,9 @@ public class CaseStudyOperationController
   CaseStudy caseStudy;
 
   @Override
-  public void configureInitOption(InitOption<CaseStudy> initOption) {
-    initOption
-        .afterAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
+  public void configure(ModelOption<CaseStudy> initOption) {
+    initOption.afterInitAction(
+        item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @PreAuthorize("@perm.canAssign()")
@@ -74,7 +74,7 @@ public class CaseStudyOperationController
   String assign(@RequestParam String username) {
     caseStudy.setOwner(username);
     caseStudy.setStatus(Status.EXEC);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     return "redirect:" + getRoute().getIndexPath();
   }
@@ -92,7 +92,7 @@ public class CaseStudyOperationController
       @RequestBody Map<String, Object> body, Locale locale) {
     String manager = body.get("manager").toString();
     caseStudy.getManagers().add(manager);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseManagerAdded(locale, manager));
@@ -104,7 +104,7 @@ public class CaseStudyOperationController
   String removeManager(Model model, @PathVariable Long id,
       @RequestParam("manager") String manager, Locale locale) {
     caseStudy.getManagers().remove(manager);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseManagerRemoved(locale, manager));
@@ -117,7 +117,7 @@ public class CaseStudyOperationController
       @RequestBody Map<String, Object> body, Locale locale) {
     String editor = body.get("editor").toString();
     caseStudy.getEditors().add(editor);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseEditorAdded(locale, editor));
@@ -129,7 +129,7 @@ public class CaseStudyOperationController
   String removeEditor(Model model, @PathVariable("id") Long id,
       @RequestParam("editor") String editor, Locale locale) {
     caseStudy.getEditors().remove(editor);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseEditorRemoved(locale, editor));
@@ -142,7 +142,7 @@ public class CaseStudyOperationController
       @RequestBody Map<String, Object> body, Locale locale) {
     String viewer = body.get("viewer").toString();
     caseStudy.getViewers().add(viewer);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseViewerAdded(locale, viewer));
@@ -154,7 +154,7 @@ public class CaseStudyOperationController
   String removeViewer(Model model, @PathVariable Long id,
       @RequestParam("viewer") String viewer, Locale locale) {
     caseStudy.getViewers().remove(viewer);
-    caseRepo.save(caseStudy);
+    caseStudyRepo.save(caseStudy);
 
     updateItem(model, caseStudy);
     model.addAttribute("message", i18n.caseViewerRemoved(locale, viewer));
@@ -168,7 +168,7 @@ public class CaseStudyOperationController
 
   @Override
   public CaseStudyRepository getRepository() {
-    return caseRepo;
+    return caseStudyRepo;
   }
 
 }

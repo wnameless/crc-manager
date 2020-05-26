@@ -31,6 +31,7 @@ import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,8 @@ public class VisitService {
   @Autowired
   CaseStudyRepository caseStudyRepo;
   @Autowired
+  SubjectRepository subjectRepo;
+  @Autowired
   VisitRepository visitRepo;
 
   @Autowired
@@ -62,26 +65,51 @@ public class VisitService {
         subjectService.findOngoingSubjects(newVisit.getNationalId());
 
     for (Subject s : subjects) {
-      Visit visit = new Visit();
-      if (newVisit.isContraindicationSuspected()) {
+      boolean isAddable = newVisit.isContraindicationSuspected() || //
+          !(visitRepo
+              .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
+                  s, newVisit.getDivision(), newVisit.getDoctor(),
+                  newVisit.getRoom(), newVisit.getDate(), false));
+
+      if (isAddable) {
+        Visit visit = new Visit();
         BeanUtils.copyProperties(newVisit, visit);
         visit.setSubject(s);
-        visitRepo.save(visit);
-      } else {
-        boolean isExisted = visitRepo
-            .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
-                s, newVisit.getDivision(), newVisit.getDoctor(),
-                newVisit.getRoom(), newVisit.getDate(), false);
-        if (!isExisted) {
-          BeanUtils.copyProperties(newVisit, visit);
-          visit.setSubject(s);
-          visitRepo.save(visit);
-        }
+
+        // Add unreviewed visit count to CaseStudy
+        CaseStudy cs = s.getCaseStudy();
+        cs.setUnreviewedOngoingVisits(cs.getUnreviewedOngoingVisits() + 1);
+
+        s.getVisits().add(visit);
+        subjectRepo.save(s);
+        // visitRepo.save(visit);
       }
     }
   }
 
-  public SimpleMailMessage createVisitEmail(Visit visit) {
+  public boolean reviewVisit(Subject subject, Long visitId) {
+    CaseStudy caseStudy = subject.getCaseStudy();
+
+    Visit visit =
+        Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
+    visit.setReviewed(!visit.isReviewed());
+
+    // Recount unreviewed visit count to CaseStudy
+    long count = visit.isReviewed() ? -1 : 1;
+    long unreviewedOngoingVisits =
+        caseStudy.getUnreviewedOngoingVisits() + count;
+    unreviewedOngoingVisits =
+        unreviewedOngoingVisits < 0 ? 0 : unreviewedOngoingVisits;
+    caseStudy.setUnreviewedOngoingVisits(unreviewedOngoingVisits);
+    // caseStudyRepo.save(caseStudy);
+
+    subjectRepo.save(subject);
+    // visitRepo.save(visit);
+
+    return visit.isReviewed();
+  }
+
+  public SimpleMailMessage createVisitEmail(Visit visit, boolean includeCD) {
     SimpleMailMessage message = new SimpleMailMessage();
 
     Subject s = visit.getSubject();
@@ -94,7 +122,10 @@ public class VisitService {
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
             + "/subjects/" + s.getId() + "/visits" + "\n" //
-            + "•開立禁忌用藥: " + (visit.isContraindicationSuspected() ? "是" : "否") //
+            + (includeCD
+                ? "•開立禁忌用藥: "
+                    + (visit.isContraindicationSuspected() ? "是" : "否") + "\n"
+                : "") //
             // + Ruby.Array.of(contraindicationRepo.findAllByCaseStudy(c))
             // // 符合用藥組別
             // .select(cd -> Objects.equals(cd.getBundle(),
@@ -103,7 +134,7 @@ public class VisitService {
             // .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
             // .map(tk -> i18n.takeKind(tk)))
             // .join(", ")
-            + "\n" + "------------------------------" //
+            + "------------------------------" //
     );
 
     return message;
@@ -129,10 +160,12 @@ public class VisitService {
         if (s.unreviewedVisits() <= 0) continue;
 
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          SimpleMailMessage message = createVisitEmail(v);
+          SimpleMailMessage message;
           if (v.isContraindicationSuspected()) {
+            message = createVisitEmail(v, true);
             contraindicationMessages.add(message.getText());
           } else {
+            message = createVisitEmail(v, false);
             visitMessages.add(message.getText());
           }
         });
@@ -196,6 +229,19 @@ public class VisitService {
     }
 
     return results;
+  }
+
+  public void reCountCaseStudyURVs() {
+    for (CaseStudy caseStudy : caseStudyRepo.findAll()) {
+      long urvCount = 0L;
+
+      for (Subject subject : subjectRepo.findAllByCaseStudy(caseStudy)) {
+        urvCount += subject.unreviewedVisits();
+      }
+
+      caseStudy.setUnreviewedOngoingVisits(urvCount);
+      caseStudyRepo.save(caseStudy);
+    }
   }
 
 }

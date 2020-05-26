@@ -53,7 +53,7 @@ public class Medicine implements RestfulItem<Long> {
 
   @Override
   public String getIndexPath() {
-    return "/" + "medicines";
+    return "/" + RestfulModel.Names.MEDICINE;
   }
 
 }

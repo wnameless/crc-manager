@@ -38,7 +38,7 @@ import com.wmw.crc.manager.service.VisitService;
 public class TestController {
 
   @Autowired
-  CaseStudyRepository caseRepository;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   TsghService tsghService;
   @Autowired
@@ -77,7 +77,7 @@ public class TestController {
     newVisit.setDoctor("Faker");
     newVisit.setDivision("Fake");
     newVisit.setContraindicationSuspected(false);
-    newVisit.setDate(LocalDate.now());
+    newVisit.setDate(LocalDate.now().plusDays(1));
 
     visitService.addVisit(newVisit);
 
@@ -85,10 +85,19 @@ public class TestController {
   }
 
   @PreAuthorize("@perm.isAdmin()")
+  @GetMapping(path = "test/visits/recount")
+  @ResponseBody
+  String reCountCaseStudyURVs() {
+    visitService.reCountCaseStudyURVs();
+
+    return "CaseStudy URVs recounted";
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
   @GetMapping("/json/cases/{id}")
   @ResponseBody
   SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
-    CaseStudy cs = caseRepository.findById(id).get();
+    CaseStudy cs = caseStudyRepo.findById(id).get();
     SimpleReactJsonSchemaForm rsjf = new SimpleReactJsonSchemaForm();
 
     rsjf.setFormData(cs.getFormData());

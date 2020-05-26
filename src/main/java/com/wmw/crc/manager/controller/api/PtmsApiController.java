@@ -43,7 +43,7 @@ import net.sf.rubycollect4j.Ruby;
 public class PtmsApiController {
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
 
   @Autowired
   KeycloakService keycloak;
@@ -52,7 +52,7 @@ public class PtmsApiController {
 
   @RequestMapping(path = "/protocols", method = RequestMethod.GET)
   List<Protocol> getAllCases() {
-    return newArrayList(Ruby.Array.of(caseRepo.findAll()).map(c -> {
+    return newArrayList(Ruby.Array.of(caseStudyRepo.findAll()).map(c -> {
       Protocol proc = new Protocol();
       proc.setProtocolNumber(c.getProjectNumber());
       proc.setJsonData(newArrayList(c.getFormData()));
@@ -78,7 +78,7 @@ public class PtmsApiController {
       c.getViewers().addAll(protocol.getViewers().stream()
           .map(String::toLowerCase).collect(Collectors.toSet()));
     }
-    caseRepo.save(c);
+    caseStudyRepo.save(c);
 
     return "New ok";
   }
@@ -86,7 +86,7 @@ public class PtmsApiController {
   @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
   String updateCase(@RequestBody Protocol protocol,
       @PathVariable String irbNumber) {
-    CaseStudy c = caseRepo.findByIrbNumber(irbNumber);
+    CaseStudy c = caseStudyRepo.findByIrbNumber(irbNumber);
 
     ObjectNode objNode = new ObjectMapper().createObjectNode();
     objNode.setAll((ObjectNode) c.getFormData());
@@ -94,7 +94,7 @@ public class PtmsApiController {
     c.setFormData(objNode);
 
     // c.setFormData(protocol.getJsonData().get(0));
-    caseRepo.save(c);
+    caseStudyRepo.save(c);
 
     return "Update ok";
   }

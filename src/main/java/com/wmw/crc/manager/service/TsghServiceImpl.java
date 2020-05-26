@@ -68,7 +68,7 @@ public class TsghServiceImpl implements TsghService {
   TsghApi tsghApi;
 
   @Autowired
-  CaseStudyRepository caseRepo;
+  CaseStudyRepository caseStudyRepo;
   @Autowired
   MedicineRepository medicineRepo;
   @Autowired
@@ -203,7 +203,7 @@ public class TsghServiceImpl implements TsghService {
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
     ContraindicationRefreshResult crr = new ContraindicationRefreshResult();
 
-    List<CaseStudy> cases = caseRepo.findAllByStatus(Status.EXEC);
+    List<CaseStudy> cases = caseStudyRepo.findAllByStatus(Status.EXEC);
     for (CaseStudy c : cases) {
       List<Contraindication> contraindications =
           contraindicationRepo.findAllByCaseStudy(c);

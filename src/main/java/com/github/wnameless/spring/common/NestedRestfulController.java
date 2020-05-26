@@ -37,31 +37,31 @@ public interface NestedRestfulController< //
 
   Iterable<C> getChildren(P parent);
 
-  void configureInitOptions(InitOption<P> parentInitOption,
-      InitOption<C> childInitOption,
-      InitOption<? extends Iterable<C>> childrenInitOption);
+  void configure(ModelOption<P> parentModelOption,
+      ModelOption<C> childModelOption,
+      ModelOption<? extends Iterable<C>> childrenModelOption);
 
-  default InitOption<P> getParentInitOption() {
-    InitOption<P> parentOption = new InitOption<>();
-    InitOption<C> childOption = new InitOption<>();
-    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
-    configureInitOptions(parentOption, childOption, childrenOption);
+  default ModelOption<P> getParentModelOption() {
+    ModelOption<P> parentOption = new ModelOption<>();
+    ModelOption<C> childOption = new ModelOption<>();
+    ModelOption<? extends Iterable<C>> childrenOption = new ModelOption<>();
+    configure(parentOption, childOption, childrenOption);
     return parentOption;
   }
 
-  default InitOption<C> getChildInitOption() {
-    InitOption<P> parentOption = new InitOption<>();
-    InitOption<C> childOption = new InitOption<>();
-    InitOption<? extends Iterable<C>> childrenOption = new InitOption<>();
-    configureInitOptions(parentOption, childOption, childrenOption);
+  default ModelOption<C> getChildModelOption() {
+    ModelOption<P> parentOption = new ModelOption<>();
+    ModelOption<C> childOption = new ModelOption<>();
+    ModelOption<? extends Iterable<C>> childrenOption = new ModelOption<>();
+    configure(parentOption, childOption, childrenOption);
     return childOption;
   }
 
-  default InitOption<Iterable<C>> getChildrenInitOption() {
-    InitOption<P> parentOption = new InitOption<>();
-    InitOption<C> childOption = new InitOption<>();
-    InitOption<Iterable<C>> childrenOption = new InitOption<>();
-    configureInitOptions(parentOption, childOption, childrenOption);
+  default ModelOption<Iterable<C>> getChildrenModelOption() {
+    ModelOption<P> parentOption = new ModelOption<>();
+    ModelOption<C> childOption = new ModelOption<>();
+    ModelOption<Iterable<C>> childrenOption = new ModelOption<>();
+    configure(parentOption, childOption, childrenOption);
     return childrenOption;
   }
 
@@ -69,35 +69,39 @@ public interface NestedRestfulController< //
   default void setParentAndChild(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
-    if (!getParentInitOption().isInit()) return;
+    if (!getParentModelOption().isInit()) return;
 
     P parent = null;
     if (parentId != null) {
       parent = getParentRepository().findById(parentId).get();
     }
-    if (getParentInitOption().getAfterAction() != null) {
-      parent = getParentInitOption().getAfterAction().apply(parent);
+    if (getParentModelOption().getAfterInitAction() != null) {
+      parent = getParentModelOption().getAfterInitAction().apply(parent);
     }
-    model.addAttribute(getParentKey(), parent);
+    model.addAttribute(getParentKey(),
+        getParentModelOption().getPreSetAction() == null ? parent
+            : getParentModelOption().getPreSetAction().apply(parent));
 
-    if (!getChildInitOption().isInit()) return;
+    if (!getChildModelOption().isInit()) return;
 
     C child = null;
     if (parent != null && id != null) {
       child = getChildRepository().findById(id).get();
       child = getPaternityTesting().test(parent, child) ? child : null;
     }
-    if (getChildInitOption().getAfterAction() != null) {
-      child = getChildInitOption().getAfterAction().apply(child);
+    if (getChildModelOption().getAfterInitAction() != null) {
+      child = getChildModelOption().getAfterInitAction().apply(child);
     }
-    model.addAttribute(getChildKey(), child);
+    model.addAttribute(getChildKey(),
+        getChildModelOption().getPreSetAction() == null ? child
+            : getChildModelOption().getPreSetAction().apply(child));
   }
 
   @ModelAttribute
   default void setChildren(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
-    if (!getChildrenInitOption().isInit()) return;
+    if (!getChildrenModelOption().isInit()) return;
 
     Iterable<C> children = null;
 
@@ -106,11 +110,13 @@ public interface NestedRestfulController< //
       children = getChildren(parent);
     }
 
-    if (getChildrenInitOption().getAfterAction() != null) {
-      children = getChildrenInitOption().getAfterAction().apply(children);
+    if (getChildrenModelOption().getAfterInitAction() != null) {
+      children = getChildrenModelOption().getAfterInitAction().apply(children);
     }
 
-    model.addAttribute(getChildrenKey(), children);
+    model.addAttribute(getChildrenKey(),
+        getChildrenModelOption().getPreSetAction() == null ? children
+            : getChildrenModelOption().getPreSetAction().apply(children));
   }
 
   @ModelAttribute

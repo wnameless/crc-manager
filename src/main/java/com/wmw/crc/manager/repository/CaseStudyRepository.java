@@ -43,7 +43,7 @@ import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
 
 @JaversSpringDataAuditable
-@Repository("caseRepo")
+@Repository
 public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     QuerydslPredicateExecutor<CaseStudy> {
 

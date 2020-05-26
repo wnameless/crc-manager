@@ -78,43 +78,6 @@ public class CaseStudy
     return "/" + RestfulModel.Names.CASE_STUDY;
   }
 
-  public static final JsonNode SCHEMA;
-  public static final JsonNode UI_SCHEMA;
-  static {
-    URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-    JsonNode jsonNode = null;
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    SCHEMA = jsonNode;
-    url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    UI_SCHEMA = jsonNode;
-  }
-
-  @Convert(converter = JsonNodeConverter.class)
-  @Column(columnDefinition = "text")
-  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
-      .getObjectMapperFactory().get().createObjectNode();
-
-  public enum Status {
-    NEW, EXEC, END, NONE;
-
-    public static Status fromString(String status) {
-      return EnumUtils.getEnumIgnoreCase(Status.class, status);
-    }
-
-    public static Status fromString(String status, Status defaultVal) {
-      return firstNonNull(fromString(status), defaultVal);
-    }
-  }
-
   @Id
   @GeneratedValue
   Long id;
@@ -166,6 +129,8 @@ public class CaseStudy
   @JoinTable(name = "case_subject", joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
+
+  Long unreviewedOngoingVisits = 0L;
 
   @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)
@@ -224,5 +189,41 @@ public class CaseStudy
 
   @Override
   public void setUiSchema(JsonNode uiSchema) {}
+
+  public static final JsonNode SCHEMA;
+  public static final JsonNode UI_SCHEMA;
+  static {
+    URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
+    JsonNode jsonNode = null;
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    SCHEMA = jsonNode;
+    url = Resources.getResource(JsonSchemaPath.applicationUISchema);
+    try {
+      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    UI_SCHEMA = jsonNode;
+  }
+  @Convert(converter = JsonNodeConverter.class)
+  @Column(columnDefinition = "text")
+  protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
+      .getObjectMapperFactory().get().createObjectNode();
+
+  public enum Status {
+    NEW, EXEC, END, NONE;
+
+    public static Status fromString(String status) {
+      return EnumUtils.getEnumIgnoreCase(Status.class, status);
+    }
+
+    public static Status fromString(String status, Status defaultVal) {
+      return firstNonNull(fromString(status), defaultVal);
+    }
+  }
 
 }

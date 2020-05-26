@@ -53,6 +53,7 @@ import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+//@EntityListeners(SubjectEntityListener.class)
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
 @Entity
@@ -63,6 +64,80 @@ public class Subject
   public String getIndexPath() {
     return "/" + RestfulModel.Names.SUBJECT;
   }
+
+  @Id
+  @GeneratedValue
+  Long id;
+
+  @JsonPopulatedValue(SubjectStatusCustomizer.class)
+  Status status = Status.PRESCREENING;
+
+  @JsonPopulatedKey("lastname")
+  String name;
+
+  @JsonPopulatedKey("taiwanId")
+  String nationalId;
+
+  @JsonPopulatedKey("mrn")
+  String patientId;
+
+  @JsonPopulatedKey("subjectNo")
+  String subjectNo;
+
+  Integer contraindicationBundle = 1;
+
+  @JsonPopulatedKey("dropoutDate")
+  String dropoutDate;
+
+  @ManyToOne(cascade = CascadeType.MERGE)
+  @JoinTable(name = "case_subject",
+      joinColumns = { @JoinColumn(name = "subject_id") },
+      inverseJoinColumns = { @JoinColumn(name = "case_id") })
+  CaseStudy caseStudy;
+
+  @DiffIgnore
+  @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL,
+      orphanRemoval = true, fetch = FetchType.EAGER)
+  List<Visit> visits = new ArrayList<>();
+
+  public Subject() {}
+
+  public Subject(JsonNode jsonNode) {
+    setFormData(jsonNode);
+  }
+
+  public long unreviewedVisits() {
+    return visits.stream().filter(v -> !v.isReviewed()).count();
+  }
+
+  @Override
+  public void setFormData(JsonNode formData) {
+    this.formData = formData;
+    String json = "{}";
+    try {
+      json = FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory().get()
+          .writeValueAsString(formData);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    setPopulatedJson(json);
+  }
+
+  @Override
+  public JsonNode getSchema() {
+    return SCHEMA;
+  }
+
+  @Override
+  public JsonNode getUiSchema() {
+    return UI_SCHEMA;
+  }
+
+  @Override
+  public void setSchema(JsonNode schema) {}
+
+  @Override
+  public void setUiSchema(JsonNode uiSchema) {}
 
   public static final JsonNode SCHEMA;
   public static final JsonNode UI_SCHEMA;
@@ -83,7 +158,6 @@ public class Subject
     }
     UI_SCHEMA = jsonNode;
   }
-
   @Convert(converter = JsonNodeConverter.class)
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE
@@ -115,78 +189,5 @@ public class Subject
     }
 
   }
-
-  @Id
-  @GeneratedValue
-  Long id;
-
-  @JsonPopulatedValue(SubjectStatusCustomizer.class)
-  Status status = Status.PRESCREENING;
-
-  @JsonPopulatedKey("lastname")
-  String name;
-
-  @JsonPopulatedKey("taiwanId")
-  String nationalId;
-
-  @JsonPopulatedKey("mrn")
-  String patientId;
-
-  @JsonPopulatedKey("subjectNo")
-  String subjectNo;
-
-  Integer contraindicationBundle = 1;
-
-  @JsonPopulatedKey("dropoutDate")
-  String dropoutDate;
-
-  @ManyToOne
-  @JoinTable(name = "case_subject",
-      joinColumns = { @JoinColumn(name = "subject_id") },
-      inverseJoinColumns = { @JoinColumn(name = "case_id") })
-  CaseStudy caseStudy;
-
-  @DiffIgnore
-  @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL,
-      orphanRemoval = true, fetch = FetchType.EAGER)
-  List<Visit> visits = new ArrayList<>();
-
-  public long unreviewedVisits() {
-    return visits.stream().filter(v -> !v.isReviewed()).count();
-  }
-
-  public Subject() {}
-
-  public Subject(JsonNode jsonNode) {
-    setFormData(jsonNode);
-  }
-
-  @Override
-  public void setFormData(JsonNode formData) {
-    this.formData = formData;
-    String json = "{}";
-    try {
-      json = FlattenedJsonTypeConfigurer.INSTANCE.getObjectMapperFactory().get()
-          .writeValueAsString(formData);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-    setPopulatedJson(json);
-  }
-
-  public JsonNode getSchema() {
-    return SCHEMA;
-  }
-
-  @Override
-  public JsonNode getUiSchema() {
-    return UI_SCHEMA;
-  }
-
-  @Override
-  public void setSchema(JsonNode schema) {}
-
-  @Override
-  public void setUiSchema(JsonNode uiSchema) {}
 
 }

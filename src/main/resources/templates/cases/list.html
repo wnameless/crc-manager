@@ -37,7 +37,9 @@
                     <a class="sorted" sd:pagination-sort="projectNumber" th:text="#{ui.case.table.projectnumber}"></a>
                 </th>
                 <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
-                <th class="text-center" style="width: 60px;" th:text="#{ui.case.table.subject}"></th>
+                <th class="text-center" style="width: 60px;">
+                    <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip" data-placement="top" th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
+                </th>
                 <th>
                     <a class="sorted" sd:pagination-sort="trialName" th:text="#{ui.case.table.name.chinese}"></a>
                 </th>
@@ -127,7 +129,7 @@
                 <td class="text-center">
                     <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('subjects')}">
                         <span>
-                            <i class="fa fa-user-plus"></i>
+                            <i class="fa fa-user-plus"></i> ([[${case.unreviewedOngoingVisits}]])
                         </span>
                     </a>
                     <span th:unless="${@perm.canRead(case)}">
