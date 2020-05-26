@@ -25,7 +25,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.wmw.crc.manager.controller.api.NewVisit;
+import com.wmw.crc.manager.controller.api.TsghNewVisit;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
@@ -60,7 +60,7 @@ public class VisitService {
   @Autowired
   I18nService i18n;
 
-  public void addVisit(NewVisit newVisit) {
+  public void addVisit(TsghNewVisit newVisit) {
     List<Subject> subjects =
         subjectService.findOngoingSubjects(newVisit.getNationalId());
 

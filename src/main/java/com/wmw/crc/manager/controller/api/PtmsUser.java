@@ -13,20 +13,23 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service;
+package com.wmw.crc.manager.controller.api;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import com.wmw.crc.manager.util.ExcelSubjects;
-import com.wmw.crc.manager.util.TsghExcelSubjects;
+import lombok.Data;
 
-@Service
-public class TsghExcelSubjectUploadService
-    implements ExcelSubjectUploadService {
+@Data
+public class PtmsUser {
 
-  @Override
-  public ExcelSubjects fromMultipartFile(MultipartFile file) {
-    return new TsghExcelSubjects(file);
-  }
+  private String username;
+
+  private String email;
+
+  private String firstName;
+
+  private String lastName;
+
+  private String organization;
+
+  private String phone;
 
 }

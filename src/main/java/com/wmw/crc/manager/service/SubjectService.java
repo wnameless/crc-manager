@@ -43,7 +43,6 @@ import com.wmw.crc.manager.model.QSubject;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Subject.Status;
 import com.wmw.crc.manager.repository.SubjectRepository;
-import com.wmw.crc.manager.util.ExcelSubjects;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;

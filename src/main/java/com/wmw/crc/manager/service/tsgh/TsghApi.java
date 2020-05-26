@@ -13,23 +13,27 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.service.tsgh;
 
 import java.util.List;
 
-import lombok.Data;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
-@Data
-public class Drug {
-  String name;
+public interface TsghApi {
 
-  String engName;
+  @GET("patients")
+  Call<TsghResponse<TsghPatient>> searchPatient(
+      @Query("nationalId") String nationalId);
 
-  String scientificName;
+  @GET("drugs")
+  Call<TsghResponse<List<TsghMedicine>>> listDrugs();
 
-  String hospitalCode;
+  @POST("Contraindications")
+  Call<ResponseBody> addPatientContraindication(@Body TsghContraindication cd);
 
-  List<String> atcCode;
-
-  String takekind;
 }

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018 Wei-Ming Wu
+ * Copyright 2019 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,17 +13,17 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model.form;
+package com.wmw.crc.manager.service.tsgh;
 
 import lombok.Data;
 
 @Data
-public class Criterion {
+public class TsghResponse<E> {
 
-  private String key;
+  String Status;
 
-  private Object value;
+  E Data;
 
-  private String type;
+  String ErrorMessage;
 
 }

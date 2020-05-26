@@ -36,7 +36,7 @@ import com.google.common.collect.ListMultimap;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.QCaseStudy;
-import com.wmw.crc.manager.model.form.Criterion;
+import com.wmw.crc.manager.util.Criterion;
 import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import net.sf.rubycollect4j.Ruby;

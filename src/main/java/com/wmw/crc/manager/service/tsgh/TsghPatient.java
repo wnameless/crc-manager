@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.service.tsgh;
 
 import java.util.List;
 

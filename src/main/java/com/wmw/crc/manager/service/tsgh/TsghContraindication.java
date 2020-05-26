@@ -13,15 +13,34 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.util;
+package com.wmw.crc.manager.service.tsgh;
 
+import java.util.ArrayList;
 import java.util.List;
-import com.wmw.crc.manager.model.Subject;
 
-public interface ExcelSubjects {
+import lombok.Data;
 
-  String getErrorMessage();
+@Data
+public class TsghContraindication {
 
-  List<Subject> getSubjects();
+  String nationalId;
+
+  String patientId;
+
+  String irbNumber;
+
+  String irbName;
+
+  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+  String startDate;
+
+  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+  String endDate;
+
+  List<TsghDrug> drugs = new ArrayList<>();
+
+  String piName;
+
+  String piPhone;
 
 }

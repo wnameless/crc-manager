@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018 Wei-Ming Wu
+ * Copyright 2019 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,21 +15,28 @@
  */
 package com.wmw.crc.manager.controller.api;
 
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
-public class KeycloakUser {
+public class TsghNewVisit {
 
-  private String username;
+  String nationalId;
 
-  private String email;
+  String division;
 
-  private String firstName;
+  String doctor;
 
-  private String lastName;
+  String room;
 
-  private String organization;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  LocalDate date;
 
-  private String phone;
+  boolean contraindicationSuspected;
+
+  String irbNumber;
 
 }

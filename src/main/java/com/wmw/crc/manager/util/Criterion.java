@@ -13,19 +13,17 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.util;
 
 import lombok.Data;
 
 @Data
-public class SimpleDrug {
+public class Criterion {
 
-  String phrase;
+  private String key;
 
-  String atcCode;
+  private Object value;
 
-  String hospitalCode;
-
-  String memo;
+  private String type;
 
 }

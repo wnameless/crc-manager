@@ -51,9 +51,9 @@ public class PtmsApiController {
   Gson gson = new Gson();
 
   @RequestMapping(path = "/protocols", method = RequestMethod.GET)
-  List<Protocol> getAllCases() {
+  List<PtmsProtocol> getAllCases() {
     return newArrayList(Ruby.Array.of(caseStudyRepo.findAll()).map(c -> {
-      Protocol proc = new Protocol();
+      PtmsProtocol proc = new PtmsProtocol();
       proc.setProtocolNumber(c.getProjectNumber());
       proc.setJsonData(newArrayList(c.getFormData()));
       return proc;
@@ -61,7 +61,7 @@ public class PtmsApiController {
   }
 
   @RequestMapping(path = "/protocols", method = RequestMethod.POST)
-  String newCase(@RequestBody Protocol protocol) throws IOException {
+  String newCase(@RequestBody PtmsProtocol protocol) throws IOException {
     CaseStudy c = new CaseStudy();
     c.setFormData(protocol.getJsonData().get(0));
 
@@ -84,7 +84,7 @@ public class PtmsApiController {
   }
 
   @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
-  String updateCase(@RequestBody Protocol protocol,
+  String updateCase(@RequestBody PtmsProtocol protocol,
       @PathVariable String irbNumber) {
     CaseStudy c = caseStudyRepo.findByIrbNumber(irbNumber);
 
@@ -100,7 +100,7 @@ public class PtmsApiController {
   }
 
   @RequestMapping(path = "/users", method = RequestMethod.POST)
-  String createUser(@RequestBody KeycloakUser user) {
+  String createUser(@RequestBody PtmsUser user) {
     UserRepresentation ur = new UserRepresentation();
 
     ur.setUsername(user.getUsername().toLowerCase());

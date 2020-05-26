@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service;
+package com.wmw.crc.manager.service.tsgh;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -38,12 +38,7 @@ import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
-import com.wmw.crc.manager.service.tsgh.api.Drug;
-import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
-import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
-import com.wmw.crc.manager.service.tsgh.api.TsghApi;
-import com.wmw.crc.manager.service.tsgh.api.TsghPatient;
-import com.wmw.crc.manager.service.tsgh.api.TsghResponse;
+import com.wmw.crc.manager.service.SubjectService;
 import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -156,21 +151,21 @@ public class TsghServiceImpl implements TsghService {
     return subject;
   }
 
-  public List<Drug> getDrugs() throws IOException {
-    Call<TsghResponse<List<Drug>>> call = tsghApi.listDrugs();
-    Response<TsghResponse<List<Drug>>> res = call.execute();
+  public List<TsghMedicine> getDrugs() throws IOException {
+    Call<TsghResponse<List<TsghMedicine>>> call = tsghApi.listDrugs();
+    Response<TsghResponse<List<TsghMedicine>>> res = call.execute();
     return res.body().getData();
   }
 
   public Response<ResponseBody> addPatientContraindication(
-      PatientContraindication pc) throws IOException {
+      TsghContraindication pc) throws IOException {
     Call<ResponseBody> call = tsghApi.addPatientContraindication(pc);
     Response<ResponseBody> res = call.execute();
     return res;
   }
 
   public AdvOpt<Integer> refreshMedicines() {
-    List<Drug> drugs;
+    List<TsghMedicine> drugs;
     try {
       drugs = getDrugs();
       if (!drugs.isEmpty()) medicineRepo.deleteAll();
@@ -179,7 +174,7 @@ public class TsghServiceImpl implements TsghService {
       return AdvOpt.ofNullable(null, "TsghService::getDrugs failed.");
     }
 
-    for (Drug drug : drugs) {
+    for (TsghMedicine drug : drugs) {
       Medicine med = new Medicine();
       med.setName(drug.getName());
       med.setEngName(drug.getEngName());
@@ -213,7 +208,7 @@ public class TsghServiceImpl implements TsghService {
 
       List<Subject> subjects = subjectService.findOngoingSubjects(c);
       for (Subject s : subjects) {
-        PatientContraindication pc = new PatientContraindication();
+        TsghContraindication pc = new TsghContraindication();
         pc.setNationalId(s.getNationalId());
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
@@ -238,7 +233,7 @@ public class TsghServiceImpl implements TsghService {
 
             for (Medicine med : meds) {
               if (cd.getTakekinds().contains(med.getTakekind())) {
-                SimpleDrug sd = new SimpleDrug();
+                TsghDrug sd = new TsghDrug();
                 sd.setPhrase(cd.getPhrase());
                 sd.setAtcCode(med.getAtcCode1());
                 sd.setHospitalCode(med.getHospitalCode());

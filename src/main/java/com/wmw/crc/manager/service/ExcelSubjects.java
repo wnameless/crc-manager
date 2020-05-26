@@ -13,28 +13,15 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.service;
 
 import java.util.List;
+import com.wmw.crc.manager.model.Subject;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+public interface ExcelSubjects {
 
-public interface TsghApi {
+  String getErrorMessage();
 
-  @GET("patients")
-  Call<TsghResponse<TsghPatient>> searchPatient(
-      @Query("nationalId") String nationalId);
-
-  @GET("drugs")
-  Call<TsghResponse<List<Drug>>> listDrugs();
-
-  @POST("Contraindications")
-  Call<ResponseBody> addPatientContraindication(
-      @Body PatientContraindication pc);
+  List<Subject> getSubjects();
 
 }

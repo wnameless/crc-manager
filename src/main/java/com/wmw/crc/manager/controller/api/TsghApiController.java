@@ -31,7 +31,7 @@ public class TsghApiController {
   VisitService visitService;
 
   @RequestMapping(path = "/visits", method = RequestMethod.POST)
-  String addVisit(@RequestBody NewVisit newVisit) {
+  String addVisit(@RequestBody TsghNewVisit newVisit) {
     visitService.addVisit(newVisit);
 
     return "Visit added";

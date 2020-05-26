@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2019 Wei-Ming Wu
+ * Copyright 2018 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,30 +13,19 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.controller.api;
-
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package com.wmw.crc.manager.service.tsgh;
 
 import lombok.Data;
 
 @Data
-public class NewVisit {
+public class TsghDrug {
 
-  String nationalId;
+  String phrase;
 
-  String division;
+  String atcCode;
 
-  String doctor;
+  String hospitalCode;
 
-  String room;
-
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  LocalDate date;
-
-  boolean contraindicationSuspected;
-
-  String irbNumber;
+  String memo;
 
 }
