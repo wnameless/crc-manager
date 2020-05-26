@@ -130,7 +130,7 @@ public class CaseStudy
       inverseJoinColumns = @JoinColumn(name = "subject_id"))
   List<Subject> subjects = newArrayList();
 
-  long unreviewedOngoingVisits = 0L;
+  Long unreviewedOngoingVisits = 0L;
 
   @DiffIgnore
   @OneToMany(cascade = CascadeType.ALL)

@@ -88,7 +88,7 @@ public class VisitController implements NestedRestfulController< //
   @ResponseBody
   Boolean checkReviewed(@PathVariable Long parentId, @PathVariable Long id,
       @RequestParam Long visitId) {
-    return visitService.reviewVisit(caseStudy, subject, visitId);
+    return visitService.reviewVisit(subject, visitId);
   }
 
   @Override

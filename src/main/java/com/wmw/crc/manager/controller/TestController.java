@@ -77,7 +77,7 @@ public class TestController {
     newVisit.setDoctor("Faker");
     newVisit.setDivision("Fake");
     newVisit.setContraindicationSuspected(false);
-    newVisit.setDate(LocalDate.now());
+    newVisit.setDate(LocalDate.now().plusDays(1));
 
     visitService.addVisit(newVisit);
 

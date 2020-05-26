@@ -37,7 +37,7 @@ public class Visit extends Auditable<String> implements RestfulItem<Long> {
   @GeneratedValue
   Long id;
 
-  @ManyToOne
+  @ManyToOne // (cascade = CascadeType.MERGE)
   @JoinColumn(name = "subject_id")
   Subject subject;
 
@@ -59,7 +59,7 @@ public class Visit extends Auditable<String> implements RestfulItem<Long> {
 
   @Override
   public String getIndexPath() {
-    return "/" + "visits";
+    return "/" + RestfulModel.Names.VISIT;
   }
 
 }

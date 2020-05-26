@@ -31,6 +31,7 @@ import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.model.Visit;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.repository.VisitRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,8 @@ public class VisitService {
   @Autowired
   CaseStudyRepository caseStudyRepo;
   @Autowired
+  SubjectRepository subjectRepo;
+  @Autowired
   VisitRepository visitRepo;
 
   @Autowired
@@ -62,43 +65,46 @@ public class VisitService {
         subjectService.findOngoingSubjects(newVisit.getNationalId());
 
     for (Subject s : subjects) {
-      Visit visit = new Visit();
-      if (newVisit.isContraindicationSuspected()) {
+      boolean isAddable = newVisit.isContraindicationSuspected() || //
+          !(visitRepo
+              .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
+                  s, newVisit.getDivision(), newVisit.getDoctor(),
+                  newVisit.getRoom(), newVisit.getDate(), false));
+
+      if (isAddable) {
+        Visit visit = new Visit();
         BeanUtils.copyProperties(newVisit, visit);
         visit.setSubject(s);
-        visitRepo.save(visit);
-      } else {
-        boolean isExisted = visitRepo
-            .existsBySubjectAndDivisionAndDoctorAndRoomAndDateAndContraindicationSuspected(
-                s, newVisit.getDivision(), newVisit.getDoctor(),
-                newVisit.getRoom(), newVisit.getDate(), false);
-        if (!isExisted) {
-          BeanUtils.copyProperties(newVisit, visit);
-          visit.setSubject(s);
-          visitRepo.save(visit);
 
-          CaseStudy cs = s.getCaseStudy();
-          cs.setUnreviewedOngoingVisits(cs.getUnreviewedOngoingVisits() + 1);
-          caseStudyRepo.save(cs);
-        }
+        // Add unreviewed visit count to CaseStudy
+        CaseStudy cs = s.getCaseStudy();
+        cs.setUnreviewedOngoingVisits(cs.getUnreviewedOngoingVisits() + 1);
+
+        s.getVisits().add(visit);
+        subjectRepo.save(s);
+        // visitRepo.save(visit);
       }
     }
   }
 
-  public boolean reviewVisit(CaseStudy caseStudy, Subject subject,
-      Long visitId) {
+  public boolean reviewVisit(Subject subject, Long visitId) {
+    CaseStudy caseStudy = subject.getCaseStudy();
+
     Visit visit =
         Ruby.Array.of(subject.getVisits()).find(v -> v.getId().equals(visitId));
     visit.setReviewed(!visit.isReviewed());
-    visitRepo.save(visit);
 
+    // Recount unreviewed visit count to CaseStudy
     long count = visit.isReviewed() ? -1 : 1;
     long unreviewedOngoingVisits =
         caseStudy.getUnreviewedOngoingVisits() + count;
     unreviewedOngoingVisits =
         unreviewedOngoingVisits < 0 ? 0 : unreviewedOngoingVisits;
     caseStudy.setUnreviewedOngoingVisits(unreviewedOngoingVisits);
-    caseStudyRepo.save(caseStudy);
+    // caseStudyRepo.save(caseStudy);
+
+    subjectRepo.save(subject);
+    // visitRepo.save(visit);
 
     return visit.isReviewed();
   }
