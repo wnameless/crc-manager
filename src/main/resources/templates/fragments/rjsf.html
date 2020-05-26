@@ -2,8 +2,6 @@
 
 <script th:fragment="new(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
 	$(function () {
-		console.log(/*[[${rjsf}]]*/ null);
-
 		let onSubmit = (f) => {
 			axios.post( /*[[${path}]]*/ null, f.formData).then((response) => {
 				$( /*[[${respondId}]]*/ null).html(response.data);
@@ -21,8 +19,6 @@
 
 <script th:fragment="edit(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
 	$(function () {
-		console.log(/*[[${rjsf}]]*/ null);
-
 		let onSubmit = (f) => {
 			axios.post( /*[[${path}]]*/ null, f.formData).then((response) => {
 				$( /*[[${respondId}]]*/ null).html(response.data);
@@ -40,8 +36,6 @@
 
 <script th:fragment="show(rjsf, formId, path, respondId)" type="text/javascript" th:inline="javascript">
 	$(function () {
-		console.log(/*[[${rjsf}]]*/ null);
-
 		let onSubmit = (f) => {
 			axios.get( /*[[${path}]]*/ null)
 				.then((response) => {

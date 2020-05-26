@@ -24,6 +24,8 @@
         </div>
     </div>
 
+    <script th:replace="fragments/notify :: partial"></script>
+    <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script
         th:replace="fragments/rjsf :: new( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).createPath}, '#jsf' )"></script>
     <script type="text/javascript" th:inline="javascript">
@@ -32,21 +34,7 @@
                 if (!$('#nationalId').val()) return;
 
                 let subjectQueryPath = /*[[${route.joinPath('query/')}]]*/ '';
-                axios.get(subjectQueryPath + $('#nationalId').val())
-                    .then((response) => {
-                        let formData = response.data.formData;
-
-                        if (!formData.taiwanId) {
-                            $.notify( /*[[#{ui.subject.message.id-no-data}]]*/ null);
-                            return;
-                        }
-
-                        rjsfOpt = Object.assign(rjsfOpt, {
-                            formData: formData
-                        });
-                        ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                            document.getElementById('jsfForm'));
-                    });
+                axiosGet(subjectQueryPath + $('#nationalId').val());
             });
 
             $('input[type="date"]').attr({
