@@ -76,12 +76,11 @@
             let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
             $('#userTable').on('init.dt', function () {
                 $(this).reflowTable();
+            }).on('draw.dt', function () {
+                $(this).reflowTable('update');
             }).DataTable({
                 language: {
                     url: '/i18n/datatables-' + i18nLocale + '.json'
-                },
-                drawCallback: function (settings) {
-                    $('#userTable').reflowTable('update');
                 }
             });
         });

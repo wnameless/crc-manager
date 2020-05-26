@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="result">
 	<table id="jsfTable" class="display">
 		<thead>
@@ -43,12 +44,11 @@
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').on('init.dt', function () {
 				$(this).reflowTable();
+			}).on('draw.dt', function () {
+				$(this).reflowTable('update');
 			}).DataTable({
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
-				},
-				drawCallback: function (settings) {
-					$('#jsfTable').reflowTable('update');
 				}
 			});
 		});
