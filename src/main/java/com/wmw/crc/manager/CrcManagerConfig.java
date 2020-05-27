@@ -26,6 +26,7 @@ import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.github.wnameless.spring.common.PageUtils;
+import com.github.wnameless.thymeleaf.ext.Bootstrap3DropdownDialect;
 
 @EnableJpaAuditing
 @EnableScheduling
@@ -48,6 +49,11 @@ public class CrcManagerConfig {
   @Bean
   SpringDataDialect springDataDialect() {
     return new SpringDataDialect();
+  }
+
+  @Bean
+  public Bootstrap3DropdownDialect bootstrap3DropdownDialect() {
+    return new Bootstrap3DropdownDialect();
   }
 
   @Bean

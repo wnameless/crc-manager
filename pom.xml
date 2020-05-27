@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wmw.project</groupId>
 	<artifactId>crc-manager</artifactId>
-	<version>0.3.11-SNAPSHOT</version>
+	<version>0.3.12-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -26,9 +26,15 @@
 	</repositories>
 
 	<dependencies>
+		<!-- Gtihub Beta -->
 		<dependency>
 			<groupId>com.github.wnameless</groupId>
 			<artifactId>spring-react-jsonschema-form</artifactId>
+			<version>master-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.wnameless</groupId>
+			<artifactId>thymeleaf-dropdown-dialect</artifactId>
 			<version>master-SNAPSHOT</version>
 		</dependency>
 
@@ -36,7 +42,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		<exclusions>
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
