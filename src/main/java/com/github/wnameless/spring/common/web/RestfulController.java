@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.common;
+package com.github.wnameless.spring.common.web;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;

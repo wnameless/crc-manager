@@ -15,9 +15,9 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.ModelHelper.initAttr;
-import static com.github.wnameless.spring.common.ModelHelper.initAttrWithDefault;
-import static com.github.wnameless.spring.common.ModelHelper.initPageableWithDefault;
+import static com.github.wnameless.spring.common.web.ModelHelper.initAttr;
+import static com.github.wnameless.spring.common.web.ModelHelper.initAttrWithDefault;
+import static com.github.wnameless.spring.common.web.ModelHelper.initPageableWithDefault;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -48,8 +48,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.wnameless.spring.common.ModelPolicy;
-import com.github.wnameless.spring.common.RestfulController;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.RestfulModel;
@@ -73,8 +73,7 @@ public class CaseStudyController
 
   @Override
   public void configure(ModelPolicy<CaseStudy> policy) {
-    policy.afterInit(
-        item -> caseStudy = firstNonNull(item, new CaseStudy()));
+    policy.afterInit(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute

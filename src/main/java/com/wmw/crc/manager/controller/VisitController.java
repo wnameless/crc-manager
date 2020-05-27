@@ -35,9 +35,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.spring.common.ModelPolicy;
-import com.github.wnameless.spring.common.NestedRestfulController;
-import com.github.wnameless.spring.common.RestfulRoute;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.NestedRestfulController;
+import com.github.wnameless.spring.common.web.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;

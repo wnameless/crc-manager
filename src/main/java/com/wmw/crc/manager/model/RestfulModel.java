@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.model;
 
-import com.github.wnameless.spring.common.RestfulRoute;
+import com.github.wnameless.spring.common.web.RestfulRoute;
 
 public enum RestfulModel implements RestfulRoute<Long> {
 

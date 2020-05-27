@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.common;
+package com.github.wnameless.spring.common.web;
 
 import java.util.function.BiPredicate;
 import java.util.function.Function;
