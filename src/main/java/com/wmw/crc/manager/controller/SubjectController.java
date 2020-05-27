@@ -56,10 +56,10 @@ import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.ExcelSubjectUploadService;
+import com.wmw.crc.manager.service.ExcelSubjects;
 import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.SubjectService;
-import com.wmw.crc.manager.service.TsghService;
-import com.wmw.crc.manager.util.ExcelSubjects;
+import com.wmw.crc.manager.service.tsgh.TsghService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -248,9 +248,8 @@ public class SubjectController implements NestedRestfulController< //
 
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/query/{nationalId}")
-  @ResponseBody
-  Subject searchPatient(@PathVariable Long parentId,
-      @PathVariable String nationalId) {
+  String searchPatient(Model model, @PathVariable Long parentId,
+      @PathVariable String nationalId, Locale locale) {
     Subject subject;
     try {
       subject = tsghService.queryPatientById(nationalId);
@@ -259,7 +258,12 @@ public class SubjectController implements NestedRestfulController< //
       subject = new Subject();
     }
 
-    return subject;
+    updateChild(model, subject);
+    if (subject.getNationalId() == null) {
+      model.addAttribute("message",
+          i18n.msg("ui.subject.message.id-no-data", locale));
+    }
+    return "subjects/new :: partial";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")

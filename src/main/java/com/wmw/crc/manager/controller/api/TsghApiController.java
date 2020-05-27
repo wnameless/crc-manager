@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 
 @RequestMapping("/api/1.0/tsgh")

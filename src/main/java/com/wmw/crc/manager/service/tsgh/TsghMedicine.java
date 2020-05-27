@@ -13,34 +13,25 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.service.tsgh;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class PatientContraindication {
+public class TsghMedicine {
 
-  String nationalId;
+  String name;
 
-  String patientId;
+  String engName;
 
-  String irbNumber;
+  String scientificName;
 
-  String irbName;
+  String hospitalCode;
 
-  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
-  String startDate;
+  List<String> atcCode;
 
-  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
-  String endDate;
-
-  List<SimpleDrug> drugs = new ArrayList<>();
-
-  String piName;
-
-  String piPhone;
+  String takekind;
 
 }

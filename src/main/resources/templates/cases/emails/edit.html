@@ -10,24 +10,8 @@
             <div id="jsfForm"></div>
 
 
-            <script type="text/javascript" th:inline="javascript">
-                $(function () {
-                    let onSubmit = (f) => {
-                        axios.post( /*[[${item.joinPath('emails')}]]*/ null, f.formData)
-                            .then((response) => {
-                                $('#jsf').html(response.data);
-                            });
-                    };
-
-                    let rjsfOpt = Object.assign({
-                        btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
-                        onSubmit: onSubmit
-                    }, /*[[${emails.toRjsfMap()}]]*/ {});
-
-                    ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                        document.getElementById('jsfForm'));
-                });
-            </script>
+            <script
+                th:replace="fragments/rjsf :: edit( ${emails.toRjsfMap()}, '#jsfForm', ${item.joinPath('emails')}, '#jsf' )"></script>
         </div>
     </div>
 </div>

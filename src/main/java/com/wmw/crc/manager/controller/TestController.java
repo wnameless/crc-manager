@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
-import com.wmw.crc.manager.controller.api.NewVisit;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
-import com.wmw.crc.manager.service.TsghService;
+import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
+import com.wmw.crc.manager.service.tsgh.TsghService;
 
 @Profile("test")
 @Controller

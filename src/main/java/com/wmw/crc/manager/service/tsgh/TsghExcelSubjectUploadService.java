@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2019 Wei-Ming Wu
+ * Copyright 2018 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,17 +13,21 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service.tsgh.api;
+package com.wmw.crc.manager.service.tsgh;
 
-import lombok.Data;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-@Data
-public class TsghResponse<E> {
+import com.wmw.crc.manager.service.ExcelSubjectUploadService;
+import com.wmw.crc.manager.service.ExcelSubjects;
 
-  String Status;
+@Service
+public class TsghExcelSubjectUploadService
+    implements ExcelSubjectUploadService {
 
-  E Data;
-
-  String ErrorMessage;
+  @Override
+  public ExcelSubjects fromMultipartFile(MultipartFile file) {
+    return new TsghExcelSubjects(file);
+  }
 
 }

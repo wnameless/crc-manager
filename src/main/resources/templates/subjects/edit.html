@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="partial">
     <div class="row">
         <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
@@ -10,23 +11,10 @@
         </div>
     </div>
 
+    <script
+        th:replace="fragments/rjsf :: edit( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).updatePath}, '#jsf' )"></script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {
-            let onSubmit = (f) => {
-                axios.post( /*[[${parent.withChild(child).updatePath}]]*/ null, f.formData)
-                    .then((response) => {
-                        $('#jsf').html(response.data);
-                    });
-            };
-
-            let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.submit}]]*/ 'Submit',
-                onSubmit: onSubmit
-            }, /*[[${child.toRjsfMap()}]]*/ {});
-
-            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                document.getElementById('jsfForm'));
-
             $('input[type="date"]').attr({
                 min: '1900-01-01',
                 max: '2100-12-31'

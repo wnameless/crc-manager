@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="partial">
 	<h3
 		th:replace="fragments/form :: title(text=${child.name + '(' + child.nationalId + ')' }, backUrl=${route.indexPath})">
@@ -45,7 +46,11 @@
 
 		$(function () {
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
-			$('#jsfTable').DataTable({
+			$('#jsfTable').on('init.dt', function () {
+				$(this).reflowTable();
+			}).on('draw.dt', function () {
+				$(this).reflowTable('update');
+			}).DataTable({
 				order: [
 					[4, "asc"]
 				],
@@ -55,13 +60,8 @@
 				}],
 				language: {
 					url: '/i18n/datatables-' + i18nLocale + '.json'
-				},
-				drawCallback: (settings) => {
-					$('#jsfTable').reflowTable('update');
 				}
 			});
-
-			$('#jsfTable').reflowTable();
 		});
 	</script>
 </div>

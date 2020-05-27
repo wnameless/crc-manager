@@ -28,7 +28,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.model.form.Criterion;
+import com.wmw.crc.manager.util.Criterion;
 import com.wmw.crc.manager.util.JsonNodeUtils;
 
 import net.sf.rubycollect4j.Ruby;

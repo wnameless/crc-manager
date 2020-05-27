@@ -40,12 +40,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.spring.common.ModelOption;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -71,8 +73,8 @@ public class CaseStudyController
 
   @Override
   public void configure(ModelOption<CaseStudy> initOption) {
-    initOption
-        .afterInitAction(item -> caseStudy = firstNonNull(item, new CaseStudy()));
+    initOption.afterInitAction(
+        item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute
@@ -99,6 +101,20 @@ public class CaseStudyController
   @PreAuthorize("@perm.isUser()")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
   String indexJS(Authentication auth, Model model) {
+    model.addAttribute("slice",
+        caseService.getCasesByStatus(auth, status, pageable, search));
+    return "cases/list :: partial";
+  }
+
+  @PreAuthorize("@perm.canManage(#id)")
+  @PutMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
+  String alterStatusJS(Authentication auth, Model model,
+      @PathVariable("id") Long id, @RequestBody ObjectNode patch) {
+    if (patch.has("status")) {
+      caseStudy.setStatus(Status.fromString(patch.get("status").asText()));
+      caseStudyRepo.save(caseStudy);
+    }
+
     model.addAttribute("slice",
         caseService.getCasesByStatus(auth, status, pageable, search));
     return "cases/list :: partial";

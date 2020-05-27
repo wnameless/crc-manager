@@ -38,7 +38,9 @@
                 </th>
                 <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
                 <th class="text-center" style="width: 60px;">
-                    <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip" data-placement="top" th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
+                    <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip"
+                        data-placement="top"
+                        th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
                 </th>
                 <th>
                     <a class="sorted" sd:pagination-sort="trialName" th:text="#{ui.case.table.name.chinese}"></a>
@@ -57,43 +59,47 @@
         <tbody>
             <tr th:each="case : ${slice}">
                 <td>
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-default dropdown-toggle" id="dropdownMenu1"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li
-                                th:if="!${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{${case.joinPath('assignment')}}"
-                                    th:text="#{ui.case.table.action.assign}"></a>
-                            </li>
-                            <li th:if="${case.owner} and ${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{${case.joinPath('status', 'exec')}}"
-                                    th:text="#{ui.case.table.action.dispatch}"></a>
-                            </li>
-                            <li th:if="${case.status} == ${case.Status.NEW} and ${@perm.canAssign()}">
-                                <a th:href="@{${case.joinPath('status', 'none')}}"
-                                    th:text="#{ui.case.table.action.none}"></a>
-                            </li>
-                            <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canManage(case)}">
-                                <a th:href="@{${case.joinPath('permission')}}"
-                                    th:text="#{ui.case.table.action.permission}"></a>
-                            </li>
-                            <li th:if="${case.status} == ${case.Status.EXEC} and ${@perm.canClose(case)}">
-                                <a th:href="@{${case.joinPath('status', 'end')}}"
-                                    th:text="#{ui.case.table.action.close}"></a>
-                            </li>
-                            <li th:if="${case.status} == ${case.Status.END} and ${@perm.canReopen()}">
-                                <a th:href="@{${case.joinPath('status', 'exec')}}"
-                                    th:text="#{ui.case.table.action.reopen}"></a>
-                            </li>
-                            <li th:if="${case.status} == ${case.Status.NONE} and ${@perm.canRenew()}">
-                                <a th:href="@{${case.joinPath('status', 'new')}}"
-                                    th:text="#{ui.case.table.action.renew}"></a>
-                            </li>
-                        </ul>
-                    </div>
+                    <bs3:dropdown>
+                        <th:block th:if="${case.status} == ${case.Status.NEW}">
+                            <a th:if="!${case.owner} and ${@perm.canAssign()}"
+                                th:href="@{${case.joinPath('assignment')}}">
+                                [[#{ui.case.table.action.assign}]]
+                            </a>
+                            <a th:if="${case.owner} and ${@perm.canAssign()}"
+                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'exec'} )">
+                                [[#{ui.case.table.action.dispatch}]]
+                            </a>
+                            <bs3:dropdown-divider></bs3:dropdown-divider>
+                            <a th:if="${@perm.canAssign()}"
+                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'none'} )">
+                                [[#{ui.case.table.action.none}]]
+                            </a>
+                        </th:block>
+
+                        <th:block th:if="${case.status} == ${case.Status.EXEC}">
+                            <a th:if="${@perm.canManage(case)}" th:href="@{${case.joinPath('permission')}}">
+                                [[#{ui.case.table.action.permission}]]
+                            </a>
+                            <bs3:dropdown-divider th:if="${@perm.canClose(case)}"></bs3:dropdown-divider>
+                            <a th:if="${@perm.canClose(case)}"
+                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'end'} )">
+                                [[#{ui.case.table.action.close}]]
+                            </a>
+                        </th:block>
+
+                        <th:block th:if="${case.status} == ${case.Status.END}">
+                            <a th:if="${@perm.canReopen()}"
+                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'exec'} )">
+                                [[#{ui.case.table.action.reopen}]]</a>
+                        </th:block>
+
+                        <th:block th:if="${case.status} == ${case.Status.NONE}">
+                            <a th:if="${@perm.canRenew()}"
+                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'new'} )">
+                                [[#{ui.case.table.action.renew}]]
+                            </a>
+                        </th:block>
+                    </bs3:dropdown>
                 </td>
                 <td>
                     <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">

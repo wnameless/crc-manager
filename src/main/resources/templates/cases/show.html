@@ -46,25 +46,7 @@
         </div>
     </div>
 
-    <script type="text/javascript" th:inline="javascript">
-        $(function () {
-            let onSubmit = (f) => {
-                axios.get( /*[[${route.indexPath}]]*/ null)
-                    .then((response) => {
-                        $('#jsf').html(response.data);
-                    });
-            };
-
-            let rjsfOpt = Object.assign({
-                btnText: /*[[#{rjsf.back}]]*/ 'Back',
-                onSubmit: onSubmit,
-                disabled: true
-            }, /*[[${item.toRjsfMap()}]]*/ {});
-
-            ReactDOM.render(React.createElement(ReactJSF, rjsfOpt),
-                document.getElementById('jsfForm'));
-        });
-    </script>
+    <script th:replace="fragments/rjsf :: show( ${item.toRjsfMap()}, '#jsfForm', ${route.indexPath}, '#jsf' )"></script>
 </div>
 
 </html>

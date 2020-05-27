@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.service;
+package com.wmw.crc.manager.service.tsgh;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -38,9 +38,6 @@ import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.MedicineRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
-import com.wmw.crc.manager.service.tsgh.api.Drug;
-import com.wmw.crc.manager.service.tsgh.api.PatientContraindication;
-import com.wmw.crc.manager.service.tsgh.api.SimpleDrug;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.rubycollect4j.Ruby;
@@ -90,13 +87,13 @@ public class TsghServiceTestImpl implements TsghService {
   }
 
   @Override
-  public List<Drug> getDrugs() throws IOException {
+  public List<TsghMedicine> getDrugs() throws IOException {
     return new ArrayList<>();
   }
 
   @Override
   public Response<ResponseBody> addPatientContraindication(
-      PatientContraindication pc) throws IOException {
+      TsghContraindication pc) throws IOException {
     System.out.println(pc);
     return null;
   }
@@ -121,7 +118,7 @@ public class TsghServiceTestImpl implements TsghService {
 
       List<Subject> subjects = subjectRepo.findAllByCaseStudy(c);
       for (Subject s : subjects) {
-        PatientContraindication pc = new PatientContraindication();
+        TsghContraindication pc = new TsghContraindication();
         pc.setNationalId(s.getNationalId());
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
@@ -141,7 +138,7 @@ public class TsghServiceTestImpl implements TsghService {
 
             for (Medicine med : meds) {
               if (cd.getTakekinds().contains(med.getTakekind())) {
-                SimpleDrug sd = new SimpleDrug();
+                TsghDrug sd = new TsghDrug();
                 sd.setPhrase(cd.getPhrase());
                 sd.setAtcCode(med.getAtcCode1());
                 sd.setHospitalCode(med.getHospitalCode());

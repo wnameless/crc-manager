@@ -20,9 +20,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.wmw.crc.manager.service.TsghService;
-import com.wmw.crc.manager.service.TsghService.ContraindicationRefreshResult;
 import com.wmw.crc.manager.service.VisitService;
+import com.wmw.crc.manager.service.tsgh.TsghService;
+import com.wmw.crc.manager.service.tsgh.TsghService.ContraindicationRefreshResult;
 
 import lombok.extern.slf4j.Slf4j;
 

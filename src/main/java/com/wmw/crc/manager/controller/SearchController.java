@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.github.wnameless.spring.react.ReactJsonSchemaFormUtils;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
+import com.wmw.crc.manager.util.Criterion;
 
 @Controller
 public class SearchController {

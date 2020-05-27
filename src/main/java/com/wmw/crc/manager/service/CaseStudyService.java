@@ -47,10 +47,10 @@ import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Subject;
-import com.wmw.crc.manager.model.form.Criterion;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.util.Criterion;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
