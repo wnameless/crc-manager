@@ -90,8 +90,8 @@ public class SubjectController implements NestedRestfulController< //
   public void configure(ModelOption<CaseStudy> parentOption,
       ModelOption<Subject> childOption,
       ModelOption<? extends Iterable<Subject>> childrenOption) {
-    parentOption.afterInitAction(p -> caseStudy = p);
-    childOption.afterInitAction(c -> subject = firstNonNull(c, new Subject()));
+    parentOption.afterInit(p -> caseStudy = p);
+    childOption.afterInit(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

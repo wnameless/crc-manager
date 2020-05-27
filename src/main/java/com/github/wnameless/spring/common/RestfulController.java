@@ -37,7 +37,7 @@ public interface RestfulController< //
 
   @ModelAttribute
   default void setItem(Model model, @PathVariable(required = false) ID id) {
-    if (!getOption().isInit()) return;
+    if (!getOption().isEnable()) return;
 
     I item = null;
 
@@ -45,12 +45,12 @@ public interface RestfulController< //
       item = getRepository().findById(id).get();
     }
 
-    if (getOption().getAfterInitAction() != null) {
-      item = getOption().getAfterInitAction().apply(item);
+    if (getOption().getAfterInit() != null) {
+      item = getOption().getAfterInit().apply(item);
     }
 
-    model.addAttribute(getItemKey(), getOption().getBeforeSetAction() == null
-        ? item : getOption().getBeforeSetAction().apply(item));
+    model.addAttribute(getItemKey(), getOption().getBeforeAdd() == null ? item
+        : getOption().getBeforeAdd().apply(item));
   }
 
   @ModelAttribute

@@ -68,39 +68,39 @@ public interface NestedRestfulController< //
   default void setParentAndChild(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
-    if (!getParentModelOption().isInit()) return;
+    if (!getParentModelOption().isEnable()) return;
 
     P parent = null;
     if (parentId != null) {
       parent = getParentRepository().findById(parentId).get();
     }
-    if (getParentModelOption().getAfterInitAction() != null) {
-      parent = getParentModelOption().getAfterInitAction().apply(parent);
+    if (getParentModelOption().getAfterInit() != null) {
+      parent = getParentModelOption().getAfterInit().apply(parent);
     }
     model.addAttribute(getParentKey(),
-        getParentModelOption().getBeforeSetAction() == null ? parent
-            : getParentModelOption().getBeforeSetAction().apply(parent));
+        getParentModelOption().getBeforeAdd() == null ? parent
+            : getParentModelOption().getBeforeAdd().apply(parent));
 
-    if (!getChildModelOption().isInit()) return;
+    if (!getChildModelOption().isEnable()) return;
 
     C child = null;
     if (parent != null && id != null) {
       child = getChildRepository().findById(id).get();
       child = getPaternityTesting().test(parent, child) ? child : null;
     }
-    if (getChildModelOption().getAfterInitAction() != null) {
-      child = getChildModelOption().getAfterInitAction().apply(child);
+    if (getChildModelOption().getAfterInit() != null) {
+      child = getChildModelOption().getAfterInit().apply(child);
     }
     model.addAttribute(getChildKey(),
-        getChildModelOption().getBeforeSetAction() == null ? child
-            : getChildModelOption().getBeforeSetAction().apply(child));
+        getChildModelOption().getBeforeAdd() == null ? child
+            : getChildModelOption().getBeforeAdd().apply(child));
   }
 
   @ModelAttribute
   default void setChildren(Model model,
       @PathVariable(required = false) PID parentId,
       @PathVariable(required = false) CID id) {
-    if (!getChildrenModelOption().isInit()) return;
+    if (!getChildrenModelOption().isEnable()) return;
 
     Iterable<C> children = null;
 
@@ -109,13 +109,13 @@ public interface NestedRestfulController< //
       children = getChildren(parent);
     }
 
-    if (getChildrenModelOption().getAfterInitAction() != null) {
-      children = getChildrenModelOption().getAfterInitAction().apply(children);
+    if (getChildrenModelOption().getAfterInit() != null) {
+      children = getChildrenModelOption().getAfterInit().apply(children);
     }
 
     model.addAttribute(getChildrenKey(),
-        getChildrenModelOption().getBeforeSetAction() == null ? children
-            : getChildrenModelOption().getBeforeSetAction().apply(children));
+        getChildrenModelOption().getBeforeAdd() == null ? children
+            : getChildrenModelOption().getBeforeAdd().apply(children));
   }
 
   @ModelAttribute

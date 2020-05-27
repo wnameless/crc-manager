@@ -48,7 +48,7 @@ public class ContraindicationController implements NestedRestfulController< //
   public void configure(ModelOption<CaseStudy> parentOption,
       ModelOption<Contraindication> childOption,
       ModelOption<? extends Iterable<Contraindication>> childrenOption) {
-    parentOption.afterInitAction(p -> caseStudy = p);
+    parentOption.afterInit(p -> caseStudy = p);
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

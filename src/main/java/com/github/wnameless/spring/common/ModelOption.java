@@ -19,42 +19,42 @@ import java.util.function.Function;
 
 public class ModelOption<I> {
 
-  private boolean init = true;
+  private boolean enable = true;
 
-  private Function<I, I> afterInitAction;
+  private Function<I, I> afterInit;
 
-  private Function<I, I> beforeSetAction;
+  private Function<I, I> beforeAdd;
 
   public ModelOption<I> enable() {
-    init = true;
+    enable = true;
     return this;
   }
 
   public ModelOption<I> disable() {
-    init = false;
+    enable = false;
     return this;
   }
 
-  public ModelOption<I> afterInitAction(Function<I, I> afterInitAction) {
-    this.afterInitAction = afterInitAction;
+  public ModelOption<I> afterInit(Function<I, I> afterInit) {
+    this.afterInit = afterInit;
     return this;
   }
 
-  public ModelOption<I> beforeSetAction(Function<I, I> preSetAction) {
-    this.beforeSetAction = preSetAction;
+  public ModelOption<I> beforeAdd(Function<I, I> beforeAdd) {
+    this.beforeAdd = beforeAdd;
     return this;
   }
 
-  boolean isInit() {
-    return init;
+  boolean isEnable() {
+    return enable;
   }
 
-  Function<I, I> getAfterInitAction() {
-    return afterInitAction;
+  Function<I, I> getAfterInit() {
+    return afterInit;
   }
 
-  Function<I, I> getBeforeSetAction() {
-    return beforeSetAction;
+  Function<I, I> getBeforeAdd() {
+    return beforeAdd;
   }
 
 }

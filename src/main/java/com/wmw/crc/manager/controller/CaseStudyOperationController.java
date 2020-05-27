@@ -58,7 +58,7 @@ public class CaseStudyOperationController
 
   @Override
   public void configure(ModelOption<CaseStudy> option) {
-    option.afterInitAction(
+    option.afterInit(
         item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
