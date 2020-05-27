@@ -27,7 +27,7 @@ public interface NestedRestfulController< //
     P extends RestfulItem<PID>, PID, PR extends CrudRepository<P, PID>, //
     C extends RestfulItem<CID>, CID, CR extends CrudRepository<C, CID>> {
 
-  Function<P, RestfulRoute<CID>> getRoute();
+  Function<P, ? extends RestfulRoute<CID>> getRoute();
 
   PR getParentRepository();
 
