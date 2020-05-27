@@ -39,17 +39,17 @@ public class SubjectEntityListener {
 
   @PostPersist
   public void postPersist(Subject target) {
-    AutowireHelper.autowire(this, caseStudyRepo);
+    AutowireHelper.autowire(this);
   }
 
   @PostUpdate
   public void postUpdate(Subject target) {
-    AutowireHelper.autowire(this, caseStudyRepo);
+    AutowireHelper.autowire(this);
   }
 
   @PostRemove
   public void postDelete(Subject target) {
-    AutowireHelper.autowire(this, caseStudyRepo);
+    AutowireHelper.autowire(this);
   }
 
 }

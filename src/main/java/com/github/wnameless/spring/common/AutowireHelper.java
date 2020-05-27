@@ -15,18 +15,19 @@
  */
 package com.github.wnameless.spring.common;
 
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
  * 
- * {@link AutowireHelper} is designed to retrieve the bean autowiring ability of
- * the {@link ApplicationContext} out from the Spring controlled IOC
- * environment. Simply by calling {@link #autowire(Object, Object...)} from this
- * singleton instance to autowire any instance. <br>
+ * {@link AutowireHelper} is designed to retrieve the autowiring ability of the
+ * {@link ApplicationContext} out from the Spring controlled IOC environment.
+ * Simply by calling {@link #autowire(Object) AutowireHelper.autowire(Object)}
+ * from this singleton instance to autowire any bean. <br>
  * <br>
- * However, before {@link #autowire(Object, Object...)} gets work, user should
- * set or autowire the {@link ApplicationContext} first. <br>
+ * However before {@link #autowire(Object) AutowireHelper.autowire(Object)} gets
+ * work, user should set or autowire the {@link ApplicationContext} first. <br>
  * <br>
  * For example:<br>
  * 
@@ -53,26 +54,10 @@ public final class AutowireHelper implements ApplicationContextAware {
   private AutowireHelper() {}
 
   /**
-   * Tries to autowire target beans which hold
-   * {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
-   * annotations in the given instance.
-   *
-   * @param instance
-   *          of a class which holds
-   *          {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
-   *          annotations
-   * @param targetBeans
-   *          which are annotated by
-   *          {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
-   *          and not autowired yet in the given instance
+   * @see {@link AutowireCapableBeanFactory#autowireBean}
    */
-  public static void autowire(Object instance, Object... targetBeans) {
-    for (Object bean : targetBeans) {
-      if (bean == null) {
-        applicationContext.getAutowireCapableBeanFactory()
-            .autowireBean(instance);
-      }
-    }
+  public static void autowire(Object instance) {
+    applicationContext.getAutowireCapableBeanFactory().autowireBean(instance);
   }
 
   @Override
