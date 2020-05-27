@@ -24,9 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
 
-public final class ControllerHelpers {
+public final class ControllerHelper {
 
-  private ControllerHelpers() {}
+  private ControllerHelper() {}
 
   public static Pageable initPageable(Map<String, String> requestParams,
       Model model, HttpSession session) {

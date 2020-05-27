@@ -15,9 +15,9 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.ControllerHelpers.initPageableWithDefault;
-import static com.github.wnameless.spring.common.ControllerHelpers.initParam;
-import static com.github.wnameless.spring.common.ControllerHelpers.initParamWithDefault;
+import static com.github.wnameless.spring.common.ControllerHelper.initPageableWithDefault;
+import static com.github.wnameless.spring.common.ControllerHelper.initParam;
+import static com.github.wnameless.spring.common.ControllerHelper.initParamWithDefault;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
