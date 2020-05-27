@@ -63,13 +63,12 @@ public class VisitController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public void configure(ModelOption<CaseStudy> parentInitOption,
-      ModelOption<Subject> childInitOption,
-      ModelOption<? extends Iterable<Subject>> childrenInitOption) {
-    parentInitOption.afterInitAction(p -> caseStudy = p);
-    childInitOption
-        .afterInitAction(c -> subject = firstNonNull(c, new Subject()));
-    childrenInitOption.disable();
+  public void configure(ModelOption<CaseStudy> parentOption,
+      ModelOption<Subject> childOption,
+      ModelOption<? extends Iterable<Subject>> childrenOption) {
+    parentOption.afterInitAction(p -> caseStudy = p);
+    childOption.afterInitAction(c -> subject = firstNonNull(c, new Subject()));
+    childrenOption.disable();
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

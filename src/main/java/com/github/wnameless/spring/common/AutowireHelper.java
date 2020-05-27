@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.util;
+package com.github.wnameless.spring.common;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

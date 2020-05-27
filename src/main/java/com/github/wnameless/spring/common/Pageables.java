@@ -25,7 +25,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class PageUtils {
+public final class Pageables {
+
+  private Pageables() {}
+
+  private static final Pageables INSTANCE = new Pageables();
+
+  public static Pageables getInstance() {
+    return INSTANCE;
+  }
 
   public static class PageableParams {
 

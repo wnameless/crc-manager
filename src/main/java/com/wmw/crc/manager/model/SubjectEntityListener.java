@@ -21,10 +21,10 @@ import javax.persistence.PostUpdate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.github.wnameless.spring.common.AutowireHelper;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.SubjectService;
-import com.wmw.crc.manager.util.AutowireHelper;
 
 public class SubjectEntityListener {
 

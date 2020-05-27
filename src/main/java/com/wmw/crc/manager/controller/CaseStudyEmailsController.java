@@ -58,8 +58,8 @@ public class CaseStudyEmailsController
   Emails emails;
 
   @Override
-  public void configure(ModelOption<CaseStudy> initOption) {
-    initOption.afterInitAction(
+  public void configure(ModelOption<CaseStudy> option) {
+    option.afterInitAction(
         item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 

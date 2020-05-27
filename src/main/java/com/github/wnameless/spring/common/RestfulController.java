@@ -49,8 +49,8 @@ public interface RestfulController< //
       item = getOption().getAfterInitAction().apply(item);
     }
 
-    model.addAttribute(getItemKey(), getOption().getPreSetAction() == null
-        ? item : getOption().getPreSetAction().apply(item));
+    model.addAttribute(getItemKey(), getOption().getBeforeSetAction() == null
+        ? item : getOption().getBeforeSetAction().apply(item));
   }
 
   @ModelAttribute

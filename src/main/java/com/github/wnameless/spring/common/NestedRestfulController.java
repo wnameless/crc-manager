@@ -37,9 +37,8 @@ public interface NestedRestfulController< //
 
   Iterable<C> getChildren(P parent);
 
-  void configure(ModelOption<P> parentModelOption,
-      ModelOption<C> childModelOption,
-      ModelOption<? extends Iterable<C>> childrenModelOption);
+  void configure(ModelOption<P> parentOption, ModelOption<C> childOption,
+      ModelOption<? extends Iterable<C>> childrenOption);
 
   default ModelOption<P> getParentModelOption() {
     ModelOption<P> parentOption = new ModelOption<>();
@@ -79,8 +78,8 @@ public interface NestedRestfulController< //
       parent = getParentModelOption().getAfterInitAction().apply(parent);
     }
     model.addAttribute(getParentKey(),
-        getParentModelOption().getPreSetAction() == null ? parent
-            : getParentModelOption().getPreSetAction().apply(parent));
+        getParentModelOption().getBeforeSetAction() == null ? parent
+            : getParentModelOption().getBeforeSetAction().apply(parent));
 
     if (!getChildModelOption().isInit()) return;
 
@@ -93,8 +92,8 @@ public interface NestedRestfulController< //
       child = getChildModelOption().getAfterInitAction().apply(child);
     }
     model.addAttribute(getChildKey(),
-        getChildModelOption().getPreSetAction() == null ? child
-            : getChildModelOption().getPreSetAction().apply(child));
+        getChildModelOption().getBeforeSetAction() == null ? child
+            : getChildModelOption().getBeforeSetAction().apply(child));
   }
 
   @ModelAttribute
@@ -115,8 +114,8 @@ public interface NestedRestfulController< //
     }
 
     model.addAttribute(getChildrenKey(),
-        getChildrenModelOption().getPreSetAction() == null ? children
-            : getChildrenModelOption().getPreSetAction().apply(children));
+        getChildrenModelOption().getBeforeSetAction() == null ? children
+            : getChildrenModelOption().getBeforeSetAction().apply(children));
   }
 
   @ModelAttribute

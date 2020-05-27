@@ -15,9 +15,9 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.ControllerHelper.initPageableWithDefault;
-import static com.github.wnameless.spring.common.ControllerHelper.initParam;
-import static com.github.wnameless.spring.common.ControllerHelper.initParamWithDefault;
+import static com.github.wnameless.spring.common.ModelHelper.initAttr;
+import static com.github.wnameless.spring.common.ModelHelper.initAttrWithDefault;
+import static com.github.wnameless.spring.common.ModelHelper.initPageableWithDefault;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -72,8 +72,8 @@ public class CaseStudyController
   Pageable pageable;
 
   @Override
-  public void configure(ModelOption<CaseStudy> initOption) {
-    initOption.afterInitAction(
+  public void configure(ModelOption<CaseStudy> option) {
+    option.afterInitAction(
         item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
@@ -82,11 +82,11 @@ public class CaseStudyController
       @RequestParam Map<String, String> requestParams,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-    this.status = (Status) initParamWithDefault("status",
-        Status.fromString(status), Status.EXEC, model, session);
+    this.status = (Status) initAttrWithDefault(model, "status",
+        Status.fromString(status), Status.EXEC, session);
     this.search =
-        (String) initParam(requestParams, "search", search, model, session);
-    pageable = initPageableWithDefault(requestParams, model, session,
+        (String) initAttr(model, requestParams, "search", search, session);
+    pageable = initPageableWithDefault(model, requestParams, session,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
   }
 

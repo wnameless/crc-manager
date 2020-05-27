@@ -23,7 +23,7 @@ public class ModelOption<I> {
 
   private Function<I, I> afterInitAction;
 
-  private Function<I, I> preSetAction;
+  private Function<I, I> beforeSetAction;
 
   public ModelOption<I> enable() {
     init = true;
@@ -40,8 +40,8 @@ public class ModelOption<I> {
     return this;
   }
 
-  public ModelOption<I> preSetAction(Function<I, I> preSetAction) {
-    this.preSetAction = preSetAction;
+  public ModelOption<I> beforeSetAction(Function<I, I> preSetAction) {
+    this.beforeSetAction = preSetAction;
     return this;
   }
 
@@ -53,8 +53,8 @@ public class ModelOption<I> {
     return afterInitAction;
   }
 
-  Function<I, I> getPreSetAction() {
-    return preSetAction;
+  Function<I, I> getBeforeSetAction() {
+    return beforeSetAction;
   }
 
 }
