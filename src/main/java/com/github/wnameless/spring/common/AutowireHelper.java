@@ -17,9 +17,34 @@ package com.github.wnameless.spring.common;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
-@Component
+/**
+ * 
+ * {@link AutowireHelper} is designed to retrieve the bean autowiring ability of
+ * the {@link ApplicationContext} out from the Spring controlled IOC
+ * environment. Simply by calling {@link #autowire(Object, Object...)} from this
+ * singleton instance to autowire any instance. <br>
+ * <br>
+ * However, before {@link #autowire(Object, Object...)} gets work, user should
+ * set or autowire the {@link ApplicationContext} first. <br>
+ * <br>
+ * For example:<br>
+ * 
+ * <pre>
+ * &#64;Configuration
+ * public class Config {
+ * 
+ *   &#64;Bean
+ *   AutowireHelper autowireHelper() {
+ *     return AutowireHelper.getInstance();
+ *   }
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Wei-Ming Wu
+ *
+ */
 public final class AutowireHelper implements ApplicationContextAware {
 
   private static final AutowireHelper INSTANCE = new AutowireHelper();
@@ -28,21 +53,24 @@ public final class AutowireHelper implements ApplicationContextAware {
   private AutowireHelper() {}
 
   /**
-   * Tries to autowire the specified instance of the class if one of the
-   * specified beans which need to be autowired are null.
+   * Tries to autowire target beans which hold
+   * {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
+   * annotations in the given instance.
    *
-   * @param classToAutowire
-   *          the instance of the class which holds @Autowire annotations
-   * @param beansToAutowireInClass
-   *          the beans which have the @Autowire annotation in the specified
-   *          {#classToAutowire}
+   * @param instance
+   *          of a class which holds
+   *          {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
+   *          annotations
+   * @param targetBeans
+   *          which are annotated by
+   *          {@link org.springframework.beans.factory.annotation.Autowired @Autowired}
+   *          and not autowired yet in the given instance
    */
-  public static void autowire(Object classToAutowire,
-      Object... beansToAutowireInClass) {
-    for (Object bean : beansToAutowireInClass) {
+  public static void autowire(Object instance, Object... targetBeans) {
+    for (Object bean : targetBeans) {
       if (bean == null) {
         applicationContext.getAutowireCapableBeanFactory()
-            .autowireBean(classToAutowire);
+            .autowireBean(instance);
       }
     }
   }
@@ -54,7 +82,7 @@ public final class AutowireHelper implements ApplicationContextAware {
   }
 
   /**
-   * @return the singleton instance.
+   * @return the singleton {@link AutowireHelper}
    */
   public static AutowireHelper getInstance() {
     return INSTANCE;

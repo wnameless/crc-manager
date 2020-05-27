@@ -25,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.github.wnameless.spring.common.AutowireHelper;
 import com.github.wnameless.spring.common.web.Pageables;
 import com.github.wnameless.thymeleaf.ext.Bootstrap3DropdownDialect;
 
@@ -59,6 +60,11 @@ public class CrcManagerConfig {
   @Bean
   Pageables pageables() {
     return Pageables.getInstance();
+  }
+
+  @Bean
+  AutowireHelper autowireHelper() {
+    return AutowireHelper.getInstance();
   }
 
 }
