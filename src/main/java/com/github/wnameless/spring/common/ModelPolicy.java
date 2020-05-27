@@ -17,7 +17,7 @@ package com.github.wnameless.spring.common;
 
 import java.util.function.Function;
 
-public class ModelOption<I> {
+public class ModelPolicy<I> {
 
   private boolean enable = true;
 
@@ -25,22 +25,22 @@ public class ModelOption<I> {
 
   private Function<I, I> beforeAdd;
 
-  public ModelOption<I> enable() {
+  public ModelPolicy<I> enable() {
     enable = true;
     return this;
   }
 
-  public ModelOption<I> disable() {
+  public ModelPolicy<I> disable() {
     enable = false;
     return this;
   }
 
-  public ModelOption<I> afterInit(Function<I, I> afterInit) {
+  public ModelPolicy<I> afterInit(Function<I, I> afterInit) {
     this.afterInit = afterInit;
     return this;
   }
 
-  public ModelOption<I> beforeAdd(Function<I, I> beforeAdd) {
+  public ModelPolicy<I> beforeAdd(Function<I, I> beforeAdd) {
     this.beforeAdd = beforeAdd;
     return this;
   }

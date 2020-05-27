@@ -37,31 +37,31 @@ public interface NestedRestfulController< //
 
   Iterable<C> getChildren(P parent);
 
-  void configure(ModelOption<P> parentOption, ModelOption<C> childOption,
-      ModelOption<? extends Iterable<C>> childrenOption);
+  void configure(ModelPolicy<P> parentPolicy, ModelPolicy<C> childPolicy,
+      ModelPolicy<? extends Iterable<C>> childrenPolicy);
 
-  default ModelOption<P> getParentModelOption() {
-    ModelOption<P> parentOption = new ModelOption<>();
-    ModelOption<C> childOption = new ModelOption<>();
-    ModelOption<? extends Iterable<C>> childrenOption = new ModelOption<>();
-    configure(parentOption, childOption, childrenOption);
-    return parentOption;
+  default ModelPolicy<P> getParentModelOption() {
+    ModelPolicy<P> parentPolicy = new ModelPolicy<>();
+    ModelPolicy<C> childPolicy = new ModelPolicy<>();
+    ModelPolicy<? extends Iterable<C>> childrenPolicy = new ModelPolicy<>();
+    configure(parentPolicy, childPolicy, childrenPolicy);
+    return parentPolicy;
   }
 
-  default ModelOption<C> getChildModelOption() {
-    ModelOption<P> parentOption = new ModelOption<>();
-    ModelOption<C> childOption = new ModelOption<>();
-    ModelOption<? extends Iterable<C>> childrenOption = new ModelOption<>();
-    configure(parentOption, childOption, childrenOption);
-    return childOption;
+  default ModelPolicy<C> getChildModelOption() {
+    ModelPolicy<P> parentPolicy = new ModelPolicy<>();
+    ModelPolicy<C> childPolicy = new ModelPolicy<>();
+    ModelPolicy<? extends Iterable<C>> childrenPolicy = new ModelPolicy<>();
+    configure(parentPolicy, childPolicy, childrenPolicy);
+    return childPolicy;
   }
 
-  default ModelOption<Iterable<C>> getChildrenModelOption() {
-    ModelOption<P> parentOption = new ModelOption<>();
-    ModelOption<C> childOption = new ModelOption<>();
-    ModelOption<Iterable<C>> childrenOption = new ModelOption<>();
-    configure(parentOption, childOption, childrenOption);
-    return childrenOption;
+  default ModelPolicy<Iterable<C>> getChildrenModelOption() {
+    ModelPolicy<P> parentPolicy = new ModelPolicy<>();
+    ModelPolicy<C> childPolicy = new ModelPolicy<>();
+    ModelPolicy<Iterable<C>> childrenPolicy = new ModelPolicy<>();
+    configure(parentPolicy, childPolicy, childrenPolicy);
+    return childrenPolicy;
   }
 
   @ModelAttribute

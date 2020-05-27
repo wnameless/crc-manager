@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.wnameless.spring.common.ModelOption;
+import com.github.wnameless.spring.common.ModelPolicy;
 import com.github.wnameless.spring.common.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
@@ -72,8 +72,8 @@ public class CaseStudyController
   Pageable pageable;
 
   @Override
-  public void configure(ModelOption<CaseStudy> option) {
-    option.afterInit(
+  public void configure(ModelPolicy<CaseStudy> policy) {
+    policy.afterInit(
         item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 

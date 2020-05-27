@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.spring.common.ModelOption;
+import com.github.wnameless.spring.common.ModelPolicy;
 import com.github.wnameless.spring.common.NestedRestfulController;
 import com.github.wnameless.spring.common.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -63,12 +63,12 @@ public class VisitController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public void configure(ModelOption<CaseStudy> parentOption,
-      ModelOption<Subject> childOption,
-      ModelOption<? extends Iterable<Subject>> childrenOption) {
-    parentOption.afterInit(p -> caseStudy = p);
-    childOption.afterInit(c -> subject = firstNonNull(c, new Subject()));
-    childrenOption.disable();
+  public void configure(ModelPolicy<CaseStudy> parentPolicy,
+      ModelPolicy<Subject> childPolicy,
+      ModelPolicy<? extends Iterable<Subject>> childrenPolicy) {
+    parentPolicy.afterInit(p -> caseStudy = p);
+    childPolicy.afterInit(c -> subject = firstNonNull(c, new Subject()));
+    childrenPolicy.disable();
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

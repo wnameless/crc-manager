@@ -27,12 +27,12 @@ public interface RestfulController< //
 
   R getRepository();
 
-  void configure(ModelOption<I> option);
+  void configure(ModelPolicy<I> policy);
 
-  default ModelOption<I> getOption() {
-    ModelOption<I> option = new ModelOption<I>();
-    configure(option);
-    return option;
+  default ModelPolicy<I> getOption() {
+    ModelPolicy<I> policy = new ModelPolicy<I>();
+    configure(policy);
+    return policy;
   }
 
   @ModelAttribute
