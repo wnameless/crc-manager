@@ -15,9 +15,6 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.web.ModelHelper.initAttr;
-import static com.github.wnameless.spring.common.web.ModelHelper.initAttrWithDefault;
-import static com.github.wnameless.spring.common.web.ModelHelper.initPageableWithDefault;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -50,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.RestfulController;
+import com.github.wnameless.spring.common.web.SessionModel;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.RestfulModel;
@@ -81,12 +79,23 @@ public class CaseStudyController
       @RequestParam Map<String, String> requestParams,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-    this.status = (Status) initAttrWithDefault(model, "status",
-        Status.fromString(status), Status.EXEC, session);
-    this.search =
-        (String) initAttr(model, requestParams, "search", search, session);
-    pageable = initPageableWithDefault(model, requestParams, session,
+    if (status != null
+        && Status.fromString(status) != session.getAttribute("status")) {
+      requestParams.put("page", "0");
+    }
+    this.status = SessionModel.of(model, session).initAttr("status",
+        Status.fromString(status), Status.EXEC);
+    this.search = SessionModel.of(model, session).initAttr("search", search,
+        requestParams.keySet().contains("search"));
+    pageable = SessionModel.of(model, session).initPageable(requestParams,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
+
+    // this.status = ModelHelper.initAttrWithDefault(model, "status",
+    // Status.fromString(status), Status.EXEC, session);
+    // this.search =
+    // ModelHelper.initAttr(model, requestParams, "search", search, session);
+    // pageable = ModelHelper.initPageableWithDefault(model, requestParams,
+    // PageRequest.of(0, 10, Sort.by("irbNumber")), session);
   }
 
   @PreAuthorize("@perm.isUser()")
