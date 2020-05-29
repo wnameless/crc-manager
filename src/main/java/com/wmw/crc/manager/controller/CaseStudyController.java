@@ -136,6 +136,13 @@ public class CaseStudyController
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
+  @GetMapping("/{id}/edit")
+  String edit(Model model, @PathVariable Long id) {
+    model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
+    return "cases/edit :: complete";
+  }
+
+  @PreAuthorize("@perm.canWrite(#id)")
   @GetMapping(path = "/{id}/edit", produces = APPLICATION_JSON_VALUE)
   String editJS(Model model, @PathVariable Long id) {
     model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));

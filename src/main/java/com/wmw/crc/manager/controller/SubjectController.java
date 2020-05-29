@@ -207,8 +207,8 @@ public class SubjectController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @PostMapping("/batchdating")
-  String batchDating(@PathVariable Long parentId,
+  @PostMapping("/batchpatch")
+  String batchPatch(@PathVariable Long parentId,
       @RequestParam String subjectDateType,
       @RequestParam(required = false) String subjectDate,
       @RequestParam(name = "oofValues", required = false) List<Long> subjectIds,

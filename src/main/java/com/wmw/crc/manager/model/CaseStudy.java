@@ -18,7 +18,6 @@ package com.wmw.crc.manager.model;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,6 +40,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -60,6 +60,7 @@ import com.wmw.crc.manager.JsonSchemaPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.sf.rubycollect4j.Ruby;
 
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @Data
@@ -145,24 +146,39 @@ public class CaseStudy
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_managers",
       joinColumns = @JoinColumn(name = "case_id"))
-  Set<String> managers = newLinkedHashSet();
+  Set<String> managers = new LinkedHashSet<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_editors",
       joinColumns = @JoinColumn(name = "case_id"))
-  Set<String> editors = newLinkedHashSet();
+  Set<String> editors = new LinkedHashSet<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_viewers",
       joinColumns = @JoinColumn(name = "case_id"))
-  Set<String> viewers = newLinkedHashSet();
+  Set<String> viewers = new LinkedHashSet<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "case_emails",
       joinColumns = @JoinColumn(name = "case_id"))
   Set<String> emails = new LinkedHashSet<>();
 
+  @OrderColumn
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "case_bundledesciptions",
+      joinColumns = @JoinColumn(name = "case_id"))
+  List<String> bundleDesciption = Ruby.Range.of("1", "9").toList();
+
   public CaseStudy() {}
+
+  public List<String> getBundleLabels() {
+    return bundleDesciption.isEmpty() ? Ruby.Range.of("1", "9").toList()
+        : bundleDesciption;
+  }
+
+  public String bundleLabel(int bundle) {
+    return getBundleLabels().get(bundle - 1);
+  }
 
   @Override
   public void setFormData(JsonNode formData) {
