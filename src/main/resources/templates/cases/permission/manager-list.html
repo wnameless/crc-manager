@@ -3,11 +3,15 @@
   <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
     <li class="list-group-item">
       <span id="manager" th:text="#{ui.permission.manager.select}"></span>
-      <i id="addManager" class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i>
+      <span class="pull-right vcenter">
+        <i id="addManager" class="fa fa-plus green"></i>
+      </span>
     </li>
     <li class="list-group-item" th:each="manager : ${item.managers}">
       <span th:text="${manager}"></span>
-      <i th:attr="val=${manager}" class="removeManager fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
+      <span class="pull-right vcenter">
+        <i th:attr="val=${manager}" class="removeManager fa fa-times red"></i>
+      </span>
     </li>
   </ul>
 

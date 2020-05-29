@@ -39,10 +39,9 @@
 					<span>
 						[[${cd.memo}]]
 					</span>
-					<a th:if="${@perm.canWrite(parent)}" href="#"
+					<a th:if="${@perm.canWrite(parent)}" href="#" class="pull-right vcenter"
 						th:onclick="axiosDelete( [[${parent.withChild(cd).destroyPath}]] )">
-						<i th:attr="val=${cd.id}" class="fa fa-times pull-right"
-							style="color: red; margin-top: 3px;"></i>
+						<i th:attr="val=${cd.id}" class="fa fa-times red"></i>
 					</a>
 				</li>
 			</ul>
@@ -54,7 +53,7 @@
 	<form th:action="${route.createPath}" method="POST" class="form-row">
 		<div class="form-group col-md-2">
 			<label th:text="#{ui.contraindication.bundle}"></label>
-			<select name="bundle" class="form-control">
+			<select name="bundle" class="form-control selectpicker">
 				<option selected>1</option>
 				<option>2</option>
 				<option>3</option>

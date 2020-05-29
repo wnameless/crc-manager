@@ -3,11 +3,15 @@
   <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
     <li class="list-group-item">
       <span id="viewer" th:text="#{ui.permission.viewer.select}"></span>
-      <i id="addViewer" class="fa fa-plus pull-right" style="color: green; margin-top: 3px;"></i>
+      <span class="pull-right vcenter">
+        <i id="addViewer" class="fa fa-plus green"></i>
+      </span>
     </li>
     <li class="list-group-item" th:each="viewer : ${item.viewers}">
       <span th:text="${viewer}"></span>
-      <i th:attr="val=${viewer}" class="removeViewer fa fa-times pull-right" style="color: red; margin-top: 3px;"></i>
+      <span class="pull-right vcenter">
+        <i th:attr="val=${viewer}" class="removeViewer fa fa-times red"></i>
+      </span>
     </li>
   </ul>
 
