@@ -15,9 +15,6 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.github.wnameless.spring.common.ControllerHelpers.initPageableWithDefault;
-import static com.github.wnameless.spring.common.ControllerHelpers.initParam;
-import static com.github.wnameless.spring.common.ControllerHelpers.initParamWithDefault;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -48,8 +45,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.wnameless.spring.common.ModelOption;
-import com.github.wnameless.spring.common.RestfulController;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.RestfulController;
+import com.github.wnameless.spring.common.web.SessionModel;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.RestfulModel;
@@ -72,9 +70,8 @@ public class CaseStudyController
   Pageable pageable;
 
   @Override
-  public void configure(ModelOption<CaseStudy> initOption) {
-    initOption.afterInitAction(
-        item -> caseStudy = firstNonNull(item, new CaseStudy()));
+  public void configure(ModelPolicy<CaseStudy> policy) {
+    policy.afterInit(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute
@@ -82,11 +79,15 @@ public class CaseStudyController
       @RequestParam Map<String, String> requestParams,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status) {
-    this.status = (Status) initParamWithDefault("status",
-        Status.fromString(status), Status.EXEC, model, session);
-    this.search =
-        (String) initParam(requestParams, "search", search, model, session);
-    pageable = initPageableWithDefault(requestParams, model, session,
+    if (status != null
+        && Status.fromString(status) != session.getAttribute("status")) {
+      requestParams.put("page", "0");
+    }
+    this.status = SessionModel.of(model, session).initAttr("status",
+        Status.fromString(status), Status.EXEC);
+    this.search = SessionModel.of(model, session).initAttr("search", search,
+        requestParams.keySet().contains("search"));
+    pageable = SessionModel.of(model, session).initPageable(requestParams,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
   }
 

@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.github.wnameless.spring.common.ModelOption;
-import com.github.wnameless.spring.common.NestedRestfulController;
-import com.github.wnameless.spring.common.RestfulRoute;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.NestedRestfulController;
+import com.github.wnameless.spring.common.web.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -45,10 +45,10 @@ public class ContraindicationController implements NestedRestfulController< //
   CaseStudy caseStudy;
 
   @Override
-  public void configure(ModelOption<CaseStudy> parentInitOption,
-      ModelOption<Contraindication> childInitOption,
-      ModelOption<? extends Iterable<Contraindication>> childrenInitOption) {
-    parentInitOption.afterInitAction(p -> caseStudy = p);
+  public void configure(ModelPolicy<CaseStudy> parentPolicy,
+      ModelPolicy<Contraindication> childPolicy,
+      ModelPolicy<? extends Iterable<Contraindication>> childrenPolicy) {
+    parentPolicy.afterInit(p -> caseStudy = p);
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

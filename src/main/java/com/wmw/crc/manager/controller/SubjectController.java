@@ -48,9 +48,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.github.wnameless.spring.common.ModelOption;
-import com.github.wnameless.spring.common.NestedRestfulController;
-import com.github.wnameless.spring.common.RestfulRoute;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.NestedRestfulController;
+import com.github.wnameless.spring.common.web.RestfulRoute;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
@@ -87,12 +87,11 @@ public class SubjectController implements NestedRestfulController< //
   Subject subject;
 
   @Override
-  public void configure(ModelOption<CaseStudy> parentInitOption,
-      ModelOption<Subject> childInitOption,
-      ModelOption<? extends Iterable<Subject>> childrenInitOption) {
-    parentInitOption.afterInitAction(p -> caseStudy = p);
-    childInitOption
-        .afterInitAction(c -> subject = firstNonNull(c, new Subject()));
+  public void configure(ModelPolicy<CaseStudy> parentPolicy,
+      ModelPolicy<Subject> childPolicy,
+      ModelPolicy<? extends Iterable<Subject>> childrenPolicy) {
+    parentPolicy.afterInit(p -> caseStudy = p);
+    childPolicy.afterInit(c -> subject = firstNonNull(c, new Subject()));
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")

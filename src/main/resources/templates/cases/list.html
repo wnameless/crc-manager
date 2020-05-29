@@ -112,7 +112,7 @@
                     </span>
                     <a th:if="${@perm.canDelete()}" href="#" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
                         <span>
-                            <i class="fa fa-times" style="color: red; margin-top: 3px;"></i>
+                            <i class="fa fa-times red"></i>
                         </span>
                     </a>
                 </td>
@@ -156,7 +156,7 @@
         <div class="col-sm-6">
             <nav class="pull-right">
                 <ul class="pagination" sd:pagination-split="7" sd:pagination="full"
-                    sd:pagination-url="@{${route.indexPath} + '?' + ${@pageUtils.toQueryStringWithoutPage(pageable)}(search=${search})}">
+                    sd:pagination-url="@{${route.indexPath} + '?' + ${@pageables.toQueryStringWithoutPage(pageable)}(search=${search})}">
                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>

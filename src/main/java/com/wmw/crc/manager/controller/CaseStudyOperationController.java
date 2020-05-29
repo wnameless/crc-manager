@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.github.wnameless.spring.common.ModelOption;
-import com.github.wnameless.spring.common.RestfulController;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.RestfulModel;
@@ -57,9 +57,8 @@ public class CaseStudyOperationController
   CaseStudy caseStudy;
 
   @Override
-  public void configure(ModelOption<CaseStudy> initOption) {
-    initOption.afterInitAction(
-        item -> caseStudy = firstNonNull(item, new CaseStudy()));
+  public void configure(ModelPolicy<CaseStudy> policy) {
+    policy.afterInit(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @PreAuthorize("@perm.canAssign()")

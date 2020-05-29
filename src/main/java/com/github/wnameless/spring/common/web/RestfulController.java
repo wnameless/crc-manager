@@ -13,7 +13,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.common;
+package com.github.wnameless.spring.common.web;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.ui.Model;
@@ -27,17 +27,17 @@ public interface RestfulController< //
 
   R getRepository();
 
-  void configure(ModelOption<I> option);
+  void configure(ModelPolicy<I> policy);
 
-  default ModelOption<I> getOption() {
-    ModelOption<I> option = new ModelOption<I>();
-    configure(option);
-    return option;
+  default ModelPolicy<I> getOption() {
+    ModelPolicy<I> policy = new ModelPolicy<I>();
+    configure(policy);
+    return policy;
   }
 
   @ModelAttribute
   default void setItem(Model model, @PathVariable(required = false) ID id) {
-    if (!getOption().isInit()) return;
+    if (!getOption().isEnable()) return;
 
     I item = null;
 
@@ -45,12 +45,12 @@ public interface RestfulController< //
       item = getRepository().findById(id).get();
     }
 
-    if (getOption().getAfterInitAction() != null) {
-      item = getOption().getAfterInitAction().apply(item);
+    if (getOption().getAfterInit() != null) {
+      item = getOption().getAfterInit().apply(item);
     }
 
-    model.addAttribute(getItemKey(), getOption().getPreSetAction() == null
-        ? item : getOption().getPreSetAction().apply(item));
+    model.addAttribute(getItemKey(), getOption().getBeforeAdd() == null ? item
+        : getOption().getBeforeAdd().apply(item));
   }
 
   @ModelAttribute

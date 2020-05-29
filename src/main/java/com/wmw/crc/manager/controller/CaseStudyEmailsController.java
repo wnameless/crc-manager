@@ -35,8 +35,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
-import com.github.wnameless.spring.common.ModelOption;
-import com.github.wnameless.spring.common.RestfulController;
+import com.github.wnameless.spring.common.web.ModelPolicy;
+import com.github.wnameless.spring.common.web.RestfulController;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
 import com.wmw.crc.manager.model.RestfulModel;
@@ -58,9 +58,8 @@ public class CaseStudyEmailsController
   Emails emails;
 
   @Override
-  public void configure(ModelOption<CaseStudy> initOption) {
-    initOption.afterInitAction(
-        item -> caseStudy = firstNonNull(item, new CaseStudy()));
+  public void configure(ModelPolicy<CaseStudy> policy) {
+    policy.afterInit(item -> caseStudy = firstNonNull(item, new CaseStudy()));
   }
 
   @ModelAttribute

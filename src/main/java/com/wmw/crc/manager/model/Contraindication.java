@@ -27,7 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
-import com.github.wnameless.spring.common.RestfulItem;
+import com.github.wnameless.spring.common.web.RestfulItem;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
