@@ -35,42 +35,17 @@ public final class Pageables {
     return INSTANCE;
   }
 
-  public static class PageableParams {
-
-    public static PageableParams of(String pageParameter, String sizeParameter,
-        String sortParameter) {
-      return new PageableParams(pageParameter, sizeParameter, sortParameter);
-    }
-
-    public static PageableParams of(String sizeParameter,
-        String sortParameter) {
-      return new PageableParams("page", sizeParameter, sortParameter);
-    }
-
-    private String pageParameter;
-    private String sizeParameter;
-    private String sortParameter;
-
-    private PageableParams(String pageParameter, String sizeParameter,
-        String sortParameter) {
-      this.pageParameter = pageParameter;
-      this.sizeParameter = sizeParameter;
-      this.sortParameter = sortParameter;
-    }
-
-  }
-
   public static String toQueryString(Pageable pageable,
       PageableParams pageableParams) {
     if (pageable == null) return "";
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/");
-    uriBuilder.queryParam(pageableParams.pageParameter,
+    uriBuilder.queryParam(pageableParams.getPageParameter(),
         String.valueOf(pageable.getPageNumber()));
-    uriBuilder.queryParam(pageableParams.sizeParameter,
+    uriBuilder.queryParam(pageableParams.getSizeParameter(),
         String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      uriBuilder.queryParam(pageableParams.sortParameter,
+      uriBuilder.queryParam(pageableParams.getSortParameter(),
           order.getProperty() + "," + order.getDirection());
     });
 
@@ -78,7 +53,7 @@ public final class Pageables {
   }
 
   public static String toQueryString(Pageable pageable) {
-    return toQueryString(pageable, PageableParams.of("page", "size", "sort"));
+    return toQueryString(pageable, PageableParams.ofSpring());
   }
 
   public static String toQueryStringWithoutPage(Pageable pageable,
@@ -86,10 +61,10 @@ public final class Pageables {
     if (pageable == null) return "";
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/");
-    uriBuilder.queryParam(pageableParams.sizeParameter,
+    uriBuilder.queryParam(pageableParams.getSizeParameter(),
         String.valueOf(pageable.getPageSize()));
     pageable.getSort().forEach(order -> {
-      uriBuilder.queryParam(pageableParams.sortParameter,
+      uriBuilder.queryParam(pageableParams.getSortParameter(),
           order.getProperty() + "," + order.getDirection());
     });
 
@@ -97,8 +72,7 @@ public final class Pageables {
   }
 
   public static String toQueryStringWithoutPage(Pageable pageable) {
-    return toQueryStringWithoutPage(pageable,
-        PageableParams.of("size", "sort"));
+    return toQueryStringWithoutPage(pageable, PageableParams.ofSpring());
   }
 
   public static List<String> sortToParam(Sort sort) {
@@ -132,6 +106,42 @@ public final class Pageables {
     }
 
     return Sort.by(orderList);
+  }
+
+  public static class PageableParams {
+
+    public static PageableParams of(String pageParameter, String sizeParameter,
+        String sortParameter) {
+      return new PageableParams(pageParameter, sizeParameter, sortParameter);
+    }
+
+    public static PageableParams ofSpring() {
+      return new PageableParams("page", "size", "sort");
+    }
+
+    private String pageParameter;
+    private String sizeParameter;
+    private String sortParameter;
+
+    private PageableParams(String pageParameter, String sizeParameter,
+        String sortParameter) {
+      this.pageParameter = pageParameter;
+      this.sizeParameter = sizeParameter;
+      this.sortParameter = sortParameter;
+    }
+
+    public String getPageParameter() {
+      return pageParameter;
+    }
+
+    public String getSizeParameter() {
+      return sizeParameter;
+    }
+
+    public String getSortParameter() {
+      return sortParameter;
+    }
+
   }
 
 }

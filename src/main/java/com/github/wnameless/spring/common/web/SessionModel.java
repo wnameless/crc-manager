@@ -23,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 
+import com.github.wnameless.spring.common.web.Pageables.PageableParams;
+
 public final class SessionModel {
 
   public static SessionModel of(Model model, HttpSession session) {
@@ -70,9 +72,17 @@ public final class SessionModel {
   }
 
   public Pageable initPageable(Map<String, String> requestParams) {
-    String page = initAttr("page", requestParams.get("page"), "0");
-    String size = initAttr("size", requestParams.get("size"), "10");
-    String sort = initAttr("sort", requestParams.get("sort"), "");
+    return initPageable(requestParams, PageableParams.ofSpring());
+  }
+
+  public Pageable initPageable(Map<String, String> requestParams,
+      PageableParams pageableParams) {
+    String pageParam = pageableParams.getPageParameter();
+    String sizeParam = pageableParams.getSizeParameter();
+    String sortParam = pageableParams.getSortParameter();
+    String page = initAttr(pageParam, requestParams.get(pageParam), "0");
+    String size = initAttr(sizeParam, requestParams.get(sizeParam), "10");
+    String sort = initAttr(sortParam, requestParams.get(sortParam), "");
 
     return initAttr("pageable", PageRequest.of(Integer.valueOf(page),
         Integer.valueOf(size), Pageables.paramToSort(sort)));

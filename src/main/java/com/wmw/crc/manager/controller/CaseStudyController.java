@@ -89,13 +89,6 @@ public class CaseStudyController
         requestParams.keySet().contains("search"));
     pageable = SessionModel.of(model, session).initPageable(requestParams,
         PageRequest.of(0, 10, Sort.by("irbNumber")));
-
-    // this.status = ModelHelper.initAttrWithDefault(model, "status",
-    // Status.fromString(status), Status.EXEC, session);
-    // this.search =
-    // ModelHelper.initAttr(model, requestParams, "search", search, session);
-    // pageable = ModelHelper.initPageableWithDefault(model, requestParams,
-    // PageRequest.of(0, 10, Sort.by("irbNumber")), session);
   }
 
   @PreAuthorize("@perm.isUser()")
