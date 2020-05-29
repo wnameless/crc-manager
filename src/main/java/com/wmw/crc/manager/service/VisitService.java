@@ -15,6 +15,7 @@
  */
 package com.wmw.crc.manager.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,6 +167,99 @@ public class VisitService {
           } else {
             message = createVisitEmail(v, false);
             visitMessages.add(message.getText());
+          }
+        });
+      }
+
+      if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
+        String msg =
+            "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
+        results.add(msg);
+        log.info(msg);
+      } else {
+        if (!visitMessages.isEmpty()) {
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+          message.setSubject("CRC Manager【看診通知】");
+          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+          message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
+          message
+              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+          try {
+            emailSender.send(message);
+            String msg = "Email of " + visitMessages.size()
+                + " visits has been sent to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.info(msg);
+          } catch (Exception e) {
+            String msg = "Failed to send visit email to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.error(msg, e);
+          }
+        }
+        if (!contraindicationMessages.isEmpty()) {
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+          message.setSubject("CRC Manager【禁忌用藥開立通知】");
+          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+          message.setText(
+              prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
+          message
+              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+          try {
+            emailSender.send(message);
+            String msg = "Email of " + contraindicationMessages.size()
+                + " contraindications has been sent to following addresses: "
+                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.info(msg);
+          } catch (Exception e) {
+            String msg =
+                "Failed to send contraindication email to following addresses: "
+                    + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+            results.add(msg);
+            log.error(msg, e);
+          }
+        }
+      }
+    }
+
+    return results;
+  }
+
+  public List<String> sendHourlyVisitEmails() {
+    List<String> results = new ArrayList<>();
+
+    List<CaseStudy> cases = caseStudyRepo.findAllByStatus(Status.EXEC);
+    for (CaseStudy c : cases) {
+      List<String> visitMessages = new ArrayList<>();
+      List<String> contraindicationMessages = new ArrayList<>();
+
+      if (c.getEmails().isEmpty()) {
+        String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
+        results.add(msg);
+        log.info(msg);
+        continue;
+      }
+
+      List<Subject> subjects = subjectService.findOngoingSubjects(c);
+      for (Subject s : subjects) {
+        if (s.unreviewedVisits() <= 0) continue;
+        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
+          LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+          if (v.getCreationDate().isAfter(oneDayAgo)) {
+            SimpleMailMessage message;
+            if (v.isContraindicationSuspected()) {
+              message = createVisitEmail(v, true);
+              contraindicationMessages.add(message.getText());
+            } else {
+              message = createVisitEmail(v, false);
+              visitMessages.add(message.getText());
+            }
           }
         });
       }
