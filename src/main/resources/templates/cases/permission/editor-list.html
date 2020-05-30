@@ -3,15 +3,15 @@
   <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
     <li class="list-group-item">
       <span id="editor" th:text="#{ui.permission.editor.select}"></span>
-      <span class="pull-right vcenter">
+      <a class="pull-right vcenter">
         <i id="addEditor" class="fa fa-plus green"></i>
-      </span>
+      </a>
     </li>
     <li class="list-group-item" th:each="editor : ${item.editors}">
       <span th:text="${editor}"></span>
-      <span class="pull-right vcenter">
+      <a class="pull-right vcenter">
         <i th:attr="val=${editor}" class="removeEditor fa fa-times red"></i>
-      </span>
+      </a>
     </li>
   </ul>
 

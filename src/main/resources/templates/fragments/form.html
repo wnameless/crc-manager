@@ -23,14 +23,13 @@
                 <th:block th:each="file : ${files}">
                     <a th:unless="${file.value.value}" class="list-group-item list-group-item-action">
                         [[${file.value.key}]]
-                        <label th:unless="${file.value.value}" class="pull-right">
-                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.unuploaded'), 'Unuploaded')}]]</label>
+                        <span class="pull-right">
+                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.unuploaded'), 'Unuploaded')}]]</span>
                     </a>
-                    <a th:if="${file.value.value}" th:href="@{${item.joinPath('files', file.key)}}"
-                        class="list-group-item list-group-item-action">
+                    <a th:if="${file.value.value}" class="list-group-item list-group-item-action" th:href="@{${item.joinPath('files', file.key)}}">
                         [[${file.value.key}]]
-                        <label th:if="${file.value.value}" class="pull-right">
-                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.download', 'Download')}]]</label>
+                        <span th:if="${file.value.value}" class="pull-right">
+                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.download'), 'Download')}]]</span>
                     </a>
                 </th:block>
             </div>

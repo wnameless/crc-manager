@@ -61,9 +61,7 @@
 				<td th:text="${@i18n.str(subject.status)}"></td>
 				<td th:text="${subject.subjectNo}"></td>
                 <td>
-                    <label th:unless="${@perm.canWrite(parent)}" th:text="${subject.contraindicationBundle}"></label>
-
-                    <select th:if="${@perm.canWrite(parent)}" class="form-control selectpicker"
+                    <select class="form-control selectpicker" th:disabled="${!@perm.canWrite(parent)}"
                         th:onchange="axiosPut( [[${parent.withChild(subject).updatePath}]], params({bundle: this.value}), {}, false )">
                         <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${parent.bundleLabel(i)}" th:selected="${i == subject.contraindicationBundle}"></option>
                     </select>
