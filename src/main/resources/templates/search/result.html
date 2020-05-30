@@ -4,28 +4,27 @@
 	<table id="jsfTable" class="display">
 		<thead>
 			<tr>
-				<th th:text="#{ui.search.table.action}"></th>
-				<th th:text="#{ui.search.table.irbnumber}"></th>
-				<th th:text="#{ui.search.table.subject}" class="text-center" style="width: 60px;"></th>
-				<th th:text="#{ui.search.table.name.case}"></th>
-				<th th:text="#{ui.search.table.name.pi}"></th>
-				<th th:text="#{ui.search.table.time.start}"></th>
-				<th th:text="#{ui.search.table.time.end}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.action}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.irbnumber}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.subject}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.name.case}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.name.pi}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.time.start}"></th>
+				<th class="text-nowrap" th:text="#{ui.search.table.time.end}"></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="case : ${jsfItems}">
-				<td><a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm"
-						th:href="@{'/download/cases/' + ${case.id}}" th:inline="text">
+				<td>
+					<a th:if="${@perm.canRead(case)}" class="btn btn-default btn-sm"
+						th:href="@{'/download/cases/' + ${case.id}}">
 						[[#{ui.search.export}]]
-						<span class="fa fa-download"></span>
+						<i class="fa fa-download"></i>
 					</a></td>
-				<td th:inline="text">[[${case.irbNumber}]]</td>
-				<td class="text-center">
+				<td th:text="${case.irbNumber}"></td>
+				<td>
 					<a th:href="${case.joinPath('subjects')}">
-						<span>
-							<i class="fa fa-users"></i>
-						</span>
+						<i class="fa fa-users"></i>
 					</a>
 				</td>
 				<td>
