@@ -70,21 +70,20 @@
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-					<a th:if="${@perm.canRead(parent)}" href="javascript:void(0)" th:text="${subject.nationalId}"
-						th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
+					<a class="btn" th:classappend="${@perm.canRead(parent) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
+                        [[${subject.nationalId}]]
                     </a>
-                    <a th:unless="${@perm.canRead(parent)}" th:text="${subject.nationalId}"></a>
 				</td>
 				<td>
 					<a th:href="${parent.joinPath(subject.showPath, 'visits')}" th:text="${subject.unreviewedVisits()}"></a>
 				</td>
                 <td>
-                    <a th:if="${@perm.canWrite(parent)}" href="javascript:void(0)"
+                    <a class="btn" th:classappend="${@perm.canWrite(parent) ? '' : 'disabled'}"
                         th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
                        <i class="fa fa-edit blue"></i>
                     </a>
-                    <i th:unless="${@perm.canWrite(parent)}" class="fa fa-edit gray"></i>
-					<a th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
+					<a class="btn" th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
                          <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>

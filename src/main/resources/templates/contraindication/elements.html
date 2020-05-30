@@ -39,7 +39,7 @@
 					<span>
 						[[${cd.memo}]]
 					</span>
-					<a th:if="${@perm.canWrite(parent)}" href="javascript:void(0)" class="pull-right vcenter"
+					<a th:if="${@perm.canWrite(parent)}" class="pull-right vcenter"
 						th:onclick="axiosDelete( [[${parent.withChild(cd).destroyPath}]] )">
 						<i th:attr="val=${cd.id}" class="fa fa-times red"></i>
 					</a>

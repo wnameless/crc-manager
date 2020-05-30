@@ -30,7 +30,7 @@
             <tr>
                 <th class="text-center" th:text="#{ui.case.table.action}"></th>
                 <th></th>
-                <th class="text-nowrap">
+                <th class="text-nowrap text-center">
                     <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
                 </th>
                 <th class="text-nowrap">
@@ -103,18 +103,19 @@
                     </bs3:dropdown>
                 </td>
                 <td class="text-nowrap">
-                    <a href="javascript:void(0)" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
+                    <a class="btn" th:classappend="${@perm.canWrite(case) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${case.editPath}]] )">
                         <i class="fa fa-edit blue"></i>
                     </a>
-                    <i th:if="${!@perm.canWrite(case)}" class="fa fa-edit gray"></i>
-                    <a th:if="${@perm.canDelete()}" href="javascript:void(0)" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
+                    <a class="btn" th:if="${@perm.canDelete()}" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
                         <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>
                 <td>
-                    <a th:unless="${@perm.canRead(case)}" th:text="${case.irbNumber}"></a>
-                    <a th:if="${@perm.canRead(case)}" href="javascript:void(0)" th:text="${case.irbNumber}"
-                        th:onclick="axiosGet( [[${case.showPath}]] )"></a>
+                    <a class="btn" th:classappend="${@perm.canRead(case) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${case.showPath}]] )">
+                        [[${case.irbNumber}]]
+                    </a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
                 <td>
