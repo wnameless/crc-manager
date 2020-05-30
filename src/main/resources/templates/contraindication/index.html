@@ -15,7 +15,7 @@
 
 		<div class="row">
 			<div class="col-sm-10 col-sm-offset-1">
-				<div th:replace="contraindication/panel :: adder"></div>
+				<div th:replace="contraindication/elements :: panel-adder"></div>
 			</div>
 		</div>
 
@@ -43,6 +43,7 @@
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('table#medicines').on('init.dt', function () {
 				$(this).reflowTable();
+				$(this).parent().find('select').selectpicker();
 			}).on('draw.dt', function () {
 				$(this).reflowTable('update');
 			}).DataTable({
@@ -56,9 +57,8 @@
 					{
 						data: 'atcCode1',
 						render: function (data, type, row, meta) {
-							return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4].filter(function (el) {
-								return el != null;
-							}).join(', ');
+							return [row.atcCode1, row.atcCode2, row.atcCode3, row.atcCode4]
+								.filter(el => el != null).join(', ');
 						}
 					},
 					{ data: 'atcCode2', visible: false },

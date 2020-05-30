@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="list">
+<div th:fragment="panel-list">
 	<h3 th:replace="fragments/form :: title(text=${parent.trialName}, backUrl=${parent.indexPath})"></h3>
 
 	<hr>
@@ -49,7 +49,7 @@
 	</div>
 </div>
 
-<div th:fragment="adder">
+<div th:fragment="panel-adder">
 	<form th:action="${route.createPath}" method="POST" class="form-row">
 		<div class="form-group col-md-2">
 			<label th:text="#{ui.contraindication.bundle}"></label>
