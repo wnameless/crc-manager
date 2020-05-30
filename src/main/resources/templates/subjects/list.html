@@ -61,37 +61,28 @@
 				<td th:text="${@i18n.str(subject.status)}"></td>
 				<td th:text="${subject.subjectNo}"></td>
                 <td>
-                    <label th:unless="${@perm.canWrite(parent)}" th:text="${subject.contraindicationBundle}"></label>
-
-                    <select th:if="${@perm.canWrite(parent)}" class="form-control selectpicker"
+                    <select class="form-control selectpicker" th:disabled="${!@perm.canWrite(parent)}"
                         th:onchange="axiosPut( [[${parent.withChild(subject).updatePath}]], params({bundle: this.value}), {}, false )">
                         <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${parent.bundleLabel(i)}" th:selected="${i == subject.contraindicationBundle}"></option>
                     </select>
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-					<a th:if="${@perm.canRead(parent)}" href="#" th:text="${subject.nationalId}"
-						th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
+					<a class="btn" th:classappend="${@perm.canRead(parent) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
+                        [[${subject.nationalId}]]
                     </a>
-                    <a th:unless="${@perm.canRead(parent)}" th:text="${subject.nationalId}"></a>
 				</td>
 				<td>
 					<a th:href="${parent.joinPath(subject.showPath, 'visits')}" th:text="${subject.unreviewedVisits()}"></a>
 				</td>
                 <td>
-                    <a th:if="${@perm.canWrite(parent)}" href="#"
+                    <a class="btn" th:classappend="${@perm.canWrite(parent) ? '' : 'disabled'}"
                         th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
-                        <span>
-                            <i class="fa fa-edit blue"></i>
-                        </span>
+                       <i class="fa fa-edit blue"></i>
                     </a>
-                    <span th:unless="${@perm.canWrite(parent)}">
-                        <i class="fa fa-edit gray"></i>
-                    </span>
-					<a th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
-                        <span>
-                            <i class="fa fa-trash-alt red"></i>
-                        </span>
+					<a class="btn" th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
+                         <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>
             </tr>
@@ -100,11 +91,8 @@
 
     <div class="row">
         <div th:if="${@perm.canWrite(parent)}" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-            <button id="addSubject" class="btn btn-block btn-default" th:onclick="axiosGet( [[${route.newPath}]] )"
-                th:inline="text">
-                <span>
-                    <i class="fa fa-plus text-success"></i>
-                </span>
+            <button id="addSubject" class="btn btn-block btn-default" th:onclick="axiosGet( [[${route.newPath}]] )">
+                <i class="fa fa-plus green"></i>
                 [[#{ui.subject.add}]]
             </button>
         </div>
@@ -139,7 +127,7 @@
     </div>
 
 
-	<script th:replace="fragments/notify :: partial"></script>
+	<script th:replace="fragments/bs :: notify"></script>
 	<script th:replace="fragments/bs :: input-file"></script>
     <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script th:replace="fragments/jQuery :: oof"></script>

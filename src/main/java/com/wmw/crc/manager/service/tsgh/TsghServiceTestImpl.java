@@ -100,8 +100,7 @@ public class TsghServiceTestImpl implements TsghService {
 
   @Override
   public AdvOpt<Integer> refreshMedicines() {
-    // TODO Auto-generated method stub
-    return null;
+    return AdvOpt.ofNullable(null);
   }
 
   @Override

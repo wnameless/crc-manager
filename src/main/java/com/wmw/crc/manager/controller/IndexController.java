@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.controller;
 
-import static com.wmw.crc.manager.model.RestfulModel.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.CASE_STUDY;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

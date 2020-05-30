@@ -3,19 +3,19 @@
   <ul class="list-group" style="overflow-y: scroll; max-height: 200px; padding: 10px 10px;">
     <li class="list-group-item">
       <span id="viewer" th:text="#{ui.permission.viewer.select}"></span>
-      <span class="pull-right vcenter">
+      <a class="pull-right vcenter">
         <i id="addViewer" class="fa fa-plus green"></i>
-      </span>
+      </a>
     </li>
     <li class="list-group-item" th:each="viewer : ${item.viewers}">
       <span th:text="${viewer}"></span>
-      <span class="pull-right vcenter">
+      <a class="pull-right vcenter">
         <i th:attr="val=${viewer}" class="removeViewer fa fa-times red"></i>
-      </span>
+      </a>
     </li>
   </ul>
 
-  <script th:replace="fragments/notify :: partial"></script>
+  <script th:replace="fragments/bs :: notify"></script>
   <script type="text/javascript" th:inline="javascript">
     $('#addViewer').click(function () {
       if (!$('#viewer').val()) return false;

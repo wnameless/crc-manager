@@ -15,24 +15,29 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.wmw.crc.manager.RestfulPath.Names.DATA;
+import static com.wmw.crc.manager.RestfulPath.Names.MEDICINE;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wmw.crc.manager.model.Medicine;
 import com.wmw.crc.manager.repository.MedicineRepository;
 
+@RequestMapping("/" + DATA)
 @RestController
-public class MedicineController {
+public class MedicineDataController {
 
   @Autowired
   MedicineRepository medcineRepo;
 
-  @GetMapping("/data/medicines")
+  @GetMapping("/" + MEDICINE)
   DataTablesOutput<Medicine> getMedicines(@Valid DataTablesInput input) {
     return medcineRepo.findAll(input);
   }

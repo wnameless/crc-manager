@@ -13,13 +13,13 @@
                 <input id="search" type="text" class="form-control" placeholder="Search for..." th:value="${search}">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button"
-                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: $('#search').val()}} )"><span
-                            class="fas fa-search"></span></button>
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: $('#search').val()}} )">
+                        <i class="fas fa-search"></i></button>
                 </span>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button"
-                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: ''}} )"><span
-                            class="fas fa-eraser"></span></button>
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: ''}} )">
+                        <i class="fas fa-eraser"></i></button>
                 </span>
             </div>
         </div>
@@ -28,31 +28,48 @@
     <table id="jsfTable" class="table table-striped table-hover">
         <thead>
             <tr>
-                <th style="width: 70px;" th:text="#{ui.case.table.action}"></th>
-                <th style="width: 50px;"></th>
-                <th style="width: 130px;">
-                    <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
+                <th class="text-center">
+                    [[#{ui.case.table.action}]]
                 </th>
-                <th style="width: 100px;">
-                    <a class="sorted" sd:pagination-sort="projectNumber" th:text="#{ui.case.table.projectnumber}"></a>
+                <th></th>
+                <th class="text-nowrap text-center">
+                    <a class="sorted" sd:pagination-sort="irbNumber">
+                        [[#{ui.case.table.irbnumber}]]
+                    </a>
                 </th>
-                <th class="text-center" th:text="#{ui.case.table.contraindication}"></th>
-                <th class="text-center" style="width: 60px;">
+                <th class="text-nowrap">
+                    <a class="sorted" sd:pagination-sort="projectNumber">
+                        [[#{ui.case.table.projectnumber}]]
+                    </a>
+                </th>
+                <th class="text-nowrap">
+                    [[#{ui.case.table.contraindication}]]
+                </th>
+                <th class="text-center">
                     <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip"
-                        data-placement="top"
-                        th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
+                        data-placement="top" th:title="#{ui.case.table.unreviewed}">
+                        [[#{ui.case.table.subject_and_unreviewed}]]
+                    </a>
+                </th>
+                <th class="text-center text-nowrap">
+                    <a class="sorted" sd:pagination-sort="trialName">
+                        [[#{ui.case.table.name.chinese}]]
+                    </a>
+                </th>
+                <th class="text-nowrap">
+                    <a class="sorted" sd:pagination-sort="piName">
+                        [[#{ui.case.table.pi}]]
+                    </a>
                 </th>
                 <th>
-                    <a class="sorted" sd:pagination-sort="trialName" th:text="#{ui.case.table.name.chinese}"></a>
+                    <a class="sorted" sd:pagination-sort="expectedStartDate">
+                        [[#{ui.case.table.time.start}]]
+                    </a>
                 </th>
-                <th class="text-center" style="width: 90px;">
-                    <a class="sorted" sd:pagination-sort="piName" th:text="#{ui.case.table.pi}"></a>
-                </th>
-                <th style="width: 90px;">
-                    <a class="sorted" sd:pagination-sort="expectedStartDate" th:text="#{ui.case.table.time.start}"></a>
-                </th>
-                <th style="width: 90px;">
-                    <a class="sorted" sd:pagination-sort="expectedEndDate" th:text="#{ui.case.table.time.end}"></a>
+                <th>
+                    <a class="sorted" sd:pagination-sort="expectedEndDate">
+                        [[#{ui.case.table.time.end}]]
+                    </a>
                 </th>
             </tr>
         </thead>
@@ -101,49 +118,36 @@
                         </th:block>
                     </bs3:dropdown>
                 </td>
-                <td>
-                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
-                        <span>
-                            <i class="fa fa-edit blue"></i>
-                        </span>
+                <td class="text-nowrap">
+                    <a class="btn" th:classappend="${@perm.canWrite(case) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${case.editPath}]] )">
+                        <i class="fa fa-edit blue"></i>
                     </a>
-                    <span th:if="${!@perm.canWrite(case)}">
-                        <i class="fa fa-edit gray"></i>
-                    </span>
-                    <a th:if="${@perm.canDelete()}" href="#" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
-                        <span>
-                            <i class="fa fa-trash-alt red"></i>
-                        </span>
+                    <a class="btn" th:if="${@perm.canDelete()}" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
+                        <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>
                 <td>
-                    <a th:unless="${@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:inline="text"
-                        th:onclick="axiosGet( [[${case.showPath}]] )">[[${case.irbNumber}]]</a>
+                    <a class="btn" th:classappend="${@perm.canRead(case) ? '' : 'disabled'}"
+                        th:onclick="axiosGet( [[${case.showPath}]] )">
+                        [[${case.irbNumber}]]
+                    </a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
-                <td class="text-center">
-                    <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('contraindications')}">
-                        <span>
-                            <i class="fa fa-medkit"></i>
-                        </span>
-                    </a>
-                    <span th:unless="${@perm.canRead(case)}">
+                <td>
+                    <a class="btn" th:classappend="${@perm.canRead(case) ? '' : 'disabled'}"
+                        th:href="${case.joinPath('contraindications')}">
                         <i class="fa fa-medkit"></i>
-                    </span>
-                </td>
-                <td class="text-center">
-                    <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('subjects')}">
-                        <span>
-                            <i class="fa fa-user-plus"></i> ([[${case.unreviewedOngoingVisits}]])
-                        </span>
                     </a>
-                    <span th:unless="${@perm.canRead(case)}">
-                        <i class="fa fa-user-plus"></i>
-                    </span>
+                </td>
+                <td class="text-nowrap">
+                    <a class="btn" th:classappend="${@perm.canRead(case) ? '' : 'disabled'}"
+                        th:href="${case.joinPath('subjects')}">
+                        <i class="fa fa-user-plus"></i> ([[${case.unreviewedOngoingVisits}]])
+                    </a>
                 </td>
                 <td th:text="${case.trialName}"></td>
-                <td class="text-center" th:text="${case.piName}"></td>
+                <td th:text="${case.piName}"></td>
                 <td th:text="${case.expectedStartDate}"></td>
                 <td th:text="${case.expectedEndDate}"></td>
             </tr>
@@ -166,7 +170,7 @@
         </div>
     </div>
 
-    <script th:replace="fragments/notify :: partial" type="text/javascript"></script>
+    <script th:replace="fragments/bs :: notify"></script>
     <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {

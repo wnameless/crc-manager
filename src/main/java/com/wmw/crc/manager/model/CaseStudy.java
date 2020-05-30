@@ -57,6 +57,7 @@ import com.github.wnameless.spring.common.web.RestfulItem;
 import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -76,7 +77,7 @@ public class CaseStudy
 
   @Override
   public String getIndexPath() {
-    return "/" + RestfulModel.Names.CASE_STUDY;
+    return "/" + RestfulPath.Names.CASE_STUDY;
   }
 
   @Id

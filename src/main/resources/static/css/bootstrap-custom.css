@@ -11,3 +11,7 @@
   vertical-align: middle;
   float: none;
 }
+
+a:hover {
+  cursor: pointer;
+}

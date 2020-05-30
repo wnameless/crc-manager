@@ -15,6 +15,10 @@
  */
 package com.wmw.crc.manager.service;
 
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
+import static com.wmw.crc.manager.RestfulPath.Names.VISIT;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,26 +118,23 @@ public class VisitService {
 
     Subject s = visit.getSubject();
     CaseStudy c = s.getCaseStudy();
+
     message.setSubject("Contraindication Suspected Visit");
+
+    String visitPath = Ruby.Array
+        .of(env.getProperty("app.web.baseurl", "http://localhost:8080"),
+            CASE_STUDY, c.getId(), SUBJECT, s.getId(), VISIT)
+        .join("/");
     message.setText( //
         "•姓名: " + s.getName() + "\n" //
             + "•醫院病歷號: " + s.getPatientId() + "\n" //
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
-            + "•網頁連接: " + "https://gcrc.ndmctsgh.edu.tw:8443/cases/" + c.getId()
-            + "/subjects/" + s.getId() + "/visits" + "\n" //
+            + "•網頁連接: " + visitPath + "\n" //
             + (includeCD
                 ? "•開立禁忌用藥: "
                     + (visit.isContraindicationSuspected() ? "是" : "否") + "\n"
-                : "") //
-            // + Ruby.Array.of(contraindicationRepo.findAllByCaseStudy(c))
-            // // 符合用藥組別
-            // .select(cd -> Objects.equals(cd.getBundle(),
-            // s.getContraindicationBundle()))
-            // // 將藥物用法代號轉文字
-            // .map(cd -> cd.getPhrase() + Ruby.Array.of(cd.getTakekinds())
-            // .map(tk -> i18n.takeKind(tk)))
-            // .join(", ")
+                : "")
             + "------------------------------" //
     );
 

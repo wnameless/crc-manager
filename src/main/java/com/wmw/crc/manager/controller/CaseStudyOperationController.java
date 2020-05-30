@@ -16,7 +16,7 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 
 import java.util.Locale;
 import java.util.Map;
@@ -35,9 +35,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.RestfulController;
+import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.I18nService;
 import com.wmw.crc.manager.service.KeycloakService;
@@ -161,8 +161,8 @@ public class CaseStudyOperationController
   }
 
   @Override
-  public RestfulModel getRoute() {
-    return RestfulModel.CASE_STUDY;
+  public RestfulPath getRoute() {
+    return RestfulPath.CASE_STUDY;
   }
 
   @Override

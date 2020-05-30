@@ -34,7 +34,7 @@
 		</tbody>
 	</table>
 
-	<script th:replace="fragments/notify :: partial"></script>
+	<script th:replace="fragments/bs :: notify"></script>
 	<script th:inline="javascript">
 		$('.check-reviewed').change(function () {
 			axios.put( /*[[${route.joinPath(child.id, 'visits')}]]*/ null, {}, {

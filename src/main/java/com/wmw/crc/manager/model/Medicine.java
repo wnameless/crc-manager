@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.github.wnameless.spring.common.web.RestfulItem;
+import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -53,7 +54,7 @@ public class Medicine implements RestfulItem<Long> {
 
   @Override
   public String getIndexPath() {
-    return "/" + RestfulModel.Names.MEDICINE;
+    return "/" + RestfulPath.Names.MEDICINE;
   }
 
 }

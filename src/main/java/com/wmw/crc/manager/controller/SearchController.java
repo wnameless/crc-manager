@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.controller;
 
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.DOWNLOAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
@@ -74,7 +76,7 @@ public class SearchController {
   }
 
   @PreAuthorize("@perm.canRead(#id)")
-  @GetMapping("/download/cases/{id}")
+  @GetMapping("/" + DOWNLOAD + "/" + CASE_STUDY + "/{id}")
   @ResponseBody
   HttpEntity<byte[]> download(@PathVariable Long id, Locale locale)
       throws IOException {
