@@ -16,7 +16,8 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.EMAIL;
 
 import java.util.Locale;
 
@@ -37,13 +38,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.RestfulController;
+import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Emails;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
 
-@RequestMapping("/" + CASE_STUDY + "/{id}")
+@RequestMapping("/" + CASE_STUDY + "/{id}/" + EMAIL)
 @Controller
 public class CaseStudyEmailsController
     implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
@@ -69,7 +70,7 @@ public class CaseStudyEmailsController
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @GetMapping("/emails")
+  @GetMapping
   String edit(Model model, @PathVariable Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
         .getObjectMapperFactory().get().createObjectNode();
@@ -84,7 +85,7 @@ public class CaseStudyEmailsController
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @PostMapping("/emails")
+  @PostMapping
   String save(Model model, @PathVariable Long id,
       @RequestBody JsonNode formData) {
     caseStudy.getEmails().clear();
@@ -99,8 +100,8 @@ public class CaseStudyEmailsController
   }
 
   @Override
-  public RestfulModel getRoute() {
-    return RestfulModel.CASE_STUDY;
+  public RestfulPath getRoute() {
+    return RestfulPath.CASE_STUDY;
   }
 
   @Override

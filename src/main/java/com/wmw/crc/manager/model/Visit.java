@@ -24,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.github.wnameless.spring.common.web.RestfulItem;
+import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -59,7 +60,7 @@ public class Visit extends Auditable<String> implements RestfulItem<Long> {
 
   @Override
   public String getIndexPath() {
-    return "/" + RestfulModel.Names.VISIT;
+    return "/" + RestfulPath.Names.VISIT;
   }
 
 }

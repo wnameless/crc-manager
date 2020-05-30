@@ -17,8 +17,8 @@ package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
-import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;

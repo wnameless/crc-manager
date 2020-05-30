@@ -81,17 +81,11 @@
                 <td>
                     <a th:if="${@perm.canWrite(parent)}" href="#"
                         th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
-                        <span>
-                            <i class="fa fa-edit blue"></i>
-                        </span>
+                       <i class="fa fa-edit blue"></i>
                     </a>
-                    <span th:unless="${@perm.canWrite(parent)}">
-                        <i class="fa fa-edit gray"></i>
-                    </span>
+                    <i th:unless="${@perm.canWrite(parent)}" class="fa fa-edit gray"></i>
 					<a th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
-                        <span>
-                            <i class="fa fa-trash-alt red"></i>
-                        </span>
+                         <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>
             </tr>

@@ -16,7 +16,7 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 
 import java.util.Locale;
 
@@ -37,9 +37,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.RestfulController;
+import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.model.BundleDescription;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
 
@@ -99,8 +99,8 @@ public class CaseStudyBundleDescriptionController
   }
 
   @Override
-  public RestfulModel getRoute() {
-    return RestfulModel.CASE_STUDY;
+  public RestfulPath getRoute() {
+    return RestfulPath.CASE_STUDY;
   }
 
   @Override

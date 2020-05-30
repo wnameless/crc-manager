@@ -12,6 +12,10 @@
 	};
 
 	var axiosDelete = function (url, config = {}, ajax = true) {
+		if (!confirm(/*[[${#strings.defaultString(#messages.msgOrNull('ui.axios.delete.confirmation'), 'Are you sure?')}]]*/)) {
+			return false;
+		}
+
 		axios.delete(url, config).then((response) => {
 			if (ajax) $(/*[[${tag}]]*/ null).html(response.data);
 		});

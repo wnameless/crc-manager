@@ -13,19 +13,19 @@
  * the License.
  *
  */
-package com.wmw.crc.manager.model;
+package com.wmw.crc.manager;
 
 import com.github.wnameless.spring.common.web.RestfulRoute;
 
-public enum RestfulModel implements RestfulRoute<Long> {
+public enum RestfulPath implements RestfulRoute<Long> {
 
   CASE_STUDY(Names.CASE_STUDY), SUBJECT(Names.SUBJECT),
-  CONTRAINDICATION(Names.CONTRAINDICATION), VISIT(Names.VISIT),
-  MEDICINE(Names.MEDICINE);
+  CONTRAINDICATION(Names.CONTRAINDICATION), MEDICINE(Names.MEDICINE),
+  VISIT(Names.VISIT);
 
   private final String resourceName;
 
-  private RestfulModel(String resourceName) {
+  private RestfulPath(String resourceName) {
     this.resourceName = resourceName;
   }
 
@@ -39,8 +39,15 @@ public enum RestfulModel implements RestfulRoute<Long> {
     public static final String CASE_STUDY = "cases";
     public static final String CONTRAINDICATION = "contraindications";
     public static final String SUBJECT = "subjects";
-    public static final String VISIT = "visits";
     public static final String MEDICINE = "medicines";
+    public static final String VISIT = "visits";
+
+    // Names for building paths only
+    public static final String EMAIL = "emails";
+    public static final String BUNDLE_DESCRIPTION = "bundledescription";
+
+    public static final String DATA = "data";
+    public static final String DOWNLOAD = "download";
 
   }
 

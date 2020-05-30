@@ -1,7 +1,7 @@
 package com.wmw.crc.manager.controller;
 
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CONTRAINDICATION;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.CONTRAINDICATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;

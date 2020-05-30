@@ -16,8 +16,9 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.wmw.crc.manager.model.RestfulModel.Names.CASE_STUDY;
-import static com.wmw.crc.manager.model.RestfulModel.Names.SUBJECT;
+import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
+import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
+import static com.wmw.crc.manager.RestfulPath.Names.VISIT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -46,7 +47,7 @@ import com.wmw.crc.manager.service.VisitService;
 
 import net.sf.rubycollect4j.Ruby;
 
-@RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT)
+@RequestMapping("/" + CASE_STUDY + "/{parentId}/" + SUBJECT + "/{id}/" + VISIT)
 @Controller
 public class VisitController implements NestedRestfulController< //
     CaseStudy, Long, CaseStudyRepository, //
@@ -72,7 +73,7 @@ public class VisitController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canRead(#parentId)")
-  @GetMapping("/{id}/visits")
+  @GetMapping
   String index(Model model, @PathVariable Long parentId,
       @PathVariable Long id) {
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(caseStudy);
@@ -83,7 +84,7 @@ public class VisitController implements NestedRestfulController< //
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
-  @PutMapping(path = "/{id}/visits", produces = APPLICATION_JSON_VALUE)
+  @PutMapping(produces = APPLICATION_JSON_VALUE)
   @ResponseBody
   Boolean checkReviewed(@PathVariable Long parentId, @PathVariable Long id,
       @RequestParam Long visitId) {

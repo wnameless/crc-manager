@@ -48,6 +48,7 @@ import com.github.wnameless.spring.common.web.RestfulItem;
 import com.github.wnameless.spring.react.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
 import lombok.Data;
@@ -62,7 +63,7 @@ public class Subject
 
   @Override
   public String getIndexPath() {
-    return "/" + RestfulModel.Names.SUBJECT;
+    return "/" + RestfulPath.Names.SUBJECT;
   }
 
   @Id
