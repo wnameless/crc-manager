@@ -13,13 +13,13 @@
                 <input id="search" type="text" class="form-control" placeholder="Search for..." th:value="${search}">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button"
-                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: $('#search').val()}} )"><span
-                            class="fas fa-search"></span></button>
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: $('#search').val()}} )">
+                        <i class="fas fa-search"></i></button>
                 </span>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button"
-                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: ''}} )"><span
-                            class="fas fa-eraser"></span></button>
+                        th:onclick="axiosGet( [[${route.indexPath}]], {params: {search: ''}} )">
+                        <i class="fas fa-eraser"></i></button>
                 </span>
             </div>
         </div>
@@ -39,8 +39,9 @@
                 <th th:text="#{ui.case.table.contraindication}"></th>
                 <th>
                     <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip"
-                        data-placement="top"
-                        th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
+                        data-placement="top" th:title="#{ui.case.table.unreviewed}">
+                        [[#{ui.case.table.subject_and_unreviewed}]]
+                    </a>
                 </th>
                 <th class="text-center text-nowrap">
                     <a class="sorted" sd:pagination-sort="trialName" th:text="#{ui.case.table.name.chinese}"></a>
