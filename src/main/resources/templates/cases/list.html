@@ -111,9 +111,9 @@
                     </a>
                 </td>
                 <td>
-                    <a th:unless="${@perm.canRead(case)}" th:inline="text">[[${case.irbNumber}]]</a>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:inline="text"
-                        th:onclick="axiosGet( [[${case.showPath}]] )">[[${case.irbNumber}]]</a>
+                    <a th:unless="${@perm.canRead(case)}" th:text="${case.irbNumber}"></a>
+                    <a th:if="${@perm.canRead(case)}" href="#" th:text="${case.irbNumber}"
+                        th:onclick="axiosGet( [[${case.showPath}]] )"></a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
                 <td>
