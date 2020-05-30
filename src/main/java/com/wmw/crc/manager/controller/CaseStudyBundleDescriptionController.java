@@ -37,15 +37,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.RestfulController;
+import com.wmw.crc.manager.model.BundleDescription;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.Emails;
 import com.wmw.crc.manager.model.RestfulModel;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
 
 @RequestMapping("/" + CASE_STUDY + "/{id}")
 @Controller
-public class CaseStudyEmailsController
+public class CaseStudyBundleDescriptionController
     implements RestfulController<CaseStudy, Long, CaseStudyRepository> {
 
   @Autowired
@@ -54,7 +54,7 @@ public class CaseStudyEmailsController
   CaseStudyService caseService;
 
   CaseStudy caseStudy;
-  Emails emails;
+  BundleDescription bundleDescription;
 
   @Override
   public void configure(ModelPolicy<CaseStudy> policy) {
@@ -64,33 +64,33 @@ public class CaseStudyEmailsController
   @ModelAttribute
   void init(Model model, Locale locale,
       @PathVariable(required = false) Long id) {
-    emails = new Emails();
-    model.addAttribute("emails", emails);
+    bundleDescription = new BundleDescription();
+    model.addAttribute("bundleDescription", bundleDescription);
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @GetMapping("/emails")
+  @GetMapping("/bundledescription")
   String edit(Model model, @PathVariable Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
         .getObjectMapperFactory().get().createObjectNode();
-    ArrayNode an = on.putArray("listOfEmails");
-    caseStudy.getEmails().stream().forEach(email -> {
-      an.add(email);
+    ArrayNode an = on.putArray("bundleDescription");
+    caseStudy.getBundleLabels().stream().forEach(descr -> {
+      an.add(descr);
     });
-    emails.setFormData(on);
+    bundleDescription.setFormData(on);
 
-    model.addAttribute("emails", emails);
-    return "cases/emails/index";
+    model.addAttribute("bundleDescription", bundleDescription);
+    return "cases/bundledescription/index";
   }
 
   @PreAuthorize("@perm.canWrite(#id)")
-  @PostMapping("/emails")
+  @PostMapping("/bundledescription")
   String save(Model model, @PathVariable Long id,
       @RequestBody JsonNode formData) {
-    caseStudy.getEmails().clear();
-    JsonNode listOfEmails = formData.get("listOfEmails");
-    for (int i = 0; i < listOfEmails.size(); i++) {
-      caseStudy.getEmails().add(listOfEmails.get(i).asText());
+    caseStudy.getBundleDesciption().clear();
+    JsonNode bundleDescription = formData.get("bundleDescription");
+    for (int i = 0; i < bundleDescription.size(); i++) {
+      caseStudy.getBundleDesciption().add(bundleDescription.get(i).asText());
     }
     caseStudyRepo.save(caseStudy);
 

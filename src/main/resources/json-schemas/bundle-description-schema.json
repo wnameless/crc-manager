@@ -1,0 +1,65 @@
+{
+	"type": "object",
+	"properties": {
+		"bundleDescription": {
+			"title": "禁忌用藥組別敘述",
+			"type": "array",
+			"items": [
+				{
+					"title": "組別 1 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "1"
+				},
+				{
+					"title": "組別 2 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "2"
+				},
+				{
+					"title": "組別 3 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "3"
+				},
+				{
+					"title": "組別 4 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "4"
+				},
+				{
+					"title": "組別 5 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "5"
+				},
+				{
+					"title": "組別 6 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "6"
+				},
+				{
+					"title": "組別 7 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "7"
+				},
+				{
+					"title": "組別 8 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "8"
+				},
+				{
+					"title": "組別 9 ",
+					"type": "string",
+					"maxLength": 10,
+					"default": "9"
+				}
+			]
+		}
+	}
+}

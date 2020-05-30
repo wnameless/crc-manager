@@ -104,15 +104,15 @@
                 <td>
                     <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
                         <span>
-                            <i class="fa fa-edit"></i>
+                            <i class="fa fa-edit blue"></i>
                         </span>
                     </a>
                     <span th:if="${!@perm.canWrite(case)}">
-                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-edit gray"></i>
                     </span>
                     <a th:if="${@perm.canDelete()}" href="#" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
                         <span>
-                            <i class="fa fa-times red"></i>
+                            <i class="fa fa-trash-alt red"></i>
                         </span>
                     </a>
                 </td>

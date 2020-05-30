@@ -8,4 +8,33 @@
     [[${text}]]
 </h3>
 
+<div th:fragment="file-list(title, files)" class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#fileList">
+                    <i class="fas fa-file"></i>
+                    [[${title}]]</a>
+            </h4>
+        </div>
+        <div id="fileList" class="panel-collapse collapse">
+            <div class="list-group">
+                <th:block th:each="file : ${files}">
+                    <a th:unless="${file.value.value}" class="list-group-item list-group-item-action">
+                        [[${file.value.key}]]
+                        <label th:unless="${file.value.value}" class="pull-right">
+                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.unuploaded'), 'Unuploaded')}]]</label>
+                    </a>
+                    <a th:if="${file.value.value}" th:href="@{${item.joinPath('files', file.key)}}"
+                        class="list-group-item list-group-item-action">
+                        [[${file.value.key}]]
+                        <label th:if="${file.value.value}" class="pull-right">
+                            [[${#strings.defaultString(#messages.msgOrNull('ui.form.file-list.download', 'Download')}]]</label>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
 </html>

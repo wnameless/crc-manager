@@ -5,13 +5,12 @@
 
     <hr>
 
-    <form th:if="${@perm.canWrite(parent)}" id="batchDating" class="oof-input-form"
-        th:action="${route.joinPath('batchdating')}" method="POST">
+    <form th:if="${@perm.canWrite(parent)}" id="batchPatch" class="oof-input-form"
+        th:action="${route.joinPath('batchpatch')}" method="POST">
         <div class="form-row">
             <div class="form-group col-md-1"></div>
             <div class="form-group col-md-5">
-                <select id="subjectDateType" name="subjectDateType" class="form-control selectpicker"
-                    form="batchDating">
+                <select id="subjectDateType" name="subjectDateType" class="form-control selectpicker" form="batchPatch">
                     <option value="icfDate" th:text="#{ui.subject.date.icf}" selected></option>
                     <option value="examDate" th:text="#{ui.subject.date.exam}"></option>
                     <option value="accrualDate" th:text="#{ui.subject.date.accrual}"></option>
@@ -25,8 +24,8 @@
                     max="2100-12-31">
             </div>
             <div id="bundleNumberDiv" class="form-group col-md-4 hidden">
-                <select name="bundleNumber" class="form-control selectpicker" form="batchDating">
-                    <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${i}" th:selected="${i} == 1"></option>
+                <select id="bundleNumber" name="bundleNumber" class="form-control" form="batchPatch">
+                    <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${parent.bundleLabel(i)}" th:selected="${i} == 1"></option>
                 </select>
             </div>
             <div class="form-group col-md-2">
@@ -66,7 +65,7 @@
 
                     <select th:if="${@perm.canWrite(parent)}" class="form-control selectpicker"
                         th:onchange="axiosPut( [[${parent.withChild(subject).updatePath}]], params({bundle: this.value}), {}, false )">
-                        <option th:each="i: ${#numbers.sequence(1, 9)}" th:text="${i}" th:selected="${i == subject.contraindicationBundle}"></option>
+                        <option th:each="i: ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="${parent.bundleLabel(i)}" th:selected="${i == subject.contraindicationBundle}"></option>
                     </select>
                 </td>
                 <td th:text="${subject.name}"></td>
@@ -83,15 +82,15 @@
                     <a th:if="${@perm.canWrite(parent)}" href="#"
                         th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
                         <span>
-                            <i class="fa fa-edit"></i>
+                            <i class="fa fa-edit blue"></i>
                         </span>
                     </a>
                     <span th:unless="${@perm.canWrite(parent)}">
-                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-edit gray"></i>
                     </span>
 					<a th:if="${@perm.canDeleteSubject(parent)}" th:onclick="axiosDelete( [[${parent.withChild(subject).destroyPath}]] )">
                         <span>
-                            <i class="fa fa-times red"></i>
+                            <i class="fa fa-trash-alt red"></i>
                         </span>
                     </a>
                 </td>
@@ -159,6 +158,7 @@
             let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
             $('#jsfTable').on('init.dt', function () {
                 $(this).reflowTable();
+                $(this).parent().find('select').selectpicker();
             }).on('draw.dt', function () {
                 $(this).reflowTable('update');
             }).DataTable({
@@ -170,6 +170,8 @@
                 ],
                 language: { url: '/i18n/datatables-' + i18nLocale + '.json' }
             });
+
+            $('#bundleNumber').selectpicker();
         });
     </script>
 </div>
