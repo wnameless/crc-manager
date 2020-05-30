@@ -1,5 +1,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
+<script th:fragment="notify" type="text/javascript" th:inline="javascript">
+	$(function () {
+		let message = /*[[${message}]]*/ '';
+
+		if (message) {
+			$.notify(message);
+		}
+	});
+</script>
+
 <script th:fragment="input-file" type="text/javascript">
 	var bs_input_file = function () {
 		$('.input-file').before(
