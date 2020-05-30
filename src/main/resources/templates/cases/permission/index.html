@@ -48,7 +48,7 @@
                     <tbody>
                         <tr th:each="user : ${users}">
                             <td>
-                                <a class="usernameSelect" href="#" th:text="${user.username}"></a>
+                                <a class="usernameSelect" href="javascript:void(0)" th:text="${user.username}"></a>
                             </td>
                             <td th:text="${user.email}"></td>
                             <td th:text="${user.lastName}"></td>

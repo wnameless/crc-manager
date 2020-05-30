@@ -70,7 +70,7 @@
                 </td>
                 <td th:text="${subject.name}"></td>
                 <td>
-					<a th:if="${@perm.canRead(parent)}" href="#" th:text="${subject.nationalId}"
+					<a th:if="${@perm.canRead(parent)}" href="javascript:void(0)" th:text="${subject.nationalId}"
 						th:onclick="axiosGet( [[${parent.withChild(subject).showPath}]] )">
                     </a>
                     <a th:unless="${@perm.canRead(parent)}" th:text="${subject.nationalId}"></a>
@@ -79,7 +79,7 @@
 					<a th:href="${parent.joinPath(subject.showPath, 'visits')}" th:text="${subject.unreviewedVisits()}"></a>
 				</td>
                 <td>
-                    <a th:if="${@perm.canWrite(parent)}" href="#"
+                    <a th:if="${@perm.canWrite(parent)}" href="javascript:void(0)"
                         th:onclick="axiosGet( [[${parent.withChild(subject).editPath}]] )">
                        <i class="fa fa-edit blue"></i>
                     </a>

@@ -103,17 +103,17 @@
                     </bs3:dropdown>
                 </td>
                 <td class="text-nowrap">
-                    <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
+                    <a href="javascript:void(0)" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
                         <i class="fa fa-edit blue"></i>
                     </a>
                     <i th:if="${!@perm.canWrite(case)}" class="fa fa-edit gray"></i>
-                    <a th:if="${@perm.canDelete()}" href="#" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
+                    <a th:if="${@perm.canDelete()}" href="javascript:void(0)" th:onclick="axiosDelete( [[${case.destroyPath}]] )">
                         <i class="fa fa-trash-alt red"></i>
                     </a>
                 </td>
                 <td>
                     <a th:unless="${@perm.canRead(case)}" th:text="${case.irbNumber}"></a>
-                    <a th:if="${@perm.canRead(case)}" href="#" th:text="${case.irbNumber}"
+                    <a th:if="${@perm.canRead(case)}" href="javascript:void(0)" th:text="${case.irbNumber}"
                         th:onclick="axiosGet( [[${case.showPath}]] )"></a>
                 </td>
                 <td>[[${case.projectNumber}]]</td>
