@@ -29,7 +29,7 @@
         <thead>
             <tr>
                 <th class="text-center" th:text="#{ui.case.table.action}"></th>
-                <th style="width: 50px;"></th>
+                <th></th>
                 <th class="text-nowrap">
                     <a class="sorted" sd:pagination-sort="irbNumber" th:text="#{ui.case.table.irbnumber}"></a>
                 </th>
@@ -37,7 +37,7 @@
                     <a class="sorted" sd:pagination-sort="projectNumber" th:text="#{ui.case.table.projectnumber}"></a>
                 </th>
                 <th th:text="#{ui.case.table.contraindication}"></th>
-                <th class="text-center" style="width: 60px;">
+                <th>
                     <a class="sorted" sd:pagination-sort="unreviewedOngoingVisits" data-toggle="tooltip"
                         data-placement="top"
                         th:title="#{ui.case.table.unreviewed}">[[#{ui.case.table.subject_and_unreviewed}]]</a>
@@ -101,7 +101,7 @@
                         </th:block>
                     </bs3:dropdown>
                 </td>
-                <td>
+                <td class="text-nowrap">
                     <a href="#" th:if="${@perm.canWrite(case)}" th:onclick="axiosGet( [[${case.editPath}]] )">
                         <i class="fa fa-edit blue"></i>
                     </a>
@@ -122,7 +122,7 @@
                     </a>
                     <i th:unless="${@perm.canRead(case)}" class="fa fa-medkit"></i>
                 </td>
-                <td>
+                <td class="text-nowrap">
                     <a th:if="${@perm.canRead(case)}" th:href="${case.joinPath('subjects')}">
                         <i class="fa fa-user-plus"></i> ([[${case.unreviewedOngoingVisits}]])
                     </a>
