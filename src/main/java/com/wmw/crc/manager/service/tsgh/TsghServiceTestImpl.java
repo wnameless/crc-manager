@@ -94,8 +94,15 @@ public class TsghServiceTestImpl implements TsghService {
   @Override
   public Response<ResponseBody> addPatientContraindication(
       TsghContraindication pc) throws IOException {
-    System.out.println(pc);
-    return null;
+    return Response.success(ResponseBody.create(okhttp3.MediaType.get("text"),
+        "addPatientContraindication"));
+  }
+
+  @Override
+  public Response<ResponseBody> removeAllPatientContraindications()
+      throws IOException {
+    return Response.success(ResponseBody.create(okhttp3.MediaType.get("text"),
+        "removeAllPatientContraindications"));
   }
 
   @Override
@@ -105,6 +112,12 @@ public class TsghServiceTestImpl implements TsghService {
 
   @Override
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
+    try {
+      removeAllPatientContraindications();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+
     ContraindicationRefreshResult crr = new ContraindicationRefreshResult();
 
     List<CaseStudy> cases = caseStudyRepo.findAllByStatus(Status.EXEC);

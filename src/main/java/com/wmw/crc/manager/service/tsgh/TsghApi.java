@@ -36,4 +36,7 @@ public interface TsghApi {
   @POST("Contraindications")
   Call<ResponseBody> addPatientContraindication(@Body TsghContraindication cd);
 
+  @POST("DeleteAllContraindications")
+  Call<ResponseBody> removeAllPatientContraindications();
+
 }

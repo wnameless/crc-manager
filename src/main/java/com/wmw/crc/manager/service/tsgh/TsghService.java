@@ -34,6 +34,9 @@ public interface TsghService {
   public Response<ResponseBody> addPatientContraindication(
       TsghContraindication pc) throws IOException;
 
+  public Response<ResponseBody> removeAllPatientContraindications()
+      throws IOException;
+
   public AdvOpt<Integer> refreshMedicines();
 
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications();
