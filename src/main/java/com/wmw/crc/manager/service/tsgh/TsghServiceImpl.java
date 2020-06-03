@@ -164,6 +164,14 @@ public class TsghServiceImpl implements TsghService {
     return res;
   }
 
+  @Override
+  public Response<ResponseBody> removeAllPatientContraindications()
+      throws IOException {
+    Call<ResponseBody> call = tsghApi.removeAllPatientContraindications();
+    Response<ResponseBody> res = call.execute();
+    return res;
+  }
+
   public AdvOpt<Integer> refreshMedicines() {
     List<TsghMedicine> drugs;
     try {
@@ -196,6 +204,12 @@ public class TsghServiceImpl implements TsghService {
   }
 
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
+    try {
+      removeAllPatientContraindications();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+
     ContraindicationRefreshResult crr = new ContraindicationRefreshResult();
 
     List<CaseStudy> cases = caseStudyRepo.findAllByStatus(Status.EXEC);
