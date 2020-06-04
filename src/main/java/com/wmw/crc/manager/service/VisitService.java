@@ -19,9 +19,9 @@ import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
 import static com.wmw.crc.manager.RestfulPath.Names.VISIT;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,20 +250,24 @@ public class VisitService {
       List<Subject> subjects = subjectService.findOngoingSubjects(c);
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
-        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          LocalDateTime oneAndHalfHoursAgo =
-              LocalDateTime.now().minusMinutes(90);
-          if (v.getCreationDate().isAfter(oneAndHalfHoursAgo)) {
-            SimpleMailMessage message;
-            if (v.isContraindicationSuspected()) {
-              message = createVisitEmail(v, true);
-              contraindicationMessages.add(message.getText());
-            } else {
-              message = createVisitEmail(v, false);
-              visitMessages.add(message.getText());
-            }
+
+        List<Visit> visits = s.getVisits().stream()
+            .filter(p -> !p.isReviewed() && !p.isNotified())
+            .collect(Collectors.toList());
+
+        for (Visit v : visits) {
+          SimpleMailMessage message;
+          if (v.isContraindicationSuspected()) {
+            message = createVisitEmail(v, true);
+            contraindicationMessages.add(message.getText());
+          } else {
+            message = createVisitEmail(v, false);
+            visitMessages.add(message.getText());
           }
-        });
+
+          v.setNotified(true);
+          visitRepo.save(v);
+        }
       }
 
       if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
