@@ -66,9 +66,13 @@ public class SubjectService {
     BooleanExpression emptyDropoutDate = qSubject.dropoutDate.isEmpty();
     BooleanExpression nullDropoutDate = qSubject.dropoutDate.isNull();
     BooleanExpression blankDropoutDate = emptyDropoutDate.or(nullDropoutDate);
+    BooleanExpression emptyCompleteDate = qSubject.completeDate.isEmpty();
+    BooleanExpression nullCompleteDate = qSubject.completeDate.isNull();
+    BooleanExpression blankCompleteDate =
+        emptyCompleteDate.or(nullCompleteDate);
 
-    return query.from(qSubject)
-        .where(isCaseStudyExec.and(eqCaseStudy).and(blankDropoutDate)).fetch();
+    return query.from(qSubject).where(isCaseStudyExec.and(eqCaseStudy)
+        .and(blankDropoutDate).and(blankCompleteDate)).fetch();
   }
 
   public List<Subject> findOngoingSubjects(String nationalId) {
@@ -81,9 +85,13 @@ public class SubjectService {
     BooleanExpression emptyDropoutDate = qSubject.dropoutDate.isEmpty();
     BooleanExpression nullDropoutDate = qSubject.dropoutDate.isNull();
     BooleanExpression blankDropoutDate = emptyDropoutDate.or(nullDropoutDate);
+    BooleanExpression emptyCompleteDate = qSubject.completeDate.isEmpty();
+    BooleanExpression nullCompleteDate = qSubject.completeDate.isNull();
+    BooleanExpression blankCompleteDate =
+        emptyCompleteDate.or(nullCompleteDate);
 
-    return query.from(qSubject)
-        .where(isCaseStudyExec.and(eqNationalId).and(blankDropoutDate)).fetch();
+    return query.from(qSubject).where(isCaseStudyExec.and(eqNationalId)
+        .and(blankDropoutDate).and(blankCompleteDate)).fetch();
   }
 
   public void batchCreate(CaseStudy c, ExcelSubjects es) {
