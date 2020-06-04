@@ -90,6 +90,9 @@ public class Subject
   @JsonPopulatedKey("dropoutDate")
   String dropoutDate;
 
+  @JsonPopulatedKey("completeDate")
+  String completeDate;
+
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinTable(name = "case_subject",
       joinColumns = { @JoinColumn(name = "subject_id") },

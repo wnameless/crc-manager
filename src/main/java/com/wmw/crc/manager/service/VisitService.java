@@ -251,8 +251,9 @@ public class VisitService {
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
         s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
-          if (v.getCreationDate().isAfter(oneDayAgo)) {
+          LocalDateTime oneAndHalfHoursAgo =
+              LocalDateTime.now().minusMinutes(90);
+          if (v.getCreationDate().isAfter(oneAndHalfHoursAgo)) {
             SimpleMailMessage message;
             if (v.isContraindicationSuspected()) {
               message = createVisitEmail(v, true);
