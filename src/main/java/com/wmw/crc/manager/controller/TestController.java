@@ -27,8 +27,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
+import com.google.common.base.Objects;
 import com.wmw.crc.manager.model.CaseStudy;
+import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 import com.wmw.crc.manager.service.tsgh.TsghService;
@@ -39,6 +42,8 @@ public class TestController {
 
   @Autowired
   CaseStudyRepository caseStudyRepo;
+  @Autowired
+  SubjectRepository subjectRepo;
   @Autowired
   TsghService tsghService;
   @Autowired
@@ -105,6 +110,26 @@ public class TestController {
     rsjf.setUiSchema(cs.getUiSchema());
 
     return rsjf;
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("/subjects/checkcomplete")
+  @ResponseBody
+  Integer checkComplete() {
+    int count = 0;
+
+    for (Subject s : subjectRepo.findAll()) {
+      String cDate = s.getCompleteDate();
+
+      s.setFormData(s.getFormData());
+      subjectRepo.save(s);
+
+      if (!Objects.equal(cDate, s.getCompleteDate())) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
 }
