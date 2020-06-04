@@ -107,13 +107,13 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     http.authorizeRequests() //
         // Allow
-        .antMatchers("/webjars/**").permitAll() //
+        .antMatchers("/favicon.ico").permitAll() //
+        .antMatchers("/node_modules/**").permitAll() //
         .antMatchers("/css/**").permitAll() //
         .antMatchers("/js/**").permitAll() //
         .antMatchers("/default/**").permitAll() //
-        .antMatchers("/favicon.ico").permitAll() //
+        .antMatchers("/public/**").permitAll() //
         .antMatchers("/api/**").permitAll() //
-        .antMatchers("/public/**").permitAll()
         // Secure
         .anyRequest().authenticated().and() //
         .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
