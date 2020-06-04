@@ -19,9 +19,9 @@ import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
 import static com.wmw.crc.manager.RestfulPath.Names.VISIT;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
@@ -113,7 +114,7 @@ public class VisitService {
     return visit.isReviewed();
   }
 
-  public SimpleMailMessage createVisitEmail(Visit visit, boolean includeCD) {
+  public SimpleMailMessage createVisitEmail(Visit visit) {
     SimpleMailMessage message = new SimpleMailMessage();
 
     Subject s = visit.getSubject();
@@ -128,10 +129,13 @@ public class VisitService {
     message.setText( //
         "•姓名: " + s.getName() + "\n" //
             + "•醫院病歷號: " + s.getPatientId() + "\n" //
+            + "•日期: " + visit.getDate() + "\n" //
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + visitPath + "\n" //
-            + (includeCD
+            + (Strings.isNullOrEmpty(visit.getRoom()) ? ""
+                : "•床號: " + visit.getRoom() + "\n")
+            + (visit.isContraindicationSuspected()
                 ? "•開立禁忌用藥: "
                     + (visit.isContraindicationSuspected() ? "是" : "否") + "\n"
                 : "")
@@ -148,6 +152,7 @@ public class VisitService {
     for (CaseStudy c : cases) {
       List<String> visitMessages = new ArrayList<>();
       List<String> contraindicationMessages = new ArrayList<>();
+      List<String> hospitalizationMessages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
@@ -160,73 +165,16 @@ public class VisitService {
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
 
-        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          SimpleMailMessage message;
-          if (v.isContraindicationSuspected()) {
-            message = createVisitEmail(v, true);
-            contraindicationMessages.add(message.getText());
-          } else {
-            message = createVisitEmail(v, false);
-            visitMessages.add(message.getText());
-          }
-        });
-      }
-
-      if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
-        String msg =
-            "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
-        results.add(msg);
-        log.info(msg);
-      } else {
-        if (!visitMessages.isEmpty()) {
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-          message.setSubject("CRC Manager【看診通知】");
-          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
-          message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
-          message
-              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
-
-          try {
-            emailSender.send(message);
-            String msg = "Email of " + visitMessages.size()
-                + " visits has been sent to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.info(msg);
-          } catch (Exception e) {
-            String msg = "Failed to send visit email to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.error(msg, e);
-          }
-        }
-        if (!contraindicationMessages.isEmpty()) {
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-          message.setSubject("CRC Manager【禁忌用藥開立通知】");
-          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
-          message.setText(
-              prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
-          message
-              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
-
-          try {
-            emailSender.send(message);
-            String msg = "Email of " + contraindicationMessages.size()
-                + " contraindications has been sent to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.info(msg);
-          } catch (Exception e) {
-            String msg =
-                "Failed to send contraindication email to following addresses: "
-                    + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.error(msg, e);
-          }
+        List<Visit> visits = s.getVisits().stream().filter(p -> !p.isReviewed())
+            .collect(Collectors.toList());
+        for (Visit v : visits) {
+          createMessage(v, visitMessages, contraindicationMessages,
+              hospitalizationMessages);
         }
       }
+
+      sendingVisitEmails(results, c, visitMessages, contraindicationMessages,
+          hospitalizationMessages);
     }
 
     return results;
@@ -239,6 +187,7 @@ public class VisitService {
     for (CaseStudy c : cases) {
       List<String> visitMessages = new ArrayList<>();
       List<String> contraindicationMessages = new ArrayList<>();
+      List<String> hospitalizationMessages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
@@ -250,74 +199,119 @@ public class VisitService {
       List<Subject> subjects = subjectService.findOngoingSubjects(c);
       for (Subject s : subjects) {
         if (s.unreviewedVisits() <= 0) continue;
-        s.getVisits().stream().filter(p -> !p.isReviewed()).forEach(v -> {
-          LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
-          if (v.getCreationDate().isAfter(oneDayAgo)) {
-            SimpleMailMessage message;
-            if (v.isContraindicationSuspected()) {
-              message = createVisitEmail(v, true);
-              contraindicationMessages.add(message.getText());
-            } else {
-              message = createVisitEmail(v, false);
-              visitMessages.add(message.getText());
-            }
-          }
-        });
+
+        List<Visit> visits = s.getVisits().stream()
+            .filter(p -> !p.isReviewed() && !p.isNotified())
+            .collect(Collectors.toList());
+        for (Visit v : visits) {
+          createMessage(v, visitMessages, contraindicationMessages,
+              hospitalizationMessages);
+
+          v.setNotified(true);
+          visitRepo.save(v);
+        }
       }
 
-      if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
-        String msg =
-            "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
-        results.add(msg);
-        log.info(msg);
-      } else {
-        if (!visitMessages.isEmpty()) {
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-          message.setSubject("CRC Manager【看診通知】");
-          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
-          message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
-          message
-              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+      sendingVisitEmails(results, c, visitMessages, contraindicationMessages,
+          hospitalizationMessages);
+    }
 
-          try {
-            emailSender.send(message);
-            String msg = "Email of " + visitMessages.size()
-                + " visits has been sent to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.info(msg);
-          } catch (Exception e) {
-            String msg = "Failed to send visit email to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.error(msg, e);
-          }
+    return results;
+  }
+
+  private void createMessage(Visit v, List<String> visitMessages,
+      List<String> contraindicationMessages,
+      List<String> hospitalizationMessages) {
+    SimpleMailMessage message;
+    if (v.isContraindicationSuspected()) {
+      message = createVisitEmail(v);
+      contraindicationMessages.add(message.getText());
+    } else if (!Strings.isNullOrEmpty(v.getRoom())) {
+      message = createVisitEmail(v);
+      hospitalizationMessages.add(message.getText());
+    } else {
+      message = createVisitEmail(v);
+      visitMessages.add(message.getText());
+    }
+  }
+
+  private List<String> sendingVisitEmails(List<String> results, CaseStudy c,
+      List<String> visitMessages, List<String> contraindicationMessages,
+      List<String> hospitalizationMessages) {
+    if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
+      String msg =
+          "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
+      results.add(msg);
+      log.info(msg);
+    } else {
+      if (!visitMessages.isEmpty()) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+        message.setSubject("CRC Manager【看診通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
+        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+        try {
+          emailSender.send(message);
+          String msg = "Email of " + visitMessages.size()
+              + " visits has been sent to following addresses: " + c.getEmails()
+              + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.info(msg);
+        } catch (Exception e) {
+          String msg = "Failed to send visit email to following addresses: "
+              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.error(msg, e);
         }
-        if (!contraindicationMessages.isEmpty()) {
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-          message.setSubject("CRC Manager【禁忌用藥開立通知】");
-          String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
-          message.setText(
-              prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
-          message
-              .setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+      }
+      if (!contraindicationMessages.isEmpty()) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+        message.setSubject("CRC Manager【禁忌用藥開立通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        message.setText(
+            prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
+        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
 
-          try {
-            emailSender.send(message);
-            String msg = "Email of " + contraindicationMessages.size()
-                + " contraindications has been sent to following addresses: "
-                + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.info(msg);
-          } catch (Exception e) {
-            String msg =
-                "Failed to send contraindication email to following addresses: "
-                    + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
-            results.add(msg);
-            log.error(msg, e);
-          }
+        try {
+          emailSender.send(message);
+          String msg = "Email of " + contraindicationMessages.size()
+              + " contraindications has been sent to following addresses: "
+              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.info(msg);
+        } catch (Exception e) {
+          String msg =
+              "Failed to send contraindication email to following addresses: "
+                  + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.error(msg, e);
+        }
+      }
+      if (!hospitalizationMessages.isEmpty()) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+        message.setSubject("CRC Manager【住院通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        message.setText(
+            prefix + Ruby.Array.of(hospitalizationMessages).join("\n"));
+        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+        try {
+          emailSender.send(message);
+          String msg = "Email of " + hospitalizationMessages.size()
+              + " hospitalizations has been sent to following addresses: "
+              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.info(msg);
+        } catch (Exception e) {
+          String msg =
+              "Failed to send hospitalization email to following addresses: "
+                  + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.error(msg, e);
         }
       }
     }
