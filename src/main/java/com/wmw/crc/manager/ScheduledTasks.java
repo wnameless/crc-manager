@@ -42,7 +42,7 @@ public class ScheduledTasks {
     if (opt.isAbsent()) log.warn(opt.getMessage());
   }
 
-  @Scheduled(cron = "0 0 9,14,18  * * *")
+  @Scheduled(cron = "0 0 9,14,18 * * *")
   void refreshContraindications() {
     AdvOpt<ContraindicationRefreshResult> opt =
         tsghService.refreshContraindications();
