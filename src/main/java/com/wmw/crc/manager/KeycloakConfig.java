@@ -111,7 +111,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/css/**").permitAll() //
         .antMatchers("/js/**").permitAll() //
         .antMatchers("/default/**").permitAll() //
-        .antMatchers("/myfavicon.ico").permitAll() //
+        .antMatchers("/favicon.ico").permitAll() //
         .antMatchers("/api/**").permitAll() //
         .antMatchers("/public/**").permitAll()
         // Secure
