@@ -38,12 +38,12 @@ public interface NestedRestfulController< //
   Iterable<C> getChildren(P parent);
 
   void configure(ModelPolicy<P> parentPolicy, ModelPolicy<C> childPolicy,
-      ModelPolicy<? extends Iterable<C>> childrenPolicy);
+      ModelPolicy<Iterable<C>> childrenPolicy);
 
   default ModelPolicy<P> getParentModelOption() {
     ModelPolicy<P> parentPolicy = new ModelPolicy<>();
     ModelPolicy<C> childPolicy = new ModelPolicy<>();
-    ModelPolicy<? extends Iterable<C>> childrenPolicy = new ModelPolicy<>();
+    ModelPolicy<Iterable<C>> childrenPolicy = new ModelPolicy<>();
     configure(parentPolicy, childPolicy, childrenPolicy);
     return parentPolicy;
   }
@@ -51,7 +51,7 @@ public interface NestedRestfulController< //
   default ModelPolicy<C> getChildModelOption() {
     ModelPolicy<P> parentPolicy = new ModelPolicy<>();
     ModelPolicy<C> childPolicy = new ModelPolicy<>();
-    ModelPolicy<? extends Iterable<C>> childrenPolicy = new ModelPolicy<>();
+    ModelPolicy<Iterable<C>> childrenPolicy = new ModelPolicy<>();
     configure(parentPolicy, childPolicy, childrenPolicy);
     return childPolicy;
   }

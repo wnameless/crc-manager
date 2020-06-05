@@ -47,7 +47,7 @@ public class ContraindicationController implements NestedRestfulController< //
   @Override
   public void configure(ModelPolicy<CaseStudy> parentPolicy,
       ModelPolicy<Contraindication> childPolicy,
-      ModelPolicy<? extends Iterable<Contraindication>> childrenPolicy) {
+      ModelPolicy<Iterable<Contraindication>> childrenPolicy) {
     parentPolicy.afterInit(p -> caseStudy = p);
   }
 

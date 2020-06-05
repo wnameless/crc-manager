@@ -66,7 +66,7 @@ public class VisitController implements NestedRestfulController< //
   @Override
   public void configure(ModelPolicy<CaseStudy> parentPolicy,
       ModelPolicy<Subject> childPolicy,
-      ModelPolicy<? extends Iterable<Subject>> childrenPolicy) {
+      ModelPolicy<Iterable<Subject>> childrenPolicy) {
     parentPolicy.afterInit(p -> caseStudy = p);
     childPolicy.afterInit(c -> subject = firstNonNull(c, new Subject()));
     childrenPolicy.disable();

@@ -21,9 +21,9 @@ public class ModelPolicy<I> {
 
   private boolean enable = true;
 
-  private Function<I, I> afterInit;
+  private Function<? super I, ? extends I> afterInit;
 
-  private Function<I, I> beforeAdd;
+  private Function<? super I, ? extends I> beforeAdd;
 
   public ModelPolicy<I> enable() {
     enable = true;
@@ -49,11 +49,11 @@ public class ModelPolicy<I> {
     return enable;
   }
 
-  Function<I, I> getAfterInit() {
+  Function<? super I, ? extends I> getAfterInit() {
     return afterInit;
   }
 
-  Function<I, I> getBeforeAdd() {
+  Function<? super I, ? extends I> getBeforeAdd() {
     return beforeAdd;
   }
 
