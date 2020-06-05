@@ -153,6 +153,7 @@ public class VisitService {
       List<String> visitMessages = new ArrayList<>();
       List<String> contraindicationMessages = new ArrayList<>();
       List<String> hospitalizationMessages = new ArrayList<>();
+      List<String> erMessages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
@@ -169,12 +170,12 @@ public class VisitService {
             .collect(Collectors.toList());
         for (Visit v : visits) {
           createMessage(v, visitMessages, contraindicationMessages,
-              hospitalizationMessages);
+              hospitalizationMessages, erMessages);
         }
       }
 
       sendingVisitEmails(results, c, visitMessages, contraindicationMessages,
-          hospitalizationMessages);
+          hospitalizationMessages, erMessages);
     }
 
     return results;
@@ -188,6 +189,7 @@ public class VisitService {
       List<String> visitMessages = new ArrayList<>();
       List<String> contraindicationMessages = new ArrayList<>();
       List<String> hospitalizationMessages = new ArrayList<>();
+      List<String> erMessages = new ArrayList<>();
 
       if (c.getEmails().isEmpty()) {
         String msg = "No email list on CaseStudy[" + c.getIrbNumber() + "]";
@@ -205,7 +207,7 @@ public class VisitService {
             .collect(Collectors.toList());
         for (Visit v : visits) {
           createMessage(v, visitMessages, contraindicationMessages,
-              hospitalizationMessages);
+              hospitalizationMessages, erMessages);
 
           v.setNotified(true);
           visitRepo.save(v);
@@ -213,7 +215,7 @@ public class VisitService {
       }
 
       sendingVisitEmails(results, c, visitMessages, contraindicationMessages,
-          hospitalizationMessages);
+          hospitalizationMessages, erMessages);
     }
 
     return results;
@@ -221,7 +223,7 @@ public class VisitService {
 
   private void createMessage(Visit v, List<String> visitMessages,
       List<String> contraindicationMessages,
-      List<String> hospitalizationMessages) {
+      List<String> hospitalizationMessages, List<String> erMessages) {
     SimpleMailMessage message;
     if (v.isContraindicationSuspected()) {
       message = createVisitEmail(v);
@@ -229,6 +231,9 @@ public class VisitService {
     } else if (!Strings.isNullOrEmpty(v.getRoom())) {
       message = createVisitEmail(v);
       hospitalizationMessages.add(message.getText());
+    } else if (v.getDivision().contains("急診")) {
+      message = createVisitEmail(v);
+      erMessages.add(message.getText());
     } else {
       message = createVisitEmail(v);
       visitMessages.add(message.getText());
@@ -237,7 +242,7 @@ public class VisitService {
 
   private List<String> sendingVisitEmails(List<String> results, CaseStudy c,
       List<String> visitMessages, List<String> contraindicationMessages,
-      List<String> hospitalizationMessages) {
+      List<String> hospitalizationMessages, List<String> erMessages) {
     if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
       String msg =
           "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
@@ -310,6 +315,28 @@ public class VisitService {
           String msg =
               "Failed to send hospitalization email to following addresses: "
                   + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.error(msg, e);
+        }
+      }
+      if (!erMessages.isEmpty()) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
+        message.setSubject("CRC Manager【急診通知】");
+        String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
+        message.setText(prefix + Ruby.Array.of(erMessages).join("\n"));
+        message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
+
+        try {
+          emailSender.send(message);
+          String msg = "Email of " + erMessages.size()
+              + " ERs has been sent to following addresses: " + c.getEmails()
+              + " on CaseStudy[" + c.getIrbNumber() + "]";
+          results.add(msg);
+          log.info(msg);
+        } catch (Exception e) {
+          String msg = "Failed to send ER email to following addresses: "
+              + c.getEmails() + " on CaseStudy[" + c.getIrbNumber() + "]";
           results.add(msg);
           log.error(msg, e);
         }
