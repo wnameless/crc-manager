@@ -69,7 +69,7 @@ public class CaseStudyEmailsController
     model.addAttribute("emails", emails);
   }
 
-  @PreAuthorize("@perm.canWrite(#id)")
+  @PreAuthorize("@perm.canManage(#id)")
   @GetMapping
   String edit(Model model, @PathVariable Long id) {
     ObjectNode on = FlattenedJsonTypeConfigurer.INSTANCE
@@ -84,7 +84,7 @@ public class CaseStudyEmailsController
     return "cases/emails/index";
   }
 
-  @PreAuthorize("@perm.canWrite(#id)")
+  @PreAuthorize("@perm.canManage(#id)")
   @PostMapping
   String save(Model model, @PathVariable Long id,
       @RequestBody JsonNode formData) {
