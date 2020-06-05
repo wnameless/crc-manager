@@ -8,7 +8,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">CRC Manager</a>
+            <a href="/" class="navbar-left">
+                <img class="navbar-brand" src="/logo.png">
+            </a>
+            <a class="navbar-brand" href="/">[[#{navbar.title}]]</a>
         </div>
         <div id="navbarCollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -30,8 +33,8 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a th:href="@{${@environment.getProperty('keycloak.auth-server-url')} + '/realms/CRCManager/account'}" target="_blank" class="fa fa-user-cog"
-                        th:text="' ' + #{ui.navbar.account}"></a>
+                    <a th:href="@{${@environment.getProperty('keycloak.auth-server-url')} + '/realms/CRCManager/account'}"
+                        target="_blank" class="fa fa-user-cog" th:text="' ' + #{ui.navbar.account}"></a>
                 </li>
                 <li>
                     <a href="/logout" class="fa fa-sign-out-alt" th:text="' ' + #{ui.navbar.logout}"></a>
