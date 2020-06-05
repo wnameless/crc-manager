@@ -94,14 +94,28 @@
                         </th:block>
 
                         <th:block th:if="${case.status} == ${case.Status.EXEC}">
-                            <a th:if="${@perm.canManage(case)}" th:href="@{${case.joinPath('permission')}}">
-                                [[#{ui.case.table.action.permission}]]
-                            </a>
-                            <bs3:dropdown-divider th:if="${@perm.canClose(case)}"></bs3:dropdown-divider>
-                            <a th:if="${@perm.canClose(case)}"
-                                th:onclick="axiosPut( [[${case.updatePath}]], {status: 'end'} )">
-                                [[#{ui.case.table.action.close}]]
-                            </a>
+                            <th:block th:if="${@perm.canManage(case)}">
+                                <a th:href="@{${case.joinPath('permission')}}">
+                                    [[#{ui.case.table.action.permission}]]
+                                </a>
+                                <a th:href="@{${case.joinPath('emails')}}">
+                                    [[#{ui.case.emails}]]
+                                </a>
+                            </th:block>
+
+                            <th:block th:if="${@perm.canWrite(item)}">
+                                <bs3:dropdown-divider></bs3:dropdown-divider>
+                                <a th:href="@{${case.joinPath('bundledescription')}}">
+                                    [[#{ui.case.bundledescription}]]
+                                </a>
+                            </th:block>
+
+                            <th:block th:if="${@perm.canClose(case)}">
+                                <bs3:dropdown-divider></bs3:dropdown-divider>
+                                <a th:onclick="axiosPut( [[${case.updatePath}]], {status: 'end'} )">
+                                    [[#{ui.case.table.action.close}]]
+                                </a>
+                            </th:block>
                         </th:block>
 
                         <th:block th:if="${case.status} == ${case.Status.END}">

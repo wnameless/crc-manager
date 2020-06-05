@@ -36,6 +36,8 @@ import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 import com.wmw.crc.manager.service.tsgh.TsghService;
 
+import net.sf.rubycollect4j.Ruby;
+
 @Profile("test")
 @Controller
 public class TestController {
@@ -113,12 +115,13 @@ public class TestController {
   }
 
   @PreAuthorize("@perm.isAdmin()")
-  @GetMapping("/subjects/checkcomplete")
+  @GetMapping("test/subjects/checkcomplete")
   @ResponseBody
   Integer checkComplete() {
     int count = 0;
 
-    for (Subject s : subjectRepo.findAll()) {
+    List<Subject> subjects = Ruby.Array.copyOf(subjectRepo.findAll()).toList();
+    for (Subject s : subjects) {
       String cDate = s.getCompleteDate();
 
       s.setFormData(s.getFormData());
