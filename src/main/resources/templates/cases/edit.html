@@ -8,13 +8,6 @@
 
             <div th:replace="fragments/form :: file-list(title=#{ui.case.files.title}, files=${files})"></div>
 
-            <th:block th:if="${@perm.canWrite(item)}">
-                <hr>
-                <a th:href="@{${item.joinPath('emails')}}" th:text="#{ui.case.emails}"></a>
-                <hr>
-                <a th:href="@{${item.joinPath('bundledescription')}}" th:text="#{ui.case.bundledescription}"></a>
-            </th:block>
-
             <hr>
 
             <div id="jsfForm"></div>
