@@ -28,7 +28,7 @@
     <script th:replace="fragments/bs :: notify"></script>
     <script th:replace="fragments/axios :: simple-ajax-actions('#jsf')"></script>
     <script
-        th:replace="fragments/rjsf :: new( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).createPath}, '#jsf' )"></script>
+        th:replace="ReactJSF :: new( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).createPath}, '#jsf' )"></script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             $('#queryBtn').click(function () {
