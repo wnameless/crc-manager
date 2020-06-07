@@ -47,7 +47,10 @@
 <nav th:fragment="logout" class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/index">CRC Manager</a>
+            <a href="/" class="navbar-left">
+                <img class="navbar-brand" src="/logo.png">
+            </a>
+            <a class="navbar-brand" href="/">[[#{navbar.title}]]</a>
         </div>
     </div>
 </nav>
