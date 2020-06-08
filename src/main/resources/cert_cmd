@@ -1,6 +1,6 @@
 openssl x509 -inform d -in my.cer -out my.pem -outform PEM 
 
-openssl pkcs12 -export -inkey cims.key -in cims.cer -certfile ca-bundle.cer -out cims.tw.p12 -name tomcat
+openssl pkcs12 -export -inkey cims.key -in cims.cer -certfile ca-1.cer -certfile ca-2.cer -out cims.tw.p12 -name tomcat
 
 keytool -v -list -storetype pkcs12 -keystore cims.tw.p12 
 
