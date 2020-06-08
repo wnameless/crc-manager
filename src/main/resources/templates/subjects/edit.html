@@ -12,7 +12,7 @@
     </div>
 
     <script
-        th:replace="fragments/rjsf :: edit( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).updatePath}, '#jsf' )"></script>
+        th:replace="ReactJSF :: edit( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).updatePath}, '#jsf' )"></script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             $('input[type="date"]').attr({

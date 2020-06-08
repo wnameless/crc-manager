@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wmw.project</groupId>
 	<artifactId>crc-manager</artifactId>
-	<version>0.3.19-SNAPSHOT</version>
+	<version>0.3.20-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -27,6 +27,11 @@
 
 	<dependencies>
 		<!-- Gtihub Beta -->
+		<dependency>
+			<groupId>com.github.wnameless</groupId>
+			<artifactId>spring-common-web</artifactId>
+			<version>master-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.github.wnameless</groupId>
 			<artifactId>spring-react-jsonschema-form</artifactId>
