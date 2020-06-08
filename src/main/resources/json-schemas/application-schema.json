@@ -18,6 +18,10 @@
       "type": "string",
       "title": "1-4.試驗計畫版本"
     },
+    "irbNum": {
+      "type": "string",
+      "title": "1-5.IRB編號"
+    },
     "2-1.IRB核准日期": {
       "type": "string",
       "format": "date",
@@ -131,84 +135,8 @@
       }
     },
     "researchType": {
-      "type": "boolean",
-      "title": "4.研究類型",
-      "enumNames": [
-        "一般學術研究/發表",
-        "人體試驗"
-      ]
-    },
-    "trialCategory": {
-      "title": "4-1.試驗類別",
-      "type": "string",
-      "enum": [
-        "tech",
-        "drug",
-        "device",
-        "BA/BE"
-      ],
-      "enumNames": [
-        "1. 新醫療技術",
-        "2. 新藥品",
-        "3. 新醫療器材",
-        "4. 學名藥BA/BE"
-      ]
-    },
-    "drugOptions": {
-      "title": "4-2.藥品類型",
-      "type": "string",
-      "enum": [
-        "component",
-        "efficiency",
-        "useway"
-      ],
-      "enumNames": [
-        "2.1 新成份",
-        "2.2 新療效複方",
-        "2.3 新使用途徑"
-      ]
-    },
-    "efficiencyOptions": {
-      "title": "4-3.藥品療效",
-      "type": "string",
-      "enum": [
-        "newIndications",
-        "sideEffects",
-        "strength",
-        "time",
-        "dose",
-        "compound"
-      ],
-      "enumNames": [
-        "2.2.1 新適應症",
-        "2.2.2 降低副作用",
-        "2.2.3 改善療效強度",
-        "2.2.4 改善療效時間",
-        "2.2.5 改變使用劑量",
-        "2.2.6 複方"
-      ]
-    },
-    "phase": {
-      "title": "4-4.藥品試驗階段",
-      "type": "string",
-      "enum": [
-        "Phase0",
-        "PhaseI",
-        "PhaseI/II",
-        "PhaseII",
-        "PhaseII/III",
-        "PhaseIII",
-        "PhaseIV"
-      ],
-      "enumNames": [
-        "A. Phase 0",
-        "B. Phase I",
-        "C. Phase I / II",
-        "D. Phase II",
-        "E. Phase II / III",
-        "F. Phase III",
-        "G. Phase IV (PMS)"
-      ]
+      "title": "",
+      "$ref": "#/definitions/studyType"
     },
     "studyType": {
       "title": "5-1.計畫型態",
@@ -357,9 +285,9 @@
         "否"
       ]
     },
-    "irbNum": {
+    "adminNum": {
       "type": "string",
-      "title": "15-1.IRB編號"
+      "title": "15-1.主計編號"
     },
     "crcNum": {
       "type": "string",
@@ -579,9 +507,9 @@
       "type": "object",
       "properties": {
         "dohFlg": {
-          "type": "boolean",
+          "type": "string",
           "title": "2-3.是否需送衛福部審核",
-          "enumNames": [
+          "enum": [
             "本試驗已通過衛福部審核",
             "本試驗不需送衛福部審核"
           ]
@@ -593,7 +521,7 @@
             {
               "properties": {
                 "dohFlg": {
-                  "enumName": [
+                  "enum": [
                     "本試驗已通過衛福部審核"
                   ]
                 },
@@ -615,17 +543,235 @@
             {
               "properties": {
                 "dohFlg": {
-                  "enumName": [
+                  "enum": [
                     "本試驗不需送衛福部審核"
                   ]
                 },
                 "dohReason": {
                   "type": "string",
-                  "title": "2-6.原因"
+                  "title": "2-4.原因"
                 }
               },
               "required": [
                 "dohReason"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "studyType": {
+      "type": "object",
+      "properties": {
+        "researchType": {
+          "type": "string",
+          "title": "4.研究類型",
+          "enum": [
+            "一般學術研究/發表",
+            "人體試驗"
+          ]
+        }
+      },
+      "dependencies": {
+        "researchType": {
+          "oneOf": [
+            {
+              "properties": {
+                "researchType": {
+                  "enum": [
+                    "一般學術研究/發表"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "researchType": {
+                  "enum": [
+                    "人體試驗"
+                  ]
+                },
+                "trialCategory": {
+                  "title": "",
+                  "$ref": "#/definitions/trialCategoryDef"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "trialCategoryDef": {
+      "type": "object",
+      "properties": {
+        "trialCategory": {
+          "title": "4-1.試驗類別",
+          "type": "string",
+          "enum": [
+            "tech",
+            "drug",
+            "device",
+            "BA/BE"
+          ],
+          "enumNames": [
+            "1. 新醫療技術",
+            "2. 新藥品",
+            "3. 新醫療器材",
+            "4. 學名藥BA/BE"
+          ]
+        }
+      },
+      "required": [
+        "trialCategory"
+      ],
+      "dependencies": {
+        "trialCategory": {
+          "oneOf": [
+            {
+              "properties": {
+                "trialCategory": {
+                  "enum": [
+                    "tech",
+                    "BA/BE"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "trialCategory": {
+                  "enum": [
+                    "drug"
+                  ]
+                },
+                "drugOptions": {
+                  "title": "",
+                  "$ref": "#/definitions/drugOptionsDef"
+                },
+                "phase": {
+                  "title": "4-3.藥品試驗階段",
+                  "type": "string",
+                  "enum": [
+                    "Phase0",
+                    "PhaseI",
+                    "PhaseI/II",
+                    "PhaseII",
+                    "PhaseII/III",
+                    "PhaseIII",
+                    "PhaseIV"
+                  ],
+                  "enumNames": [
+                    "A. Phase 0",
+                    "B. Phase I",
+                    "C. Phase I / II",
+                    "D. Phase II",
+                    "E. Phase II / III",
+                    "F. Phase III",
+                    "G. Phase IV (PMS)"
+                  ]
+                }
+              },
+              "required": [
+                "drugOptions",
+                "phase"
+              ]
+            },
+            {
+              "properties": {
+                "trialCategory": {
+                  "enum": [
+                    "device"
+                  ]
+                },
+                "medicalDeviceType": {
+                  "title": "4-4.醫療器材類型",
+                  "type": "string",
+                  "enum": [
+                    "pioneer",
+                    "feasibility",
+                    "pivot",
+                    "PMS"
+                  ],
+                  "enumNames": [
+                    "3.1 先導性試驗",
+                    "3.2 可行性試驗",
+                    "3.3 樞紐試驗",
+                    "3.4 上市後監測試驗"
+                  ]
+                }
+              },
+              "required": [
+                "medicalDeviceType"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "drugOptionsDef": {
+      "type": "object",
+      "properties": {
+        "drugOptions": {
+          "title": "4-2.藥品類型",
+          "type": "string",
+          "enum": [
+            "component",
+            "efficiency",
+            "useway"
+          ],
+          "enumNames": [
+            "2.1 新成份",
+            "2.2 新療效複方",
+            "2.3 新使用途徑"
+          ]
+        }
+      },
+      "required": [
+        "drugOptions"
+      ],
+      "dependencies": {
+        "drugOptions": {
+          "oneOf": [
+            {
+              "properties": {
+                "drugOptions": {
+                  "enum": [
+                    "component",
+                    "useway"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "drugOptions": {
+                  "enum": [
+                    "efficiency"
+                  ]
+                },
+                "efficiencyOptions": {
+                  "title": "4-2-1.藥品療效",
+                  "type": "string",
+                  "enum": [
+                    "newIndications",
+                    "sideEffects",
+                    "strength",
+                    "time",
+                    "dose",
+                    "compound"
+                  ],
+                  "enumNames": [
+                    "2.2.1 新適應症",
+                    "2.2.2 降低副作用",
+                    "2.2.3 改善療效強度",
+                    "2.2.4 改善療效時間",
+                    "2.2.5 改變使用劑量",
+                    "2.2.6 複方"
+                  ]
+                }
+              },
+              "required": [
+                "efficiencyOptions"
               ]
             }
           ]
