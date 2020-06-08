@@ -5,3 +5,5 @@ openssl pkcs12 -export -inkey cims.key -in cims.cer -certfile ca-1.cer -certfile
 keytool -v -list -storetype pkcs12 -keystore cims.tw.p12 
 
 keytool -importkeystore -srckeystore cims.tw.p12 -srcstoretype pkcs12 -destkeystore cims.tw.jks -deststoretype JKS -alias tomcat -deststorepass crcmanager
+
+keytool -importkeystore -srckeystore cims.tw.jks -destkeystore cacerts
