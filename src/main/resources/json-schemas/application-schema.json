@@ -28,25 +28,8 @@
       "title": "2-2.IRB核准編號"
     },
     "dohFlg": {
-      "type": "boolean",
-      "title": "2-3.是否需送衛福部審核",
-      "enumNames": [
-        "本試驗已通過衛福部審核",
-        "本試驗不需送衛福部審核"
-      ]
-    },
-    "2-4.衛福部核准日期": {
-      "type": "string",
-      "format": "date",
-      "title": "2-4.衛福部核准日期"
-    },
-    "dohApprovedNum": {
-      "type": "string",
-      "title": "2-5.衛福部核准編號"
-    },
-    "dohReason": {
-      "type": "string",
-      "title": "原因"
+      "title": "",
+      "$ref": "#/definitions/doh"
     },
     "PI": {
       "type": "array",
@@ -359,34 +342,12 @@
       "title": "12-4.試驗主持人之助理聯絡方式(姓名 電話)"
     },
     "insuranceFlg": {
-      "type": "string",
-      "title": "13.試驗有無保險",
-      "enum": [
-        "有",
-        "無"
-      ]
-    },
-    "insuranceInst": {
-      "type": "string",
-      "description": "承保公司",
-      "title": "13-1.承保公司"
-    },
-    "insuranceAmount": {
-      "type": "string",
-      "description": "保險金額",
-      "title": "13-2.保險金額"
+      "title": "",
+      "$ref": "#/definitions/insurance"
     },
     "nihFlg": {
-      "type": "string",
-      "title": "14.試驗是否至美國NIH網站登錄",
-      "enum": [
-        "是",
-        "否"
-      ]
-    },
-    "nihReason": {
-      "type": "string",
-      "title": "14-1.未登錄NIH原因"
+      "title": "",
+      "$ref": "#/definitions/nih"
     },
     "contractFlg": {
       "type": "string",
@@ -513,6 +474,161 @@
           "type": "string",
           "format": "email",
           "title": "院內E-mail"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "insurance": {
+      "type": "object",
+      "properties": {
+        "insuranceFlg": {
+          "type": "string",
+          "title": "13.試驗有無保險",
+          "enum": [
+            "有",
+            "無"
+          ],
+          "default": "無"
+        }
+      },
+      "dependencies": {
+        "insuranceFlg": {
+          "oneOf": [
+            {
+              "properties": {
+                "insuranceFlg": {
+                  "enum": [
+                    "無"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "insuranceFlg": {
+                  "enum": [
+                    "有"
+                  ]
+                },
+                "insuranceInst": {
+                  "type": "string",
+                  "description": "承保公司",
+                  "title": "13-1.承保公司"
+                },
+                "insuranceAmount": {
+                  "type": "string",
+                  "description": "保險金額",
+                  "title": "13-2.保險金額"
+                }
+              },
+              "required": [
+                "insuranceInst",
+                "insuranceAmount"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "nih": {
+      "type": "object",
+      "properties": {
+        "nihFlg": {
+          "type": "string",
+          "title": "14.試驗是否至美國NIH網站登錄",
+          "enum": [
+            "是",
+            "否"
+          ]
+        }
+      },
+      "dependencies": {
+        "nihFlg": {
+          "oneOf": [
+            {
+              "properties": {
+                "nihFlg": {
+                  "enum": [
+                    "是"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "nihFlg": {
+                  "enum": [
+                    "否"
+                  ]
+                },
+                "nihReason": {
+                  "type": "string",
+                  "title": "14-1.未登錄NIH原因"
+                }
+              },
+              "required": [
+                "nihReason"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "doh": {
+      "type": "object",
+      "properties": {
+        "dohFlg": {
+          "type": "boolean",
+          "title": "2-3.是否需送衛福部審核",
+          "enumNames": [
+            "本試驗已通過衛福部審核",
+            "本試驗不需送衛福部審核"
+          ]
+        }
+      },
+      "dependencies": {
+        "dohFlg": {
+          "oneOf": [
+            {
+              "properties": {
+                "dohFlg": {
+                  "enumName": [
+                    "本試驗已通過衛福部審核"
+                  ]
+                },
+                "2-4.衛福部核准日期": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "2-4.衛福部核准日期"
+                },
+                "dohApprovedNum": {
+                  "type": "string",
+                  "title": "2-5.衛福部核准編號"
+                }
+              },
+              "required": [
+                "2-4.衛福部核准日期",
+                "dohApprovedNum"
+              ]
+            },
+            {
+              "properties": {
+                "dohFlg": {
+                  "enumName": [
+                    "本試驗不需送衛福部審核"
+                  ]
+                },
+                "dohReason": {
+                  "type": "string",
+                  "title": "2-6.原因"
+                }
+              },
+              "required": [
+                "dohReason"
+              ]
+            }
+          ]
         }
       }
     }
