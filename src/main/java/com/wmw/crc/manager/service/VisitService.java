@@ -243,7 +243,8 @@ public class VisitService {
   private List<String> sendingVisitEmails(List<String> results, CaseStudy c,
       List<String> visitMessages, List<String> contraindicationMessages,
       List<String> hospitalizationMessages, List<String> erMessages) {
-    if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()) {
+    if (visitMessages.isEmpty() && contraindicationMessages.isEmpty()
+        && hospitalizationMessages.isEmpty() && erMessages.isEmpty()) {
       String msg =
           "No unreviewed visits on CaseStudy[" + c.getIrbNumber() + "]";
       results.add(msg);
