@@ -18,10 +18,6 @@
       "type": "string",
       "title": "1-4.試驗計畫版本"
     },
-    "irbNum": {
-      "type": "string",
-      "title": "1-5.IRB編號"
-    },
     "2-1.IRB核准日期": {
       "type": "string",
       "format": "date",
