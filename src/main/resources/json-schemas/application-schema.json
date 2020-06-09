@@ -27,7 +27,7 @@
       "format": "date",
       "title": "2-1.IRB核准日期"
     },
-    "irbApprovedNum": {
+    "irbNum": {
       "type": "string",
       "title": "2-2.IRB核准編號"
     },
