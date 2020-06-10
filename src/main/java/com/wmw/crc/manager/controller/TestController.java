@@ -83,7 +83,7 @@ public class TestController {
     newVisit.setNationalId("A111222333");
     newVisit.setDoctor("Faker");
     newVisit.setDivision("Fake");
-    newVisit.setContraindicationSuspected(false);
+    newVisit.setContraindicationSuspected(true);
     newVisit.setDate(LocalDate.now().plusDays(1));
 
     visitService.addVisit(newVisit);
