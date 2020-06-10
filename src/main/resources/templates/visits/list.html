@@ -20,7 +20,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="v : ${visits}">
-				<td th:text="${#temporals.format(v.creationDate, 'dd-MM-yy HH:mm')}"></td>
+				<td th:text="${#temporals.format(v.creationDate, 'yy-MM-dd HH:mm')}"></td>
 				<td th:text="${v.division}"></td>
 				<td th:text="${v.doctor}"></td>
 				<td th:text="${v.room}"></td>
