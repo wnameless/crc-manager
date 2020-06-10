@@ -97,15 +97,23 @@ public class TsghServiceImpl implements TsghService {
 
     if (patient.getNationalId() != null) {
       node.put("taiwanId", patient.getNationalId());
-      if (patient.getNationalId().length() >= 2
+      if (nationalId.matches("[A-Z][1-2][\\d]{8}")
           && patient.getNationalId().charAt(1) == '1') {
         node.put("gender", "男");
         // formData.gender = '男';
       }
-      if (patient.getNationalId().length() >= 2
+      if (nationalId.matches("[A-Z][1-2][\\d]{8}")
           && patient.getNationalId().charAt(1) == '2') {
         node.put("gender", "女");
         // formData.gender = '女';
+      }
+    }
+    if (patient.getGender() != null) {
+      if (patient.getGender().equals("Female")) {
+        node.put("gender", "女");
+      }
+      if (patient.getGender().equals("Male")) {
+        node.put("gender", "男");
       }
     }
     if (patient.getPatientId() != null) {
@@ -123,16 +131,16 @@ public class TsghServiceImpl implements TsghService {
     if (patient.getBirthday() != null) {
       if (patient.getBirthday().length() == 7) {
         String year = patient.getBirthday().substring(0, 3);
-        String month = patient.getBirthday().substring(3, 2);
-        String day = patient.getBirthday().substring(5, 2);
+        String month = patient.getBirthday().substring(3, 5);
+        String day = patient.getBirthday().substring(5, 7);
 
         node.put("birthDate",
             "" + (Integer.parseInt(year) + 1911) + "-" + month + "-" + day);
         // formData.birthDate = `${year}-${month}-${day}`;
       } else if (patient.getBirthday().length() == 8) {
         String year = patient.getBirthday().substring(0, 4);
-        String month = patient.getBirthday().substring(4, 2);
-        String day = patient.getBirthday().substring(6, 2);
+        String month = patient.getBirthday().substring(4, 6);
+        String day = patient.getBirthday().substring(6, 8);
 
         node.put("birthDate", "" + year + "-" + month + "-" + day);
         // formData.birthDate = `${year}-${month}-${day}`;

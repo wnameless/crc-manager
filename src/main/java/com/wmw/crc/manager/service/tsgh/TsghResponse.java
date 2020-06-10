@@ -15,15 +15,20 @@
  */
 package com.wmw.crc.manager.service.tsgh;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
 public class TsghResponse<E> {
 
+  @JsonProperty
   String Status;
 
+  @JsonProperty
   E Data;
 
+  @JsonProperty
   String ErrorMessage;
 
 }

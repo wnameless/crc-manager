@@ -15,12 +15,14 @@
  */
 package com.wmw.crc.manager.service;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
 import static com.wmw.crc.manager.RestfulPath.Names.VISIT;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -30,7 +32,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Subject;
@@ -133,7 +134,7 @@ public class VisitService {
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + visitPath + "\n" //
-            + (Strings.isNullOrEmpty(visit.getRoom()) ? ""
+            + (isEmptyRoom(visit.getRoom()) ? ""
                 : "•床號: " + visit.getRoom() + "\n")
             + (visit.isContraindicationSuspected()
                 ? "•開立禁忌用藥: "
@@ -228,7 +229,7 @@ public class VisitService {
     if (v.isContraindicationSuspected()) {
       message = createVisitEmail(v);
       contraindicationMessages.add(message.getText());
-    } else if (!Strings.isNullOrEmpty(v.getRoom())) {
+    } else if (!isEmptyRoom(v.getRoom())) {
       message = createVisitEmail(v);
       hospitalizationMessages.add(message.getText());
     } else if (v.getDivision().contains("急診")) {
@@ -358,6 +359,10 @@ public class VisitService {
       caseStudy.setUnreviewedOngoingVisits(urvCount);
       caseStudyRepo.save(caseStudy);
     }
+  }
+
+  private boolean isEmptyRoom(String room) {
+    return isNullOrEmpty(room) || Objects.equals(room.trim(), "-");
   }
 
 }
