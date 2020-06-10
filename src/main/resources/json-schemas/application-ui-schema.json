@@ -17,9 +17,6 @@
   "2-1.IRB核准日期": {
     "ui:readonly": true
   },
-  "irbApprovedNum": {
-    "ui:readonly": true
-  },
   "accrualHospital": {
     "ui:readonly": true
   },
@@ -27,12 +24,6 @@
     "ui:readonly": true
   },
   "accrualTaiwan": {
-    "ui:readonly": true
-  },
-  "genderEnum": {
-    "ui:readonly": true
-  },
-  "accrualType": {
     "ui:readonly": true
   },
   "proposedStartDate": {
