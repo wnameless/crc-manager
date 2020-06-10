@@ -134,7 +134,7 @@ public class VisitService {
             + "•看診科別: " + visit.getDivision() + "\n" //
             + "•看診醫師: " + visit.getDoctor() + "\n" //
             + "•網頁連接: " + visitPath + "\n" //
-            + (isEmptyRoom(visit.getRoom()) ? ""
+            + (isRoomBlank(visit.getRoom()) ? ""
                 : "•床號: " + visit.getRoom() + "\n")
             + (visit.isContraindicationSuspected()
                 ? "•開立禁忌用藥: "
@@ -229,7 +229,7 @@ public class VisitService {
     if (v.isContraindicationSuspected()) {
       message = createVisitEmail(v);
       contraindicationMessages.add(message.getText());
-    } else if (!isEmptyRoom(v.getRoom())) {
+    } else if (!isRoomBlank(v.getRoom())) {
       message = createVisitEmail(v);
       hospitalizationMessages.add(message.getText());
     } else if (v.getDivision().contains("急診")) {
@@ -361,8 +361,10 @@ public class VisitService {
     }
   }
 
-  private boolean isEmptyRoom(String room) {
-    return isNullOrEmpty(room) || Objects.equals(room.trim(), "-");
+  private boolean isRoomBlank(String room) {
+    return isNullOrEmpty(room) || Objects.equals(room.trim(), "-")
+        || Objects.equals(room.trim(), "null");
+
   }
 
 }
