@@ -21,6 +21,7 @@ import lombok.Data;
 
 @Data
 public class TsghPatient {
+
   List<String> patientId;
 
   List<String> trialId;
@@ -36,4 +37,5 @@ public class TsghPatient {
   String phone;
 
   String address;
+
 }
