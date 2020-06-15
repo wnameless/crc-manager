@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
 import com.google.common.base.Objects;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -128,6 +129,27 @@ public class TestController {
       subjectRepo.save(s);
 
       if (!Objects.equal(cDate, s.getCompleteDate())) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("test/formdata/clean")
+  @ResponseBody
+  Integer cleanFormData() {
+    int count = 0;
+
+    for (CaseStudy cs : caseStudyRepo.findAll()) {
+      ObjectNode formData = (ObjectNode) cs.getFormData();
+
+      if (formData.get("dohFlg").isBoolean()) {
+        formData.remove("dohFlg");
+
+        cs.setFormData(formData);
+        caseStudyRepo.save(cs);
         count++;
       }
     }
