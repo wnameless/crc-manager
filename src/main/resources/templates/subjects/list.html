@@ -38,7 +38,7 @@
         <hr>
     </div>
 
-    <table id="jsfTable" class="display">
+    <table id="jsfTable" class="table table-striped">
         <thead>
             <tr>
                 <th></th>
@@ -150,6 +150,7 @@
             }).on('draw.dt', function () {
                 $(this).reflowTable('update');
             }).DataTable({
+                stateSave: true,
                 order: [
                     [5, "asc"]
                 ],

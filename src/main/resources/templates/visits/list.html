@@ -6,7 +6,7 @@
 	</h3>
 	<hr>
 
-	<table id="jsfTable" class="display">
+	<table id="jsfTable" class="table table-striped">
 		<thead>
 			<tr>
 				<th th:text="#{ui.subject.visit.creation_date}"></th>
@@ -52,6 +52,7 @@
 			}).on('draw.dt', function () {
 				$(this).reflowTable('update');
 			}).DataTable({
+				stateSave: true,
 				order: [
 					[4, "asc"]
 				],

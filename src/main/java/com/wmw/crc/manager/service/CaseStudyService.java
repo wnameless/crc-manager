@@ -126,7 +126,8 @@ public class CaseStudyService {
   public Page<CaseStudy> getCasesByStatus(Authentication auth,
       CaseStudy.Status status, Pageable pageable, String search) {
     if (search != null && !search.isEmpty()) {
-      return caseStudyRepo.findAllByUserAndStatus(auth, status, pageable, search);
+      return caseStudyRepo.findAllByUserAndStatus(auth, status, pageable,
+          search);
     }
 
     return getCasesByStatus(auth, status, pageable);
@@ -138,19 +139,19 @@ public class CaseStudyService {
 
   public AdvOpt<Contraindication> addContraindication(CaseStudy cs,
       Integer bundle, String phrase, List<String> takekinds, String memo) {
+    Contraindication cd = null;
+
     if (!isNullOrEmpty(phrase)) {
-      Contraindication cd = new Contraindication();
+      cd = new Contraindication();
       cd.setCaseStudy(cs);
       cd.setBundle(bundle);
       cd.setPhrase(phrase);
       cd.setTakekinds(takekinds);
       cd.setMemo(memo);
       contraindicationRepo.save(cd);
-
-      return AdvOpt.of(cd);
-    } else {
-      return AdvOpt.ofNullable(null);
     }
+
+    return AdvOpt.ofNullable(cd);
   }
 
   public AdvOpt<Contraindication> removeContraindication(CaseStudy cs,
@@ -180,7 +181,8 @@ public class CaseStudyService {
     if (caseCriteria.isEmpty()) {
       readableCases = caseStudyRepo.findAllByUser(auth);
     } else {
-      readableCases = caseStudyRepo.findAllByUserAndCriteria(auth, caseCriteria);
+      readableCases =
+          caseStudyRepo.findAllByUserAndCriteria(auth, caseCriteria);
     }
 
     if (subjectCriteria.isEmpty()) {
