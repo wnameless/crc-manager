@@ -52,6 +52,7 @@
 			}).on('draw.dt', function () {
 				$(this).reflowTable('update');
 			}).DataTable({
+				stateSave: true,
 				order: [
 					[4, "asc"]
 				],
