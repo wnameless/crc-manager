@@ -145,7 +145,8 @@ public class TestController {
     for (CaseStudy cs : caseStudyRepo.findAll()) {
       ObjectNode formData = (ObjectNode) cs.getFormData();
 
-      if (formData.get("dohFlg").isBoolean()) {
+      if (formData.get("dohFlg") != null
+          && formData.get("dohFlg").isBoolean()) {
         formData.remove("dohFlg");
 
         cs.setFormData(formData);
