@@ -103,7 +103,7 @@
                                 </a>
                             </th:block>
 
-                            <th:block th:if="${@perm.canWrite(item)}">
+                            <th:block th:if="${@perm.canWrite(case)}">
                                 <bs3:dropdown-divider></bs3:dropdown-divider>
                                 <a th:href="@{${case.joinPath('bundledescription')}}">
                                     [[#{ui.case.bundledescription}]]
