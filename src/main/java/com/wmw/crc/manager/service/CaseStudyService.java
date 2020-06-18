@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.service;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static net.sf.rubycollect4j.RubyObject.isPresent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -141,7 +141,7 @@ public class CaseStudyService {
       Integer bundle, String phrase, List<String> takekinds, String memo) {
     Contraindication cd = null;
 
-    if (!isNullOrEmpty(phrase)) {
+    if (isPresent(phrase)) {
       cd = new Contraindication();
       cd.setCaseStudy(cs);
       cd.setBundle(bundle);

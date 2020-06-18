@@ -16,9 +16,10 @@
 package com.wmw.crc.manager.controller;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.wmw.crc.manager.RestfulPath.Names.CASE_STUDY;
 import static com.wmw.crc.manager.RestfulPath.Names.SUBJECT;
+import static net.sf.rubycollect4j.RubyObject.isBlank;
+import static net.sf.rubycollect4j.RubyObject.isPresent;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
@@ -214,14 +215,14 @@ public class SubjectController implements NestedRestfulController< //
       @RequestParam(name = "oofValues", required = false) List<Long> subjectIds,
       @RequestParam Integer bundleNumber, Locale locale,
       RedirectAttributes redirAttrs) {
-    if (!subjectDateType.equals("bundleNumber") && isNullOrEmpty(subjectDate)) {
+    if (!subjectDateType.equals("bundleNumber") && isBlank(subjectDate)) {
       redirAttrs.addFlashAttribute("message", i18n.subjectDateUnselect(locale));
     } else if (subjectIds == null) {
       redirAttrs.addFlashAttribute("message", i18n.subjectUnselect(locale));
     }
 
     Iterable<Subject> subjects = getChildren(caseStudy);
-    if (!isNullOrEmpty(subjectDate) && subjectIds != null
+    if (isPresent(subjectDate) && subjectIds != null
         && !subjectDateType.equals("bundleNumber")) {
       subjects.forEach(s -> {
         if (subjectIds.contains(s.getId())) {

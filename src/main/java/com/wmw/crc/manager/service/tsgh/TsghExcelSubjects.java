@@ -15,8 +15,8 @@
  */
 package com.wmw.crc.manager.service.tsgh;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
+import static net.sf.rubycollect4j.RubyObject.isPresent;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -93,23 +93,23 @@ public class TsghExcelSubjects implements ExcelSubjects {
         initData.put("subjectId", row.get("試驗病歷號"));
         initData.put("screenNo", row.get("篩選號碼"));
         initData.put("subjectNo", row.get("受試號碼"));
-        if (!isNullOrEmpty(row.get("生日"))) {
+        if (isPresent(row.get("生日"))) {
           initData.put("birthDate", normalizeDate(row.get("生日")));
         }
-        if (!isNullOrEmpty(row.get("電話號碼"))) {
+        if (isPresent(row.get("電話號碼"))) {
           initData.put("telephone1", row.get("電話號碼"));
         }
         initData.put("taiwanId", row.get("ID"));
-        if (!isNullOrEmpty(row.get("ID"))
+        if (isPresent(row.get("ID"))
             && row.get("ID").matches("[A-Z][1-2]\\d{8}")) {
           if (row.get("ID").charAt(1) == '1') initData.put("gender", "男");
           if (row.get("ID").charAt(1) == '2') initData.put("gender", "女");
         }
         initData.put("address", row.get("地址"));
-        if (!isNullOrEmpty(row.get("簽ICF日期"))) {
+        if (isPresent(row.get("簽ICF日期"))) {
           initData.put("icfDate", normalizeDate(row.get("簽ICF日期")));
         }
-        if (!isNullOrEmpty(row.get("體檢日期"))) {
+        if (isPresent(row.get("體檢日期"))) {
           initData.put("examDate", normalizeDate(row.get("體檢日期")));
         }
         initData.put("saeCount", normalizeInteger(row.get("嚴重不良事件數")));

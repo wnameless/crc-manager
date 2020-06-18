@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.service.tsgh;
 
+import static net.sf.rubycollect4j.RubyObject.isBlank;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +30,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.google.common.base.Strings;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;
 import com.wmw.crc.manager.model.Contraindication;
@@ -64,7 +65,7 @@ public class TsghServiceTestImpl implements TsghService {
   public Subject queryPatientById(String nationalId) throws IOException {
     Subject subject = new Subject();
 
-    if (Strings.isNullOrEmpty(nationalId)) return subject;
+    if (isBlank(nationalId)) return subject;
 
     ObjectMapper mapper = new ObjectMapper();
     ObjectNode node = mapper.createObjectNode();

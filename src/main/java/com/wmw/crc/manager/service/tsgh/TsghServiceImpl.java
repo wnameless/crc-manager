@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.service.tsgh;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static net.sf.rubycollect4j.RubyObject.isPresent;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -141,7 +141,7 @@ public class TsghServiceImpl implements TsghService {
         node.put("birthDate", "" + year + "-" + month + "-" + day);
       }
     }
-    if (!isNullOrEmpty(patient.getPhone())) {
+    if (isPresent(patient.getPhone())) {
       node.put("telephone1", patient.getPhone());
     }
     if (patient.getAddress() != null) {
