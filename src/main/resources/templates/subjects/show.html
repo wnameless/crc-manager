@@ -13,8 +13,14 @@
         </div>
     </div>
 
-    <script
-        th:replace="ReactJSF :: show( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).indexPath}, '#jsf' )"></script>
+    <!-- <script th:replace="ReactJSF :: show( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).indexPath}, '#jsf' )"></script> -->
+    <script type="text/javascript" th:inline="javascript">
+        ReactJSF.showForm(
+            /*[[${child.toRjsfMap({btnText: '送出', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+            'jsfForm',
+            /*[[${parent.withChild(child).indexPath}]]*/ '',
+            'jsf');
+    </script>
 </div>
 
 </html>

@@ -96,7 +96,7 @@ public class CaseStudyEmailsController
     caseStudyRepo.save(caseStudy);
 
     model.addAttribute("files", caseService.getFilesFromCaseStudy(caseStudy));
-    return "cases/edit :: partial";
+    return "redirect:" + RestfulPath.CASE_STUDY.getIndexPath();
   }
 
   @Override

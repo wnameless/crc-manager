@@ -10,8 +10,14 @@
             <div id="jsfForm"></div>
 
 
-            <script
-                th:replace="ReactJSF :: edit( ${emails.toRjsfMap()}, '#jsfForm', ${item.joinPath('emails')}, '#jsf' )"></script>
+            <!-- <script th:replace="ReactJSF :: edit( ${emails.toRjsfMap()}, '#jsfForm', ${item.joinPath('emails')}, '#jsf' )"></script> -->
+            <script type="text/javascript" th:inline="javascript">
+                ReactJSF.editForm(
+                    /*[[${emails.toRjsfMap({btnText: '送出', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+                    'jsfForm',
+                    /*[[${item.joinPath('emails')}]]*/ '',
+                    'jsf');
+            </script>
         </div>
     </div>
 </div>
