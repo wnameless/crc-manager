@@ -254,7 +254,7 @@ public class VisitService {
       if (!visitMessages.isEmpty()) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager【看診通知】");
+        message.setSubject("GCRC Manager【看診通知】");
         String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
         message.setText(prefix + Ruby.Array.of(visitMessages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
@@ -276,7 +276,7 @@ public class VisitService {
       if (!contraindicationMessages.isEmpty()) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager【禁忌用藥開立通知】");
+        message.setSubject("GCRC Manager【禁忌用藥開立通知】");
         String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
         message.setText(
             prefix + Ruby.Array.of(contraindicationMessages).join("\n"));
@@ -300,7 +300,7 @@ public class VisitService {
       if (!hospitalizationMessages.isEmpty()) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager【住院通知】");
+        message.setSubject("GCRC Manager【住院通知】");
         String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
         message.setText(
             prefix + Ruby.Array.of(hospitalizationMessages).join("\n"));
@@ -324,7 +324,7 @@ public class VisitService {
       if (!erMessages.isEmpty()) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("gcrc@mail.ndmctsgh.edu.tw");
-        message.setSubject("CRC Manager【急診通知】");
+        message.setSubject("GCRC Manager【急診通知】");
         String prefix = "此訊息為提醒您臨床試驗計劃: 『" + c.getTrialName() + "』的受試者\n\n";
         message.setText(prefix + Ruby.Array.of(erMessages).join("\n"));
         message.setTo(c.getEmails().toArray(new String[c.getEmails().size()]));
