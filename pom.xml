@@ -177,7 +177,6 @@
 			<artifactId>postgresql</artifactId>
 		</dependency>
 
-
 		<!-- Excel -->
 		<dependency>
 			<groupId>com.github.wnameless</groupId>
@@ -224,7 +223,7 @@
 		<dependency>
 			<groupId>com.github.wnameless</groupId>
 			<artifactId>advanced-optional</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 
 		<!-- Test -->
