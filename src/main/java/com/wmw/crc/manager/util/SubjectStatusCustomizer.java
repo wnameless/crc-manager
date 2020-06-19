@@ -18,7 +18,7 @@ package com.wmw.crc.manager.util;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.github.wnameless.json.JsonPopulatedValueCustomizer;
+import com.github.wnameless.json.beanpopulator.JsonPopulatedValueCustomizer;
 import com.wmw.crc.manager.model.Subject;
 
 public class SubjectStatusCustomizer implements JsonPopulatedValueCustomizer {
