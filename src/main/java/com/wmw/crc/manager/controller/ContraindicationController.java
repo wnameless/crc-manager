@@ -5,6 +5,7 @@ import static com.wmw.crc.manager.RestfulPath.Names.CONTRAINDICATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.github.wnameless.advancedoptional.AdvOpt;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.NestedRestfulController;
 import com.github.wnameless.spring.common.web.RestfulRoute;
@@ -28,6 +31,7 @@ import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
+import com.wmw.crc.manager.service.I18nService;
 
 @RequestMapping("/" + CASE_STUDY + "/{parentId}/" + CONTRAINDICATION)
 @Controller
@@ -41,6 +45,8 @@ public class ContraindicationController implements NestedRestfulController< //
   ContraindicationRepository cdRepository;
   @Autowired
   CaseStudyService caseStudyService;
+  @Autowired
+  I18nService i18n;
 
   CaseStudy caseStudy;
 
@@ -63,11 +69,15 @@ public class ContraindicationController implements NestedRestfulController< //
       @RequestParam("bundle") Integer bundle,
       @RequestParam("phrase") String phrase,
       @RequestParam("takekinds") List<String> takekinds,
-      @RequestParam("memo") String memo) {
-    caseStudyService.addContraindication(caseStudy, bundle, phrase, takekinds,
-        memo);
+      @RequestParam("memo") String memo, //
+      RedirectAttributes redirectAttrs, Locale locale) {
+    AdvOpt<Contraindication> ctdctOpt = caseStudyService
+        .addContraindication(caseStudy, bundle, phrase, takekinds, memo);
 
-    updateChildrenByParent(model, caseStudy);
+    if (ctdctOpt.hasMessage()) {
+      redirectAttrs.addFlashAttribute("message",
+          i18n.msg(ctdctOpt.getMessage(), locale));
+    }
     return "redirect:" + caseStudy.joinPath("contraindications");
   }
 
