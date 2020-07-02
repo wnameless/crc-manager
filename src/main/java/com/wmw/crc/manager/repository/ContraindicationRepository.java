@@ -19,4 +19,20 @@ public interface ContraindicationRepository
 
   List<Contraindication> findAllByCaseStudy(CaseStudy caseStudy, Sort sort);
 
+  List<Contraindication> findAllByCaseStudyAndBundleAndPhrase(CaseStudy cs,
+      Integer bundle, String phrase);
+
+  default boolean existsByCaseStudyAndBundleAndPhraseAndTakekinds(CaseStudy cs,
+      Integer bundle, String phrase, List<String> takekinds) {
+    List<Contraindication> ctdcts =
+        findAllByCaseStudyAndBundleAndPhrase(cs, bundle, phrase);
+    for (Contraindication ctdct : ctdcts) {
+      if (ctdct.getTakekinds().containsAll(takekinds)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }

@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager.service;
 
-import static net.sf.rubycollect4j.RubyObject.isPresent;
+import static net.sf.rubycollect4j.RubyObject.isBlank;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -139,19 +139,23 @@ public class CaseStudyService {
 
   public AdvOpt<Contraindication> addContraindication(CaseStudy cs,
       Integer bundle, String phrase, List<String> takekinds, String memo) {
-    Contraindication cd = null;
+    if (isBlank(phrase)) return AdvOpt.empty();
 
-    if (isPresent(phrase)) {
-      cd = new Contraindication();
+    if (!contraindicationRepo.existsByCaseStudyAndBundleAndPhraseAndTakekinds(cs,
+        bundle, phrase, takekinds)) {
+      Contraindication cd = new Contraindication();
       cd.setCaseStudy(cs);
       cd.setBundle(bundle);
       cd.setPhrase(phrase);
       cd.setTakekinds(takekinds);
       cd.setMemo(memo);
       contraindicationRepo.save(cd);
-    }
 
-    return AdvOpt.ofNullable(cd);
+      return AdvOpt.of(cd);
+    } else {
+      return AdvOpt.ofNullable(null,
+          "ui.contraindication.message.medicine-existed");
+    }
   }
 
   public AdvOpt<Contraindication> removeContraindication(CaseStudy cs,

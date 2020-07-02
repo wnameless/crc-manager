@@ -14,10 +14,6 @@
       "type": "string",
       "title": "1-3.試驗計畫編號"
     },
-    "protocolVersion": {
-      "type": "string",
-      "title": "1-4.試驗計畫版本"
-    },
     "2-1.IRB核准日期": {
       "type": "string",
       "format": "date",
@@ -134,26 +130,12 @@
       "title": "",
       "$ref": "#/definitions/studyType"
     },
-    "studyType": {
-      "title": "5-1.計畫型態",
-      "type": "string",
-      "enum": [
-        "world",
-        "Taiwan",
-        "N/A"
-      ],
-      "enumNames": [
-        "First in World",
-        "First in Taiwan",
-        "不適用"
-      ]
-    },
     "locationType": {
       "title": "5-2.計畫執行地點型態",
       "type": "string",
       "enum": [
-        "multiCountry",
-        "multi",
+        "Foreign",
+        "Domestic",
         "one"
       ],
       "enumNames": [
@@ -177,20 +159,15 @@
     },
     "genderEnum": {
       "type": "string",
-      "title": "6-2性別",
+      "title": "6-2是否有依性別選擇受試者?",
       "enum": [
-        "男",
-        "女",
-        "性別不拘"
+        "是",
+        "否"
       ]
     },
     "accrualType": {
       "type": "string",
-      "title": "6-3類型",
-      "enum": [
-        "健康受試者",
-        "病人"
-      ]
+      "title": "6-3受試者型態?"  
     },
     "proposedStartDate": {
       "type": "string",
@@ -202,19 +179,9 @@
       "format": "date",
       "title": "7-2.試驗預計結束時間"
     },
-    "locations": {
-      "type": "array",
-      "title": "8.執行試驗場所(可複選)",
-      "items": {
-        "type": "string",
-        "enum": [
-          "本院臨床試驗中心 (含汀洲院區臨床試驗中心)",
-          "門診處",
-          "病房",
-          "其他"
-        ]
-      },
-      "uniqueItems": true
+    "pclLocation": {
+      "type": "string",
+      "title": "8.計畫執行地點"  
     },
     "funds": {
       "type": "array",

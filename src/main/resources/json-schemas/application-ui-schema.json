@@ -32,6 +32,18 @@
   "proposedEndDate": {
     "ui:readonly": true
   },
+  "locationType": {
+    "ui:readonly": true
+  },
+  "genderEnum": {
+    "ui:readonly": true
+  },
+  "accrualType": {
+    "ui:readonly": true
+  },
+  "pclLocation": {
+    "ui:readonly": true
+  },
   "dohFlg": {
     "ui:widget": "radio"
   },
@@ -59,20 +71,12 @@
       "removable": false
     }
   },
-  "locations": {
-    "ui:widget": "checkboxes"
-  },
   "funds": {
     "ui:widget": "checkboxes"
   },
   "preview": {
     "piAccountFlg": {
       "ui:widget": "radio"
-    },
-    "telephone": {
-      "ui:options": {
-        "inputType": "tel"
-      }
     }
   }
 }

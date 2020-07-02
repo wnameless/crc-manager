@@ -43,7 +43,7 @@
 			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
 			$('#jsfTable').on('init.dt', function () {
 				$(this).reflowTable();
-				$(this).parent().find('select').selectpicker();
+				$('.dataTables_wrapper').find('select').selectpicker();
 			}).on('draw.dt', function () {
 				$(this).reflowTable('update');
 			}).DataTable({
