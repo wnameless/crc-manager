@@ -69,9 +69,9 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
       if (!dataObj.has(key)) return false;
 
       if (criteria.get(key).get(0) instanceof String) {
-        String target =
-            dataObj.get(key).isTextual() ? dataObj.get(key).textValue()
-                : JsonNodeUtils.findFirstAsString(dataObj.get(key), "name");
+        String target = dataObj.get(key).isTextual()
+            ? dataObj.get(key).textValue() : Ruby.Array
+                .of(JsonNodeUtils.getStringifyValues(dataObj, key)).join();
 
         RubyArray<String> strings =
             Ruby.Array.of(criteria.get(key)).map(o -> o.toString());
