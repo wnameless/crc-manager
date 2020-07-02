@@ -17,15 +17,34 @@ package com.wmw.crc.manager.util;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.experimental.UtilityClass;
+import net.sf.rubycollect4j.Ruby;
 
 @UtilityClass
 public class JsonNodeUtils {
+
+  public List<String> getStringifyValues(JsonNode jn, String key) {
+    if (jn == null) return Collections.emptyList();
+
+    if (jn.isObject()) {
+      ObjectNode on = (ObjectNode) jn;
+      return Ruby.Array.copyOf(on.fields()).map(f -> f.getValue())
+          .map(i -> i.asText()).toList();
+    } else if (jn.isArray()) {
+      ArrayNode an = (ArrayNode) jn;
+      return Ruby.Array.copyOf(an.iterator()).map(i -> i.asText()).toList();
+    }
+
+    return Collections.emptyList();
+  }
 
   public String findFirstAsString(JsonNode jn, String key) {
     if (jn == null) return "";
