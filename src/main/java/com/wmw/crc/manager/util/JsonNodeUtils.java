@@ -32,14 +32,14 @@ import net.sf.rubycollect4j.Ruby;
 public class JsonNodeUtils {
 
   public List<String> getStringifyValues(JsonNode jn, String key) {
-    if (jn == null) return Collections.emptyList();
+    if (jn == null || jn.get(key) == null) return Collections.emptyList();
 
-    if (jn.isObject()) {
-      ObjectNode on = (ObjectNode) jn;
+    if (jn.get(key).isObject()) {
+      ObjectNode on = (ObjectNode) jn.get(key);
       return Ruby.Array.copyOf(on.fields()).map(f -> f.getValue())
           .map(i -> i.asText()).toList();
-    } else if (jn.isArray()) {
-      ArrayNode an = (ArrayNode) jn;
+    } else if (jn.get(key).isArray()) {
+      ArrayNode an = (ArrayNode) jn.get(key);
       return Ruby.Array.copyOf(an.iterator()).map(i -> i.asText()).toList();
     }
 
