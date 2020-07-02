@@ -131,7 +131,7 @@
       "$ref": "#/definitions/studyType"
     },
     "locationType": {
-      "title": "5-2.計畫執行地點型態",
+      "title": "5.計畫執行地點型態",
       "type": "string",
       "enum": [
         "Foreign",
@@ -159,7 +159,7 @@
     },
     "genderEnum": {
       "type": "string",
-      "title": "6-2是否有依性別選擇受試者?",
+      "title": "6-1.是否有依性別選擇受試者?",
       "enum": [
         "是",
         "否"
@@ -167,7 +167,7 @@
     },
     "accrualType": {
       "type": "string",
-      "title": "6-3受試者型態?"  
+      "title": "6-2.受試者型態?"  
     },
     "proposedStartDate": {
       "type": "string",
@@ -264,7 +264,7 @@
     "contractEndDate": {
       "type": "string",
       "format": "date",
-      "title": "合約截止日期"
+      "title": "經費結案日期"
     },
     "contractAmount": {
       "type": "string",
@@ -275,96 +275,100 @@
       "type": "object",
       "properties": {
         "applicationForm": {
-          "type": "string",
-          "format": "data-url",
-          "title": "1.三軍總醫院臨床研究申請表"
+          "type": "array",
+          "title": "1.三軍總醫院臨床研究申請表",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "approvedLetter": {
-          "type": "string",
-          "format": "data-url",
-          "title": "2.三軍總醫院IRB審議會同意函"
+          "type": "array",
+          "title": "2.三軍總醫院IRB審議會同意函",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "icf": {
-          "type": "string",
-          "format": "data-url",
-          "title": "3.受試者同意書 (經IRB核准蓋章之影本)"
+          "type": "array",
+          "title": "3.受試者同意書(經IRB核准蓋章之影本)",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "protocolFile": {
-          "type": "string",
-          "format": "data-url",
-          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
+          "type": "array",
+          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "dohLetter": {
-          "type": "string",
-          "format": "data-url",
-          "title": "5.衛福部人體試驗同意函（如須衛福部審查通過案）"
+          "type": "array",
+          "title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "protocolInfoFile": {
-          "type": "string",
-          "format": "data-url",
-          "title": "6.試驗計畫書"
+          "type": "array",
+          "title": "6.試驗計畫書",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "caseReport": {
-          "type": "string",
-          "format": "data-url",
-          "title": "7.個案報告書"
+          "type": "array",
+          "title": "7.個案報告書",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "insuranceFile": {
-          "type": "string",
-          "format": "data-url",
-          "title": "8.保險資料"
+          "type": "array",
+          "title": "8.保險資料",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "contractFile": {
-          "type": "string",
-          "format": "data-url",
-          "title": "9.臨床試驗合約書"
+          "type": "array",
+          "title": "9.臨床試驗合約書",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "funding": {
-          "type": "string",
-          "format": "data-url",
-          "title": "10.臨床試驗經費明細表"
+          "type": "array",
+          "title": "10.臨床試驗經費明細表",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "fee": {
-          "type": "string",
-          "format": "data-url",
-          "title": "11.臨床試驗中心服務費收費表 (健康受試者/病人受試者)"
+          "type": "array",
+          "title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         },
         "otherFile": {
-          "type": "string",
-          "format": "data-url",
-          "title": "12.其他重要補充資料"
-        }
-      }
-    },
-    "preview": {
-      "title": "3.預覽並送出至執行案件區",
-      "type": "object",
-      "properties": {
-        "piAccountFlg": {
-          "type": "boolean",
-          "title": "是否一併開啟試驗主持人帳號 (如下列，請注意Email必須為院內) ?"
-        },
-        "lastNamePI": {
-          "type": "string",
-          "title": "姓名"
-        },
-        "titlePI": {
-          "type": "string",
-          "title": "職稱"
-        },
-        "branchPI": {
-          "type": "string",
-          "title": "單位"
-        },
-        "telephonePI": {
-          "type": "string",
-          "title": "聯絡電話",
-          "minLength": 8
-        },
-        "emailPI": {
-          "type": "string",
-          "format": "email",
-          "title": "院內E-mail"
+          "type": "array",
+          "title": "12.其他重要補充資料",
+		  "items": {
+			"type": "string",
+			"format": "data-url"
+		  }
         }
       }
     }
