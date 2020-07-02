@@ -60,7 +60,7 @@ public class ContraindicationController implements NestedRestfulController< //
   @PreAuthorize("@perm.canRead(#parentId)")
   @GetMapping
   String index(@PathVariable Long parentId) {
-    return "contraindication/index";
+    return "contraindications/index";
   }
 
   @PreAuthorize("@perm.canWrite(#parentId)")
@@ -88,7 +88,7 @@ public class ContraindicationController implements NestedRestfulController< //
     caseStudyService.removeContraindication(caseStudy, id);
 
     updateChildrenByParent(model, caseStudy);
-    return "contraindication/list :: partial";
+    return "contraindications/list :: partial";
   }
 
   @Override
