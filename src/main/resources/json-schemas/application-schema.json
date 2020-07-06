@@ -1,5 +1,5 @@
 {
-  "title": "1.填寫/修改新案申請書",
+  "title": "一.填寫/修改新案申請書",
   "type": "object",
   "properties": {
     "title": {
@@ -131,7 +131,7 @@
       "$ref": "#/definitions/studyType"
     },
     "locationType": {
-      "title": "5.計畫執行地點型態",
+      "title": "5.多中心試驗類別",
       "type": "string",
       "enum": [
         "Foreign",
@@ -178,6 +178,11 @@
       "type": "string",
       "format": "date",
       "title": "7-2.試驗預計結束時間"
+    },
+    "crDueDate": {
+      "type": "string",
+      "format": "date",
+      "title": "7-3.下次繳交持續審查時間"
     },
     "pclLocation": {
       "type": "string",
@@ -259,116 +264,88 @@
     "contractStartDate": {
       "type": "string",
       "format": "date",
-      "title": "合約開始日期"
+      "title": "16.合約開始日期"
+    },
+    "inspection": {
+      "title": "",
+      "$ref": "#/definitions/inspectionDef"
     },
     "contractEndDate": {
       "type": "string",
       "format": "date",
-      "title": "經費結案日期"
+      "title": "18.經費結案日期"
     },
     "contractAmount": {
       "type": "string",
-      "title": "合約核定金額"
+      "title": "19.合約核定金額"
+    },
+    "amount": {
+      "type": "string",
+      "title": "20.實際支用金額"
     },
     "requiredFiles": {
-      "title": "2.上傳/修改新案審查文件",
+      "title": "二.上傳/修改新案審查文件",
       "type": "object",
       "properties": {
         "applicationForm": {
-          "type": "array",
-          "title": "1.三軍總醫院臨床研究申請表",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "1.三軍總醫院臨床研究申請表"
         },
         "approvedLetter": {
-          "type": "array",
-          "title": "2.三軍總醫院IRB審議會同意函",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "2.三軍總醫院IRB審議會同意函"
         },
         "icf": {
-          "type": "array",
-          "title": "3.受試者同意書(經IRB核准蓋章之影本)",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "3.受試者同意書(經IRB核准蓋章之影本)"
         },
         "protocolFile": {
-          "type": "array",
-          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
         },
         "dohLetter": {
-          "type": "array",
-          "title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)"
         },
         "protocolInfoFile": {
-          "type": "array",
-          "title": "6.試驗計畫書",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "6.試驗計畫書"
         },
         "caseReport": {
-          "type": "array",
-          "title": "7.個案報告書",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "7.個案報告書"
         },
         "insuranceFile": {
-          "type": "array",
-          "title": "8.保險資料",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "8.保險資料"
         },
         "contractFile": {
-          "type": "array",
-          "title": "9.臨床試驗合約書",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "9.臨床試驗合約書"
         },
         "funding": {
-          "type": "array",
-          "title": "10.臨床試驗經費明細表",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "10.臨床試驗經費明細表"
         },
         "fee": {
-          "type": "array",
-          "title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
         },
         "otherFile": {
-          "type": "array",
-          "title": "12.其他重要補充資料",
-		  "items": {
-			"type": "string",
-			"format": "data-url"
-		  }
+          "type": "string",
+		  "format": "data-url",
+          "title": "12.其他重要補充資料"
         }
       }
     }
@@ -431,7 +408,7 @@
       "properties": {
         "nihFlg": {
           "type": "string",
-          "title": "14.試驗是否至美國NIH網站登錄",
+          "title": "14.是否有其他登錄網站及其Identifier? ",
           "enum": [
             "是",
             "否"
@@ -739,6 +716,62 @@
               },
               "required": [
                 "efficiencyOptions"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "inspectionDef": {
+      "type": "object",
+      "properties": {
+        "inspection": {
+          "title": "17.是否有查核(Inspection)",
+          "type": "string",
+          "enum": [
+            "是",
+            "否"
+          ]
+        }
+      },
+      "dependencies": {
+        "inspection": {
+          "oneOf": [
+            {
+              "properties": {
+                "inspection": {
+                  "enum": [
+                    "否"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "inspection": {
+                  "enum": [
+                    "是"
+                  ]
+                },
+                "inspectionAdmin": {
+                  "title": "17-1.查核單位",
+                  "type": "string"
+                },
+                "inspectionStartDate": {
+                  "title": "17-2.查核開始日期",
+				          "format": "date",
+                  "type": "string"
+                },
+                "inspectionEndDate": {
+                  "title": "17-3.查核結束日期",
+				          "format": "date",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "inspectionAdmin",
+				"inspectionStartDate",
+				"inspectionEndDate"
               ]
             }
           ]
