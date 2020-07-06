@@ -5,6 +5,9 @@
   "engTitle": {
     "ui:readonly": true
   },
+  "protocolNum": {
+    "ui:readonly": true
+  },
   "protocolVersion": {
     "ui:readonly": true
   },
@@ -44,6 +47,9 @@
   "pclLocation": {
     "ui:readonly": true
   },
+  "crDueDate": {
+    "ui:readonly": true
+  },
   "dohFlg": {
     "ui:widget": "radio"
   },
@@ -72,7 +78,8 @@
     }
   },
   "funds": {
-    "ui:widget": "checkboxes"
+    "ui:widget": "checkboxes",
+    "ui:readonly": true
   },
   "preview": {
     "piAccountFlg": {
