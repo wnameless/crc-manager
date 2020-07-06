@@ -76,7 +76,7 @@
         <tbody>
             <tr th:each="case : ${slice}">
                 <td>
-                    <bs3:dropdown>
+                    <bs3:dropdown bs:icon="fas fa-cog">
                         <th:block th:if="${case.status} == ${case.Status.NEW}">
                             <a th:if="!${case.owner} and ${@perm.canAssign()}"
                                 th:href="@{${case.joinPath('assignment')}}">
