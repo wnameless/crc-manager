@@ -1,95 +1,95 @@
 {
-  "title": {
-    "ui:readonly": true
-  },
-  "engTitle": {
-    "ui:readonly": true
-  },
-  "protocolNum": {
-    "ui:readonly": true
-  },
-  "protocolVersion": {
-    "ui:readonly": true
-  },
-  "irbNum": {
-    "ui:readonly": true
-  },
-   "crcNum": {
-    "ui:emptyValue": ""
-  },
-  "2-1.IRB核准日期": {
-    "ui:readonly": true
-  },
-  "accrualHospital": {
-    "ui:readonly": true
-  },
-  "accrualGlobal": {
-    "ui:readonly": true
-  },
-  "accrualTaiwan": {
-    "ui:readonly": true
-  },
-  "proposedStartDate": {
-    "ui:readonly": true
-  },
-  "proposedEndDate": {
-    "ui:readonly": true
-  },
-  "locationType": {
-    "ui:readonly": true
-  },
-  "genderEnum": {
-    "ui:readonly": true
-  },
-  "accrualType": {
-    "ui:readonly": true
-  },
-  "pclLocation": {
-    "ui:readonly": true
-  },
-  "crDueDate": {
-    "ui:readonly": true
-  },
-  "dohFlg": {
-    "ui:widget": "radio"
-  },
-  "nih": {
-    "ui:readonly": true
-  },
-  "nihText": {
-    "ui:readonly": true
-  },
-  "researchType": {
-    "ui:widget": "radio"
-  },
-  "PI": {
-    "ui:options": {
-      "addable": false,
-      "orderable": false,
-      "removable": false
-    }
-  },
-  "LAIs": {
-    "ui:options": {
-      "addable": false,
-      "orderable": false,
-      "removable": false
-    }
-  },
-  "AIs": {
-    "ui:options": {
-      "addable": false,
-      "orderable": false,
-      "removable": false
-    }
-  },
-  "funds": {
-    "ui:widget": "checkboxes",
-    "ui:readonly": true
-  },
-  "preview": {
-    "piAccountFlg": {
-      "ui:widget": "radio"
-    }
-  }
+	"title": {
+		"ui:readonly": true
+	},
+	"engTitle": {
+		"ui:readonly": true
+	},
+	"protocolNum": {
+		"ui:readonly": true
+	},
+	"protocolVersion": {
+		"ui:readonly": true
+	},
+	"irbNum": {
+		"ui:readonly": true
+	},
+	"crcNum": {
+		"ui:emptyValue": ""
+	},
+	"2-1.IRB核准日期": {
+		"ui:readonly": true
+	},
+	"accrualHospital": {
+		"ui:readonly": true
+	},
+	"accrualGlobal": {
+		"ui:readonly": true
+	},
+	"accrualTaiwan": {
+		"ui:readonly": true
+	},
+	"proposedStartDate": {
+		"ui:readonly": true
+	},
+	"proposedEndDate": {
+		"ui:readonly": true
+	},
+	"locationType": {
+		"ui:readonly": true
+	},
+	"genderEnum": {
+		"ui:readonly": true
+	},
+	"accrualType": {
+		"ui:readonly": true
+	},
+	"pclLocation": {
+		"ui:readonly": true
+	},
+	"crDueDate": {
+		"ui:readonly": true
+	},
+	"dohFlg": {
+		"ui:widget": "radio"
+	},
+	"nih": {
+		"ui:readonly": true
+	},
+	"nihText": {
+		"ui:readonly": true
+	},
+	"researchType": {
+		"ui:widget": "radio"
+	},
+	"PI": {
+		"ui:options": {
+			"addable": false,
+			"orderable": false,
+			"removable": false
+		}
+	},
+	"LAIs": {
+		"ui:options": {
+			"addable": false,
+			"orderable": false,
+			"removable": false
+		}
+	},
+	"AIs": {
+		"ui:options": {
+			"addable": false,
+			"orderable": false,
+			"removable": false
+		}
+	},
+	"funds": {
+		"ui:widget": "checkboxes",
+		"ui:readonly": true
+	},
+	"preview": {
+		"piAccountFlg": {
+			"ui:widget": "radio"
+		}
+	}
 }

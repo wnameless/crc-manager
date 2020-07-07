@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="partial">
     <div class="row">
         <div class="col-sm-4">
@@ -35,6 +36,11 @@
                 <th class="text-nowrap text-center">
                     <a class="sorted" sd:pagination-sort="irbNumber">
                         [[#{ui.case.table.irbnumber}]]
+                    </a>
+                </th>
+                 <th class="text-nowrap text-center">
+                    <a class="sorted" sd:pagination-sort="adminNumber">
+                        [[#{ui.case.table.adminnumber}]]
                     </a>
                 </th>
                 <th class="text-nowrap">
@@ -147,6 +153,7 @@
                         [[${case.irbNumber}]]
                     </a>
                 </td>
+                <td>[[${case.adminNumber}]]</td>
                 <td>[[${case.projectNumber}]]</td>
                 <td>
                     <a class="btn" th:classappend="${@perm.canRead(case) ? '' : 'disabled'}"

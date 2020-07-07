@@ -87,6 +87,9 @@ public class CaseStudy
   @JsonPopulatedKey("irbNum")
   String irbNumber;
 
+  @JsonPopulatedKey("adminNum")
+  String adminNumber;
+
   @JsonPopulatedKey("protocolNum")
   String caseNumber;
 
@@ -117,10 +120,10 @@ public class CaseStudy
 
   int expectedNumberOfSubjectsGlobal;
 
-  @JsonPopulatedKey("proposedStartDate")
+  @JsonPopulatedKey("contractStartDate")
   String expectedStartDate;
 
-  @JsonPopulatedKey("proposedEndDate")
+  @JsonPopulatedKey("contractEndDate")
   String expectedEndDate;
 
   @Enumerated(EnumType.STRING)
