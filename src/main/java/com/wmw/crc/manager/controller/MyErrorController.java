@@ -15,11 +15,11 @@
  */
 package com.wmw.crc.manager.controller;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,24 +27,14 @@ import org.springframework.web.servlet.ModelAndView;
 public class MyErrorController implements ErrorController {
 
   @RequestMapping("/error")
-  public ModelAndView handleError(Model model, HttpServletRequest request) {
-    // Object status =
-    // request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-    //
-    // if (status != null) {
-    // Integer statusCode = Integer.valueOf(status.toString());
-    //
-    // if (statusCode == 999) {
-    // return new ModelAndView("redirect:/");
-    // }
-    // }
-    //
-    // ModelAndView mav = new ModelAndView();
-    // MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
-    // mav.setView(jsonView);
-    // return mav;
+  public ModelAndView handleError(HttpServletRequest request) {
+    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
-    return new ModelAndView("redirect:/");
+    if (status == null || Integer.valueOf(status.toString()) == 999) {
+      return new ModelAndView("redirect:/");
+    }
+
+    return new ModelAndView();
   }
 
   @Override
