@@ -53,6 +53,12 @@
   "dohFlg": {
     "ui:widget": "radio"
   },
+  "nih": {
+    "ui:readonly": true
+  },
+  "nihText": {
+    "ui:readonly": true
+  },
   "researchType": {
     "ui:widget": "radio"
   },
