@@ -182,7 +182,7 @@
     "crDueDate": {
       "type": "string",
       "format": "date",
-      "title": "7-3.下次繳交持續審查時間"
+      "title": "7-3.下次繳交持續審查時間（IRB同意函有效期限）"
     },
     "pclLocation": {
       "type": "string",
@@ -241,25 +241,17 @@
       "title": "",
       "$ref": "#/definitions/insurance"
     },
-    "nihFlg": {
+    "nih": {
       "title": "",
-      "$ref": "#/definitions/nih"
-    },
-    "contractFlg": {
-      "type": "string",
-      "title": "15.是否完成合約",
-      "enum": [
-        "是",
-        "否"
-      ]
+      "$ref": "#/definitions/nihDef"
     },
     "adminNum": {
       "type": "string",
-      "title": "15-1.主計編號"
+      "title": "15.主計編號"
     },
     "crcNum": {
       "type": "string",
-      "title": "15-2.CRC編號"
+      "title": "15-1.CRC編號"
     },
     "contractStartDate": {
       "type": "string",
@@ -385,12 +377,10 @@
                 },
                 "insuranceInst": {
                   "type": "string",
-                  "description": "承保公司",
                   "title": "13-1.承保公司"
                 },
                 "insuranceAmount": {
                   "type": "string",
-                  "description": "保險金額",
                   "title": "13-2.保險金額"
                 }
               },
@@ -403,10 +393,10 @@
         }
       }
     },
-    "nih": {
+    "nihDef": {
       "type": "object",
       "properties": {
-        "nihFlg": {
+        "nih": {
           "type": "string",
           "title": "14.是否有其他登錄網站及其Identifier? ",
           "enum": [
@@ -416,32 +406,29 @@
         }
       },
       "dependencies": {
-        "nihFlg": {
+        "nih": {
           "oneOf": [
             {
               "properties": {
-                "nihFlg": {
+                "nih": {
                   "enum": [
-                    "是"
+                    "否"
                   ]
                 }
               }
             },
             {
               "properties": {
-                "nihFlg": {
+                "nih": {
                   "enum": [
-                    "否"
+                    "是"
                   ]
                 },
-                "nihReason": {
+                "nihText": {
                   "type": "string",
-                  "title": "14-1.未登錄NIH原因"
+                  "title": "說明"
                 }
-              },
-              "required": [
-                "nihReason"
-              ]
+              }
             }
           ]
         }
