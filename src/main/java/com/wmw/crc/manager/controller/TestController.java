@@ -26,18 +26,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.spring.react.SimpleReactJsonSchemaForm;
-import com.google.common.base.Objects;
 import com.wmw.crc.manager.model.CaseStudy;
-import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 import com.wmw.crc.manager.service.tsgh.TsghService;
-
-import net.sf.rubycollect4j.Ruby;
 
 @Profile("test")
 @Controller
@@ -93,15 +88,6 @@ public class TestController {
   }
 
   @PreAuthorize("@perm.isAdmin()")
-  @GetMapping(path = "test/visits/recount")
-  @ResponseBody
-  String reCountCaseStudyURVs() {
-    visitService.reCountCaseStudyURVs();
-
-    return "CaseStudy URVs recounted";
-  }
-
-  @PreAuthorize("@perm.isAdmin()")
   @GetMapping("/json/cases/{id}")
   @ResponseBody
   SimpleReactJsonSchemaForm caseJsonScheme(@PathVariable Long id) {
@@ -116,46 +102,17 @@ public class TestController {
   }
 
   @PreAuthorize("@perm.isAdmin()")
-  @GetMapping("test/subjects/checkcomplete")
+  @GetMapping("/cases/repopulate")
   @ResponseBody
-  Integer checkComplete() {
-    int count = 0;
+  String caseRepopulate() {
+    List<CaseStudy> css = caseStudyRepo.findAll();
 
-    List<Subject> subjects = Ruby.Array.copyOf(subjectRepo.findAll()).toList();
-    for (Subject s : subjects) {
-      String cDate = s.getCompleteDate();
-
-      s.setFormData(s.getFormData());
-      subjectRepo.save(s);
-
-      if (!Objects.equal(cDate, s.getCompleteDate())) {
-        count++;
-      }
+    for (CaseStudy cs : css) {
+      cs.setFormData(cs.getFormData());
+      caseStudyRepo.save(cs);
     }
 
-    return count;
-  }
-
-  @PreAuthorize("@perm.isAdmin()")
-  @GetMapping("test/formdata/clean")
-  @ResponseBody
-  Integer cleanFormData() {
-    int count = 0;
-
-    for (CaseStudy cs : caseStudyRepo.findAll()) {
-      ObjectNode formData = (ObjectNode) cs.getFormData();
-
-      if (formData.get("dohFlg") != null
-          && formData.get("dohFlg").isBoolean()) {
-        formData.remove("dohFlg");
-
-        cs.setFormData(formData);
-        caseStudyRepo.save(cs);
-        count++;
-      }
-    }
-
-    return count;
+    return "Refreshed";
   }
 
 }
