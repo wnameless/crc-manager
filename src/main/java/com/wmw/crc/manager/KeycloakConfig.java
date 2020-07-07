@@ -117,6 +117,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .logoutSuccessUrl("/").permitAll();
 
     http.csrf().disable();
+    http.formLogin().defaultSuccessUrl("/", true);
   }
 
 }
