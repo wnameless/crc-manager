@@ -171,13 +171,15 @@ public interface CaseStudyRepository extends JpaRepository<CaseStudy, Long>,
     BooleanExpression hasViewer = qCase.viewers.contains(username);
 
     BooleanExpression irbContains = qCase.irbNumber.contains(search);
+    BooleanExpression adminNumContains = qCase.adminNumber.contains(search);
     BooleanExpression nameContains = qCase.trialName.contains(search);
     BooleanExpression piContains = qCase.piName.contains(search);
     BooleanExpression startDateContains =
         qCase.expectedStartDate.contains(search);
     BooleanExpression endDateContains = qCase.expectedEndDate.contains(search);
-    BooleanExpression searchCond = irbContains.or(nameContains).or(piContains)
-        .or(startDateContains).or(endDateContains);
+    BooleanExpression searchCond =
+        irbContains.or(adminNumContains).or(nameContains).or(piContains)
+            .or(startDateContains).or(endDateContains);
 
     if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
         || authorities.contains(new SimpleGrantedAuthority("ROLE_SUPER"))) {
