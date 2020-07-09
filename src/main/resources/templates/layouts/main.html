@@ -69,7 +69,12 @@
 
     <script>
         $(function () {
-            ReactJSF.setDefaultCssHref('/css/bootstrap-readable.min.css');
+            ReactJSF.defaultConfig({
+                cssHref: '/css/bootstrap-readable.min.css',
+                newBtnText: '送出',
+                editBtnText: '送出',
+                showBtnText: '返回'
+            });
         });
     </script>
 </head>
