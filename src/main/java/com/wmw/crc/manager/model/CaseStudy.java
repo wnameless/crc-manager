@@ -54,7 +54,7 @@ import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.beanpopulator.JsonPopulatable;
 import com.github.wnameless.json.beanpopulator.JsonPopulatedKey;
 import com.github.wnameless.spring.common.web.RestfulItem;
-import com.github.wnameless.spring.react.ReactJsonSchemaForm;
+import com.github.wnameless.spring.react.jsf.ReactJsonSchemaForm;
 import com.google.common.io.Resources;
 import com.wmw.crc.manager.JsonSchemaPath;
 import com.wmw.crc.manager.RestfulPath;
