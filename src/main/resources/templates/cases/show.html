@@ -18,7 +18,7 @@
     <!-- <script th:replace="ReactJSF :: show( ${item.toRjsfMap()}, '#jsfForm', ${route.indexPath}, '#jsf' )"></script> -->
     <script type="text/javascript" th:inline="javascript">
         ReactJSF.showForm(
-            /*[[${item.toRjsfMap({btnText: '返回', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+            /*[[${item.toRjsfMap()}]]*/ null,
             'jsfForm',
             /*[[${route.indexPath}]]*/ '',
             'jsf');

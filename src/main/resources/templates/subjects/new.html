@@ -30,7 +30,7 @@
     <!-- <script th:replace="ReactJSF :: new( ${child.toRjsfMap()}, '#jsfForm', ${parent.withChild(child).createPath}, '#jsf' )"></script> -->
     <script type="text/javascript" th:inline="javascript">
         ReactJSF.newForm(
-            /*[[${child.toRjsfMap({btnText: '送出', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+            /*[[${child.toRjsfMap()}]]*/ null,
             'jsfForm',
             /*[[${parent.withChild(child).createPath}]]*/ '',
             'jsf');

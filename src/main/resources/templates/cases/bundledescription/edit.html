@@ -13,7 +13,7 @@
             <!-- <script th:replace="ReactJSF :: edit( ${bundleDescription.toRjsfMap()}, '#jsfForm', ${item.joinPath('bundledescription')}, '#jsf' )"></script> -->
             <script type="text/javascript" th:inline="javascript">
                 ReactJSF.editForm(
-                    /*[[${bundleDescription.toRjsfMap({btnText: '送出', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+                    /*[[${bundleDescription.toRjsfMap()}]]*/ null,
                     'jsfForm',
                     /*[[${item.joinPath('bundledescription')}]]*/ '',
                     'jsf');

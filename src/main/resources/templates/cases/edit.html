@@ -17,7 +17,7 @@
     <!-- <script th:replace="ReactJSF :: edit( ${item.toRjsfMap()}, '#jsfForm', ${item.updatePath}, '#jsf' )"></script> -->
     <script type="text/javascript" th:inline="javascript">
         ReactJSF.editForm(
-            /*[[${item.toRjsfMap({btnText: '送出', cssHref:'/css/bootstrap.min.css'})}]]*/ null,
+            /*[[${item.toRjsfMap()}]]*/ null,
             'jsfForm',
             /*[[${item.updatePath}]]*/ '',
             'jsf');
