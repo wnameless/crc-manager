@@ -92,6 +92,8 @@ public class TestController {
     List<CaseStudy> css = caseStudyRepo.findAll();
 
     for (CaseStudy cs : css) {
+      cs.setExpectedStartDate(null);
+      cs.setExpectedEndDate(null);
       cs.setFormData(cs.getFormData());
       caseStudyRepo.save(cs);
     }
