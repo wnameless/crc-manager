@@ -1,769 +1,692 @@
 {
-	"title": "一.填寫/修改新案申請書",
-	"type": "object",
-	"properties": {
-		"title": {
-			"type": "string",
-			"title": "1-1.試驗中文名稱"
-		},
-		"engTitle": {
-			"type": "string",
-			"title": "1-2.試驗英文名稱"
-		},
-		"protocolNum": {
-			"type": "string",
-			"title": "1-3.試驗計畫編號"
-		},
-		"2-1.IRB核准日期": {
-			"type": "string",
-			"format": "date",
-			"title": "2-1.IRB核准日期"
-		},
-		"irbNum": {
-			"type": "string",
-			"title": "2-2.IRB核准編號"
-		},
-		"dohFlg": {
-			"title": "",
-			"$ref": "#/definitions/doh"
-		},
-		"PI": {
-			"type": "array",
-			"title": "3-1.試驗主持人",
-			"items": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"title": "姓名"
-					},
-					"title": {
-						"type": "string",
-						"title": "職稱"
-					},
-					"branch": {
-						"type": "string",
-						"title": "單位"
-					},
-					"phone": {
-						"type": "string",
-						"title": "電話"
-					},
-					"email1": {
-						"type": "string",
-						"title": "Email1"
-					},
-					"email2": {
-						"type": "string",
-						"title": "Email2"
-					}
-				}
-			}
-		},
-		"LAIs": {
-			"type": "array",
-			"title": "3-2.共同主持人",
-			"items": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"title": "姓名"
-					},
-					"title": {
-						"type": "string",
-						"title": "職稱"
-					},
-					"branch": {
-						"type": "string",
-						"title": "單位"
-					},
-					"phone": {
-						"type": "string",
-						"title": "電話"
-					},
-					"email1": {
-						"type": "string",
-						"title": "Email1"
-					},
-					"email2": {
-						"type": "string",
-						"title": "Email2"
-					}
-				}
-			}
-		},
-		"AIs": {
-			"type": "array",
-			"title": "3-3.協同主持人",
-			"items": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"title": "姓名"
-					},
-					"title": {
-						"type": "string",
-						"title": "職稱"
-					},
-					"branch": {
-						"type": "string",
-						"title": "單位"
-					},
-					"phone": {
-						"type": "string",
-						"title": "電話"
-					},
-					"email1": {
-						"type": "string",
-						"title": "Email1"
-					},
-					"email2": {
-						"type": "string",
-						"title": "Email2"
-					}
-				}
-			}
-		},
-		"researchType": {
-			"title": "",
-			"$ref": "#/definitions/studyType"
-		},
-		"locationType": {
-			"title": "5.多中心試驗類別",
-			"type": "string",
-			"enum": [
-				"Foreign",
-				"Domestic",
-				"one"
-			],
-			"enumNames": [
-				"多國多中心",
-				"單國多中心",
-				"單一中心"
-			]
-		},
-		"accrualHospital": {
-			"type": "string",
-			"title": "6.試驗預計收納受試者",
-			"description": "本院"
-		},
-		"accrualGlobal": {
-			"type": "string",
-			"title": "全球"
-		},
-		"accrualTaiwan": {
-			"type": "string",
-			"title": "臺灣"
-		},
-		"genderEnum": {
-			"type": "string",
-			"title": "6-1.是否有依性別選擇受試者?",
-			"enum": [
-				"是",
-				"否"
-			]
-		},
-		"accrualType": {
-			"type": "string",
-			"title": "6-2.受試者型態?"
-		},
-		"proposedStartDate": {
-			"type": "string",
-			"format": "date",
-			"title": "7-1.試驗預計開始執行時間"
-		},
-		"proposedEndDate": {
-			"type": "string",
-			"format": "date",
-			"title": "7-2.試驗預計結束時間"
-		},
-		"crDueDate": {
-			"type": "string",
-			"format": "date",
-			"title": "7-3.下次繳交持續審查時間（IRB同意函有效期限）"
-		},
-		"pclLocation": {
-			"type": "string",
-			"title": "8.計畫執行地點"
-		},
-		"funds": {
-			"type": "array",
-			"title": "9.試驗經費來源",
-			"items": {
-				"type": "string",
-				"enum": [
-					"廠商",
-					"學術研究單位",
-					"自籌(自行研究無經費補助，請說明如何自籌)",
-					"其他(如美國聯邦政府，請註明單位)"
-				]
-			},
-			"uniqueItems": true
-		},
-		"sponsorName": {
-			"type": "string",
-			"title": "10.試驗委託藥廠/贊助研究單位",
-			"description": "10-1.名稱"
-		},
-		"sponsorAddress": {
-			"type": "string",
-			"title": "10-2.地址"
-		},
-		"croName": {
-			"type": "string",
-			"title": "11.試驗委託CRO公司",
-			"description": "11-1.名稱"
-		},
-		"croAddress": {
-			"type": "string",
-			"title": "11-2.地址"
-		},
-		"craName": {
-			"type": "string",
-			"title": "12.試驗委託者之聯絡方式",
-			"description": "12-1.姓名"
-		},
-		"craPhone": {
-			"type": "string",
-			"title": "12-2.電話"
-		},
-		"craEmail": {
-			"type": "string",
-			"title": "12-3.E-mail"
-		},
-		"scName": {
-			"type": "string",
-			"title": "12-4.試驗主持人之助理聯絡方式(姓名 電話)"
-		},
-		"insuranceFlg": {
-			"title": "",
-			"$ref": "#/definitions/insurance"
-		},
-		"nih": {
-			"title": "",
-			"$ref": "#/definitions/nihDef"
-		},
-		"adminNum": {
-			"type": "string",
-			"title": "15.主計編號"
-		},
-		"crcNum": {
-			"type": "string",
-			"title": "15-1.CRC編號"
-		},
-		"contractStartDate": {
-			"type": "string",
-			"format": "date",
-			"title": "16.合約開始日期"
-		},
-		"inspection": {
-			"title": "",
-			"$ref": "#/definitions/inspectionDef"
-		},
-		"contractEndDate": {
-			"type": "string",
-			"format": "date",
-			"title": "18.經費結案日期"
-		},
-		"contractAmount": {
-			"type": "string",
-			"title": "19.合約核定金額"
-		},
-		"amount": {
-			"type": "string",
-			"title": "20.實際支用金額"
-		},
-		"requiredFiles": {
-			"title": "二.上傳/修改新案審查文件",
-			"type": "object",
-			"properties": {
-				"applicationForm": {
-					"type": "string",
-					"format": "data-url",
-					"title": "1.三軍總醫院臨床研究申請表"
-				},
-				"approvedLetter": {
-					"type": "string",
-					"format": "data-url",
-					"title": "2.三軍總醫院IRB審議會同意函"
-				},
-				"icf": {
-					"type": "string",
-					"format": "data-url",
-					"title": "3.受試者同意書(經IRB核准蓋章之影本)"
-				},
-				"protocolFile": {
-					"type": "string",
-					"format": "data-url",
-					"title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
-				},
-				"dohLetter": {
-					"type": "string",
-					"format": "data-url",
-					"title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)"
-				},
-				"protocolInfoFile": {
-					"type": "string",
-					"format": "data-url",
-					"title": "6.試驗計畫書"
-				},
-				"caseReport": {
-					"type": "string",
-					"format": "data-url",
-					"title": "7.個案報告書"
-				},
-				"insuranceFile": {
-					"type": "string",
-					"format": "data-url",
-					"title": "8.保險資料"
-				},
-				"contractFile": {
-					"type": "string",
-					"format": "data-url",
-					"title": "9.臨床試驗合約書"
-				},
-				"funding": {
-					"type": "string",
-					"format": "data-url",
-					"title": "10.臨床試驗經費明細表"
-				},
-				"fee": {
-					"type": "string",
-					"format": "data-url",
-					"title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
-				},
-				"otherFile": {
-					"type": "string",
-					"format": "data-url",
-					"title": "12.其他重要補充資料"
-				}
-			}
-		}
-	},
-	"definitions": {
-		"insurance": {
-			"type": "object",
-			"properties": {
-				"insuranceFlg": {
-					"type": "string",
-					"title": "13.試驗有無保險",
-					"enum": [
-						"有",
-						"無"
-					],
-					"default": "無"
-				}
-			},
-			"dependencies": {
-				"insuranceFlg": {
-					"oneOf": [
-						{
-							"properties": {
-								"insuranceFlg": {
-									"enum": [
-										"無"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"insuranceFlg": {
-									"enum": [
-										"有"
-									]
-								},
-								"insuranceInst": {
-									"type": "string",
-									"title": "13-1.承保公司"
-								},
-								"insuranceAmount": {
-									"type": "string",
-									"title": "13-2.保險金額"
-								}
-							},
-							"required": [
-								"insuranceInst",
-								"insuranceAmount"
-							]
-						}
-					]
-				}
-			}
-		},
-		"nihDef": {
-			"type": "object",
-			"properties": {
-				"nih": {
-					"type": "string",
-					"title": "14.是否有其他登錄網站及其Identifier? ",
-					"enum": [
-						"是",
-						"否"
-					]
-				}
-			},
-			"dependencies": {
-				"nih": {
-					"oneOf": [
-						{
-							"properties": {
-								"nih": {
-									"enum": [
-										"否"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"nih": {
-									"enum": [
-										"是"
-									]
-								},
-								"nihText": {
-									"type": "string",
-									"title": "說明"
-								}
-							}
-						}
-					]
-				}
-			}
-		},
-		"doh": {
-			"type": "object",
-			"properties": {
-				"dohFlg": {
-					"type": "string",
-					"title": "2-3.是否需送衛福部審核",
-					"enum": [
-						"本試驗已通過衛福部審核",
-						"本試驗不需送衛福部審核"
-					]
-				}
-			},
-			"dependencies": {
-				"dohFlg": {
-					"oneOf": [
-						{
-							"properties": {
-								"dohFlg": {
-									"enum": [
-										"本試驗已通過衛福部審核"
-									]
-								},
-								"2-4.衛福部核准日期": {
-									"type": "string",
-									"format": "date",
-									"title": "2-4.衛福部核准日期"
-								},
-								"dohApprovedNum": {
-									"type": "string",
-									"title": "2-5.衛福部核准編號"
-								}
-							},
-							"required": [
-								"2-4.衛福部核准日期",
-								"dohApprovedNum"
-							]
-						},
-						{
-							"properties": {
-								"dohFlg": {
-									"enum": [
-										"本試驗不需送衛福部審核"
-									]
-								},
-								"dohReason": {
-									"type": "string",
-									"title": "2-4.原因"
-								}
-							},
-							"required": [
-								"dohReason"
-							]
-						}
-					]
-				}
-			}
-		},
-		"studyType": {
-			"type": "object",
-			"properties": {
-				"researchType": {
-					"type": "string",
-					"title": "4.研究類型",
-					"enum": [
-						"一般學術研究/發表",
-						"人體試驗"
-					]
-				}
-			},
-			"dependencies": {
-				"researchType": {
-					"oneOf": [
-						{
-							"properties": {
-								"researchType": {
-									"enum": [
-										"一般學術研究/發表"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"researchType": {
-									"enum": [
-										"人體試驗"
-									]
-								},
-								"trialCategory": {
-									"title": "",
-									"$ref": "#/definitions/trialCategoryDef"
-								}
-							}
-						}
-					]
-				}
-			}
-		},
-		"trialCategoryDef": {
-			"type": "object",
-			"properties": {
-				"trialCategory": {
-					"title": "4-1.試驗類別",
-					"type": "string",
-					"enum": [
-						"tech",
-						"drug",
-						"device",
-						"BA/BE"
-					],
-					"enumNames": [
-						"1. 新醫療技術",
-						"2. 新藥品",
-						"3. 新醫療器材",
-						"4. 學名藥BA/BE"
-					]
-				}
-			},
-			"required": [
-				"trialCategory"
-			],
-			"dependencies": {
-				"trialCategory": {
-					"oneOf": [
-						{
-							"properties": {
-								"trialCategory": {
-									"enum": [
-										"tech",
-										"BA/BE"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"trialCategory": {
-									"enum": [
-										"drug"
-									]
-								},
-								"drugOptions": {
-									"title": "",
-									"$ref": "#/definitions/drugOptionsDef"
-								},
-								"phase": {
-									"title": "4-3.藥品試驗階段",
-									"type": "string",
-									"enum": [
-										"Phase0",
-										"PhaseI",
-										"PhaseI/II",
-										"PhaseII",
-										"PhaseII/III",
-										"PhaseIII",
-										"PhaseIV"
-									],
-									"enumNames": [
-										"A. Phase 0",
-										"B. Phase I",
-										"C. Phase I / II",
-										"D. Phase II",
-										"E. Phase II / III",
-										"F. Phase III",
-										"G. Phase IV (PMS)"
-									]
-								}
-							},
-							"required": [
-								"drugOptions",
-								"phase"
-							]
-						},
-						{
-							"properties": {
-								"trialCategory": {
-									"enum": [
-										"device"
-									]
-								},
-								"medicalDeviceType": {
-									"title": "4-4.醫療器材類型",
-									"type": "string",
-									"enum": [
-										"pioneer",
-										"feasibility",
-										"pivot",
-										"PMS"
-									],
-									"enumNames": [
-										"3.1 先導性試驗",
-										"3.2 可行性試驗",
-										"3.3 樞紐試驗",
-										"3.4 上市後監測試驗"
-									]
-								}
-							},
-							"required": [
-								"medicalDeviceType"
-							]
-						}
-					]
-				}
-			}
-		},
-		"drugOptionsDef": {
-			"type": "object",
-			"properties": {
-				"drugOptions": {
-					"title": "4-2.藥品類型",
-					"type": "string",
-					"enum": [
-						"component",
-						"efficiency",
-						"useway"
-					],
-					"enumNames": [
-						"2.1 新成份",
-						"2.2 新療效複方",
-						"2.3 新使用途徑"
-					]
-				}
-			},
-			"required": [
-				"drugOptions"
-			],
-			"dependencies": {
-				"drugOptions": {
-					"oneOf": [
-						{
-							"properties": {
-								"drugOptions": {
-									"enum": [
-										"component",
-										"useway"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"drugOptions": {
-									"enum": [
-										"efficiency"
-									]
-								},
-								"efficiencyOptions": {
-									"title": "4-2-1.藥品療效",
-									"type": "string",
-									"enum": [
-										"newIndications",
-										"sideEffects",
-										"strength",
-										"time",
-										"dose",
-										"compound"
-									],
-									"enumNames": [
-										"2.2.1 新適應症",
-										"2.2.2 降低副作用",
-										"2.2.3 改善療效強度",
-										"2.2.4 改善療效時間",
-										"2.2.5 改變使用劑量",
-										"2.2.6 複方"
-									]
-								}
-							},
-							"required": [
-								"efficiencyOptions"
-							]
-						}
-					]
-				}
-			}
-		},
-		"inspectionDef": {
-			"type": "object",
-			"properties": {
-				"inspection": {
-					"title": "17.是否有查核(Inspection)",
-					"type": "string",
-					"enum": [
-						"是",
-						"否"
-					]
-				}
-			},
-			"dependencies": {
-				"inspection": {
-					"oneOf": [
-						{
-							"properties": {
-								"inspection": {
-									"enum": [
-										"否"
-									]
-								}
-							}
-						},
-						{
-							"properties": {
-								"inspection": {
-									"enum": [
-										"是"
-									]
-								},
-								"inspectionAdmin": {
-									"title": "17-1.查核單位",
-									"type": "string"
-								},
-								"inspectionStartDate": {
-									"title": "17-2.查核開始日期",
-									"format": "date",
-									"type": "string"
-								},
-								"inspectionEndDate": {
-									"title": "17-3.查核結束日期",
-									"format": "date",
-									"type": "string"
-								}
-							},
-							"required": [
-								"inspectionAdmin",
-								"inspectionStartDate",
-								"inspectionEndDate"
-							]
-						}
-					]
-				}
-			}
-		}
-	}
+  "title": "一.填寫/修改新案申請書",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "1-1.試驗中文名稱"
+    },
+    "engTitle": {
+      "type": "string",
+      "title": "1-2.試驗英文名稱"
+    },
+    "protocolNum": {
+      "type": "string",
+      "title": "1-3.試驗計畫編號"
+    },
+    "2-1.IRB核准日期": {
+      "type": "string",
+      "format": "date",
+      "title": "2-1.IRB核准日期"
+    },
+    "irbNum": {
+      "type": "string",
+      "title": "2-2.IRB核准編號"
+    },
+    "dohFlg": {
+      "title": "",
+      "$ref": "#/definitions/doh"
+    },
+    "PI": {
+      "type": "array",
+      "title": "3-1.試驗主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "LAIs": {
+      "type": "array",
+      "title": "3-2.共同主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "AIs": {
+      "type": "array",
+      "title": "3-3.協同主持人",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "姓名"
+          },
+          "title": {
+            "type": "string",
+            "title": "職稱"
+          },
+          "branch": {
+            "type": "string",
+            "title": "單位"
+          },
+          "phone": {
+            "type": "string",
+            "title": "電話"
+          },
+          "email1": {
+            "type": "string",
+            "title": "Email1"
+          },
+          "email2": {
+            "type": "string",
+            "title": "Email2"
+          }
+        }
+      }
+    },
+    "researchType": {
+      "title": "",
+      "$ref": "#/definitions/studyType"
+    },
+    "locationType": {
+      "title": "5.多中心試驗類別",
+      "type": "string",
+      "enum": [
+        "多國多中心",
+        "單國多中心",
+        "單一中心"
+      ]
+    },
+    "accrualHospital": {
+      "type": "string",
+      "title": "6.試驗預計收納受試者",
+      "description": "本院"
+    },
+    "accrualGlobal": {
+      "type": "string",
+      "title": "全球"
+    },
+    "accrualTaiwan": {
+      "type": "string",
+      "title": "臺灣"
+    },
+    "genderEnum": {
+      "type": "string",
+      "title": "6-1.是否有依性別選擇受試者?",
+      "enum": [
+        "是",
+        "否"
+      ]
+    },
+    "accrualType": {
+      "type": "string",
+      "title": "6-2.受試者型態?"  
+    },
+    "proposedStartDate": {
+      "type": "string",
+      "format": "date",
+      "title": "7-1.試驗預計開始執行時間"
+    },
+    "proposedEndDate": {
+      "type": "string",
+      "format": "date",
+      "title": "7-2.試驗預計結束時間"
+    },
+    "crDueDate": {
+      "type": "string",
+      "format": "date",
+      "title": "7-3.下次繳交持續審查時間（IRB同意函有效期限）"
+    },
+    "pclLocation": {
+      "type": "string",
+      "title": "8.計畫執行地點"  
+    },
+    "sponsors": {
+        "type": "array",
+        "title": "9.試驗經費贊助來源",
+        "items": {
+          "type": "object",
+          "anyOf": [
+            {
+              "properties": {
+                "廠商": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "properties": {
+                "學術研究單位": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "properties": {
+                "自籌(自行研究無經費補助，請說明如何自籌) ": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "properties": {
+                "其他(如美國聯邦政府，請註明單位)": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+    "sponsorName": {
+      "type": "string",
+      "title": "10.試驗委託藥廠/贊助研究單位",
+      "description": "10-1.名稱"
+    },
+    "sponsorAddress": {
+      "type": "string",
+      "title": "10-2.地址"
+    },
+    "croName": {
+      "type": "string",
+      "title": "11.試驗委託CRO公司",
+      "description": "11-1.名稱"
+    },
+    "croAddress": {
+      "type": "string",
+      "title": "11-2.地址"
+    },
+    "craName": {
+      "type": "string",
+      "title": "12.試驗委託者之聯絡方式",
+      "description": "12-1.姓名"
+    },
+    "craPhone": {
+      "type": "string",
+      "title": "12-2.電話"
+    },
+    "craEmail": {
+      "type": "string",
+      "title": "12-3.E-mail"
+    },
+    "scName": {
+      "type": "string",
+      "title": "12-4.試驗主持人之助理聯絡方式(姓名 電話)"
+    },
+    "insuranceFlg": {
+      "title": "",
+      "$ref": "#/definitions/insurance"
+    },
+    "nih": {
+      "title": "",
+      "$ref": "#/definitions/nihDef"
+    },
+    "adminNum": {
+      "type": "string",
+      "title": "15.主計編號"
+    },
+    "crcNum": {
+      "type": "string",
+      "title": "15-1.CRC編號"
+    },
+    "contractStartDate": {
+      "type": "string",
+      "format": "date",
+      "title": "16.合約開始日期"
+    },
+    "inspection": {
+      "title": "",
+      "$ref": "#/definitions/inspectionDef"
+    },
+    "contractEndDate": {
+      "type": "string",
+      "format": "date",
+      "title": "18.經費結案日期"
+    },
+    "contractAmount": {
+      "type": "string",
+      "title": "19.合約核定金額"
+    },
+    "amount": {
+      "type": "string",
+      "title": "20.實際支用金額"
+    },
+    "requiredFiles": {
+      "title": "二.上傳/修改新案審查文件",
+      "type": "object",
+      "properties": {
+        "applicationForm": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "1.三軍總醫院臨床研究申請表"
+        },
+        "approvedLetter": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "2.三軍總醫院IRB審議會同意函"
+        },
+        "icf": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "3.受試者同意書(經IRB核准蓋章之影本)"
+        },
+        "protocolFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
+        },
+        "dohLetter": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)"
+        },
+        "protocolInfoFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "6.試驗計畫書"
+        },
+        "caseReport": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "7.個案報告書"
+        },
+        "insuranceFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "8.保險資料"
+        },
+        "contractFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "9.臨床試驗合約書"
+        },
+        "funding": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "10.臨床試驗經費明細表"
+        },
+        "fee": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
+        },
+        "otherFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "12.其他重要補充資料"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "insurance": {
+      "type": "object",
+      "properties": {
+        "insuranceFlg": {
+          "type": "string",
+          "title": "13.試驗有無保險",
+          "enum": [
+            "有",
+            "無"
+          ],
+          "default": "無"
+        }
+      },
+      "dependencies": {
+        "insuranceFlg": {
+          "oneOf": [
+            {
+              "properties": {
+                "insuranceFlg": {
+                  "enum": [
+                    "無"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "insuranceFlg": {
+                  "enum": [
+                    "有"
+                  ]
+                },
+                "insuranceInst": {
+                  "type": "string",
+                  "title": "13-1.承保公司"
+                },
+                "insuranceAmount": {
+                  "type": "string",
+                  "title": "13-2.保險金額"
+                }
+              },
+              "required": [
+                "insuranceInst",
+                "insuranceAmount"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "nihDef": {
+      "type": "object",
+      "properties": {
+        "nih": {
+          "type": "string",
+          "title": "14.是否有其他登錄網站及其Identifier? ",
+          "enum": [
+            "是",
+            "否"
+          ]
+        }
+      },
+      "dependencies": {
+        "nih": {
+          "oneOf": [
+            {
+              "properties": {
+                "nih": {
+                  "enum": [
+                    "否"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "nih": {
+                  "enum": [
+                    "是"
+                  ]
+                },
+                "nihText": {
+                  "type": "string",
+                  "title": "說明"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "doh": {
+      "type": "object",
+      "properties": {
+        "dohFlg": {
+          "type": "string",
+          "title": "2-3.是否需送衛福部審核",
+          "enum": [
+            "本試驗已通過衛福部審核",
+            "本試驗不需送衛福部審核"
+          ]
+        }
+      },
+      "dependencies": {
+        "dohFlg": {
+          "oneOf": [
+            {
+              "properties": {
+                "dohFlg": {
+                  "enum": [
+                    "本試驗已通過衛福部審核"
+                  ]
+                },
+                "2-4.衛福部核准日期": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "2-4.衛福部核准日期"
+                },
+                "dohApprovedNum": {
+                  "type": "string",
+                  "title": "2-5.衛福部核准編號"
+                }
+              },
+              "required": [
+                "2-4.衛福部核准日期",
+                "dohApprovedNum"
+              ]
+            },
+            {
+              "properties": {
+                "dohFlg": {
+                  "enum": [
+                    "本試驗不需送衛福部審核"
+                  ]
+                },
+                "dohReason": {
+                  "type": "string",
+                  "title": "2-4.原因"
+                }
+              },
+              "required": [
+                "dohReason"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "studyType": {
+      "type": "object",
+      "properties": {
+        "researchType": {
+          "type": "string",
+          "title": "4.研究類型",
+          "enum": [
+            "其他",
+            "藥品臨床試驗",
+			"新醫療器材",
+			"新醫療技術",
+			"上市後監測調查(PMS)",
+			"新醫療器材合併新醫療技術",
+			"附加試驗",
+			"延伸試驗",
+			"觀察性研究",
+			"基因相關臨床試驗",
+			"基因治療/體細胞治療"
+          ]
+        }
+      },
+      "dependencies": {
+        "researchType": {
+          "oneOf": [
+            {
+              "properties": {
+                "researchType": {
+                  "enum": [
+                    "其他",
+					"新醫療器材",
+					"新醫療技術",
+					"新醫療器材合併新醫療技術"
+                  ]
+                },
+				"otherText": {
+                  "type": "string",
+                  "title": "請註明"
+                }
+              }
+            },
+			{
+              "properties": {
+                "researchType": {
+                  "enum": [
+                    "附加試驗",
+					"延伸試驗"
+                  ]
+                },
+				"meetingNum": {
+                  "type": "string",
+                  "title": "請提供原計畫資料: 本會編號"
+                },
+				"oriPclNum": {
+                  "type": "string",
+                  "title": "計畫編號"
+                }
+              }
+            },
+            {
+              "properties": {
+                "researchType": {
+                  "enum": [
+                    "藥品臨床試驗"
+                  ]
+                },
+				"trialPhase": {
+                  "type": "string",
+                  "title": "藥品試驗階段"
+                },
+				"trialPhaseText": {
+                  "type": "string",
+                  "title": "藥品試驗階段，請註明"
+                },
+				"trialType": {
+                  "type": "string",
+                  "title": "藥品臨床試驗類別"
+                },
+				"trialManage": {
+                  "type": "string",
+                  "title": "試驗藥品是否由本院藥劑部門管理"
+                }
+				
+              }
+            }
+          ]
+        }
+      }
+    },
+    "inspectionDef": {
+      "type": "object",
+      "properties": {
+        "inspection": {
+          "title": "17.是否有查核(Inspection)",
+          "type": "string",
+          "enum": [
+            "是",
+            "否"
+          ]
+        }
+      },
+      "dependencies": {
+        "inspection": {
+          "oneOf": [
+            {
+              "properties": {
+                "inspection": {
+                  "enum": [
+                    "否"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "inspection": {
+                  "enum": [
+                    "是"
+                  ]
+                },
+                "inspectionAdmin": {
+                  "title": "17-1.查核單位",
+                  "type": "string"
+                },
+                "inspectionStartDate": {
+                  "title": "17-2.查核開始日期",
+				          "format": "date",
+                  "type": "string"
+                },
+                "inspectionEndDate": {
+                  "title": "17-3.查核結束日期",
+				          "format": "date",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "inspectionAdmin",
+				        "inspectionStartDate",
+				        "inspectionEndDate"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sponsorADef": {
+      "type": "object",
+      "properties": {
+          "sponsorA": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "廠商",
+              "學術研究單位",
+              "自籌(自行研究無經費補助，請說明如何自籌)",
+              "其他(如美國聯邦政府，請註明單位)"
+            ]
+          }
+        }
+      },
+      "dependencies": {
+        "sponsorA": {
+          "oneOf": [
+            {
+              "properties": {
+                "sponsorA": {
+                  "enum": [
+                    "廠商"
+                  ]
+                },
+                "sponsorAText": {
+                  "type": "string",
+                  "title": "廠商選項"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
 }

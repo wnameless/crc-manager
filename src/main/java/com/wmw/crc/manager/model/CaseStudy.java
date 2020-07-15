@@ -120,11 +120,17 @@ public class CaseStudy
 
   int expectedNumberOfSubjectsGlobal;
 
-  @JsonPopulatedKey("contractStartDate")
+  @JsonPopulatedKey("proposedStartDate")
   String expectedStartDate;
 
-  @JsonPopulatedKey("contractEndDate")
+  @JsonPopulatedKey("proposedEndDate")
   String expectedEndDate;
+
+  @JsonPopulatedKey("contractStartDate")
+  String contractStartDate;
+
+  @JsonPopulatedKey("contractEndDate")
+  String contractEndDate;
 
   @Enumerated(EnumType.STRING)
   Status status = Status.NEW;
