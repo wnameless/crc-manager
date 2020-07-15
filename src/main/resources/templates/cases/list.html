@@ -68,12 +68,12 @@
                     </a>
                 </th>
                 <th>
-                    <a class="sorted" sd:pagination-sort="expectedStartDate">
+                    <a class="sorted" sd:pagination-sort="contractStartDate">
                         [[#{ui.case.table.time.start}]]
                     </a>
                 </th>
                 <th>
-                    <a class="sorted" sd:pagination-sort="expectedEndDate">
+                    <a class="sorted" sd:pagination-sort="contractEndDate">
                         [[#{ui.case.table.time.end}]]
                     </a>
                 </th>
@@ -169,8 +169,8 @@
                 </td>
                 <td th:text="${case.trialName}"></td>
                 <td th:text="${case.piName}"></td>
-                <td th:text="${case.expectedStartDate}"></td>
-                <td th:text="${case.expectedEndDate}"></td>
+                <td th:text="${case.contractStartDate}"></td>
+                <td th:text="${case.contractEndDate}"></td>
             </tr>
         </tbody>
     </table>

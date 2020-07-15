@@ -18,6 +18,8 @@ package com.wmw.crc.manager.service.tsgh;
 import static net.sf.rubycollect4j.RubyObject.isPresent;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -226,10 +228,19 @@ public class TsghServiceImpl implements TsghService {
         pc.setIrbName(c.getTrialName());
         pc.setIrbNumber(c.getIrbNumber());
         pc.setPatientId(s.getPatientId());
-        // pc.setStartDate(LocalDate.parse(c.getExpectedStartDate())
-        // .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        // pc.setEndDate(LocalDate.parse(c.getExpectedEndDate())
-        // .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+
+        if (c.getContractStartDate() != null
+            && c.getContractEndDate() != null) {
+          pc.setStartDate(LocalDate.parse(c.getContractStartDate())
+              .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+          pc.setEndDate(LocalDate.parse(c.getContractEndDate())
+              .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        } else {
+          pc.setStartDate(LocalDate.parse(c.getExpectedStartDate())
+              .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+          pc.setEndDate(LocalDate.parse(c.getExpectedEndDate())
+              .format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
 
         pc.setPiName(
             JsonNodeUtils.findFirstAsString(c.getFormData().get("PI"), "name"));
