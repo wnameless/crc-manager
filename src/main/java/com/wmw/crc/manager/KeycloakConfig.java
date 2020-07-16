@@ -42,7 +42,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 

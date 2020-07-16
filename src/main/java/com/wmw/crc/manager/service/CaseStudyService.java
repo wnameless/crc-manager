@@ -42,6 +42,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.wnameless.advancedoptional.AdvOpt;
 import com.wmw.crc.manager.model.CaseStudy;
@@ -49,8 +50,11 @@ import com.wmw.crc.manager.model.Contraindication;
 import com.wmw.crc.manager.model.Subject;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
+import com.wmw.crc.manager.repository.JsonDataUriFileRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.util.Criterion;
+import com.wmw.crc.manager.util.JsonDataUriUtil;
+import com.wmw.crc.manager.util.JsonDataUriUtil.DataURIFormData;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
@@ -60,58 +64,20 @@ public class CaseStudyService {
 
   @Autowired
   CaseStudyRepository caseStudyRepo;
-
   @Autowired
   SubjectRepository subjectRepo;
-
   @Autowired
   ContraindicationRepository contraindicationRepo;
+  @Autowired
+  JsonDataUriFileRepository jsonDataUriFileRepo;
 
   @Autowired
   JsonDataExportService dataExport;
+  @Autowired
+  JsonDataUriFileService jsonDataUriFileService;
 
   @PersistenceContext
   EntityManager em;
-
-  public HttpEntity<byte[]> getDownloadableFile(CaseStudy cs, String fileId) {
-    JsonNode formData = cs.getFormData();
-    String base64 = formData.get("requiredFiles").get(fileId).textValue();
-    String[] base64Array = base64.split(";");
-
-    String type = base64Array[0].substring(5);
-    String name = base64Array[1].substring(5);
-    String data = base64Array[2].substring(7);
-
-    byte[] dataByteArray = Base64.decodeBase64(data.getBytes());
-
-    HttpHeaders header = new HttpHeaders();
-    header.setContentType(MediaType.valueOf(type));
-    header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
-    header.setContentLength(dataByteArray.length);
-
-    return new HttpEntity<byte[]>(dataByteArray, header);
-  }
-
-  public Map<String, Entry<String, Boolean>> getFilesFromCaseStudy(
-      CaseStudy cs) {
-    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
-
-    JsonNode schema = cs.getSchema();
-    JsonNode formData = cs.getFormData();
-    JsonNode fileNode =
-        schema.get("properties").get("requiredFiles").get("properties");
-    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
-      String fileTitle = fileNode.get(fileId).get("title").textValue();
-      JsonNode requiredFiles = formData.get("requiredFiles");
-      JsonNode requiredFile = null;
-      if (requiredFiles != null) {
-        requiredFile = requiredFiles.get(fileId);
-      }
-      files.put(fileId, new SimpleEntry<>(fileTitle, requiredFile != null));
-    }
-
-    return files;
-  }
 
   public Iterable<CaseStudy> getCasesByStatus(Authentication auth,
       CaseStudy.Status status) {
@@ -141,8 +107,8 @@ public class CaseStudyService {
       Integer bundle, String phrase, List<String> takekinds, String memo) {
     if (isBlank(phrase)) return AdvOpt.empty();
 
-    if (!contraindicationRepo.existsByCaseStudyAndBundleAndPhraseAndTakekinds(cs,
-        bundle, phrase, takekinds)) {
+    if (!contraindicationRepo.existsByCaseStudyAndBundleAndPhraseAndTakekinds(
+        cs, bundle, phrase, takekinds)) {
       Contraindication cd = new Contraindication();
       cd.setCaseStudy(cs);
       cd.setBundle(bundle);
@@ -220,6 +186,62 @@ public class CaseStudyService {
     header.setContentLength(documentBody.length);
 
     return new HttpEntity<byte[]>(documentBody, header);
+  }
+
+  public HttpEntity<byte[]> getDownloadableFile(CaseStudy cs, String fileId) {
+    JsonNode formData = cs.getFormData();
+    String base64 = formData.get("requiredFiles").get(fileId).textValue();
+    String[] base64Array = base64.split(";");
+
+    String type = base64Array[0].substring(5);
+    String name = base64Array[1].substring(5);
+    // String data = base64Array[2].substring(7);
+
+    byte[] dataByteArray = Base64.decodeBase64(jsonDataUriFileRepo
+        .findByCaseStudyAndJsonKey(cs, "requiredFiles." + fileId).get()
+        .getData());
+    // Base64.decodeBase64(data.getBytes());
+
+    HttpHeaders header = new HttpHeaders();
+    header.setContentType(MediaType.valueOf(type));
+    header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
+    header.setContentLength(dataByteArray.length);
+
+    return new HttpEntity<byte[]>(dataByteArray, header);
+  }
+
+  public Map<String, Entry<String, Boolean>> getFilesFromCaseStudy(
+      CaseStudy cs) {
+    Map<String, Entry<String, Boolean>> files = new LinkedHashMap<>();
+
+    JsonNode schema = cs.getSchema();
+    JsonNode formData = cs.getFormData();
+    JsonNode fileNode =
+        schema.get("properties").get("requiredFiles").get("properties");
+    for (String fileId : Ruby.Array.copyOf(fileNode.fieldNames())) {
+      String fileTitle = fileNode.get(fileId).get("title").textValue();
+      JsonNode requiredFiles = formData.get("requiredFiles");
+      JsonNode requiredFile = null;
+      if (requiredFiles != null) {
+        requiredFile = requiredFiles.get(fileId);
+      }
+      files.put(fileId, new SimpleEntry<>(fileTitle, requiredFile != null));
+    }
+
+    return files;
+  }
+
+  public CaseStudy updateCaseStudy(CaseStudy cs, JsonNode formData)
+      throws JsonProcessingException {
+    DataURIFormData dataURIFormdata =
+        JsonDataUriUtil.createDataURIFormData(formData);
+
+    cs.setFormData(dataURIFormdata.getFormData());
+    caseStudyRepo.save(cs);
+
+    jsonDataUriFileService.createOrUpdate(cs, dataURIFormdata.getDataURIs());
+
+    return cs;
   }
 
 }

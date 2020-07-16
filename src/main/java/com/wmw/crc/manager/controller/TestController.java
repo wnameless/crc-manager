@@ -25,9 +25,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
+import com.wmw.crc.manager.service.CaseStudyService;
 import com.wmw.crc.manager.service.NewVisit;
 import com.wmw.crc.manager.service.VisitService;
 import com.wmw.crc.manager.service.tsgh.TsghService;
@@ -40,6 +42,9 @@ public class TestController {
   CaseStudyRepository caseStudyRepo;
   @Autowired
   SubjectRepository subjectRepo;
+
+  @Autowired
+  CaseStudyService caseStudyService;
   @Autowired
   TsghService tsghService;
   @Autowired
@@ -99,6 +104,19 @@ public class TestController {
     }
 
     return "Refreshed";
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("/cases/files/split")
+  @ResponseBody
+  String splitCaseFiles() throws JsonProcessingException {
+    List<CaseStudy> css = caseStudyRepo.findAll();
+
+    for (CaseStudy cs : css) {
+      caseStudyService.updateCaseStudy(cs, cs.getFormData());
+    }
+
+    return "Splited";
   }
 
 }
