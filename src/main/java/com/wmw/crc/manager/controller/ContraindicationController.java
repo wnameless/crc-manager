@@ -6,7 +6,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -26,8 +25,10 @@ import com.github.wnameless.advancedoptional.AdvOpt;
 import com.github.wnameless.spring.common.web.ModelPolicy;
 import com.github.wnameless.spring.common.web.NestedRestfulController;
 import com.github.wnameless.spring.common.web.RestfulRoute;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;
+import com.wmw.crc.manager.model.QContraindication;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.service.CaseStudyService;
@@ -108,7 +109,13 @@ public class ContraindicationController implements NestedRestfulController< //
 
   @Override
   public BiPredicate<CaseStudy, Contraindication> getPaternityTesting() {
-    return (p, c) -> Objects.equals(p, c.getCaseStudy());
+    return (p, c) -> {
+      QContraindication qContraindication = QContraindication.contraindication;
+      BooleanExpression eqId = qContraindication.id.eq(c.getId());
+      BooleanExpression eqCs = qContraindication.caseStudy.eq(p);
+
+      return cdRepository.exists(eqId.and(eqCs));
+    };
   }
 
   @Override
