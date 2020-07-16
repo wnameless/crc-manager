@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,7 +51,7 @@ public class Contraindication implements RestfulItem<Long> {
 
   String memo;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinTable(name = "case_contraindication",
       joinColumns = { @JoinColumn(name = "contraindication_id") },
       inverseJoinColumns = { @JoinColumn(name = "case_id") })
