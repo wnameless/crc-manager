@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
+import com.wmw.crc.manager.service.CaseStudyService;
 import com.wmw.crc.manager.service.KeycloakService;
 
 import net.sf.rubycollect4j.Ruby;
@@ -45,6 +47,8 @@ public class PtmsApiController {
   @Autowired
   CaseStudyRepository caseStudyRepo;
 
+  @Autowired
+  CaseStudyService caseStudyService;
   @Autowired
   KeycloakService keycloak;
 
@@ -85,16 +89,15 @@ public class PtmsApiController {
 
   @RequestMapping(path = "/protocols/{irbNumber}", method = RequestMethod.POST)
   String updateCase(@RequestBody PtmsProtocol protocol,
-      @PathVariable String irbNumber) {
+      @PathVariable String irbNumber) throws JsonProcessingException {
     CaseStudy c = caseStudyRepo.findByIrbNumber(irbNumber);
 
     ObjectNode objNode = new ObjectMapper().createObjectNode();
     objNode.setAll((ObjectNode) c.getFormData());
     objNode.setAll((ObjectNode) protocol.getJsonData().get(0));
-    c.setFormData(objNode);
-
-    // c.setFormData(protocol.getJsonData().get(0));
-    caseStudyRepo.save(c);
+    // c.setFormData(objNode);
+    // caseStudyRepo.save(c);
+    caseStudyService.updateCaseStudy(c, objNode);
 
     return "Update ok";
   }
