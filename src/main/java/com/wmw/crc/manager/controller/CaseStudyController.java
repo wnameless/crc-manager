@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.spring.common.web.ModelPolicy;
@@ -152,9 +153,10 @@ public class CaseStudyController
   @PreAuthorize("@perm.canWrite(#id)")
   @PostMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
   String updateJS(Authentication auth, Model model, @PathVariable Long id,
-      @RequestBody JsonNode formData) {
-    caseStudy.setFormData(formData);
-    caseStudyRepo.save(caseStudy);
+      @RequestBody JsonNode formData) throws JsonProcessingException {
+    caseStudy = caseService.updateCaseStudy(caseStudy, formData);
+    // caseStudy.setFormData(formData);
+    // caseStudyRepo.save(caseStudy);
 
     model.addAttribute("slice",
         caseService.getCasesByStatus(auth, status, pageable, search));

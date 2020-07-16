@@ -15,12 +15,9 @@
  */
 package com.wmw.crc.manager.model;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,8 +52,7 @@ import com.github.wnameless.json.beanpopulator.JsonPopulatable;
 import com.github.wnameless.json.beanpopulator.JsonPopulatedKey;
 import com.github.wnameless.spring.common.web.RestfulItem;
 import com.github.wnameless.spring.react.jsf.ReactJsonSchemaForm;
-import com.google.common.io.Resources;
-import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.JsonSchema;
 import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;
@@ -202,39 +198,14 @@ public class CaseStudy
 
   @Override
   public JsonNode getSchema() {
-    return SCHEMA;
+    return JsonSchema.APPLICATION_SCHEMA;
   }
 
   @Override
   public JsonNode getUiSchema() {
-    return UI_SCHEMA;
+    return JsonSchema.APPLICATION_UI_SCHEMA;
   }
 
-  @Override
-  public void setSchema(JsonNode schema) {}
-
-  @Override
-  public void setUiSchema(JsonNode uiSchema) {}
-
-  public static final JsonNode SCHEMA;
-  public static final JsonNode UI_SCHEMA;
-  static {
-    URL url = Resources.getResource(JsonSchemaPath.applicationSchema);
-    JsonNode jsonNode = null;
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    SCHEMA = jsonNode;
-    url = Resources.getResource(JsonSchemaPath.applicationUISchema);
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    UI_SCHEMA = jsonNode;
-  }
   @Convert(converter = JsonNodeConverter.class)
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE

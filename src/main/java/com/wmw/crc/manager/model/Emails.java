@@ -15,11 +15,6 @@
  */
 package com.wmw.crc.manager.model;
 
-import static com.google.common.base.Charsets.UTF_8;
-
-import java.io.IOException;
-import java.net.URL;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 
@@ -30,32 +25,12 @@ import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.beanpopulator.JsonPopulatable;
 import com.github.wnameless.spring.react.jsf.ReactJsonSchemaForm;
-import com.google.common.io.Resources;
-import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.JsonSchema;
 
 import lombok.Data;
 
 @Data
 public class Emails implements JsonPopulatable, ReactJsonSchemaForm {
-
-  public static final JsonNode SCHEMA;
-  public static final JsonNode UI_SCHEMA;
-  static {
-    URL url = Resources.getResource(JsonSchemaPath.emailsSchema);
-    JsonNode jsonNode = null;
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    SCHEMA = jsonNode;
-    try {
-      jsonNode = new ObjectMapper().readTree("{}");
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    UI_SCHEMA = jsonNode;
-  }
 
   @Convert(converter = JsonNodeConverter.class)
   @Column(columnDefinition = "text")
@@ -74,18 +49,12 @@ public class Emails implements JsonPopulatable, ReactJsonSchemaForm {
 
   @Override
   public JsonNode getSchema() {
-    return SCHEMA;
+    return JsonSchema.EMAIL_SCHEMA;
   }
-
-  @Override
-  public void setSchema(JsonNode schema) {}
 
   @Override
   public JsonNode getUiSchema() {
-    return UI_SCHEMA;
+    return JsonSchema.EMPTY_SCHEMA;
   }
-
-  @Override
-  public void setUiSchema(JsonNode uiSchema) {}
 
 }

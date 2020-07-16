@@ -15,10 +15,6 @@
  */
 package com.wmw.crc.manager.model;
 
-import static com.google.common.base.Charsets.UTF_8;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +34,6 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.jpa.type.flattenedjson.FlattenedJsonTypeConfigurer;
 import com.github.wnameless.jpa.type.flattenedjson.JsonNodeConverter;
 import com.github.wnameless.json.beanpopulator.JsonPopulatable;
@@ -46,8 +41,7 @@ import com.github.wnameless.json.beanpopulator.JsonPopulatedKey;
 import com.github.wnameless.json.beanpopulator.JsonPopulatedValue;
 import com.github.wnameless.spring.common.web.RestfulItem;
 import com.github.wnameless.spring.react.jsf.ReactJsonSchemaForm;
-import com.google.common.io.Resources;
-import com.wmw.crc.manager.JsonSchemaPath;
+import com.wmw.crc.manager.JsonSchema;
 import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.util.SubjectStatusCustomizer;
 
@@ -129,39 +123,14 @@ public class Subject
 
   @Override
   public JsonNode getSchema() {
-    return SCHEMA;
+    return JsonSchema.SUBJECT_SCHEMA;
   }
 
   @Override
   public JsonNode getUiSchema() {
-    return UI_SCHEMA;
+    return JsonSchema.SUBJECT_UI_SCHEMA;
   }
 
-  @Override
-  public void setSchema(JsonNode schema) {}
-
-  @Override
-  public void setUiSchema(JsonNode uiSchema) {}
-
-  public static final JsonNode SCHEMA;
-  public static final JsonNode UI_SCHEMA;
-  static {
-    URL url = Resources.getResource(JsonSchemaPath.subjectSchema);
-    JsonNode jsonNode = null;
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    SCHEMA = jsonNode;
-    url = Resources.getResource(JsonSchemaPath.subjectUISchema);
-    try {
-      jsonNode = new ObjectMapper().readTree(Resources.toString(url, UTF_8));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    UI_SCHEMA = jsonNode;
-  }
   @Convert(converter = JsonNodeConverter.class)
   @Column(columnDefinition = "text")
   protected JsonNode formData = FlattenedJsonTypeConfigurer.INSTANCE

@@ -2,7 +2,7 @@
 	"formData": {
 		"accrualType": "病人",
 		"sponsorAddress": "陽明大學守仁樓316",
-		"genderEnum": "女",
+		"genderEnum": "否",
 		"croAddress": "croAddresscroAddress",
 		"accrualTaiwan": "92",
 		"title": "隨機、雙盲、多中心之臨床二期臨床試驗，以評估Imatinib於異體造血幹細胞移植後預防CMV感染",
