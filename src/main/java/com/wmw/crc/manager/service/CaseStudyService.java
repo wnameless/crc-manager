@@ -53,8 +53,8 @@ import com.wmw.crc.manager.repository.ContraindicationRepository;
 import com.wmw.crc.manager.repository.JsonDataUriFileRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
 import com.wmw.crc.manager.util.Criterion;
-import com.wmw.crc.manager.util.JsonDataUriUtil;
-import com.wmw.crc.manager.util.JsonDataUriUtil.DataURIFormData;
+import com.wmw.crc.manager.util.JsonDataUriUtils;
+import com.wmw.crc.manager.util.JsonDataUriUtils.DataURIFormData;
 
 import net.sf.rubycollect4j.Ruby;
 import net.sf.rubycollect4j.RubyArray;
@@ -234,7 +234,7 @@ public class CaseStudyService {
   public CaseStudy updateCaseStudy(CaseStudy cs, JsonNode formData)
       throws JsonProcessingException {
     DataURIFormData dataURIFormdata =
-        JsonDataUriUtil.createDataURIFormData(formData);
+        JsonDataUriUtils.createDataURIFormData(formData);
 
     cs.setFormData(dataURIFormdata.getFormData());
     caseStudyRepo.save(cs);
