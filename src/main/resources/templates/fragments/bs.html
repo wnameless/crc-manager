@@ -5,7 +5,11 @@
 		let message = /*[[${message}]]*/ '';
 
 		if (message) {
-			$.notify(message);
+			$.notify({
+				message: message
+			}, {
+				type: 'warning'
+			});
 		}
 	});
 </script>
