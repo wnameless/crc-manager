@@ -276,22 +276,22 @@
       "format": "date",
       "title": "16.合約開始日期"
     },
-    "inspection": {
-      "title": "",
-      "$ref": "#/definitions/inspectionDef"
+    "contractAmount": {
+      "type": "string",
+      "title": "17.合約核定金額"
     },
     "contractEndDate": {
       "type": "string",
       "format": "date",
       "title": "18.經費結案日期"
     },
-    "contractAmount": {
-      "type": "string",
-      "title": "19.合約核定金額"
-    },
     "amount": {
       "type": "string",
-      "title": "20.實際支用金額"
+      "title": "19.實際支用金額"
+    },
+    "inspection": {
+      "title": "",
+      "$ref": "#/definitions/inspectionDef"
     },
     "requiredFiles": {
       "title": "二.上傳/修改新案審查文件",
@@ -514,7 +514,7 @@
       "properties": {
         "researchType": {
           "type": "string",
-          "title": "4.研究類型",
+          "title": "4.計畫類別",
           "enum": [
             "其他",
             "藥品臨床試驗",
@@ -601,7 +601,7 @@
       "type": "object",
       "properties": {
         "inspection": {
-          "title": "17.是否有查核(Inspection)",
+          "title": "20.是否有查核(Inspection)",
           "type": "string",
           "enum": [
             "是",

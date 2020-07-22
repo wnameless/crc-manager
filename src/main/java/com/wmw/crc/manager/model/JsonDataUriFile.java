@@ -75,7 +75,7 @@ public class JsonDataUriFile {
     parameters.shift();
     this.parameters = parameters.join(";");
 
-    String data = schema[1];
+    String data = schema.length > 1 ? schema[1] : "";
     this.data = data;
   }
 
