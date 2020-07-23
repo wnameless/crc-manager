@@ -28,6 +28,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.wnameless.json.base.JacksonJsonValue;
+import com.github.wnameless.json.flattener.JsonFlattener;
+import com.github.wnameless.json.unflattener.JsonUnflattener;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -127,19 +131,23 @@ public class TestController {
   String cleanFormData() throws JsonProcessingException {
     List<CaseStudy> css = caseStudyRepo.findAll();
 
+    ObjectMapper mapper = new ObjectMapper();
     for (CaseStudy cs : css) {
       JsonNode formData = cs.getFormData();
 
-      Iterator<String> it = formData.fieldNames();
+      String fj = JsonFlattener.flatten(new JacksonJsonValue(formData));
+      JsonNode jn = mapper.readTree(fj);
+
+      Iterator<String> it = jn.fieldNames();
       while (it.hasNext()) {
         String key = it.next();
 
-        if (key.length() > 100) {
+        if (key.contains("\\\\\\\\\\\\\\")) {
           it.remove();
         }
       }
 
-      cs.setFormData(formData);
+      cs.setFormData(mapper.readTree(JsonUnflattener.unflatten(jn.toString())));
       caseStudyRepo.save(cs);
     }
 
