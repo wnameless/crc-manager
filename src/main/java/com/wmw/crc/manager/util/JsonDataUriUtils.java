@@ -18,11 +18,11 @@ package com.wmw.crc.manager.util;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.wnameless.json.base.JacksonJsonValue;
 import com.github.wnameless.json.flattener.JsonFlattener;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
@@ -48,30 +48,31 @@ public class JsonDataUriUtils {
 
   public DataURIFormData createDataURIFormData(JsonNode formData)
       throws JsonProcessingException {
-    JacksonJsonValue jsonVal = new JacksonJsonValue(formData);
-    Map<String, Object> flattenedMap = JsonFlattener.flattenAsMap(jsonVal);
+    ObjectMapper mapper = new ObjectMapper();
 
-    Map<String, Object> filteredFlattenedMap = new LinkedHashMap<>();
+    JacksonJsonValue jsonVal = new JacksonJsonValue(formData);
+    JsonNode flattenedMap = mapper.readTree(JsonFlattener.flatten(jsonVal));
+
+    ObjectNode filteredFlattenedMap = mapper.createObjectNode();
     Map<String, String> dataURIs = new LinkedHashMap<>();
 
-    Iterator<Entry<String, Object>> entryIter =
-        flattenedMap.entrySet().iterator();
-    while (entryIter.hasNext()) {
-      Entry<String, Object> entry = entryIter.next();
-      if (entry.getValue() instanceof String) {
-        if (entry.getValue().toString().startsWith("data:")) {
-          dataURIs.put(entry.getKey(), entry.getValue().toString());
+    Iterator<String> fnIter = flattenedMap.fieldNames();
+    while (fnIter.hasNext()) {
+      String field = fnIter.next();
+      if (flattenedMap.get(field).isTextual()) {
+        if (flattenedMap.get(field).asText().startsWith("data:")) {
+          dataURIs.put(field, flattenedMap.get(field).asText());
 
-          filteredFlattenedMap.put(entry.getKey(),
-              entry.getValue().toString().split(",")[0] + ",");
+          filteredFlattenedMap.put(field,
+              flattenedMap.get(field).asText().split(",")[0] + ",");
         } else {
-          filteredFlattenedMap.put(entry.getKey(), entry.getValue());
+          filteredFlattenedMap.put(field, flattenedMap.get(field).asText());
         }
       }
     }
 
-    String filteredJson = JsonUnflattener
-        .unflatten(new ObjectMapper().writeValueAsString(filteredFlattenedMap));
+    String filteredJson =
+        JsonUnflattener.unflatten(filteredFlattenedMap.toString());
     return new DataURIFormData(new ObjectMapper().readTree(filteredJson),
         dataURIs);
   }

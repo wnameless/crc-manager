@@ -15,6 +15,8 @@
  */
 package com.wmw.crc.manager.service;
 
+import static net.sf.rubycollect4j.RubyObject.isPresent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +47,14 @@ public class JsonDataUriFileService {
       if (fileOpt.isPresent()) {
         JsonDataUriFile file = fileOpt.get();
 
-        file.setData(
-            new JsonDataUriFile(cs, dataURI.getKey(), dataURI.getValue())
-                .getData());
+        JsonDataUriFile newFile =
+            new JsonDataUriFile(cs, dataURI.getKey(), dataURI.getValue());
 
-        jsonDataUriFiles.add(jsonDataUriFileRepo.save(file));
+        // Don't update if new file is 0 byte
+        if (isPresent(newFile.getData())) {
+          file.setData(newFile.getData());
+          jsonDataUriFiles.add(jsonDataUriFileRepo.save(file));
+        }
       } else {
         jsonDataUriFiles.add(jsonDataUriFileRepo.save(
             new JsonDataUriFile(cs, dataURI.getKey(), dataURI.getValue())));
