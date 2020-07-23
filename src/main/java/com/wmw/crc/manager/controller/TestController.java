@@ -16,6 +16,7 @@
 package com.wmw.crc.manager.controller;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.repository.CaseStudyRepository;
 import com.wmw.crc.manager.repository.SubjectRepository;
@@ -117,6 +119,31 @@ public class TestController {
     }
 
     return "Splited";
+  }
+
+  @PreAuthorize("@perm.isAdmin()")
+  @GetMapping("/formdata/clean")
+  @ResponseBody
+  String cleanFormData() throws JsonProcessingException {
+    List<CaseStudy> css = caseStudyRepo.findAll();
+
+    for (CaseStudy cs : css) {
+      JsonNode formData = cs.getFormData();
+
+      Iterator<String> it = formData.fieldNames();
+      while (it.hasNext()) {
+        String key = it.next();
+
+        if (key.length() > 100) {
+          it.remove();
+        }
+      }
+
+      cs.setFormData(formData);
+      caseStudyRepo.save(cs);
+    }
+
+    return "Cleaned";
   }
 
 }
