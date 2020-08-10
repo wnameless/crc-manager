@@ -15,20 +15,20 @@
         </div>
         <div id="navbarCollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li th:class="${session.status.toString() == 'NEW'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-                    <a href="/cases?status=new" th:text="#{ui.navbar.case.new}"></a>
+                <li th:class="${tab == 'new'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
+                    <a href="/cases?status=new&tab=new" th:text="#{ui.navbar.case.new}"></a>
                 </li>
-                <li th:class="${session.status.toString() == 'EXEC'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/cases?status=exec" th:text="#{ui.navbar.case.exec}"></a>
+                <li th:class="${tab == 'exec'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/cases?status=exec&tab=exec" th:text="#{ui.navbar.case.exec}"></a>
                 </li>
-                <li th:class="${session.status.toString() == 'END'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/cases?status=end" th:text="#{ui.navbar.case.end}"></a>
+                <li th:class="${tab == 'end'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/cases?status=end&tab=end" th:text="#{ui.navbar.case.end}"></a>
                 </li>
-                <li th:class="${session.status.toString() == 'NONE'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
-                    <a href="/cases?status=none" th:text="#{ui.navbar.case.none}"></a>
+                <li th:class="${tab == 'none'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN')">
+                    <a href="/cases?status=none&tab=none" th:text="#{ui.navbar.case.none}"></a>
                 </li>
-                <li sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-                    <a href="/search" th:text="#{ui.navbar.case.export}"></a>
+                <li th:class="${tab == 'search'} ? active : ''" sec:authorize="hasRole('ROLE_SUPER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+                    <a href="/search?tab=search" th:text="#{ui.navbar.case.export}"></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

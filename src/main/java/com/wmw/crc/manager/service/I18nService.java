@@ -30,8 +30,9 @@ public class I18nService {
   @Autowired
   MessageSource messageSource;
 
-  public String msg(String code, Locale locale) {
-    return messageSource.getMessage(code, new Object[] {}, locale);
+  public String msg(String code) {
+    return messageSource.getMessage(code, new Object[] {},
+        LocaleContextHolder.getLocale());
   }
 
   public String takeKind(String code) {
@@ -93,44 +94,47 @@ public class I18nService {
     }
   }
 
-  public String caseManagerAdded(Locale locale, Object... args) {
+  public String caseManagerAdded(Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.manager-added",
-        args, locale);
+        args, LocaleContextHolder.getLocale());
   }
 
-  public String caseManagerRemoved(Locale locale, Object... args) {
+  public String caseManagerRemoved(Object... args) {
     return messageSource.getMessage(
-        "ctrl.case.operation.message.manager-removed", args, locale);
+        "ctrl.case.operation.message.manager-removed", args,
+        LocaleContextHolder.getLocale());
   }
 
-  public String caseEditorAdded(Locale locale, Object... args) {
+  public String caseEditorAdded(Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.editor-added",
-        args, locale);
+        args, LocaleContextHolder.getLocale());
   }
 
-  public String caseEditorRemoved(Locale locale, Object... args) {
-    return messageSource
-        .getMessage("ctrl.case.operation.message.editor-removed", args, locale);
+  public String caseEditorRemoved(Object... args) {
+    return messageSource.getMessage(
+        "ctrl.case.operation.message.editor-removed", args,
+        LocaleContextHolder.getLocale());
   }
 
-  public String caseViewerAdded(Locale locale, Object... args) {
+  public String caseViewerAdded(Object... args) {
     return messageSource.getMessage("ctrl.case.operation.message.viewer-added",
-        args, locale);
+        args, LocaleContextHolder.getLocale());
   }
 
-  public String caseViewerRemoved(Locale locale, Object... args) {
-    return messageSource
-        .getMessage("ctrl.case.operation.message.viewer-removed", args, locale);
+  public String caseViewerRemoved(Object... args) {
+    return messageSource.getMessage(
+        "ctrl.case.operation.message.viewer-removed", args,
+        LocaleContextHolder.getLocale());
   }
 
-  public String subjectDateUnselect(Locale locale, Object... args) {
+  public String subjectDateUnselect(Object... args) {
     return messageSource.getMessage("ctrl.subject.message.date-unselect",
-        new Object[] {}, locale);
+        new Object[] {}, LocaleContextHolder.getLocale());
   }
 
-  public String subjectUnselect(Locale locale, Object... args) {
+  public String subjectUnselect(Object... args) {
     return messageSource.getMessage("ctrl.subject.message.subject-unselect",
-        new Object[] {}, locale);
+        new Object[] {}, LocaleContextHolder.getLocale());
   }
 
 }

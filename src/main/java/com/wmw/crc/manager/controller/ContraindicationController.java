@@ -5,7 +5,6 @@ import static com.wmw.crc.manager.RestfulPath.Names.CONTRAINDICATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -71,13 +70,13 @@ public class ContraindicationController implements NestedRestfulController< //
       @RequestParam("phrase") String phrase,
       @RequestParam("takekinds") List<String> takekinds,
       @RequestParam("memo") String memo, //
-      RedirectAttributes redirectAttrs, Locale locale) {
+      RedirectAttributes redirectAttrs) {
     AdvOpt<Contraindication> ctdctOpt = caseStudyService
         .addContraindication(caseStudy, bundle, phrase, takekinds, memo);
 
     if (ctdctOpt.hasMessage()) {
       redirectAttrs.addFlashAttribute("message",
-          i18n.msg(ctdctOpt.getMessage(), locale));
+          i18n.msg(ctdctOpt.getMessage()));
     }
     return "redirect:" + caseStudy.joinPath("contraindications");
   }

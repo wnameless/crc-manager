@@ -130,13 +130,13 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping
   String createJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData, Locale locale) {
+      @RequestBody JsonNode formData) {
     subject = new Subject(formData);
     AdvOpt<Subject> sOpt = subjectService.createSubject(caseStudy, subject);
 
     if (sOpt.isAbsent()) {
       if (sOpt.hasMessage()) {
-        model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+        model.addAttribute("message", i18n.msg(sOpt.getMessage()));
       }
     } else {
       updateChildrenByParent(model, caseStudy);
@@ -147,12 +147,12 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @PostMapping("/{id}")
   String updateJS(Model model, @PathVariable Long parentId,
-      @RequestBody JsonNode formData, Locale locale) {
+      @RequestBody JsonNode formData) {
     AdvOpt<Subject> sOpt = subjectService.updateSubject(subject, formData);
 
     if (sOpt.isAbsent()) {
       if (sOpt.hasMessage()) {
-        model.addAttribute("message", i18n.msg(sOpt.getMessage(), locale));
+        model.addAttribute("message", i18n.msg(sOpt.getMessage()));
       }
     } else {
       updateChildrenByParent(model, caseStudy);
@@ -249,7 +249,7 @@ public class SubjectController implements NestedRestfulController< //
   @PreAuthorize("@perm.canWrite(#parentId)")
   @GetMapping("/query/{nationalId}")
   String searchPatient(Model model, @PathVariable Long parentId,
-      @PathVariable String nationalId, Locale locale) {
+      @PathVariable String nationalId) {
     Subject subject;
     try {
       subject = tsghService.queryPatientById(nationalId);
@@ -260,8 +260,7 @@ public class SubjectController implements NestedRestfulController< //
 
     updateChild(model, subject);
     if (subject.getNationalId() == null) {
-      model.addAttribute("message",
-          i18n.msg("ui.subject.message.id-no-data", locale));
+      model.addAttribute("message", i18n.msg("ui.subject.message.id-no-data"));
     }
     return "subjects/new :: partial";
   }
