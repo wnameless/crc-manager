@@ -300,57 +300,57 @@
         "applicationForm": {
           "type": "string",
 		  "format": "data-url",
-          "title": "1.三軍總醫院臨床研究申請表"
+          "title": "1.三軍總醫院IRB新案申請書"
         },
-        "approvedLetter": {
+        "applicationFormAppend": {
           "type": "string",
 		  "format": "data-url",
-          "title": "2.三軍總醫院IRB審議會同意函"
-        },
-        "icf": {
-          "type": "string",
-		  "format": "data-url",
-          "title": "3.受試者同意書(經IRB核准蓋章之影本)"
-        },
-        "protocolFile": {
-          "type": "string",
-		  "format": "data-url",
-          "title": "4.三軍總醫院人體試驗主持人試驗計畫申請書"
-        },
-        "dohLetter": {
-          "type": "string",
-		  "format": "data-url",
-          "title": "5.衛福部人體試驗同意函(如須衛福部審查通過案)"
+          "title": "2.三軍總醫院IRB新案申請書補充附件"
         },
         "protocolInfoFile": {
           "type": "string",
 		  "format": "data-url",
-          "title": "6.試驗計畫書"
-        },
-        "caseReport": {
-          "type": "string",
-		  "format": "data-url",
-          "title": "7.個案報告書"
-        },
-        "insuranceFile": {
-          "type": "string",
-		  "format": "data-url",
-          "title": "8.保險資料"
+          "title": "3.試驗計畫書"
         },
         "contractFile": {
           "type": "string",
 		  "format": "data-url",
-          "title": "9.臨床試驗合約書"
+          "title": "4.臨床試驗合約書"
         },
         "funding": {
           "type": "string",
 		  "format": "data-url",
-          "title": "10.臨床試驗經費明細表"
+          "title": "5.臨床試驗經費明細表"
         },
         "fee": {
           "type": "string",
 		  "format": "data-url",
-          "title": "11.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
+          "title": "6.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
+        },
+        "approvedLetter": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "7.三軍總醫院IRB審議會同意函"
+        },
+        "icf": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "8.受試者同意書(經IRB核准蓋章之影本)"
+        },
+        "dohLetter": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "9.衛福部人體試驗同意函(如須衛福部審查通過案)"
+        },
+        "caseReport": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "10.個案報告書"
+        },
+        "insuranceFile": {
+          "type": "string",
+		  "format": "data-url",
+          "title": "11.保險資料"
         },
         "otherFile": {
           "type": "string",
@@ -577,10 +577,6 @@
 				"trialPhase": {
                   "type": "string",
                   "title": "藥品試驗階段"
-                },
-				"trialPhaseText": {
-                  "type": "string",
-                  "title": "藥品試驗階段，請註明"
                 },
 				"trialType": {
                   "type": "string",
