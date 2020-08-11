@@ -162,7 +162,7 @@
     },
     "accrualType": {
       "type": "string",
-      "title": "6-2.受試者型態?"  
+      "title": "6-2.受試者型態?"
     },
     "proposedStartDate": {
       "type": "string",
@@ -181,45 +181,45 @@
     },
     "pclLocation": {
       "type": "string",
-      "title": "8.計畫執行地點"  
+      "title": "8.計畫執行地點"
     },
     "sponsors": {
-        "type": "array",
-        "title": "9.試驗經費贊助來源",
-        "items": {
-          "type": "object",
-          "anyOf": [
-            {
-              "properties": {
-                "廠商": {
-                  "type": "string"
-                }
-              }
-            },
-            {
-              "properties": {
-                "學術研究單位": {
-                  "type": "string"
-                }
-              }
-            },
-            {
-              "properties": {
-                "自籌(自行研究無經費補助，請說明如何自籌) ": {
-                  "type": "string"
-                }
-              }
-            },
-            {
-              "properties": {
-                "其他(如美國聯邦政府，請註明單位)": {
-                  "type": "string"
-                }
+      "type": "array",
+      "title": "9.試驗經費贊助來源",
+      "items": {
+        "type": "object",
+        "anyOf": [
+          {
+            "properties": {
+              "廠商": {
+                "type": "string"
               }
             }
-          ]
-        }
-      },
+          },
+          {
+            "properties": {
+              "學術研究單位": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "自籌(自行研究無經費補助，請說明如何自籌) ": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "其他(如美國聯邦政府，請註明單位)": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
     "sponsorName": {
       "type": "string",
       "title": "10.試驗委託藥廠/贊助研究單位",
@@ -299,62 +299,62 @@
       "properties": {
         "applicationForm": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "1.三軍總醫院IRB新案申請書"
         },
         "applicationFormAppend": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "2.三軍總醫院IRB新案申請書補充附件"
         },
         "protocolInfoFile": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "3.試驗計畫書"
         },
         "contractFile": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "4.臨床試驗合約書"
         },
         "funding": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "5.臨床試驗經費明細表"
         },
         "fee": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "6.臨床試驗中心服務費收費表(健康受試者/病人受試者)"
         },
         "approvedLetter": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "7.三軍總醫院IRB審議會同意函"
         },
         "icf": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "8.受試者同意書(經IRB核准蓋章之影本)"
         },
         "dohLetter": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "9.衛福部人體試驗同意函(如須衛福部審查通過案)"
         },
         "caseReport": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "10.個案報告書"
         },
         "insuranceFile": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "11.保險資料"
         },
         "otherFile": {
           "type": "string",
-		  "format": "data-url",
+          "format": "data-url",
           "title": "12.其他重要補充資料"
         }
       }
@@ -518,15 +518,15 @@
           "enum": [
             "其他",
             "藥品臨床試驗",
-			"新醫療器材",
-			"新醫療技術",
-			"上市後監測調查(PMS)",
-			"新醫療器材合併新醫療技術",
-			"附加試驗",
-			"延伸試驗",
-			"觀察性研究",
-			"基因相關臨床試驗",
-			"基因治療/體細胞治療"
+            "新醫療器材",
+            "新醫療技術",
+            "上市後監測調查(PMS)",
+            "新醫療器材合併新醫療技術",
+            "附加試驗",
+            "延伸試驗",
+            "觀察性研究",
+            "基因相關臨床試驗",
+            "基因治療/體細胞治療"
           ]
         }
       },
@@ -538,30 +538,30 @@
                 "researchType": {
                   "enum": [
                     "其他",
-					"新醫療器材",
-					"新醫療技術",
-					"新醫療器材合併新醫療技術"
+                    "新醫療器材",
+                    "新醫療技術",
+                    "新醫療器材合併新醫療技術"
                   ]
                 },
-				"otherText": {
+                "otherText": {
                   "type": "string",
                   "title": "請註明"
                 }
               }
             },
-			{
+            {
               "properties": {
                 "researchType": {
                   "enum": [
                     "附加試驗",
-					"延伸試驗"
+                    "延伸試驗"
                   ]
                 },
-				"meetingNum": {
+                "meetingNum": {
                   "type": "string",
                   "title": "請提供原計畫資料: 本會編號"
                 },
-				"oriPclNum": {
+                "oriPclNum": {
                   "type": "string",
                   "title": "計畫編號"
                 }
@@ -574,19 +574,18 @@
                     "藥品臨床試驗"
                   ]
                 },
-				"trialPhase": {
+                "trialPhase": {
                   "type": "string",
                   "title": "藥品試驗階段"
                 },
-				"trialType": {
+                "trialType": {
                   "type": "string",
                   "title": "藥品臨床試驗類別"
                 },
-				"trialManage": {
+                "trialManage": {
                   "type": "string",
                   "title": "試驗藥品是否由本院藥劑部門管理"
                 }
-				
               }
             }
           ]
@@ -625,24 +624,24 @@
                   ]
                 },
                 "inspectionAdmin": {
-                  "title": "17-1.查核單位",
+                  "title": "20-1.查核單位",
                   "type": "string"
                 },
                 "inspectionStartDate": {
-                  "title": "17-2.查核開始日期",
-				          "format": "date",
+                  "title": "20-2.查核開始日期",
+                  "format": "date",
                   "type": "string"
                 },
                 "inspectionEndDate": {
-                  "title": "17-3.查核結束日期",
-				          "format": "date",
+                  "title": "20-3.查核結束日期",
+                  "format": "date",
                   "type": "string"
                 }
               },
               "required": [
                 "inspectionAdmin",
-				        "inspectionStartDate",
-				        "inspectionEndDate"
+                "inspectionStartDate",
+                "inspectionEndDate"
               ]
             }
           ]
@@ -652,7 +651,7 @@
     "sponsorADef": {
       "type": "object",
       "properties": {
-          "sponsorA": {
+        "sponsorA": {
           "type": "array",
           "items": {
             "enum": [

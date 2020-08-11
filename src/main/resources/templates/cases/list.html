@@ -104,15 +104,15 @@
                                 <a th:href="@{${case.joinPath('permission')}}">
                                     [[#{ui.case.table.action.permission}]]
                                 </a>
-                                <a th:href="@{${case.joinPath('emails')}}">
-                                    [[#{ui.case.emails}]]
-                                </a>
                             </th:block>
 
                             <th:block th:if="${@perm.canWrite(case)}">
                                 <bs3:dropdown-divider></bs3:dropdown-divider>
                                 <a th:href="@{${case.joinPath('bundledescription')}}">
                                     [[#{ui.case.bundledescription}]]
+                                </a>
+                                <a th:href="@{${case.joinPath('emails')}}">
+                                    [[#{ui.case.emails}]]
                                 </a>
                             </th:block>
 
