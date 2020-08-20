@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/main.html}">
+
+<section layout:fragment="content">
+    <div class="container">
+        <div id="jsf">
+            <div th:replace="cases/unreviewed-visits/list :: partial"></div>
+        </div>
+    </div>
+</section>
+
+</html>
