@@ -114,6 +114,9 @@
                                 <a th:href="@{${case.joinPath('emails')}}">
                                     [[#{ui.case.emails}]]
                                 </a>
+                                <a th:href="@{${case.joinPath('unreviewed-visits')}}">
+                                    [[#{ui.case.unreviewed-visits}]]
+                                </a>
                             </th:block>
 
                             <th:block th:if="${@perm.canClose(case)}">

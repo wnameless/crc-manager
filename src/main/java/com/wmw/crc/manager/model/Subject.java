@@ -17,6 +17,7 @@ package com.wmw.crc.manager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -106,6 +107,11 @@ public class Subject
 
   public long unreviewedVisits() {
     return visits.stream().filter(v -> !v.isReviewed()).count();
+  }
+
+  public List<Visit> getUnreviewedVisitList() {
+    return visits.stream().filter(v -> !v.isReviewed())
+        .collect(Collectors.toList());
   }
 
   @Override

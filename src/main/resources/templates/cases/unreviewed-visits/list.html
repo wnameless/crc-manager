@@ -1,0 +1,92 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="partial">
+	<h3 th:replace="fragments/form :: title(text=${item.trialName}, backUrl=${route.indexPath})">
+	</h3>
+	<hr>
+
+	<table id="jsfTable" class="table table-striped">
+		<thead>
+			<tr>
+				<th th:text="#{ui.subject.table.subjectno}"></th>
+				<th th:text="#{ui.subject.table.name}"></th>
+				<th th:text="#{ui.subject.table.nationalid}"></th>
+				<th th:text="#{ui.subject.visit.creation_date}"></th>
+				<th th:text="#{ui.subject.visit.division}"></th>
+				<th th:text="#{ui.subject.visit.doctor}"></th>
+				<th th:text="#{ui.subject.visit.room}"></th>
+				<th th:text="#{ui.subject.visit.date}"></th>
+				<th th:text="#{ui.subject.visit.contraindication-suspected}"></th>
+				<th th:text="#{ui.subject.visit.reviewed}"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="subject : ${subjects}">
+				<tr th:each="v : ${subject.unreviewedVisitList}">
+					<td th:text="${subject.subjectNo}"></td>
+					<td th:text="${subject.name}"></td>
+					<td th:text="${subject.nationalId}"></td>
+					<td th:text="${#temporals.format(v.creationDate, 'yy-MM-dd HH:mm')}"></td>
+					<td th:text="${v.division}"></td>
+					<td th:text="${v.doctor}"></td>
+					<td th:text="${v.room}"></td>
+					<td th:text="${v.date}"></td>
+					<td th:text="${v.contraindicationSuspected ? 'Yes' : 'No'}"></td>
+					<td>
+						<input th:attr="subjectId=${subject.id},visitId=${v.id}" type="checkbox" class="form-check-input check-reviewed"
+							th:value="${v.reviewed}" th:checked="${v.reviewed}">
+					</td>
+				</tr>
+			</th:block>
+		</tbody>
+	</table>
+
+	<script th:replace="fragments/bs :: notify"></script>
+	<script th:inline="javascript">
+		$('.check-reviewed').change(function () {
+			let url = /*[[${route.joinPath(item.id, 'subjects')}]]*/ null;
+			url += '/' + $(this).attr('subjectId') + '/visits';
+			axios.put(url, {}, {
+				params: {
+					visitId: $(this).attr('visitId')
+				}
+			});
+		});
+
+		$(function () {
+			let i18nLocale = /*[[#{jquery.datatable.i18n.locale}]]*/ 'zh-TW';
+			$('#jsfTable').on('init.dt', function () {
+				$(this).reflowTable();
+				$('.dataTables_wrapper').find('select').selectpicker();
+			}).on('draw.dt', function () {
+				$(this).reflowTable('update');
+			}).DataTable({
+				stateSave: true,
+				order: [
+					[7, "asc"]
+				],
+				columnDefs: [{
+					width: '36px',
+					targets: 3
+				}],
+				aoColumns: [
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					{ "orderDataType": "dom-text", type: 'string' },
+				],
+				language: {
+					url: '/i18n/datatables-' + i18nLocale + '.json'
+				}
+			});
+		});
+	</script>
+</div>
+
+</html>
