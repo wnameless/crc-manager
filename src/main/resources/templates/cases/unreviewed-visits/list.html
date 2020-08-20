@@ -22,7 +22,7 @@
 		</thead>
 		<tbody>
 			<th:block th:each="subject : ${subjects}">
-				<tr th:each="v : ${subject.visits}">
+				<tr th:each="v : ${subject.unreviewedVisitList}">
 					<td th:text="${subject.subjectNo}"></td>
 					<td th:text="${subject.name}"></td>
 					<td th:text="${subject.nationalId}"></td>

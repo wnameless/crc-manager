@@ -66,8 +66,6 @@ public class CaseUnreviewedVisitController
     List<Subject> subjects = subjectRepo.findAllByCaseStudy(caseStudy);
     subjects = Ruby.Array.of(subjects).keepIf(s -> s.unreviewedVisits() > 0);
 
-    System.out.println(subjects.size());
-
     model.addAttribute("subjects", subjects);
     return "cases/unreviewed-visits/index";
   }
