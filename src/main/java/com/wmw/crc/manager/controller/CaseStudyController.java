@@ -155,8 +155,6 @@ public class CaseStudyController
   String updateJS(Authentication auth, Model model, @PathVariable Long id,
       @RequestBody JsonNode formData) throws JsonProcessingException {
     caseStudy = caseService.updateCaseStudy(caseStudy, formData);
-    // caseStudy.setFormData(formData);
-    // caseStudyRepo.save(caseStudy);
 
     model.addAttribute("slice",
         caseService.getCasesByStatus(auth, status, pageable, search));
