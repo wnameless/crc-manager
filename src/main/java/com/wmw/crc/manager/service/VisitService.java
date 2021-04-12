@@ -232,7 +232,7 @@ public class VisitService {
     } else if (!isRoomBlank(v.getRoom())) {
       message = createVisitEmail(v);
       hospitalizationMessages.add(message.getText());
-    } else if (v.getDivision().contains("急診")) {
+    } else if (v.getDivision()!=null && v.getDivision().contains("急診")) {
       message = createVisitEmail(v);
       erMessages.add(message.getText());
     } else {
