@@ -86,6 +86,7 @@ public class TsghServiceImpl implements TsghService {
     tsghApi = retrofit.create(TsghApi.class);
   }
 
+  @Override
   public Subject queryPatientById(String nationalId) throws IOException {
     Call<TsghResponse<TsghPatient>> call = tsghApi.searchPatient(nationalId);
     Response<TsghResponse<TsghPatient>> res = call.execute();
@@ -152,12 +153,14 @@ public class TsghServiceImpl implements TsghService {
     return subject;
   }
 
+  @Override
   public List<TsghMedicine> getDrugs() throws IOException {
     Call<TsghResponse<List<TsghMedicine>>> call = tsghApi.listDrugs();
     Response<TsghResponse<List<TsghMedicine>>> res = call.execute();
     return res.body().getData();
   }
 
+  @Override
   public Response<ResponseBody> addPatientContraindication(
       TsghContraindication pc) throws IOException {
     Call<ResponseBody> call = tsghApi.addPatientContraindication(pc);
@@ -173,6 +176,7 @@ public class TsghServiceImpl implements TsghService {
     return res;
   }
 
+  @Override
   public AdvOpt<Integer> refreshMedicines() {
     List<TsghMedicine> drugs;
     try {
@@ -204,6 +208,7 @@ public class TsghServiceImpl implements TsghService {
         "Total " + drugs.size() + " medicines has been updated.");
   }
 
+  @Override
   public AdvOpt<ContraindicationRefreshResult> refreshContraindications() {
     try {
       removeAllPatientContraindications();
