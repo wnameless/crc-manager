@@ -50,7 +50,8 @@ public class KeycloakService {
   }
 
   public List<UserRepresentation> getNormalUsers() {
-    return Ruby.Array.of(kc.realm("CRCManager").users().list())
+    return Ruby.Array
+        .of(kc.realm("CRCManager").users().list(0, Integer.MAX_VALUE))
         .deleteIf(u -> u.getUsername().equals("super")).toList();
   }
 

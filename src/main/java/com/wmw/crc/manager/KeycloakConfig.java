@@ -65,6 +65,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
       implements RequestMatcher {
     IgnoreKeycloakProcessingFilterRequestMatcher() {}
 
+    @Override
     public boolean matches(HttpServletRequest request) {
       String authorizationHeaderValue = request.getHeader("Authorization");
       return authorizationHeaderValue != null
