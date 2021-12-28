@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.github.wnameless.spring.common.web.RestfulItem;
+import com.github.wnameless.spring.boot.up.web.RestfulItem;
 import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;

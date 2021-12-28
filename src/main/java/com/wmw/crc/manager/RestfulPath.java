@@ -15,7 +15,7 @@
  */
 package com.wmw.crc.manager;
 
-import com.github.wnameless.spring.common.web.RestfulRoute;
+import com.github.wnameless.spring.boot.up.web.RestfulRoute;
 
 public enum RestfulPath implements RestfulRoute<Long> {
 

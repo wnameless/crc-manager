@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.wnameless.advancedoptional.AdvOpt;
-import com.github.wnameless.spring.common.web.ModelPolicy;
-import com.github.wnameless.spring.common.web.NestedRestfulController;
-import com.github.wnameless.spring.common.web.RestfulRoute;
+import com.github.wnameless.spring.boot.up.web.ModelPolicy;
+import com.github.wnameless.spring.boot.up.web.NestedRestfulController;
+import com.github.wnameless.spring.boot.up.web.RestfulRoute;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Contraindication;

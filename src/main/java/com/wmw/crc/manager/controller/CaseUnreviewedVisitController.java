@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.github.wnameless.spring.common.web.ModelPolicy;
-import com.github.wnameless.spring.common.web.RestfulController;
-import com.github.wnameless.spring.common.web.RestfulRoute;
+import com.github.wnameless.spring.boot.up.web.ModelPolicy;
+import com.github.wnameless.spring.boot.up.web.RestfulController;
+import com.github.wnameless.spring.boot.up.web.RestfulRoute;
 import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.Subject;

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.github.wnameless.spring.common.web.SessionModel;
+import com.github.wnameless.spring.boot.up.web.SessionModel;
 
 @ControllerAdvice(annotations = Controller.class)
 public class TabSelectionAdvice {

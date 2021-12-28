@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.github.wnameless.spring.common.web.ModelPolicy;
-import com.github.wnameless.spring.common.web.RestfulController;
+import com.github.wnameless.spring.boot.up.web.ModelPolicy;
+import com.github.wnameless.spring.boot.up.web.RestfulController;
 import com.wmw.crc.manager.RestfulPath;
 import com.wmw.crc.manager.model.CaseStudy;
 import com.wmw.crc.manager.model.CaseStudy.Status;

@@ -23,7 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.github.wnameless.spring.common.web.RestfulItem;
+import com.github.wnameless.spring.boot.up.web.RestfulItem;
 import com.wmw.crc.manager.RestfulPath;
 
 import lombok.Data;

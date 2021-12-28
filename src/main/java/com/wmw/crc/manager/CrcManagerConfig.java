@@ -27,7 +27,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.github.wnameless.spring.common.web.Pageables;
+import com.github.wnameless.spring.boot.up.web.Pageables;
 import com.github.wnameless.thymeleaf.ext.Bootstrap3DropdownDialect;
 
 @EnableJpaRepositories(
