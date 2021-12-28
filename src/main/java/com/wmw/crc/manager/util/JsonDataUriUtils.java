@@ -34,7 +34,7 @@ import lombok.experimental.UtilityClass;
 public class JsonDataUriUtils {
 
   @Data
-  public class DataURIFormData {
+  public static final class DataURIFormData {
 
     private final JsonNode formData;
     private final Map<String, String> dataURIs;
