@@ -6,3 +6,5 @@
 *.db
 /logs
 /logs/*
+/.vscode
+.on-save.json
